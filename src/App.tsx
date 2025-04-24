@@ -13,6 +13,7 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
+import AIAssistant from "./components/chat/AIAssistant";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
               </Routes>
             </main>
             <Footer />
+            <AIAssistant />
           </div>
         </BrowserRouter>
       </TooltipProvider>
