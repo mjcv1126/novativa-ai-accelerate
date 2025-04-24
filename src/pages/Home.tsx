@@ -1,9 +1,6 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import TypingAnimation from '@/components/shared/TypingAnimation';
-import { CheckCircle2, Zap, ArrowRight, Bot, Settings, BarChart3, PenTool } from 'lucide-react';
+import { Bot, Settings, BarChart3, PenTool, CheckCircle2, Zap } from 'lucide-react';
 
 const Home = () => {
   const typingPhrases = [
@@ -32,27 +29,6 @@ const Home = () => {
               </h1>
               <div className="text-xl md:text-2xl text-gray-600 mb-8 h-10">
                 <TypingAnimation phrases={typingPhrases} className="inline-block" />
-              </div>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-                <Button
-                  asChild
-                  className="bg-novativa-teal hover:bg-novativa-lightTeal text-white px-6 py-6"
-                  size="lg"
-                >
-                  <Link to="/servicios">
-                    Descubre nuestros servicios
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-novativa-orange text-novativa-orange hover:bg-novativa-orange hover:text-white px-6 py-6"
-                  size="lg"
-                >
-                  <Link to="/contacto">
-                    Contáctanos
-                  </Link>
-                </Button>
               </div>
             </div>
             <div className="relative hidden lg:block">

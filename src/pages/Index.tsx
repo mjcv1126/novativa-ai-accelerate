@@ -1,7 +1,6 @@
 
 import { Helmet } from 'react-helmet-async';
 import Home from './Home';
-import ChatBot from '@/components/chat/ChatBot';
 
 const Index = () => {
   return (
@@ -20,7 +19,6 @@ const Index = () => {
         <link rel="canonical" href="https://novativa.ai" />
       </Helmet>
       <Home />
-      <ChatBot />
     </>
   );
 };
