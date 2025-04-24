@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -24,6 +25,14 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				novativa: {
+					teal: '#0A6E6E',
+					orange: '#BF4E0F',
+					lightTeal: '#12a5a5',
+					lightOrange: '#e86012',
+					darkTeal: '#055050',
+					darkOrange: '#8a3a0c',
+				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
@@ -63,32 +72,47 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
-			},
 			keyframes: {
-				'accordion-down': {
-					from: {
-						height: '0'
-					},
+				"accordion-down": {
+					from: { height: "0" },
+					to: { height: "var(--radix-accordion-content-height)" },
+				},
+				"accordion-up": {
+					from: { height: "var(--radix-accordion-content-height)" },
+					to: { height: "0" },
+				},
+				"typewriter": {
 					to: {
-						height: 'var(--radix-accordion-content-height)'
+						left: "100%"
 					}
 				},
-				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
+				"blink": {
+					"0%, 100%": {
+						opacity: "1"
 					},
-					to: {
-						height: '0'
+					"50%": {
+						opacity: "0"
 					}
+				},
+				"fade-in": {
+					from: { opacity: "0", transform: "translateY(10px)" },
+					to: { opacity: "1", transform: "translateY(0)" }
+				},
+				"fade-out": {
+					from: { opacity: "1" },
+					to: { opacity: "0", display: "none" }
 				}
 			},
 			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				"accordion-down": "accordion-down 0.2s ease-out",
+				"accordion-up": "accordion-up 0.2s ease-out",
+				"typewriter": "typewriter 4s steps(40) forwards",
+				"blink": "blink 1s infinite",
+				"fade-in": "fade-in 0.5s ease-out",
+				"fade-out": "fade-out 0.5s ease-out forwards"
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 			}
 		}
 	},

@@ -1,0 +1,369 @@
+
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { 
+  MapPin, 
+  Phone, 
+  Mail, 
+  Clock, 
+  CheckCircle2,
+  Loader2 
+} from 'lucide-react';
+import { toast } from 'sonner';
+
+const Contact = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const planFromUrl = queryParams.get('plan') || '';
+  const servicioFromUrl = queryParams.get('servicio') || '';
+  
+  const [formState, setFormState] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    service: servicioFromUrl || '',
+    plan: planFromUrl || '',
+    message: '',
+    submitted: false,
+    isSubmitting: false
+  });
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormState(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSelectChange = (name: string, value: string) => {
+    setFormState(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormState(prev => ({ ...prev, isSubmitting: true }));
+    
+    // Simulate form submission with a timeout
+    setTimeout(() => {
+      toast.success("¡Formulario enviado con éxito! Nos pondremos en contacto contigo pronto.");
+      setFormState(prev => ({ 
+        ...prev, 
+        isSubmitting: false, 
+        submitted: true,
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        service: '',
+        plan: '',
+        message: ''
+      }));
+    }, 1500);
+  };
+  
+  return (
+    <>
+      <section className="pt-32 pb-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Contacta con <span className="text-novativa-teal">Novativa</span>
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Estamos listos para ayudarte a transformar tu negocio con soluciones de inteligencia artificial.
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      {/* Contact Form Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="bg-gray-50 rounded-xl p-8">
+              <h2 className="text-3xl font-bold mb-8">Información de Contacto</h2>
+              
+              <div className="space-y-8">
+                <div className="flex items-start">
+                  <div className="bg-novativa-teal/10 p-3 rounded-full mr-4">
+                    <MapPin className="text-novativa-teal" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg mb-1">Dirección</h3>
+                    <p className="text-gray-600">San José, Costa Rica</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="bg-novativa-teal/10 p-3 rounded-full mr-4">
+                    <Phone className="text-novativa-teal" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg mb-1">Teléfono</h3>
+                    <p className="text-gray-600">+506 2222-2222</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="bg-novativa-teal/10 p-3 rounded-full mr-4">
+                    <Mail className="text-novativa-teal" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg mb-1">Email</h3>
+                    <p className="text-gray-600">info@novativa.ai</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="bg-novativa-teal/10 p-3 rounded-full mr-4">
+                    <Clock className="text-novativa-teal" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg mb-1">Horario de Atención</h3>
+                    <p className="text-gray-600">Lunes - Viernes: 8:00 AM - 5:00 PM</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-12">
+                <h3 className="font-bold text-lg mb-4">Síguenos en Redes Sociales</h3>
+                <div className="flex space-x-4">
+                  <a href="#" className="bg-novativa-teal/10 hover:bg-novativa-teal/20 p-3 rounded-full transition-colors">
+                    <svg className="w-5 h-5 text-novativa-teal" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd"></path>
+                    </svg>
+                  </a>
+                  <a href="#" className="bg-novativa-teal/10 hover:bg-novativa-teal/20 p-3 rounded-full transition-colors">
+                    <svg className="w-5 h-5 text-novativa-teal" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+                    </svg>
+                  </a>
+                  <a href="#" className="bg-novativa-teal/10 hover:bg-novativa-teal/20 p-3 rounded-full transition-colors">
+                    <svg className="w-5 h-5 text-novativa-teal" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd"></path>
+                    </svg>
+                  </a>
+                  <a href="#" className="bg-novativa-teal/10 hover:bg-novativa-teal/20 p-3 rounded-full transition-colors">
+                    <svg className="w-5 h-5 text-novativa-teal" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h2 className="text-3xl font-bold mb-8">Envíanos un Mensaje</h2>
+              
+              {formState.submitted ? (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center">
+                  <div className="flex justify-center mb-4">
+                    <CheckCircle2 className="text-green-500" size={48} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-green-800 mb-2">¡Mensaje Enviado!</h3>
+                  <p className="text-green-700">
+                    Gracias por contactarnos. Hemos recibido tu mensaje y nos pondremos en contacto contigo a la brevedad posible.
+                  </p>
+                  <Button
+                    className="mt-6 bg-novativa-teal hover:bg-novativa-lightTeal"
+                    onClick={() => setFormState(prev => ({ ...prev, submitted: false }))}
+                  >
+                    Enviar otro mensaje
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                        Nombre Completo *
+                      </label>
+                      <Input
+                        id="name"
+                        name="name"
+                        value={formState.name}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Tu nombre"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        Email *
+                      </label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formState.email}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="tu@email.com"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                        Teléfono
+                      </label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        value={formState.phone}
+                        onChange={handleInputChange}
+                        placeholder="+506 1234-5678"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
+                        Empresa
+                      </label>
+                      <Input
+                        id="company"
+                        name="company"
+                        value={formState.company}
+                        onChange={handleInputChange}
+                        placeholder="Nombre de tu empresa"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">
+                        Servicio de interés
+                      </label>
+                      <Select
+                        value={formState.service}
+                        onValueChange={(value) => handleSelectChange('service', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona un servicio" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="agente-ia-web">Agente IA Web</SelectItem>
+                          <SelectItem value="agentes-ia-novachannel">Agentes IA + NovaChannel</SelectItem>
+                          <SelectItem value="generacion-contenido">IA para Generación de Contenido</SelectItem>
+                          <SelectItem value="desarrollo-ia">Desarrollo con IA</SelectItem>
+                          <SelectItem value="agentes-autonomos">Agentes Autónomos</SelectItem>
+                          <SelectItem value="otro">Otro</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label htmlFor="plan" className="block text-sm font-medium text-gray-700 mb-1">
+                        Plan de interés
+                      </label>
+                      <Select
+                        value={formState.plan}
+                        onValueChange={(value) => handleSelectChange('plan', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona un plan" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="diamante">Diamante</SelectItem>
+                          <SelectItem value="elite">Elite</SelectItem>
+                          <SelectItem value="starter">Starter</SelectItem>
+                          <SelectItem value="demo">Demo</SelectItem>
+                          <SelectItem value="personalizado">Personalizado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                      Mensaje *
+                    </label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formState.message}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="¿Cómo podemos ayudarte?"
+                      rows={5}
+                    />
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-novativa-orange hover:bg-novativa-lightOrange"
+                    disabled={formState.isSubmitting}
+                    size="lg"
+                  >
+                    {formState.isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...
+                      </>
+                    ) : (
+                      "Enviar Mensaje"
+                    )}
+                  </Button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Map Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Encuéntranos</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Visita nuestras oficinas en San José, Costa Rica, o contáctanos a través de nuestros canales digitales.
+            </p>
+          </div>
+          
+          <div className="rounded-xl overflow-hidden shadow-lg h-[400px]">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62877.77118072712!2d-84.13092428932675!3d9.933479509364164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fa0e342c50d15c5%3A0xe6746a6a9f11b882!2sSan%20Jos%C3%A9%2C%20Costa%20Rica!5e0!3m2!1ses-419!2sus!4v1650474865959!5m2!1ses-419!2sus" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Novativa ubicación en San José, Costa Rica"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+      
+      {/* CTA Section */}
+      <section className="py-16 bg-gradient-to-r from-novativa-orange to-novativa-lightOrange text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-6">¿Listo para descubrir el potencial de la IA?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Programa una demostración gratuita y descubre cómo Novativa puede transformar tu negocio.
+          </p>
+          <Button
+            asChild
+            className="bg-white text-novativa-orange hover:bg-gray-100"
+            size="lg"
+          >
+            <a href="tel:+50622222222">
+              <Phone className="mr-2 h-5 w-5" /> Llámanos ahora
+            </a>
+          </Button>
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default Contact;
