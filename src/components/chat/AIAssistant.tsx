@@ -1,16 +1,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { MessageCircle, Send, X } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { MessageCircle } from "lucide-react";
 import { toast } from 'sonner';
-
-interface Message {
-  content: string;
-  role: 'user' | 'assistant';
-  timestamp: Date;
-}
+import { Message } from '@/types/chat';
+import ChatHeader from './ChatHeader';
+import ChatInput from './ChatInput';
+import MessageList from './MessageList';
 
 const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,7 +73,6 @@ const AIAssistant = () => {
 
       const data = await response.json();
       
-      // Add assistant response to chat
       if (data.choices && data.choices[0]?.message) {
         const assistantMessage: Message = {
           content: data.choices[0].message.content,
@@ -114,82 +110,18 @@ const AIAssistant = () => {
 
       {isOpen && (
         <Card className="fixed bottom-6 right-6 w-[350px] sm:w-[400px] h-[500px] z-50 flex flex-col shadow-xl animate-fade-in border-novativa-teal">
-          <CardHeader className="bg-novativa-teal text-white py-4 flex flex-row items-center justify-between rounded-t-lg">
-            <div className="flex items-center">
-              <img 
-                src="/lovable-uploads/9cce1d6a-72e1-493f-bb16-901571c7e858.png" 
-                alt="Novativa Logo" 
-                className="h-8 w-auto mr-2"
-              />
-              <h3 className="font-bold">Chat con Novativa</h3>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-novativa-darkTeal/20"
-            >
-              <X size={18} />
-            </Button>
-          </CardHeader>
-          
-          <CardContent className="flex-grow overflow-y-auto p-4 bg-gray-50">
-            <div className="space-y-4">
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`flex ${
-                    msg.role === "user" ? "justify-end" : "justify-start"
-                  }`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-lg p-3 ${
-                      msg.role === "user"
-                        ? "bg-novativa-orange text-white"
-                        : "bg-white border text-gray-800 shadow-sm"
-                    }`}
-                  >
-                    <p className="text-sm">{msg.content}</p>
-                    <p className="text-[10px] mt-1 opacity-70">
-                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-            {isLoading && (
-              <div className="flex justify-start my-2">
-                <div className="bg-gray-200 rounded-full px-4 py-2">
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-          
-          <CardFooter className="p-2 bg-white border-t">
-            <form onSubmit={handleSendMessage} className="flex w-full gap-2">
-              <Input
-                placeholder="Escribe tu mensaje..."
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                className="flex-grow"
-                disabled={isLoading}
-              />
-              <Button 
-                type="submit" 
-                size="icon" 
-                disabled={isLoading || inputValue.trim() === ""}
-                className="bg-novativa-teal hover:bg-novativa-lightTeal"
-              >
-                <Send size={18} />
-              </Button>
-            </form>
-          </CardFooter>
+          <ChatHeader onClose={() => setIsOpen(false)} />
+          <MessageList 
+            messages={messages} 
+            isLoading={isLoading} 
+            messagesEndRef={messagesEndRef}
+          />
+          <ChatInput
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onSubmit={handleSendMessage}
+            isLoading={isLoading}
+          />
         </Card>
       )}
     </>
