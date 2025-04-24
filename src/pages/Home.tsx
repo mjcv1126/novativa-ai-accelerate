@@ -1,6 +1,9 @@
+
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import TypingAnimation from '@/components/shared/TypingAnimation';
-import { Bot, Settings, BarChart3, PenTool, CheckCircle2, Zap } from 'lucide-react';
+import { Bot, Settings, BarChart3, PenTool, CheckCircle2, Zap, ArrowRight } from 'lucide-react';
 
 const Home = () => {
   const typingPhrases = [
