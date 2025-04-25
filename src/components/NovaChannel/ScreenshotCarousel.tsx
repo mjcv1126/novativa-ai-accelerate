@@ -10,7 +10,9 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from "@/components/ui/dialog";
+import { useInterval } from "@/hooks/useInterval";
 
 const screenshots = [
   "/lovable-uploads/0badf3e6-586c-4660-86d6-0e50a6ffb597.png",
@@ -23,15 +25,31 @@ const screenshots = [
 const ScreenshotCarousel = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [api, setApi] = useState<any>();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Use our custom interval hook to advance the slides
+  useInterval(() => {
+    if (api && api.scrollNext) {
+      api.scrollNext();
+    }
+  }, 3000);
+
+  // Update index when the API changes
   useEffect(() => {
     if (!api) return;
 
-    const interval = setInterval(() => {
-      api.next();
-    }, 3000);
+    const onSelect = () => {
+      const selectedIndex = api.selectedScrollSnap();
+      setCurrentIndex(selectedIndex);
+    };
 
-    return () => clearInterval(interval);
+    // Add event listeners
+    api.on('select', onSelect);
+
+    // Cleanup
+    return () => {
+      api.off('select', onSelect);
+    };
   }, [api]);
 
   return (
@@ -59,10 +77,11 @@ const ScreenshotCarousel = () => {
 
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
         <DialogContent className="max-w-4xl">
+          <DialogTitle className="sr-only">Imagen ampliada</DialogTitle>
           {selectedImage && (
             <img
               src={selectedImage}
-              alt="Enlarged screenshot"
+              alt="Imagen ampliada"
               className="w-full h-auto"
             />
           )}
