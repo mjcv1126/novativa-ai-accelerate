@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import TypingAnimation from '@/components/shared/TypingAnimation';
 import { Bot, Settings, BarChart3, PenTool, CheckCircle2, Zap, ArrowRight } from 'lucide-react';
-import HeroChat from '@/components/chat/HeroChat';
 
 const Home = () => {
   const typingPhrases = [
@@ -35,7 +34,18 @@ const Home = () => {
               </div>
             </div>
             <div className="relative">
-              <HeroChat />
+              {/* Placeholder for where HeroChat used to be */}
+              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                <h3 className="text-xl font-bold mb-4">¿Cómo podemos ayudarte?</h3>
+                <p className="text-gray-600 mb-4">
+                  Descubre cómo nuestras soluciones de IA pueden transformar tu negocio.
+                </p>
+                <Button asChild className="w-full" size="lg">
+                  <Link to="/contacto">
+                    Contáctanos
+                  </Link>
+                </Button>
+              </div>
               <div 
                 className="absolute top-12 -left-12 -z-0 w-64 h-64 bg-novativa-orange/20 rounded-full blur-3xl"
                 aria-hidden="true"
