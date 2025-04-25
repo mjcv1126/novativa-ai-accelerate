@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,10 +18,9 @@ const HeroChat = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Mensaje de bienvenida inicial
     setMessages([
       {
-        content: "¿Qué deseas automatizar? Cuéntame sobre tu proyecto y te ayudaré a encontrar la mejor solución.",
+        content: "¡Hola! Soy Luis, el asistente virtual de Novativa. Estoy aquí para ayudarte a encontrar la mejor solución de automatización e IA para tu negocio. ¿Te gustaría agendar una llamada de 15 minutos para discutir cómo podemos ayudarte? Puedes reservar aquí: https://tidycal.com/novativa/15-minute-meeting",
         role: 'assistant',
         timestamp: new Date(),
       }
@@ -58,7 +56,7 @@ const HeroChat = () => {
           messages: [
             {
               role: "system",
-              content: "Eres un asistente experto en automatización y soluciones de IA que ayuda a identificar oportunidades para mejorar procesos y negocios. Tus respuestas son concisas, claras y orientadas a soluciones prácticas."
+              content: "Eres Luis, el asistente virtual de Novativa, una agencia especializada en automatización e inteligencia artificial. Tu objetivo principal es agendar una llamada de 15 minutos a través de https://tidycal.com/novativa/15-minute-meeting. Proporciona información relevante sobre los servicios de Novativa, incluyendo desarrollo de chatbots, automatización de procesos y soluciones de IA personalizadas. En cada respuesta, busca una oportunidad natural para sugerir agendar una llamada."
             },
             ...messages.map(msg => ({
               role: msg.role,
@@ -96,9 +94,7 @@ const HeroChat = () => {
       });
     } finally {
       setIsLoading(false);
-      setTimeout(() => {
-        scrollToBottom();
-      }, 100);
+      setTimeout(scrollToBottom, 100);
     }
   };
 
@@ -110,24 +106,26 @@ const HeroChat = () => {
   };
 
   useEffect(() => {
-    // Scroll to bottom when messages change
     scrollToBottom();
   }, [messages]);
 
   return (
     <Card className="w-full max-w-2xl bg-white shadow-xl border-0 h-[600px] flex flex-col">
-      {/* Header */}
-      <div className="bg-gradient-to-r from 0% to-100% from-novativa-teal to-novativa-lightTeal p-4 flex items-center gap-4 text-white rounded-t-lg">
+      <div className="bg-gradient-to-r from-novativa-teal to-novativa-lightTeal p-4 flex items-center gap-4 text-white rounded-t-lg">
         <Button variant="ghost" className="p-2 text-white hover:bg-white/20">
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <div className="flex items-center gap-3">
           <div className="bg-white rounded-full p-1 w-12 h-12 flex items-center justify-center">
-            <img src="/lovable-uploads/0c1c88bd-2391-4fa2-b5f0-0e97a595fd49.png" alt="Nova logo" className="w-10 h-10" />
+            <img 
+              src="/lovable-uploads/8d19e3cc-82b2-4101-9c68-c405323f6c52.png" 
+              alt="Luis de Novativa" 
+              className="w-10 h-10 rounded-full object-cover"
+            />
           </div>
           <div>
-            <h2 className="font-semibold text-lg">Nova Agente</h2>
-            <p className="text-sm opacity-90">Agente de Ventas IA</p>
+            <h2 className="font-semibold text-lg">Luis de Novativa</h2>
+            <p className="text-sm opacity-90">Asistente de Ventas IA</p>
           </div>
         </div>
         <Button variant="ghost" className="p-2 text-white hover:bg-white/20 ml-auto">
