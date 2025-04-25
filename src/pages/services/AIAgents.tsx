@@ -1,6 +1,8 @@
+
 import React from 'react';
-import { Bot, MessageSquare, Video, FileText, Wix, Wordpress, Shopify } from 'lucide-react';
+import { Bot, MessageSquare, Video, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ShopifyIcon, WooCommerceIcon, WixIcon, WordpressIcon } from '@/components/shared/EcommerceIcons';
 
 const AIAgents = () => {
   return (
@@ -63,28 +65,28 @@ const AIAgents = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center max-w-4xl mx-auto">
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <Shopify className="w-16 h-16 text-[#96bf48]" />
+                <ShopifyIcon className="w-16 h-16 text-[#96bf48]" />
               </div>
               <p className="mt-3 font-medium">Shopify</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <Woocommerce className="w-16 h-16 text-[#96588a]" />
+                <WooCommerceIcon className="w-16 h-16 text-[#96588a]" />
               </div>
               <p className="mt-3 font-medium">WooCommerce</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <Wix className="w-16 h-16 text-black" />
+                <WixIcon className="w-16 h-16 text-black" />
               </div>
               <p className="mt-3 font-medium">Wix</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <Wordpress className="w-16 h-16 text-[#21759b]" />
+                <WordpressIcon className="w-16 h-16 text-[#21759b]" />
               </div>
               <p className="mt-3 font-medium">WordPress</p>
             </div>
