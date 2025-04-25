@@ -7,14 +7,14 @@ import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from '@/types/chat';
 import MessageList from './MessageList';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
+const OPENAI_API_KEY = "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";
+const ASSISTANT_ID = "asst_0n98mnqxf4SiqOHMDvv5Jbbs";
 
 const HeroChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
-  const [apiKey, setApiKey] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -35,14 +35,6 @@ const HeroChat = () => {
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
-    if (!apiKey) {
-      toast({
-        title: "Error",
-        description: "Por favor, ingresa tu API key de OpenAI para continuar.",
-        variant: "destructive",
-      });
-      return;
-    }
 
     const userMessage: Message = {
       content: input,
@@ -59,7 +51,7 @@ const HeroChat = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: "gpt-4-turbo-preview",
@@ -98,7 +90,7 @@ const HeroChat = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "No se pudo enviar el mensaje. Por favor, verifica tu API key e intenta nuevamente.",
+        description: "No se pudo enviar el mensaje. Por favor, intenta nuevamente más tarde.",
         variant: "destructive",
       });
     } finally {
@@ -116,23 +108,6 @@ const HeroChat = () => {
 
   return (
     <Card className="w-full max-w-md bg-white shadow-xl border-0">
-      {!apiKey && (
-        <CardContent className="pt-4">
-          <div className="space-y-2">
-            <Label htmlFor="apiKey">OpenAI API Key</Label>
-            <Input
-              id="apiKey"
-              type="password"
-              placeholder="sk-..."
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-            <p className="text-sm text-muted-foreground">
-              Ingresa tu API key de OpenAI para comenzar a chatear
-            </p>
-          </div>
-        </CardContent>
-      )}
       <CardContent className="p-0">
         <MessageList 
           messages={messages}
@@ -151,7 +126,7 @@ const HeroChat = () => {
           />
           <Button 
             onClick={handleSendMessage} 
-            disabled={isLoading || !input.trim() || !apiKey} 
+            disabled={isLoading || !input.trim()} 
             className="shrink-0"
           >
             <Send className="h-5 w-5" />
