@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,9 +6,13 @@ import { Send, ArrowLeft, Menu, Paperclip, Mic } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from '@/types/chat';
 import MessageList from './MessageList';
+import { useNavigate } from 'react-router-dom';
+import { createClient } from '@supabase/supabase-js';
 
-// Using a fallback mechanism since the API key may not be valid
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || "DEMO_KEY";
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL || '',
+  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+);
 
 const HeroChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -17,7 +20,20 @@ const HeroChat = () => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const [apiAvailable, setApiAvailable] = useState(true);
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     setMessages([
@@ -31,19 +47,6 @@ const HeroChat = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // Predefined responses to use when API is unavailable
-  const fallbackResponses = [
-    "¡Gracias por tu mensaje! 🙌 En Novativa podemos ayudarte a implementar soluciones de IA para tu negocio. Me encantaría que agendaras una llamada para hablar más sobre tus necesidades: https://tidycal.com/novativa/15-minute-meeting",
-    "Entiendo. La inteligencia artificial puede transformar tu negocio de muchas maneras. 🚀 ¿Te interesa conocer más sobre alguno de nuestros servicios específicos? Podemos hablar mejor en una llamada: https://tidycal.com/novativa/15-minute-meeting",
-    "Excelente pregunta. 💡 En Novativa nos especializamos en chatbots, automatización y desarrollo con IA. ¿Te gustaría agendar una llamada para discutir tu caso específico? https://tidycal.com/novativa/15-minute-meeting",
-    "¡Claro que sí! Trabajamos con empresas de todos los tamaños implementando soluciones de IA. 🤖 Para darte información personalizada, lo mejor es agendar una llamada: https://tidycal.com/novativa/15-minute-meeting"
-  ];
-
-  const getRandomFallbackResponse = () => {
-    const randomIndex = Math.floor(Math.random() * fallbackResponses.length);
-    return fallbackResponses[randomIndex];
   };
 
   const handleSendMessage = async () => {
@@ -60,89 +63,30 @@ const HeroChat = () => {
     setIsLoading(true);
 
     try {
-      if (!apiAvailable || OPENAI_API_KEY === "DEMO_KEY") {
-        // Using fallback responses if API is unavailable or key is demo key
-        setTimeout(() => {
-          const botMessage: Message = {
-            content: getRandomFallbackResponse(),
-            role: 'assistant',
-            timestamp: new Date(),
-          };
-          setMessages(prev => [...prev, botMessage]);
-          setIsLoading(false);
-          setTimeout(scrollToBottom, 100);
-        }, 1500); // Simulate API delay
-        return;
-      }
-
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4o",
-          messages: [
-            {
-              role: "system",
-              content: "Eres Marlon, el asistente virtual de Novativa, especializado en automatización e IA. 🤖 Usa un tono amigable y casual con emojis. Mantén tus respuestas cortas y puntuales, con espacios entre puntos. Tu objetivo es agendar llamadas de 15 minutos a través de https://tidycal.com/novativa/15-minute-meeting. Menciona naturalmente la opción de agendar una llamada cuando sea apropiado. 📅"
-            },
-            ...messages.map(msg => ({
-              role: msg.role,
-              content: msg.content
-            })),
-            {
-              role: "user",
-              content: input
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 500,
-        }),
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: {
+          messages: messages.concat(userMessage).map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }))
+        }
       });
 
-      const data = await response.json();
-      
-      if (data.error) {
-        console.error('Error de API OpenAI:', data.error);
-        if (data.error.type === 'invalid_request_error' || data.error.code === 'invalid_api_key') {
-          setApiAvailable(false);
-          console.log('Cambiando a respuestas predefinidas debido a error de API');
-          const botMessage: Message = {
-            content: getRandomFallbackResponse(),
-            role: 'assistant',
-            timestamp: new Date(),
-          };
-          setMessages(prev => [...prev, botMessage]);
-        } else {
-          throw new Error(data.error.message);
-        }
-      } else {
-        const botMessage: Message = {
-          content: data.choices[0].message.content,
-          role: 'assistant',
-          timestamp: new Date(),
-        };
-        setMessages(prev => [...prev, botMessage]);
-      }
-    } catch (error) {
-      console.error('Error al enviar mensaje:', error);
-      
-      // If there's an error, switch to fallback responses
-      setApiAvailable(false);
-      
+      if (error) throw error;
+
       const botMessage: Message = {
-        content: getRandomFallbackResponse(),
+        content: data.choices[0].message.content,
         role: 'assistant',
         timestamp: new Date(),
       };
+
       setMessages(prev => [...prev, botMessage]);
-      
+    } catch (error) {
+      console.error('Error al enviar mensaje:', error);
       toast({
-        title: "Modo de demostración",
-        description: "Estás viendo respuestas de demostración",
-        variant: "default",
+        title: "Error",
+        description: "No se pudo enviar el mensaje. Por favor, intenta nuevamente.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
