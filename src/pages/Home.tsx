@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -34,13 +33,35 @@ const Home = () => {
                 <TypingAnimation phrases={typingPhrases} className="inline-block" />
               </div>
             </div>
-            <div className="relative hidden lg:block">
-              <div className="relative z-10">
-                <img 
-                  src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2000&auto=format&fit=crop"
-                  alt="Tecnología IA" 
-                  className="rounded-xl shadow-2xl"
-                />
+            <div className="relative">
+              <div className="w-full h-[500px] rounded-xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
+                <div className="bg-novativa-teal p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Bot className="text-white" size={24} />
+                    <span className="text-white font-semibold">Chat con Nova</span>
+                  </div>
+                </div>
+                <div className="p-4 h-[400px] bg-gray-50">
+                  <div className="bg-white p-3 rounded-lg shadow-sm inline-block max-w-[80%] mb-4">
+                    <p className="text-sm">¡Hola! Soy Nova, tu asistente virtual. ¿En qué puedo ayudarte hoy?</p>
+                  </div>
+                </div>
+                <div className="absolute bottom-0 w-full p-4 bg-white border-t">
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="Escribe tu mensaje..." 
+                      className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-novativa-teal"
+                      disabled
+                    />
+                    <Button 
+                      className="bg-novativa-teal hover:bg-novativa-lightTeal"
+                      disabled
+                    >
+                      Enviar
+                    </Button>
+                  </div>
+                </div>
               </div>
               <div 
                 className="absolute top-12 -left-12 -z-0 w-64 h-64 bg-novativa-orange/20 rounded-full blur-3xl"
