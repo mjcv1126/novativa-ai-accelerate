@@ -10,10 +10,10 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
   return (
     <div className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[80%] rounded-lg p-3 ${
+        className={`max-w-[80%] rounded-2xl p-3 ${
           message.role === "user"
-            ? "bg-novativa-orange text-white"
-            : "bg-white border text-gray-800 shadow-sm"
+            ? "bg-novativa-teal text-white"
+            : "bg-gray-100 text-gray-800"
         }`}
       >
         <p className="text-sm">{message.content}</p>

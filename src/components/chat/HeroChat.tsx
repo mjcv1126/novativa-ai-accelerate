@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { Send, ArrowLeft, Menu, Paperclip, Mic } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from '@/types/chat';
 import MessageList from './MessageList';
@@ -115,28 +115,54 @@ const HeroChat = () => {
   }, [messages]);
 
   return (
-    <Card className="w-full max-w-md bg-white shadow-xl border-0">
-      <CardContent className="p-0 h-[400px] overflow-hidden flex flex-col">
+    <Card className="w-full max-w-2xl bg-white shadow-xl border-0 h-[600px] flex flex-col">
+      {/* Header */}
+      <div className="bg-gradient-to-r from 0% to-100% from-novativa-teal to-novativa-lightTeal p-4 flex items-center gap-4 text-white rounded-t-lg">
+        <Button variant="ghost" className="p-2 text-white hover:bg-white/20">
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
+        <div className="flex items-center gap-3">
+          <div className="bg-white rounded-full p-1 w-12 h-12 flex items-center justify-center">
+            <img src="/lovable-uploads/0c1c88bd-2391-4fa2-b5f0-0e97a595fd49.png" alt="Nova logo" className="w-10 h-10" />
+          </div>
+          <div>
+            <h2 className="font-semibold text-lg">Nova Agente</h2>
+            <p className="text-sm opacity-90">Agente de Ventas IA</p>
+          </div>
+        </div>
+        <Button variant="ghost" className="p-2 text-white hover:bg-white/20 ml-auto">
+          <Menu className="h-6 w-6" />
+        </Button>
+      </div>
+
+      <CardContent className="p-0 flex-1 overflow-hidden">
         <MessageList 
           messages={messages}
           isLoading={isLoading}
           messagesEndRef={messagesEndRef}
         />
       </CardContent>
+
       <CardFooter className="p-4 border-t">
-        <div className="flex w-full gap-2">
+        <div className="flex w-full gap-2 items-end">
+          <Button variant="ghost" className="p-2">
+            <Paperclip className="h-5 w-5 text-gray-500" />
+          </Button>
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Escribe tu mensaje aquí..."
-            className="min-h-[60px] max-h-[120px]"
+            className="min-h-[45px] max-h-[120px] focus-visible:ring-1"
             disabled={isLoading}
           />
+          <Button variant="ghost" className="p-2">
+            <Mic className="h-5 w-5 text-gray-500" />
+          </Button>
           <Button 
             onClick={handleSendMessage} 
             disabled={isLoading || !input.trim()} 
-            className="shrink-0"
+            className="bg-novativa-teal hover:bg-novativa-darkTeal p-2"
           >
             <Send className="h-5 w-5" />
           </Button>
