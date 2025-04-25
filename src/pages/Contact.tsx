@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
@@ -96,7 +95,7 @@ const Contact = () => {
                 <h3 className="font-bold text-lg mb-4">Síguenos en Redes Sociales</h3>
                 <div className="flex space-x-4">
                   <a 
-                    href="https://www.facebook.com/novativa" 
+                    href="https://www.facebook.com/novativa.ai" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="bg-novativa-teal/10 hover:bg-novativa-teal/20 p-3 rounded-full transition-colors"
@@ -104,7 +103,7 @@ const Contact = () => {
                     <Facebook className="w-5 h-5 text-novativa-teal" />
                   </a>
                   <a 
-                    href="https://www.instagram.com/novativa" 
+                    href="https://www.instagram.com/novativa.ai" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="bg-novativa-teal/10 hover:bg-novativa-teal/20 p-3 rounded-full transition-colors"
@@ -112,7 +111,7 @@ const Contact = () => {
                     <Instagram className="w-5 h-5 text-novativa-teal" />
                   </a>
                   <a 
-                    href="https://www.tiktok.com/@novativa" 
+                    href="https://www.tiktok.com/@novativa.ai" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="bg-novativa-teal/10 hover:bg-novativa-teal/20 p-3 rounded-full transition-colors"
@@ -120,7 +119,7 @@ const Contact = () => {
                     <TiktokIcon className="w-5 h-5 text-novativa-teal" />
                   </a>
                   <a 
-                    href="https://www.youtube.com/@novativa" 
+                    href="https://www.youtube.com/@novativa.ai" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="bg-novativa-teal/10 hover:bg-novativa-teal/20 p-3 rounded-full transition-colors"

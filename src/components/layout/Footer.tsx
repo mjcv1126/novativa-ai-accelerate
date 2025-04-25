@@ -21,16 +21,16 @@ const Footer = () => {
               Aceleramos tu negocio con soluciones de IA y automatización personalizadas.
             </p>
             <div className="flex space-x-4">
-              <a href="https://www.facebook.com/novativa" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
+              <a href="https://www.facebook.com/novativa.ai" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="https://www.instagram.com/novativa" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
+              <a href="https://www.instagram.com/novativa.ai" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="https://www.tiktok.com/@novativa" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
+              <a href="https://www.tiktok.com/@novativa.ai" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
                 <TiktokIcon className="w-5 h-5" />
               </a>
-              <a href="https://www.youtube.com/@novativa" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
+              <a href="https://www.youtube.com/@novativa.ai" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
                 <Youtube size={20} />
               </a>
             </div>
