@@ -134,9 +134,9 @@ const Navbar = () => {
             asChild
             className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity"
           >
-            <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
+            <Link to="/agenda">
               Agenda una demo
-            </a>
+            </Link>
           </Button>
         </div>
 
@@ -223,9 +223,9 @@ const Navbar = () => {
               className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity"
               onClick={() => setIsMenuOpen(false)}
             >
-              <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
+              <Link to="/agenda">
                 Agenda una demo
-              </a>
+              </Link>
             </Button>
           </div>
         </div>

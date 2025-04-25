@@ -3,6 +3,7 @@ import React from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 
 const Contact = () => {
@@ -144,14 +145,12 @@ const Contact = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Programa una demostración gratuita y descubre cómo Novativa puede transformar tu negocio.
           </p>
-          <a 
-            href="https://tidycal.com/novativa/15-minute-meeting"
+          <Link 
+            to="/agenda"
             className="inline-flex items-center gap-2 bg-white text-novativa-orange hover:bg-gray-100 px-6 py-3 rounded-md font-medium transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             <Calendar className="h-5 w-5" /> Agenda una Cita
-          </a>
+          </Link>
         </div>
       </section>
     </>
