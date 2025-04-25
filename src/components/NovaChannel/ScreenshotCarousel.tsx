@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -6,6 +7,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 const screenshots = [
   "/lovable-uploads/0badf3e6-586c-4660-86d6-0e50a6ffb597.png",
@@ -16,24 +21,54 @@ const screenshots = [
 ];
 
 const ScreenshotCarousel = () => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [api, setApi] = useState<any>();
+
+  useEffect(() => {
+    if (!api) return;
+
+    const interval = setInterval(() => {
+      api.next();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [api]);
+
   return (
-    <Carousel className="relative w-full">
-      <CarouselContent>
-        {screenshots.map((src, index) => (
-          <CarouselItem key={index}>
-            <div className="overflow-hidden rounded-xl shadow-xl">
-              <img
-                src={src}
-                alt={`NovaChannel Screenshot ${index + 1}`}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious className="absolute left-4 top-1/2" />
-      <CarouselNext className="absolute right-4 top-1/2" />
-    </Carousel>
+    <>
+      <Carousel className="relative w-full" setApi={setApi}>
+        <CarouselContent>
+          {screenshots.map((src, index) => (
+            <CarouselItem key={index}>
+              <div 
+                className="overflow-hidden rounded-xl shadow-xl cursor-pointer"
+                onClick={() => setSelectedImage(src)}
+              >
+                <img
+                  src={src}
+                  alt={`NovaChannel Screenshot ${index + 1}`}
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="absolute left-4 top-1/2" />
+        <CarouselNext className="absolute right-4 top-1/2" />
+      </Carousel>
+
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="max-w-4xl">
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Enlarged screenshot"
+              className="w-full h-auto"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
