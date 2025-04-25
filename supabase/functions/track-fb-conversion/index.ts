@@ -37,7 +37,8 @@ serve(async (req) => {
             user_data: eventData.userData || {},
             custom_data: eventData.customData || {},
           }],
-          access_token: FB_ACCESS_TOKEN
+          access_token: FB_ACCESS_TOKEN,
+          test_event_code: 'TEST72755' // Use this for testing, remove in production
         })
       }
     )

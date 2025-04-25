@@ -56,16 +56,3 @@ export async function trackFacebookConversion(eventName: string, eventData: Even
     return false;
   }
 }
-
-// Example usage:
-// trackFacebookConversion('ViewContent', {
-//   userData: {
-//     em: 'f660ab912ec121d1b1e928a0bb4bc61b15f5ad44d5efdc4e1c92a25e99b8e44a' // Hashed email
-//   },
-//   customData: {
-//     content_name: 'Blog Post Title',
-//     content_category: 'Blog',
-//     value: 0,
-//     currency: 'USD'
-//   }
-// });

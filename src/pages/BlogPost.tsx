@@ -19,12 +19,15 @@ const BlogPost = () => {
     if (foundPost) {
       setPost(foundPost);
       
-      // Track ViewContent event when post is loaded
+      // Track ViewContent event with enhanced data
       trackFacebookConversion('ViewContent', {
         customData: {
           content_name: foundPost.title,
           content_category: foundPost.category,
           content_type: 'article',
+          content_ids: [foundPost.id.toString()],
+          currency: 'USD',
+          value: 0.00 // Set appropriate value if applicable
         }
       });
       
