@@ -462,3 +462,6 @@ export const getCategories = () => {
   return [...new Set(blogPosts.map(post => post.category))];
 };
 
+export const getPostsByCategory = (category: string) => {
+  return blogPosts.filter(post => post.category === category);
+};
