@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const TestimonialCard = ({ rating, text, image, name, position }) => (
   <div className="bg-gray-50 p-8 rounded-xl shadow-sm">
@@ -12,13 +13,10 @@ const TestimonialCard = ({ rating, text, image, name, position }) => (
     </div>
     <p className="text-gray-600 mb-4">{text}</p>
     <div className="flex items-center">
-      <div className="mr-4 w-12 h-12 overflow-hidden rounded-full">
-        <img 
-          src={image}
-          alt={name}
-          className="w-full h-full object-cover"
-        />
-      </div>
+      <Avatar className="mr-4 w-12 h-12">
+        <AvatarImage src={image} alt={name} />
+        <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+      </Avatar>
       <div>
         <h4 className="font-bold">{name}</h4>
         <p className="text-sm text-gray-500">{position}</p>
