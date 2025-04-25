@@ -11,78 +11,11 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-
-// Blog post data
-const blogPosts = [
-  {
-    id: 1,
-    title: "Cómo la IA está transformando el servicio al cliente en 2025",
-    excerpt: "Descubre las últimas tendencias en atención al cliente impulsadas por inteligencia artificial y cómo están revolucionando la experiencia del usuario.",
-    author: "María González",
-    date: "15 de abril de 2025",
-    category: "Inteligencia Artificial",
-    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2000&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    title: "Automatización de procesos: La clave para la eficiencia empresarial",
-    excerpt: "Análisis de cómo la automatización puede reducir costos, mejorar la productividad y optimizar los recursos de tu empresa.",
-    author: "Carlos Ramírez",
-    date: "10 de abril de 2025",
-    category: "Automatización",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2000&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    title: "Agentes IA: El futuro de la interacción digital",
-    excerpt: "Exploramos cómo los agentes de inteligencia artificial están redefiniendo la forma en que las marcas interactúan con sus clientes.",
-    author: "Laura Sánchez",
-    date: "5 de abril de 2025",
-    category: "Agentes IA",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=2000&auto=format&fit=crop",
-  },
-  {
-    id: 4,
-    title: "Implementando chatbots en tu estrategia de marketing: Guía completa",
-    excerpt: "Aprende cómo integrar chatbots en tu estrategia de marketing para mejorar la captación de leads y aumentar las conversiones.",
-    author: "Roberto Méndez",
-    date: "1 de abril de 2025",
-    category: "Marketing Digital",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2000&auto=format&fit=crop",
-  },
-  {
-    id: 5,
-    title: "Generación de contenido con IA: ¿El fin de los copywriters?",
-    excerpt: "Análisis del impacto de las tecnologías de generación de contenido en la industria creativa y el futuro del copywriting.",
-    author: "Ana Martínez",
-    date: "25 de marzo de 2025",
-    category: "Generación de Contenido",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000&auto=format&fit=crop",
-  },
-  {
-    id: 6,
-    title: "Clonación de voz: Aplicaciones prácticas para tu negocio",
-    excerpt: "Descubre cómo la tecnología de clonación de voz puede mejorar la experiencia de usuario y abrir nuevas oportunidades de negocio.",
-    author: "Diego Flores",
-    date: "20 de marzo de 2025",
-    category: "Tecnología de Voz",
-    image: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=2000&auto=format&fit=crop",
-  }
-];
-
-// Featured categories
-const categories = [
-  "Inteligencia Artificial",
-  "Automatización",
-  "Agentes IA",
-  "Marketing Digital",
-  "Generación de Contenido",
-  "Tecnología de Voz",
-  "Desarrollo Web",
-  "Análisis de Datos"
-];
+import { blogPosts, getCategories } from '@/data/blogPosts';
 
 const Blog = () => {
+  const categories = getCategories();
+  
   return (
     <>
       <LouisebotWidget />

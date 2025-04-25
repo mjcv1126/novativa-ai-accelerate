@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,8 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChevronDown, Edit, Eye, Filter, Plus, Search, Trash } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 
-// Sample data (replace with Supabase data in production)
-const posts = [
+const blogPosts = [
   {
     id: 1,
     title: "Cómo la IA está transformando el servicio al cliente en 2025",
@@ -92,16 +90,16 @@ const posts = [
 
 const AdminBlogPosts = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredPosts, setFilteredPosts] = useState(posts);
+  const [filteredPosts, setFilteredPosts] = useState(blogPosts);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
     
     if (query.trim() === '') {
-      setFilteredPosts(posts);
+      setFilteredPosts(blogPosts);
     } else {
-      const filtered = posts.filter(post => 
+      const filtered = blogPosts.filter(post => 
         post.title.toLowerCase().includes(query.toLowerCase()) ||
         post.author.toLowerCase().includes(query.toLowerCase()) ||
         post.category.toLowerCase().includes(query.toLowerCase())
