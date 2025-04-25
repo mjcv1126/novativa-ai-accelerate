@@ -35,12 +35,12 @@ const App = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <AdminAuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <LouisebotWidget />
-            <BrowserRouter>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <LouisebotWidget />
+          <BrowserRouter>
+            <AdminAuthProvider>
               <ScrollToTop />
               <div className="min-h-screen flex flex-col relative">
                 <Routes>
@@ -83,9 +83,9 @@ const App = () => {
                   } />
                 </Routes>
               </div>
-            </BrowserRouter>
-          </TooltipProvider>
-        </AdminAuthProvider>
+            </AdminAuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );
