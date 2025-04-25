@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,13 +17,11 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
-import { useScrollToTop } from "./hooks/useScrollToTop";
+import { ScrollToTop } from "./hooks/useScrollToTop";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  useScrollToTop();
-  
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
@@ -30,6 +29,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <div className="min-h-screen flex flex-col relative">
               <Navbar />
               <main className="flex-grow">
