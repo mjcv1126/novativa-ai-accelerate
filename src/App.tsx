@@ -14,6 +14,7 @@ import ContentGeneration from "./pages/services/ContentGeneration";
 import IADevelopment from "./pages/services/IADevelopment";
 import Pricing from "./pages/Pricing";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/layout/Navbar";
@@ -73,6 +74,7 @@ const App = () => {
                           <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
                           <Route path="/precios" element={<Pricing />} />
                           <Route path="/blog" element={<Blog />} />
+                          <Route path="/blog/:id" element={<BlogPost />} />
                           <Route path="/contacto" element={<Contact />} />
                           <Route path="/agenda" element={<Schedule />} />
                           <Route path="*" element={<NotFound />} />
