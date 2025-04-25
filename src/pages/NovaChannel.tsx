@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Bot, MessageSquare, Users, Clock, BrainCircuit } from 'lucide-react';
+import ScreenshotCarousel from '@/components/NovaChannel/ScreenshotCarousel';
 
 const NovaChannel = () => {
   return (
@@ -78,12 +78,8 @@ const NovaChannel = () => {
               </div>
             </div>
 
-            <div className="rounded-xl overflow-hidden shadow-xl">
-              <img 
-                src="/lovable-uploads/4ca26889-5685-42df-b0a0-4032951f24ee.png"
-                alt="NovaChannel Platform"
-                className="w-full h-auto"
-              />
+            <div>
+              <ScreenshotCarousel />
             </div>
           </div>
         </div>
