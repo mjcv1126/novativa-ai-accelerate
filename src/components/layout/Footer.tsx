@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Youtube } from 'lucide-react';
+import { Facebook, Instagram, Youtube, MapPin, Mail, Phone } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 
 const Footer = () => {
