@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -7,13 +7,27 @@ import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from '@/types/chat';
 import MessageList from './MessageList';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const HeroChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
+  const [apiKey, setApiKey] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Agregar mensaje de bienvenida
+    setMessages([
+      {
+        content: "¿Qué deseas automatizar? Cuéntame sobre tu proyecto y te ayudaré a encontrar la mejor solución.",
+        role: 'assistant',
+        timestamp: new Date(),
+      }
+    ]);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -21,6 +35,14 @@ const HeroChat = () => {
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
+    if (!apiKey) {
+      toast({
+        title: "Error",
+        description: "Por favor, ingresa tu API key de OpenAI para continuar.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const userMessage: Message = {
       content: input,
@@ -37,15 +59,19 @@ const HeroChat = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer YOUR_OPENAI_API_KEY`, // Por favor, agregue su API key aquí
+          'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: "gpt-4",
+          model: "gpt-4-turbo-preview",
           messages: [
             {
               role: "system",
-              content: "Eres un asistente amable y profesional que ayuda a responder preguntas sobre servicios de IA y automatización."
+              content: "Eres un asistente experto en automatización y soluciones de IA que ayuda a identificar oportunidades para mejorar procesos y negocios. Tus respuestas son concisas, claras y orientadas a soluciones prácticas."
             },
+            ...messages.map(msg => ({
+              role: msg.role,
+              content: msg.content
+            })),
             {
               role: "user",
               content: input
@@ -72,7 +98,7 @@ const HeroChat = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "No se pudo enviar el mensaje. Por favor, intente nuevamente.",
+        description: "No se pudo enviar el mensaje. Por favor, verifica tu API key e intenta nuevamente.",
         variant: "destructive",
       });
     } finally {
@@ -90,6 +116,23 @@ const HeroChat = () => {
 
   return (
     <Card className="w-full max-w-md bg-white shadow-xl border-0">
+      {!apiKey && (
+        <CardContent className="pt-4">
+          <div className="space-y-2">
+            <Label htmlFor="apiKey">OpenAI API Key</Label>
+            <Input
+              id="apiKey"
+              type="password"
+              placeholder="sk-..."
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+            />
+            <p className="text-sm text-muted-foreground">
+              Ingresa tu API key de OpenAI para comenzar a chatear
+            </p>
+          </div>
+        </CardContent>
+      )}
       <CardContent className="p-0">
         <MessageList 
           messages={messages}
@@ -108,7 +151,7 @@ const HeroChat = () => {
           />
           <Button 
             onClick={handleSendMessage} 
-            disabled={isLoading || !input.trim()} 
+            disabled={isLoading || !input.trim() || !apiKey} 
             className="shrink-0"
           >
             <Send className="h-5 w-5" />
