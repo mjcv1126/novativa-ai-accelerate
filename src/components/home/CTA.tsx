@@ -18,7 +18,7 @@ const CTA = () => {
               className="bg-novativa-orange hover:bg-novativa-lightOrange px-6 py-6 text-white"
               size="lg"
             >
-              <Link to="/contacto">
+              <Link to="/agenda">
                 Solicita una demostración gratuita
               </Link>
             </Button>

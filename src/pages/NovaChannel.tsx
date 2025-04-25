@@ -122,9 +122,9 @@ const NovaChannel = () => {
             size="lg"
             className="bg-novativa-orange hover:bg-novativa-lightOrange text-white"
           >
-            <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
+            <Link to="/agenda">
               Agenda una demostración gratuita
-            </a>
+            </Link>
           </Button>
         </div>
       </section>

@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import { ScrollToTop } from "./hooks/useScrollToTop";
+import Schedule from "./pages/Schedule";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => {
                   <Route path="/precios" element={<Pricing />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/contacto" element={<Contact />} />
+                  <Route path="/agenda" element={<Schedule />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
