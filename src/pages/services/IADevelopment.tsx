@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Code, BrainCircuit } from 'lucide-react';
+import { Code, Smartphone, Laptop } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ const IADevelopment = () => {
               Desarrollo con IA
             </h1>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              Creamos soluciones personalizadas potenciadas por inteligencia artificial
+              Creamos soluciones web y móviles personalizadas potenciadas por inteligencia artificial
             </p>
           </div>
         </div>
@@ -22,7 +22,7 @@ const IADevelopment = () => {
 
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="bg-white p-8 rounded-xl shadow-md">
               <div className="bg-novativa-teal/10 p-3 rounded-full w-fit mb-6">
                 <Code className="text-novativa-teal" size={28} />
@@ -53,7 +53,35 @@ const IADevelopment = () => {
             
             <div className="bg-white p-8 rounded-xl shadow-md">
               <div className="bg-novativa-orange/10 p-3 rounded-full w-fit mb-6">
-                <BrainCircuit className="text-novativa-orange" size={28} />
+                <Smartphone className="text-novativa-orange" size={28} />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">Desarrollo Móvil con IA</h2>
+              <p className="text-gray-600 mb-6">
+                Desarrollo de aplicaciones móviles nativas e híbridas con capacidades de inteligencia artificial para iOS y Android.
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-novativa-orange mr-2"></div>
+                  <span>Apps nativas con componentes de IA</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-novativa-orange mr-2"></div>
+                  <span>Desarrollo multiplataforma (iOS/Android)</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-novativa-orange mr-2"></div>
+                  <span>Integración de machine learning móvil</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-novativa-orange mr-2"></div>
+                  <span>Optimización de rendimiento con IA</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-md">
+              <div className="bg-novativa-darkTeal/10 p-3 rounded-full w-fit mb-6">
+                <Laptop className="text-novativa-darkTeal" size={28} />
               </div>
               <h2 className="text-2xl font-bold mb-4">Agentes Autónomos</h2>
               <p className="text-gray-600 mb-6">
@@ -61,19 +89,19 @@ const IADevelopment = () => {
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-center">
-                  <div className="w-2 h-2 rounded-full bg-novativa-orange mr-2"></div>
+                  <div className="w-2 h-2 rounded-full bg-novativa-darkTeal mr-2"></div>
                   <span>Automatización de procesos de negocio</span>
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 rounded-full bg-novativa-orange mr-2"></div>
+                  <div className="w-2 h-2 rounded-full bg-novativa-darkTeal mr-2"></div>
                   <span>Agentes de toma de decisiones</span>
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 rounded-full bg-novativa-orange mr-2"></div>
+                  <div className="w-2 h-2 rounded-full bg-novativa-darkTeal mr-2"></div>
                   <span>Integración con sistemas existentes</span>
                 </li>
                 <li className="flex items-center">
-                  <div className="w-2 h-2 rounded-full bg-novativa-orange mr-2"></div>
+                  <div className="w-2 h-2 rounded-full bg-novativa-darkTeal mr-2"></div>
                   <span>Optimización continua del rendimiento</span>
                 </li>
               </ul>
@@ -86,7 +114,7 @@ const IADevelopment = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">¿Listo para innovar con IA?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Agenda una demostración y descubre cómo podemos transformar tu negocio con IA
+            Agenda una demostración y descubre cómo podemos transformar tu negocio con soluciones de IA para web y móvil
           </p>
           <Button
             asChild
