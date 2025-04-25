@@ -7,7 +7,6 @@ import { Send, ArrowLeft, Menu, Paperclip, Mic } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from '@/types/chat';
 import MessageList from './MessageList';
-import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
 // Get Supabase URL and key from environment variables or default to empty string with a fallback check
@@ -39,9 +38,9 @@ const HeroChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
+  const [threadId, setThreadId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -88,19 +87,22 @@ const HeroChat = () => {
         throw new Error('Supabase configuration is missing');
       }
 
-      const { data, error } = await supabase.functions.invoke('chat', {
+      const { data, error } = await supabase.functions.invoke('assistant-chat', {
         body: {
-          messages: messages.concat(userMessage).map(msg => ({
-            role: msg.role,
-            content: msg.content
-          }))
+          message: input,
+          threadId: threadId
         }
       });
 
       if (error) throw error;
 
+      // Save the threadId for future messages
+      if (data.threadId) {
+        setThreadId(data.threadId);
+      }
+
       const botMessage: Message = {
-        content: data.choices[0].message.content,
+        content: data.message,
         role: 'assistant',
         timestamp: new Date(),
       };
