@@ -4,6 +4,7 @@ import Hero from '@/components/home/Hero';
 import Features from '@/components/home/Features';
 import CTA from '@/components/home/CTA';
 import Testimonials from '@/components/home/Testimonials';
+import RecentArticles from '@/components/home/RecentArticles';
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
       <Features />
       <CTA />
       <Testimonials />
+      <RecentArticles />
     </>
   );
 };
