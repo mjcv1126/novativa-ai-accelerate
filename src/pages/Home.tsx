@@ -180,7 +180,7 @@ const Home = () => {
               <Button
                 asChild
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-novativa-teal px-6 py-6"
+                className="border-white text-gray-600 hover:bg-white hover:text-novativa-teal px-6 py-6"
                 size="lg"
               >
                 <Link to="/precios">
@@ -215,8 +215,12 @@ const Home = () => {
                 "Implementamos el chatbot de Novativa y nos ayudó a aumentar las conversiones en un 35%. La IA responde preguntas de forma precisa y natural."
               </p>
               <div className="flex items-center">
-                <div className="mr-4 w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
-                  RM
+                <div className="mr-4 w-12 h-12 overflow-hidden rounded-full">
+                  <img 
+                    src="photo-1581092795360-fd1ca04f0952"
+                    alt="Ricardo Morales"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h4 className="font-bold">Ricardo Morales</h4>
@@ -237,8 +241,12 @@ const Home = () => {
                 "La automatización de procesos de Novativa redujo nuestros tiempos operativos en un 60%. Su equipo fue muy profesional durante todo el proceso."
               </p>
               <div className="flex items-center">
-                <div className="mr-4 w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
-                  LG
+                <div className="mr-4 w-12 h-12 overflow-hidden rounded-full">
+                  <img 
+                    src="photo-1581091226825-a6a2a5aee158"
+                    alt="Laura González"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h4 className="font-bold">Laura González</h4>
@@ -259,8 +267,12 @@ const Home = () => {
                 "El sistema de generación de contenido nos permite crear artículos de calidad en minutos. Ha transformado nuestra estrategia de marketing digital."
               </p>
               <div className="flex items-center">
-                <div className="mr-4 w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
-                  CJ
+                <div className="mr-4 w-12 h-12 overflow-hidden rounded-full">
+                  <img 
+                    src="photo-1501286353178-1ec871214838"
+                    alt="Carlos Jiménez"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h4 className="font-bold">Carlos Jiménez</h4>
