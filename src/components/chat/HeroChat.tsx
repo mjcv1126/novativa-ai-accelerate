@@ -19,7 +19,7 @@ const HeroChat = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Agregar mensaje de bienvenida
+    // Mensaje de bienvenida inicial
     setMessages([
       {
         content: "¿Qué deseas automatizar? Cuéntame sobre tu proyecto y te ayudaré a encontrar la mejor solución.",
@@ -138,3 +138,4 @@ const HeroChat = () => {
 };
 
 export default HeroChat;
+
