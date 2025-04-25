@@ -8,37 +8,21 @@
     <title>Novativa - Agencia IA y de Automatización que acelera tu negocio</title>
   </head>
   <body>
+    <div id="root"></div>
     <!---start LOUISEBOT-WIDGET code--->
     <script type="text/javascript">
     !(function () { function g() {
-      var script = document.createElement('script'), 
-          code = '2109831b-449d-4c25-90a5-69b408c277c0',
-          url = 'https://cdn.1cdn.app/application/LB/23082315255659_LB_widget.js', 
-          l = localStorage.setItem('ps_widget', code);
-      (script.type = 'text/javascript'),
-      (script.async = !0),
-      (script.src = url);
+      var script = document.createElement('script'), code = '2109831b-449d-4c25-90a5-69b408c277c0',url = 'https://cdn.1cdn.app/application/LB/23082315255659_LB_widget.js', l = localStorage.setItem('ps_widget' , code);
+      (script.type = 'text/javascript'),(script.async = !0),(script.src = url);
       document.getElementsByTagName('head')[0].appendChild(script);
-      
-      // Add console logs for debugging
-      console.log('LOUISEBOT-WIDGET: Script loaded');
-      console.log('Widget Code:', code);
-      console.log('Widget URL:', url);
     }
-    
-    // Add error handling
-    window.addEventListener('error', function(event) {
-      console.error('LOUISEBOT-WIDGET: Script loading error', event);
-    });
-
     document.readyState === 'complete' ? g() : window.attachEvent ? window.attachEvent('onload', g)
     : window.addEventListener('load', g, !1);
     })();
     </script>
-    <!---end LOUISEBOT-WIDGET code---> 
-
-    <div id="root"></div>
+    <!---end LOUISEBOT-WIDGET code--->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+
