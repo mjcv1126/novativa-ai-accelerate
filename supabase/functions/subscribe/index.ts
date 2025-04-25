@@ -2,7 +2,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
 const SENDFOX_API_KEY = Deno.env.get('SENDFOX_API_KEY')
-const SENDFOX_LIST_ID = '1' // Ajusta esto según tu lista
+const SENDFOX_LIST_ID = '1'
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {

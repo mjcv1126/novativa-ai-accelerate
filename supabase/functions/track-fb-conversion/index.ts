@@ -2,7 +2,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
 const FB_ACCESS_TOKEN = Deno.env.get('FB_ACCESS_TOKEN')
-const PIXEL_ID = 'TU_PIXEL_ID' // Reemplaza con tu Pixel ID
+const PIXEL_ID = 'TU_PIXEL_ID'
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
