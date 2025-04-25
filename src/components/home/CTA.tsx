@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import ScheduleDialog from '@/components/shared/ScheduleDialog';
 
 const CTA = () => {
   return (
@@ -13,25 +12,19 @@ const CTA = () => {
             Impulsa tu empresa con nuestras soluciones de inteligencia artificial y automatización.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
-            <Button
-              asChild
+            <ScheduleDialog
               className="bg-novativa-orange hover:bg-novativa-lightOrange px-6 py-6 text-white"
               size="lg"
             >
-              <Link to="/agenda">
-                Solicita una demostración gratuita
-              </Link>
-            </Button>
-            <Button
-              asChild
+              Solicita una demostración gratuita
+            </ScheduleDialog>
+            <ScheduleDialog
               variant="outline"
               className="border-white text-gray-600 hover:bg-white hover:text-novativa-teal px-6 py-6"
               size="lg"
             >
-              <Link to="/precios">
-                Ver planes y precios
-              </Link>
-            </Button>
+              Ver planes y precios
+            </ScheduleDialog>
           </div>
         </div>
       </div>

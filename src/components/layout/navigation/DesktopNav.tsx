@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+
 const DesktopNav = () => {
   return <div className="hidden md:flex items-center space-x-8">
       <Link to="/" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
@@ -73,9 +74,10 @@ const DesktopNav = () => {
       <Link to="/contacto" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         Contacto
       </Link>
-      <Button asChild className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity">
-        <Link to="/agenda">AGENDA UN DEMO GRATIS </Link>
-      </Button>
+      <ScheduleDialog className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity">
+        AGENDA UN DEMO GRATIS
+      </ScheduleDialog>
     </div>;
 };
+
 export default DesktopNav;
