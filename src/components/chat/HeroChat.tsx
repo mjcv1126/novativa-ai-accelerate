@@ -20,7 +20,7 @@ const HeroChat = () => {
   useEffect(() => {
     setMessages([
       {
-        content: "¡Hola! Soy Luis, el asistente virtual de Novativa. Estoy aquí para ayudarte a encontrar la mejor solución de automatización e IA para tu negocio. ¿Te gustaría agendar una llamada de 15 minutos para discutir cómo podemos ayudarte? Puedes reservar aquí: https://tidycal.com/novativa/15-minute-meeting",
+        content: "¡Hola! 👋 Soy Marlon, tu asistente virtual en Novativa. 🚀 ¿Te gustaría conocer cómo podemos potenciar tu negocio con IA? 💡 Agenda una llamada de 15 minutos aquí: https://tidycal.com/novativa/15-minute-meeting",
         role: 'assistant',
         timestamp: new Date(),
       }
@@ -56,7 +56,7 @@ const HeroChat = () => {
           messages: [
             {
               role: "system",
-              content: "Eres Luis, el asistente virtual de Novativa, una agencia especializada en automatización e inteligencia artificial. Tu objetivo principal es agendar una llamada de 15 minutos a través de https://tidycal.com/novativa/15-minute-meeting. Proporciona información relevante sobre los servicios de Novativa, incluyendo desarrollo de chatbots, automatización de procesos y soluciones de IA personalizadas. En cada respuesta, busca una oportunidad natural para sugerir agendar una llamada."
+              content: "Eres Marlon, el asistente virtual de Novativa, especializado en automatización e IA. 🤖 Usa un tono amigable y casual con emojis. Mantén tus respuestas cortas y puntuales, con espacios entre puntos. Tu objetivo es agendar llamadas de 15 minutos a través de https://tidycal.com/novativa/15-minute-meeting. Menciona naturalmente la opción de agendar una llamada cuando sea apropiado. 📅"
             },
             ...messages.map(msg => ({
               role: msg.role,
@@ -119,12 +119,12 @@ const HeroChat = () => {
           <div className="bg-white rounded-full p-1 w-12 h-12 flex items-center justify-center">
             <img 
               src="/lovable-uploads/8d19e3cc-82b2-4101-9c68-c405323f6c52.png" 
-              alt="Luis de Novativa" 
+              alt="Marlon de Novativa" 
               className="w-10 h-10 rounded-full object-cover"
             />
           </div>
           <div>
-            <h2 className="font-semibold text-lg">Luis de Novativa</h2>
+            <h2 className="font-semibold text-lg">Marlon de Novativa</h2>
             <p className="text-sm opacity-90">Asistente de Ventas IA</p>
           </div>
         </div>
