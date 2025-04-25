@@ -1,3 +1,4 @@
+
 export interface BlogPost {
   id: number;
   title: string;
@@ -444,4 +445,20 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 34,
-    title: "Realidad
+    title: "Realidad Virtual e Inteligencia Artificial: Creando Experiencias Inmersivas",
+    excerpt: "Explora cómo la IA y la realidad virtual están transformando la forma en que interactuamos con tecnologías digitales. Este artículo analiza las aplicaciones innovadoras de la IA en la creación de experiencias inmersivas, desde entretenimiento hasta entrenamiento profesional.",
+    author: "Marlon Caballero",
+    date: "23/03/2025",
+    category: "Realidad Virtual",
+    status: "Publicado",
+    views: 45,
+    image: "https://images.unsplash.com/photo-1510346454220-0715982254bb",
+    seoDescription: "IA y realidad virtual, experiencias inmersivas, innovación tecnológica y aplicaciones prácticas. Transforma tu realidad virtual con inteligencia artificial.",
+    tags: ["Realidad Virtual", "Inteligencia Artificial", "Experiencias Inmersivas", "Innovación"]
+  }
+];
+
+export const getCategories = () => {
+  return [...new Set(blogPosts.map(post => post.category))];
+};
+
