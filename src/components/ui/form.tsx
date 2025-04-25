@@ -40,6 +40,13 @@ const FormField = <
   )
 }
 
+type FieldState = {
+  invalid: boolean
+  isDirty: boolean
+  isTouched: boolean
+  error?: { type: string; message: string }
+}
+
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
@@ -49,7 +56,13 @@ const useFormField = () => {
     throw new Error("useFormField should be used within <FormField>")
   }
 
-  const fieldState = getFieldState?.(fieldContext.name, formState) || {}
+  // Provide default empty objects with the expected structure
+  const fieldState = getFieldState?.(fieldContext.name, formState) as FieldState || {
+    invalid: false,
+    isDirty: false,
+    isTouched: false,
+    error: undefined
+  }
 
   const { id } = itemContext || {}
 
