@@ -5,11 +5,12 @@ import {
   Mail, 
   Clock,
   Facebook,
-  Instagram 
+  Instagram,
+  Calendar,
+  Youtube 
 } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Button } from '@/components/ui/button';
-import { Youtube } from 'lucide-react';
 
 const Contact = () => {
   return (
