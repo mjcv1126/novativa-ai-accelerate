@@ -1,10 +1,10 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import LouisebotWidget from "./components/shared/LouisebotWidget";
 import Index from "./pages/Index";
 import Services from "./pages/Services";
 import NovaChannel from "./pages/NovaChannel";
@@ -28,6 +28,7 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <LouisebotWidget />
           <BrowserRouter>
             <ScrollToTop />
             <div className="min-h-screen flex flex-col relative">

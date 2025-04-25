@@ -1,7 +1,5 @@
-
 import { Helmet } from 'react-helmet-async';
 import Home from './Home';
-import LouisebotWidget from '@/components/shared/LouisebotWidget';
 
 const Index = () => {
   return (
@@ -19,7 +17,6 @@ const Index = () => {
         <meta name="twitter:description" content="Soluciones de IA y automatización personalizadas para acelerar el crecimiento de tu negocio." />
         <link rel="canonical" href="https://novativa.ai" />
       </Helmet>
-      <LouisebotWidget />
       <Home />
     </>
   );
