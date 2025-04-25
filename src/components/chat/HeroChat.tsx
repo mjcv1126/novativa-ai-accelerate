@@ -88,6 +88,7 @@ const HeroChat = () => {
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
+      console.error('Error al enviar mensaje:', error);
       toast({
         title: "Error",
         description: "No se pudo enviar el mensaje. Por favor, intenta nuevamente más tarde.",
@@ -95,7 +96,9 @@ const HeroChat = () => {
       });
     } finally {
       setIsLoading(false);
-      scrollToBottom();
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
     }
   };
 
@@ -106,9 +109,14 @@ const HeroChat = () => {
     }
   };
 
+  useEffect(() => {
+    // Scroll to bottom when messages change
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <Card className="w-full max-w-md bg-white shadow-xl border-0">
-      <CardContent className="p-0">
+      <CardContent className="p-0 h-[400px] overflow-hidden flex flex-col">
         <MessageList 
           messages={messages}
           isLoading={isLoading}
@@ -123,6 +131,7 @@ const HeroChat = () => {
             onKeyDown={handleKeyPress}
             placeholder="Escribe tu mensaje aquí..."
             className="min-h-[60px] max-h-[120px]"
+            disabled={isLoading}
           />
           <Button 
             onClick={handleSendMessage} 
@@ -138,4 +147,3 @@ const HeroChat = () => {
 };
 
 export default HeroChat;
-
