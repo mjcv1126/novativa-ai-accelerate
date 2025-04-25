@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Bot, MessageSquare, Users, Clock, BrainCircuit } from 'lucide-react';
 import ScreenshotCarousel from '@/components/NovaChannel/ScreenshotCarousel';
+import LouisebotWidget from '@/components/shared/LouisebotWidget';
 
 const NovaChannel = () => {
   return (
     <>
+      <LouisebotWidget />
       <section className="pt-32 pb-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">

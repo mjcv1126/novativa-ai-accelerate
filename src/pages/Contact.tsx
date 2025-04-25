@@ -1,20 +1,13 @@
 import React from 'react';
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Clock,
-  Facebook,
-  Instagram,
-  Calendar,
-  Youtube 
-} from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Button } from '@/components/ui/button';
+import LouisebotWidget from '@/components/shared/LouisebotWidget';
 
 const Contact = () => {
   return (
     <>
+      <LouisebotWidget />
       <section className="pt-32 pb-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">

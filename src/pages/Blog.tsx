@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowRight, Calendar, User } from 'lucide-react';
+import LouisebotWidget from '@/components/shared/LouisebotWidget';
 
 // Blog post data
 const blogPosts = [
@@ -85,6 +85,7 @@ const categories = [
 const Blog = () => {
   return (
     <>
+      <LouisebotWidget />
       <section className="pt-32 pb-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
