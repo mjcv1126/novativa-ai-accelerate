@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,10 +10,30 @@ import MessageList from './MessageList';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-);
+// Get Supabase URL and key from environment variables or default to empty string with a fallback check
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Create Supabase client with proper error handling
+const createSupabaseClient = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Supabase URL or Anon Key is missing');
+    // Return a dummy client that won't make actual network requests
+    return {
+      auth: {
+        getSession: () => Promise.resolve({ data: { session: null } }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      },
+      functions: {
+        invoke: () => Promise.reject(new Error('Supabase client not initialized')),
+      }
+    };
+  }
+  
+  return createClient(supabaseUrl, supabaseAnonKey);
+};
+
+const supabase = createSupabaseClient();
 
 const HeroChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -63,6 +84,10 @@ const HeroChat = () => {
     setIsLoading(true);
 
     try {
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('Supabase configuration is missing');
+      }
+
       const { data, error } = await supabase.functions.invoke('chat', {
         body: {
           messages: messages.concat(userMessage).map(msg => ({
