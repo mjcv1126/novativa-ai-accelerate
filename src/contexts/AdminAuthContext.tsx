@@ -1,13 +1,12 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase client (getting URLs from window.env which will be set after Supabase connection)
-const supabase = createClient(
-  window.env?.SUPABASE_URL || '',
-  window.env?.SUPABASE_ANON_KEY || ''
-);
+// Initialize Supabase client with fallback values if window.env is not available
+const supabaseUrl = window.env?.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = window.env?.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface AdminAuthContextType {
   user: any;
@@ -85,7 +84,6 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 };
 
-// Auth Guard HOC to protect admin routes
 export const withAdminAuth = (Component: React.ComponentType<any>) => {
   return (props: any) => {
     const { user, isLoading } = useAdminAuth();
