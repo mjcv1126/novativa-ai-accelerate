@@ -1,11 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
+import { Helmet } from 'react-helmet-async';
 
 const Contact = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Forzar refresh y limpiar caché
+    if (!sessionStorage.getItem('contactPageLoaded')) {
+      sessionStorage.setItem('contactPageLoaded', 'true');
+      // Forzar recarga sin caché
+      window.location.reload();
+    }
+
+    // Limpiar el flag cuando se desmonta el componente
+    return () => {
+      sessionStorage.removeItem('contactPageLoaded');
+    };
+  }, []);
+
   React.useEffect(() => {
     // Ensure the Tidycal script is loaded
     const script = document.createElement('script');
@@ -14,12 +31,19 @@ const Contact = () => {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
     };
   }, []);
 
   return (
     <>
+      <Helmet>
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+      </Helmet>
       <LouisebotWidget />
       <section className="pt-32 pb-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -132,7 +156,7 @@ const Contact = () => {
             
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <h2 className="text-3xl font-bold mb-6 text-center">Agenda una Reunión</h2>
-              <div className="tidycal-embed" data-path="novativa"></div>
+              <div className="tidycal-embed" data-path="novativa/demo-gratis"></div>
             </div>
           </div>
         </div>

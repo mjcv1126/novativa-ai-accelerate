@@ -12,7 +12,7 @@ const DesktopNav = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="text-gray-800 hover:text-[#bc3e06] focus:text-[#bc3e06] font-medium data-[state=open]:text-[#bc3e06]">
+            <NavigationMenuTrigger className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
               Servicios
             </NavigationMenuTrigger>
             <NavigationMenuContent>

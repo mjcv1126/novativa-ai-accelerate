@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import AdminSidebar from '@/components/admin/AdminSidebar';
@@ -8,6 +7,40 @@ import { Helmet } from 'react-helmet-async';
 
 const AdminLayout = () => {
   const { isAuthenticated, isLoading } = useAdminAuth();
+
+  // Función para evitar el caché
+  useEffect(() => {
+    // Desactivar el caché del navegador para esta página
+    window.onpageshow = function(event) {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    };
+    
+    // Agregar headers para evitar el caché
+    const metaTags = document.querySelectorAll('meta[http-equiv="Cache-Control"]');
+    if (metaTags.length === 0) {
+      const meta = document.createElement('meta');
+      meta.httpEquiv = "Cache-Control";
+      meta.content = "no-cache, no-store, must-revalidate";
+      document.head.appendChild(meta);
+      
+      const metaPragma = document.createElement('meta');
+      metaPragma.httpEquiv = "Pragma";
+      metaPragma.content = "no-cache";
+      document.head.appendChild(metaPragma);
+      
+      const metaExpires = document.createElement('meta');
+      metaExpires.httpEquiv = "Expires";
+      metaExpires.content = "0";
+      document.head.appendChild(metaExpires);
+    }
+    
+    // Limpiar al desmontar
+    return () => {
+      window.onpageshow = null;
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -25,6 +58,9 @@ const AdminLayout = () => {
     <>
       <Helmet>
         <title>Panel Admin | Novativa</title>
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </Helmet>
       <div className="flex h-screen bg-gray-100">
         <AdminSidebar />

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
@@ -22,6 +21,9 @@ interface AdminAuthContextType {
   login: (email: string, password: string) => Promise<{ error: any }>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
+  resetPassword: (email: string) => Promise<{ error: any }>;
+  verifyResetCode: (email: string, code: string) => Promise<{ error: any }>;
+  updatePassword: (email: string, code: string, newPassword: string) => Promise<{ error: any }>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType>({
@@ -30,6 +32,9 @@ const AdminAuthContext = createContext<AdminAuthContextType>({
   login: async () => ({ error: null }),
   logout: async () => {},
   isAuthenticated: false,
+  resetPassword: async () => ({ error: null }),
+  verifyResetCode: async () => ({ error: null }),
+  updatePassword: async () => ({ error: null }),
 });
 
 export const useAdminAuth = () => useContext(AdminAuthContext);
@@ -41,27 +46,56 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(!!supabase);
 
   useEffect(() => {
-    // If Supabase is not properly configured, mark loading as complete
+    // Si Supabase no está configurado, marcar la carga como completa
     if (!supabase) {
-      console.error("Supabase is not properly configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY.");
+      console.error("Supabase no está configurado correctamente. Por favor, configura SUPABASE_URL y SUPABASE_ANON_KEY.");
       setIsLoading(false);
       return;
     }
 
+    // Verificar la sesión actual
+    const checkSession = async () => {
+      try {
+        // Forzar una nueva verificación de sesión
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Error al verificar la sesión:", error);
+          setUser(null);
+          return;
+        }
+        
+        if (data?.session) {
+          setUser(data.session.user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error inesperado al verificar la sesión:", error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    checkSession();
+
+    // Escuchar cambios en el estado de autenticación
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        const currentUser = session?.user || null;
-        setUser(currentUser);
+        console.log("Cambio en el estado de autenticación:", event);
+        
+        if (event === 'SIGNED_OUT') {
+          setUser(null);
+          // Limpiar cualquier dato en caché
+          localStorage.removeItem('admin_user');
+        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          setUser(session?.user || null);
+        }
+        
         setIsLoading(false);
       }
     );
-
-    // Initial check
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const currentUser = session?.user || null;
-      setUser(currentUser);
-      setIsLoading(false);
-    });
 
     return () => {
       authListener?.subscription?.unsubscribe();
@@ -70,10 +104,10 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const login = async (email: string, password: string) => {
     try {
+      setIsLoading(true);
+      
       // Fallback authentication when Supabase is not configured
       if (!supabase) {
-        setIsLoading(true);
-        
         // Check if credentials match hardcoded admin values
         if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
           // Set a mock user object
@@ -87,23 +121,35 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           localStorage.setItem('admin_user', JSON.stringify(mockUser));
           
           setUser(mockUser);
-          setIsLoading(false);
           navigate('/admin');
           return { error: null };
         } else {
-          setIsLoading(false);
           return { error: { message: 'Credenciales incorrectas' } };
         }
       }
       
       // If Supabase is configured, use it for authentication
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (!error) {
-        navigate('/admin');
+      const { data, error } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
+      
+      if (error) {
+        return { error };
       }
-      return { error };
+      
+      if (data?.user) {
+        setUser(data.user);
+        navigate('/admin');
+        return { error: null };
+      }
+      
+      return { error: { message: 'Error de autenticación' } };
     } catch (error) {
-      return { error };
+      console.error('Login error:', error);
+      return { error: { message: 'Error inesperado' } };
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -129,6 +175,81 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, [user]);
 
+  const resetPassword = async (email: string) => {
+    try {
+      setIsLoading(true);
+      
+      if (!supabase) {
+        // Simular envío de código para el modo de fallback
+        if (email === ADMIN_EMAIL) {
+          console.log('Código de recuperación enviado a:', email);
+          return { error: null };
+        }
+        return { error: { message: 'Email no encontrado' } };
+      }
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/admin/login`,
+      });
+      
+      return { error };
+    } catch (error) {
+      console.error('Reset password error:', error);
+      return { error: { message: 'Error al enviar el código de recuperación' } };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyResetCode = async (email: string, code: string) => {
+    try {
+      setIsLoading(true);
+      
+      if (!supabase) {
+        // Simular verificación de código para el modo de fallback
+        if (email === ADMIN_EMAIL && code === '123456') {
+          return { error: null };
+        }
+        return { error: { message: 'Código inválido' } };
+      }
+      
+      // En un entorno real, aquí verificarías el código con Supabase
+      return { error: null };
+    } catch (error) {
+      console.error('Verify code error:', error);
+      return { error: { message: 'Error al verificar el código' } };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updatePassword = async (email: string, code: string, newPassword: string) => {
+    try {
+      setIsLoading(true);
+      
+      if (!supabase) {
+        // Simular actualización de contraseña para el modo de fallback
+        if (email === ADMIN_EMAIL && code === '123456') {
+          // En un entorno real, aquí actualizarías la contraseña en la base de datos
+          console.log('Contraseña actualizada para:', email);
+          return { error: null };
+        }
+        return { error: { message: 'No se pudo actualizar la contraseña' } };
+      }
+      
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      
+      return { error };
+    } catch (error) {
+      console.error('Update password error:', error);
+      return { error: { message: 'Error al actualizar la contraseña' } };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AdminAuthContext.Provider
       value={{
@@ -137,6 +258,9 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         login,
         logout,
         isAuthenticated: !!user,
+        resetPassword,
+        verifyResetCode,
+        updatePassword,
       }}
     >
       {children}

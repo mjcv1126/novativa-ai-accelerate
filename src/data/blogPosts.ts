@@ -1,4 +1,3 @@
-
 export interface BlogPost {
   id: number;
   title: string;
@@ -463,5 +462,25 @@ export const getCategories = () => {
 };
 
 export const getPostsByCategory = (category: string) => {
-  return blogPosts.filter(post => post.category === category);
+  return blogPosts.filter(post => 
+    post.category.toLowerCase() === category.toLowerCase()
+  );
+};
+
+export const getAllTags = () => {
+  const allTags = blogPosts.reduce((tags: string[], post) => {
+    if (post.tags) {
+      tags.push(...post.tags);
+    }
+    return tags;
+  }, []);
+  return [...new Set(allTags)];
+};
+
+export const getPostsByTag = (tag: string) => {
+  return blogPosts.filter(post => 
+    post.tags?.some(postTag => 
+      postTag.toLowerCase() === tag.toLowerCase()
+    )
+  );
 };

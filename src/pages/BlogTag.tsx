@@ -11,23 +11,23 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-import { blogPosts, getPostsByCategory, getCategories } from '@/data/blogPosts';
+import { blogPosts, getPostsByTag, getAllTags } from '@/data/blogPosts';
 
-const BlogCategory = () => {
-  const { category } = useParams<{ category: string }>();
-  const decodedCategory = category ? decodeURIComponent(category.replace(/-+/g, ' ')) : '';
-  const categoryPosts = getPostsByCategory(decodedCategory);
-  const categories = getCategories();
+const BlogTag = () => {
+  const { tag } = useParams<{ tag: string }>();
+  const decodedTag = tag ? decodeURIComponent(tag.replace(/-+/g, ' ')) : '';
+  const tagPosts = getPostsByTag(decodedTag);
+  const allTags = getAllTags();
   
-  const categoryToUrl = (cat: string) => {
-    return cat.toLowerCase()
+  const tagToUrl = (tag: string) => {
+    return tag.toLowerCase()
              .normalize('NFD')
              .replace(/[\u0300-\u036f]/g, '')
              .replace(/[^a-z0-9]+/g, '-')
              .replace(/^-+|-+$/g, '');
   };
-  
-  if (categoryPosts.length === 0) {
+
+  if (tagPosts.length === 0) {
     return (
       <>
         <LouisebotWidget />
@@ -35,32 +35,32 @@ const BlogCategory = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Categoría no encontrada
+                Tag no encontrado
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                No se encontraron artículos para la categoría seleccionada.
+                No se encontraron artículos para el tag seleccionado.
               </p>
               <div className="mt-8 space-y-4">
-              <Button
-                asChild
+                <Button
+                  asChild
                   className="bg-novativa-teal hover:bg-novativa-lightTeal"
-              >
-                <Link to="/blog">
-                  Volver al blog
-                </Link>
-              </Button>
+                >
+                  <Link to="/blog">
+                    Volver al blog
+                  </Link>
+                </Button>
                 <div className="mt-8">
-                  <h3 className="text-xl font-semibold mb-4">Categorías disponibles:</h3>
+                  <h3 className="text-xl font-semibold mb-4">Tags disponibles:</h3>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {categories.map((cat, index) => (
+                    {allTags.map((t, index) => (
                       <Button
                         key={index}
                         asChild
                         variant="outline"
                         className="border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10"
                       >
-                        <Link to={`/blog/categoria/${categoryToUrl(cat)}`}>
-                          {cat}
+                        <Link to={`/blog/tag/${tagToUrl(t)}`}>
+                          {t}
                         </Link>
                       </Button>
                     ))}
@@ -81,10 +81,10 @@ const BlogCategory = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Categoría: <span className="text-novativa-orange">{decodedCategory}</span>
+              Tag: <span className="text-novativa-orange">{decodedTag}</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Artículos relacionados con {decodedCategory}
+              Artículos relacionados con {decodedTag}
             </p>
           </div>
         </div>
@@ -94,7 +94,7 @@ const BlogCategory = () => {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {categoryPosts.map((post) => (
+            {tagPosts.map((post) => (
               <Card key={post.id} className="overflow-hidden">
                 <div className="h-48 overflow-hidden">
                   <img 
@@ -134,21 +134,21 @@ const BlogCategory = () => {
         </div>
       </section>
       
-      {/* Categories Section */}
+      {/* Tags Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div>
-            <h2 className="text-2xl font-bold mb-6">Otras Categorías</h2>
+            <h2 className="text-2xl font-bold mb-6">Otros Tags</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {categories.map((cat, index) => (
+              {allTags.map((t, index) => (
                 <Button
                   key={index}
                   asChild
                   variant="outline"
-                  className={`border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10 justify-start ${cat === decodedCategory ? 'bg-novativa-teal/20' : ''}`}
+                  className={`border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10 justify-start ${t === decodedTag ? 'bg-novativa-teal/20' : ''}`}
                 >
-                  <Link to={`/blog/categoria/${categoryToUrl(cat)}`}>
-                    {cat}
+                  <Link to={`/blog/tag/${tagToUrl(t)}`}>
+                    {t}
                   </Link>
                 </Button>
               ))}
@@ -179,4 +179,4 @@ const BlogCategory = () => {
   );
 };
 
-export default BlogCategory;
+export default BlogTag; 

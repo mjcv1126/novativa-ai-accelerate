@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
@@ -14,6 +13,7 @@ import Schedule from '@/pages/Schedule';
 import NovaChannel from '@/pages/NovaChannel';
 import Services from '@/pages/Services';
 import BlogCategory from '@/pages/BlogCategory';
+import BlogTag from '@/pages/BlogTag';
 
 // Services pages
 import AIAgents from '@/pages/services/AIAgents';
@@ -51,6 +51,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/blog/categoria/:category" element={<BlogCategory />} />
+            <Route path="/blog/tag/:tag" element={<BlogTag />} />
             <Route path="/contacto" element={<Contact />} />
             <Route path="/precios" element={<Pricing />} />
             <Route path="/agenda" element={<Schedule />} />

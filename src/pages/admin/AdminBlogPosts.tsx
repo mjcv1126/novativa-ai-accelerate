@@ -18,8 +18,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { ChevronDown, Edit, Eye, Filter, Plus, Search, Trash } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import BlogPostForm from '@/components/admin/BlogPostForm';
+import { BlogPost } from '@/data/blogPosts';
 
-const blogPosts = [
+const initialPosts: BlogPost[] = [
   {
     id: 1,
     title: "Cómo la IA está transformando el servicio al cliente en 2025",
@@ -30,6 +32,7 @@ const blogPosts = [
     status: "Publicado",
     views: 1245,
     image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2000&auto=format&fit=crop",
+    tags: ["IA", "Servicio al Cliente", "Tendencias"]
   },
   {
     id: 2,
@@ -89,23 +92,57 @@ const blogPosts = [
 ];
 
 const AdminBlogPosts = () => {
+  const [posts, setPosts] = useState(initialPosts);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredPosts, setFilteredPosts] = useState(blogPosts);
+  const [filteredPosts, setFilteredPosts] = useState(posts);
+  const [showForm, setShowForm] = useState(false);
+  const [editingPost, setEditingPost] = useState<BlogPost | undefined>();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
     
     if (query.trim() === '') {
-      setFilteredPosts(blogPosts);
+      setFilteredPosts(posts);
     } else {
-      const filtered = blogPosts.filter(post => 
+      const filtered = posts.filter(post => 
         post.title.toLowerCase().includes(query.toLowerCase()) ||
         post.author.toLowerCase().includes(query.toLowerCase()) ||
-        post.category.toLowerCase().includes(query.toLowerCase())
+        post.category.toLowerCase().includes(query.toLowerCase()) ||
+        post.tags?.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
       );
       setFilteredPosts(filtered);
     }
+  };
+
+  const handleCreatePost = (postData: Omit<BlogPost, 'id' | 'views'>) => {
+    const newPost: BlogPost = {
+      ...postData,
+      id: Math.max(...posts.map(p => p.id)) + 1,
+      views: 0
+    };
+    setPosts([...posts, newPost]);
+    setFilteredPosts([...posts, newPost]);
+    setShowForm(false);
+  };
+
+  const handleEditPost = (postData: Omit<BlogPost, 'id' | 'views'>) => {
+    if (editingPost) {
+      const updatedPost: BlogPost = {
+        ...postData,
+        id: editingPost.id,
+        views: editingPost.views
+      };
+      setPosts(posts.map(p => p.id === editingPost.id ? updatedPost : p));
+      setFilteredPosts(filteredPosts.map(p => p.id === editingPost.id ? updatedPost : p));
+      setEditingPost(undefined);
+      setShowForm(false);
+    }
+  };
+
+  const handleDeletePost = (id: number) => {
+    setPosts(posts.filter(p => p.id !== id));
+    setFilteredPosts(filteredPosts.filter(p => p.id !== id));
   };
 
   return (
@@ -116,16 +153,30 @@ const AdminBlogPosts = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <h1 className="text-3xl font-bold">Posts del Blog</h1>
-          <Button className="bg-novativa-teal hover:bg-novativa-lightTeal">
+          <Button 
+            className="bg-novativa-teal hover:bg-novativa-lightTeal"
+            onClick={() => setShowForm(true)}
+          >
             <Plus className="mr-2 h-4 w-4" /> Nuevo Post
           </Button>
         </div>
+
+        {showForm && (
+          <BlogPostForm
+            post={editingPost}
+            onSubmit={editingPost ? handleEditPost : handleCreatePost}
+            onCancel={() => {
+              setShowForm(false);
+              setEditingPost(undefined);
+            }}
+          />
+        )}
 
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="w-full md:w-1/3 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Buscar por título, autor o categoría..."
+              placeholder="Buscar por título, autor, categoría o tag..."
               className="pl-10"
               value={searchQuery}
               onChange={handleSearch}
@@ -157,6 +208,7 @@ const AdminBlogPosts = () => {
                 <TableRow>
                   <TableHead className="w-[400px]">Post</TableHead>
                   <TableHead>Categoría</TableHead>
+                  <TableHead>Tags</TableHead>
                   <TableHead>Autor</TableHead>
                   <TableHead>Fecha</TableHead>
                   <TableHead>Estado</TableHead>
@@ -186,30 +238,41 @@ const AdminBlogPosts = () => {
                         </div>
                       </TableCell>
                       <TableCell>{post.category}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {post.tags?.map((tag, index) => (
+                            <Badge key={index} variant="secondary">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </TableCell>
                       <TableCell>{post.author}</TableCell>
                       <TableCell>{post.date}</TableCell>
                       <TableCell>
-                        <Badge 
-                          variant={post.status === "Publicado" ? "default" : "outline"}
-                          className={post.status === "Publicado" ? "bg-green-500" : ""}
-                        >
+                        <Badge variant={post.status === 'Publicado' ? 'default' : 'secondary'}>
                           {post.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">{post.views.toLocaleString()}</TableCell>
-                      <TableCell>
+                      <TableCell className="text-right">{post.views}</TableCell>
+                      <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="icon">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setEditingPost(post);
+                              setShowForm(true);
+                            }}
+                          >
                             <Edit className="h-4 w-4" />
-                            <span className="sr-only">Editar</span>
                           </Button>
-                          <Button variant="ghost" size="icon">
-                            <Eye className="h-4 w-4" />
-                            <span className="sr-only">Ver</span>
-                          </Button>
-                          <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeletePost(post.id)}
+                          >
                             <Trash className="h-4 w-4" />
-                            <span className="sr-only">Eliminar</span>
                           </Button>
                         </div>
                       </TableCell>
@@ -217,8 +280,8 @@ const AdminBlogPosts = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-6">
-                      No se encontraron resultados para "{searchQuery}"
+                    <TableCell colSpan={8} className="text-center py-8">
+                      No se encontraron posts
                     </TableCell>
                   </TableRow>
                 )}
