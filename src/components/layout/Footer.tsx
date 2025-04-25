@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, MapPin, Mail, Phone } from 'lucide-react';
@@ -142,6 +141,12 @@ const Footer = () => {
               </Link>
               <Link to="/terminos-servicio" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
                 Términos de Servicio
+              </Link>
+              <Link 
+                to="/admin/login" 
+                className="text-gray-400 hover:text-novativa-lightTeal text-xs transition-colors ml-2"
+              >
+                Admin
               </Link>
             </div>
           </div>
