@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, User, Tag, Eye } from 'lucide-react';
 import { blogPosts, BlogPost as BlogPostType, getPostsByCategory } from '@/data/blogPosts';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
+import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 
 const BlogPost = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +19,16 @@ const BlogPost = () => {
     if (foundPost) {
       setPost(foundPost);
       
-      // Get related posts from the same category, excluding the current post
+      // Track ViewContent event when post is loaded
+      trackFacebookConversion('ViewContent', {
+        customData: {
+          content_name: foundPost.title,
+          content_category: foundPost.category,
+          content_type: 'article',
+        }
+      });
+      
+      // Get related posts from the same category
       const related = getPostsByCategory(foundPost.category)
         .filter(p => p.id !== foundPost.id)
         .slice(0, 3);
@@ -141,7 +150,7 @@ const BlogPost = () => {
                 
                 <h2>Casos de Éxito y Aplicaciones Prácticas</h2>
                 <p>
-                  Numerosas empresas ya están experimentando los beneficios de estas tecnologías. Por ejemplo, una empresa del sector {post.category === "Salud" ? "de la salud" : post.category === "Finanzas" ? "financiero" : "retail"} implementó recientemente soluciones avanzadas de {post.category.toLowerCase()} y logró un aumento del 35% en la satisfacción del cliente mientras reducía los tiempos de respuesta en un 60%.
+                  Numerosas empresas ya están experimentando los beneficios de estas tecnologías. Por ejemplo, una empresa del sector {post.category === "Salud" ? "de la salud" : post.category === "Finanzas" ? "financiero" : "retail"} implementó recientemente soluciones avanzadas de {post.category.toLowerCase()} y logró un aumento del 35% en la satisfacción del cliente mientras redució los tiempos de respuesta en un 60%.
                 </p>
                 
                 <blockquote>

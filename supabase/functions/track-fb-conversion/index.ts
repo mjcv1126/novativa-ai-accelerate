@@ -2,7 +2,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
 const FB_ACCESS_TOKEN = Deno.env.get('FB_ACCESS_TOKEN')
-const PIXEL_ID = 'TU_PIXEL_ID'
+const PIXEL_ID = Deno.env.get('PIXEL_ID')
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -18,6 +18,10 @@ serve(async (req) => {
   try {
     const { eventName, eventData } = await req.json()
 
+    if (!FB_ACCESS_TOKEN || !PIXEL_ID) {
+      throw new Error('Facebook API credentials not configured')
+    }
+
     const response = await fetch(
       `https://graph.facebook.com/v17.0/${PIXEL_ID}/events`,
       {
@@ -30,7 +34,8 @@ serve(async (req) => {
             event_name: eventName,
             event_time: Math.floor(Date.now() / 1000),
             action_source: 'website',
-            ...eventData
+            user_data: eventData.userData || {},
+            custom_data: eventData.customData || {},
           }],
           access_token: FB_ACCESS_TOKEN
         })
@@ -38,16 +43,28 @@ serve(async (req) => {
     )
 
     if (!response.ok) {
-      throw new Error('Error en Facebook Conversion API')
+      const error = await response.json()
+      throw new Error(`Facebook API Error: ${JSON.stringify(error)}`)
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': 'application/json' }
+    const result = await response.json()
+    return new Response(JSON.stringify({ success: true, result }), {
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
     })
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error('Conversion API Error:', error)
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      success: false 
+    }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
     })
   }
 })
