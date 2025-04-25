@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
@@ -5,6 +6,18 @@ import { Button } from '@/components/ui/button';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 
 const Contact = () => {
+  React.useEffect(() => {
+    // Ensure the Tidycal script is loaded
+    const script = document.createElement('script');
+    script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <>
       <LouisebotWidget />
@@ -119,7 +132,7 @@ const Contact = () => {
             
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <h2 className="text-3xl font-bold mb-6 text-center">Agenda una Reunión</h2>
-              <div className="tidycal-embed" data-path="mar-1126/15-minute-meeting"></div>
+              <div className="tidycal-embed" data-path="novativa"></div>
             </div>
           </div>
         </div>
