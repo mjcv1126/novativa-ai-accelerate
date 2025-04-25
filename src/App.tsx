@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +20,14 @@ import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import { ScrollToTop } from "./hooks/useScrollToTop";
 import Schedule from "./pages/Schedule";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminBlogPosts from "./pages/admin/AdminBlogPosts";
+import AdminCategories from "./pages/admin/AdminCategories";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminScripts from "./pages/admin/AdminScripts";
+import AdminLogin from "./pages/admin/AdminLogin";
+import { AdminAuthProvider } from "./contexts/AdminAuthContext";
 
 const queryClient = new QueryClient();
 
@@ -26,33 +35,57 @@ const App = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <LouisebotWidget />
-          <BrowserRouter>
-            <ScrollToTop />
-            <div className="min-h-screen flex flex-col relative">
-              <Navbar />
-              <main className="flex-grow">
+        <AdminAuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <LouisebotWidget />
+            <BrowserRouter>
+              <ScrollToTop />
+              <div className="min-h-screen flex flex-col relative">
                 <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/servicios" element={<Services />} />
-                  <Route path="/servicios/novachannel" element={<NovaChannel />} />
-                  <Route path="/servicios/agentes-ia" element={<AIAgents />} />
-                  <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
-                  <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
-                  <Route path="/precios" element={<Pricing />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/contacto" element={<Contact />} />
-                  <Route path="/agenda" element={<Schedule />} />
-                  <Route path="*" element={<NotFound />} />
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="posts" element={<AdminBlogPosts />} />
+                    <Route path="categories" element={<AdminCategories />} />
+                    <Route path="analytics" element={<AdminAnalytics />} />
+                    <Route path="scripts" element={<AdminScripts />} />
+                  </Route>
+                  <Route path="/" element={
+                    <>
+                      <Navbar />
+                      <main className="flex-grow">
+                        <Index />
+                      </main>
+                      <Footer />
+                    </>
+                  } />
+                  <Route path="*" element={
+                    <>
+                      <Navbar />
+                      <main className="flex-grow">
+                        <Routes>
+                          <Route path="/servicios" element={<Services />} />
+                          <Route path="/servicios/novachannel" element={<NovaChannel />} />
+                          <Route path="/servicios/agentes-ia" element={<AIAgents />} />
+                          <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
+                          <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
+                          <Route path="/precios" element={<Pricing />} />
+                          <Route path="/blog" element={<Blog />} />
+                          <Route path="/contacto" element={<Contact />} />
+                          <Route path="/agenda" element={<Schedule />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </main>
+                      <Footer />
+                    </>
+                  } />
                 </Routes>
-              </main>
-              <Footer />
-            </div>
-          </BrowserRouter>
-        </TooltipProvider>
+              </div>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AdminAuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );
