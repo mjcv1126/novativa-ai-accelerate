@@ -1,96 +1,78 @@
+import React from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { Helmet } from 'react-helmet';
+import { Toaster } from 'react-hot-toast';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
-import LouisebotWidget from "./components/shared/LouisebotWidget";
-import Index from "./pages/Index";
-import Services from "./pages/Services";
-import NovaChannel from "./pages/NovaChannel";
-import AIAgents from "./pages/services/AIAgents";
-import ContentGeneration from "./pages/services/ContentGeneration";
-import IADevelopment from "./pages/services/IADevelopment";
-import Pricing from "./pages/Pricing";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
-import Contact from "./pages/Contact";
-import NotFound from "./pages/NotFound";
-import Navbar from "./components/layout/Navbar";
-import Footer from "./components/layout/Footer";
-import { ScrollToTop } from "./hooks/useScrollToTop";
-import Schedule from "./pages/Schedule";
-import AdminLayout from "./pages/admin/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminBlogPosts from "./pages/admin/AdminBlogPosts";
-import AdminCategories from "./pages/admin/AdminCategories";
-import AdminAnalytics from "./pages/admin/AdminAnalytics";
-import AdminScripts from "./pages/admin/AdminScripts";
-import AdminLogin from "./pages/admin/AdminLogin";
-import { AdminAuthProvider } from "./contexts/AdminAuthContext";
+// Import pages
+import Home from '@/pages/Home';
+import Blog from '@/pages/Blog';
+import BlogPost from '@/pages/BlogPost';
+import Contact from '@/pages/Contact';
+import Pricing from '@/pages/Pricing';
+import Schedule from '@/pages/Schedule';
+import NovaChannel from '@/pages/NovaChannel';
+import Services from '@/pages/Services';
+import AIAgents from '@/pages/AIAgents';
+import ContentGeneration from '@/pages/ContentGeneration';
+import IADevelopment from '@/pages/IADevelopment';
+import BlogCategory from '@/pages/BlogCategory';
 
-const queryClient = new QueryClient();
+// Admin imports
+import AdminLayout from '@/pages/admin/AdminLayout';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import AdminAnalytics from '@/pages/admin/AdminAnalytics';
+import AdminBlogPosts from '@/pages/admin/AdminBlogPosts';
+import AdminCategories from '@/pages/admin/AdminCategories';
+import AdminScripts from '@/pages/admin/AdminScripts';
+import AdminLogin from '@/pages/admin/AdminLogin';
 
-const App = () => {
+// Components
+import Layout from '@/components/layout/Layout';
+import ScrollToTop from '@/components/layout/ScrollToTop';
+import NotFound from '@/pages/NotFound';
+import ProtectedRoute from '@/components/admin/ProtectedRoute';
+
+function App() {
+
   return (
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <LouisebotWidget />
-          <BrowserRouter>
-            <AdminAuthProvider>
-              <ScrollToTop />
-              <div className="min-h-screen flex flex-col relative">
-                <Routes>
-                  <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<AdminDashboard />} />
-                    <Route path="posts" element={<AdminBlogPosts />} />
-                    <Route path="categories" element={<AdminCategories />} />
-                    <Route path="analytics" element={<AdminAnalytics />} />
-                    <Route path="scripts" element={<AdminScripts />} />
-                  </Route>
-                  <Route path="/" element={
-                    <>
-                      <Navbar />
-                      <main className="flex-grow">
-                        <Index />
-                      </main>
-                      <Footer />
-                    </>
-                  } />
-                  <Route path="*" element={
-                    <>
-                      <Navbar />
-                      <main className="flex-grow">
-                        <Routes>
-                          <Route path="/servicios" element={<Services />} />
-                          <Route path="/servicios/novachannel" element={<NovaChannel />} />
-                          <Route path="/servicios/agentes-ia" element={<AIAgents />} />
-                          <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
-                          <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
-                          <Route path="/precios" element={<Pricing />} />
-                          <Route path="/blog" element={<Blog />} />
-                          <Route path="/blog/:id" element={<BlogPost />} />
-                          <Route path="/contacto" element={<Contact />} />
-                          <Route path="/agenda" element={<Schedule />} />
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                      </main>
-                      <Footer />
-                    </>
-                  } />
-                </Routes>
-              </div>
-            </AdminAuthProvider>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
-  );
-};
+    <Router>
+      <ScrollToTop />
+      <Helmet>
+        <title>Novativa IA - Soluciones de Inteligencia Artificial</title>
+        <meta name="description" content="Novativa IA ofrece soluciones de inteligencia artificial y automatización para empresas. Optimiza tus procesos y mejora la experiencia de tus clientes con nuestras tecnologías innovadoras." />
+      </Helmet>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
+          <Route path="/blog/categoria/:category" element={<BlogCategory />} />
+          <Route path="/contacto" element={<Contact />} />
+          <Route path="/precios" element={<Pricing />} />
+          <Route path="/agenda" element={<Schedule />} />
+          <Route path="/novachannel" element={<NovaChannel />} />
+          <Route path="/servicios" element={<Services />} />
+          <Route path="/servicios/novachannel" element={<NovaChannel />} />
+          <Route path="/servicios/agentes-ia" element={<AIAgents />} />
+          <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
+          <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="blog" element={<AdminBlogPosts />} />
+            <Route path="categories" element={<AdminCategories />} />
+            <Route path="scripts" element={<AdminScripts />} />
+          </Route>
+          
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Layout>
+      <Toaster />
+    </Router>
+  )
+}
 
-export default App;
+export default App
