@@ -1,12 +1,16 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase client with fallback values if window.env is not available
+// Check if we have valid Supabase credentials
 const supabaseUrl = window.env?.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = window.env?.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Make sure we have a URL before creating the client
+const supabase = supabaseUrl 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 interface AdminAuthContextType {
   user: any;
@@ -30,8 +34,16 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(!!supabase);
 
   useEffect(() => {
+    // If Supabase is not properly configured, mark loading as complete
+    if (!supabase) {
+      console.error("Supabase is not properly configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY.");
+      setIsLoading(false);
+      return;
+    }
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         const currentUser = session?.user || null;
@@ -54,6 +66,10 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const login = async (email: string, password: string) => {
     try {
+      if (!supabase) {
+        return { error: new Error('Supabase is not properly configured') };
+      }
+      
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (!error) {
         navigate('/admin');
@@ -65,7 +81,9 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
     navigate('/admin/login');
   };
 
