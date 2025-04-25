@@ -1,23 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { 
-  Bot, 
-  MessageSquare, 
-  Video, 
-  FileText, 
-  Users, 
-  Code, 
-  Clock, 
-  BrainCircuit,
-  Mic,
-  Share2
-} from 'lucide-react';
+import { Bot, MessageSquare, Video, FileText, Users, Code, Clock, BrainCircuit, Mic, Share2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-
 const Services = () => {
-  return (
-    <>
+  return <>
       <section className="pt-32 pb-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -91,10 +78,7 @@ const Services = () => {
                 </div>
               </div>
               
-              <Button
-                asChild
-                className="bg-novativa-teal hover:bg-novativa-lightTeal"
-              >
+              <Button asChild className="bg-novativa-teal hover:bg-novativa-lightTeal">
                 <Link to="/contacto">
                   Agenda una demostración
                 </Link>
@@ -102,11 +86,7 @@ const Services = () => {
             </div>
             
             <div className="rounded-xl overflow-hidden shadow-xl">
-              <img 
-                src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2000&auto=format&fit=crop" 
-                alt="Agente IA Web" 
-                className="w-full h-auto object-cover"
-              />
+              <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2000&auto=format&fit=crop" alt="Agente IA Web" className="w-full h-auto object-cover" />
             </div>
           </div>
         </div>
@@ -154,10 +134,7 @@ const Services = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button 
-                  asChild
-                  className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
-                >
+                <Button asChild className="w-full bg-novativa-teal hover:bg-novativa-lightTeal">
                   <Link to="/contacto?plan=diamante">
                     Seleccionar plan
                   </Link>
@@ -196,10 +173,7 @@ const Services = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button 
-                  asChild
-                  className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
-                >
+                <Button asChild className="w-full bg-novativa-teal hover:bg-novativa-lightTeal">
                   <Link to="/contacto?plan=elite">
                     Seleccionar plan
                   </Link>
@@ -238,10 +212,7 @@ const Services = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button 
-                  asChild
-                  className="w-full bg-novativa-orange hover:bg-novativa-lightOrange"
-                >
+                <Button asChild className="w-full bg-novativa-orange hover:bg-novativa-lightOrange">
                   <Link to="/contacto?plan=starter">
                     Seleccionar plan
                   </Link>
@@ -280,14 +251,8 @@ const Services = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button 
-                  asChild
-                  variant="outline"
-                  className="w-full border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10"
-                >
-                  <Link to="/contacto?plan=demo">
-                    Probar gratis
-                  </Link>
+                <Button asChild variant="outline" className="w-full border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10">
+                  <Link to="/contacto?plan=demo">Probar Gratis</Link>
                 </Button>
               </CardFooter>
             </Card>
@@ -306,11 +271,7 @@ const Services = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1 rounded-xl overflow-hidden shadow-xl">
-              <img 
-                src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2000&auto=format&fit=crop" 
-                alt="IA para Generación de Contenido" 
-                className="w-full h-auto object-cover"
-              />
+              <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2000&auto=format&fit=crop" alt="IA para Generación de Contenido" className="w-full h-auto object-cover" />
             </div>
             
             <div className="order-1 lg:order-2">
@@ -357,10 +318,7 @@ const Services = () => {
                 </div>
               </div>
               
-              <Button
-                asChild
-                className="bg-novativa-teal hover:bg-novativa-lightTeal"
-              >
+              <Button asChild className="bg-novativa-teal hover:bg-novativa-lightTeal">
                 <Link to="/contacto">
                   Conocer más
                 </Link>
@@ -400,10 +358,7 @@ const Services = () => {
                   <span>Consultoría y mejora continua</span>
                 </li>
               </ul>
-              <Button
-                asChild
-                className="bg-novativa-teal hover:bg-novativa-lightTeal"
-              >
+              <Button asChild className="bg-novativa-teal hover:bg-novativa-lightTeal">
                 <Link to="/contacto">
                   Solicitar información
                 </Link>
@@ -436,10 +391,7 @@ const Services = () => {
                   <span>Optimización continua del rendimiento</span>
                 </li>
               </ul>
-              <Button
-                asChild
-                className="bg-novativa-orange hover:bg-novativa-lightOrange"
-              >
+              <Button asChild className="bg-novativa-orange hover:bg-novativa-lightOrange">
                 <Link to="/contacto">
                   Solicitar información
                 </Link>
@@ -456,19 +408,13 @@ const Services = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Agenda una demostración y descubre cómo nuestras soluciones pueden transformar tu empresa.
           </p>
-          <Button
-            asChild
-            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-6"
-            size="lg"
-          >
+          <Button asChild className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-6" size="lg">
             <Link to="/contacto">
               Agenda una demostración gratuita
             </Link>
           </Button>
         </div>
       </section>
-    </>
-  );
+    </>;
 };
-
 export default Services;
