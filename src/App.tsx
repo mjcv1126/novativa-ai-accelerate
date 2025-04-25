@@ -7,6 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import Services from "./pages/Services";
+import NovaChannel from "./pages/NovaChannel";
+import AIAgents from "./pages/services/AIAgents";
+import ContentGeneration from "./pages/services/ContentGeneration";
 import Pricing from "./pages/Pricing";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
@@ -29,6 +32,9 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/servicios" element={<Services />} />
+                <Route path="/servicios/novachannel" element={<NovaChannel />} />
+                <Route path="/servicios/agentes-ia" element={<AIAgents />} />
+                <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
                 <Route path="/precios" element={<Pricing />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/contacto" element={<Contact />} />
