@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Bot, MessageSquare, Video, FileText } from 'lucide-react';
+import { Bot, MessageSquare, Video, FileText, Wix, Wordpress, Shopify } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const AIAgents = () => {
@@ -53,6 +52,57 @@ const AIAgents = () => {
                 Combina contenido estático con asistentes IA para una experiencia informativa completa.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CMS Integration Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Integrable con tus plataformas favoritas</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
+                <Shopify className="w-16 h-16 text-[#96bf48]" />
+              </div>
+              <p className="mt-3 font-medium">Shopify</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
+                <Woocommerce className="w-16 h-16 text-[#96588a]" />
+              </div>
+              <p className="mt-3 font-medium">WooCommerce</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
+                <Wix className="w-16 h-16 text-black" />
+              </div>
+              <p className="mt-3 font-medium">Wix</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
+                <Wordpress className="w-16 h-16 text-[#21759b]" />
+              </div>
+              <p className="mt-3 font-medium">WordPress</p>
+            </div>
+          </div>
+          
+          <div className="max-w-3xl mx-auto mt-12 text-center">
+            <p className="text-lg text-gray-600 mb-8">
+              Nuestros agentes IA se integran perfectamente con las principales plataformas de comercio electrónico y CMS, permitiéndote mejorar la experiencia de tus clientes sin importar qué plataforma utilices.
+            </p>
+            <Button
+              asChild
+              size="lg"
+              className="bg-novativa-orange hover:bg-novativa-lightOrange"
+            >
+              <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
+                Descubre cómo integrar IA en tu plataforma
+              </a>
+            </Button>
           </div>
         </div>
       </section>
