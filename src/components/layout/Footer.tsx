@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Youtube, MapPin, Mail, Phone } from 'lucide-react';
+import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 
 const Footer = () => {
@@ -102,12 +102,17 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex">
                 <MapPin className="mr-3 text-novativa-orange flex-shrink-0" size={20} />
-                <span className="text-gray-300">San José, Costa Rica</span>
+                <span className="text-gray-300">
+                  San José, Costa Rica | Miami, Florida | San Pedro Sula, Honduras
+                </span>
               </li>
               <li className="flex">
                 <Mail className="mr-3 text-novativa-orange flex-shrink-0" size={20} />
-                <a href="mailto:info@novativa.ai" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  info@novativa.ai
+                <a 
+                  href="mailto:soporte@novativa.org" 
+                  className="text-gray-300 hover:text-novativa-lightTeal transition-colors"
+                >
+                  soporte@novativa.org
                 </a>
               </li>
               <li className="flex">
