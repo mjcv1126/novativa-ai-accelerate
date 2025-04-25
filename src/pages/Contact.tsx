@@ -1,75 +1,12 @@
-
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import React from 'react';
 import { 
   MapPin, 
   Phone, 
   Mail, 
-  Clock, 
-  CheckCircle2,
-  Loader2 
+  Clock
 } from 'lucide-react';
-import { toast } from 'sonner';
 
 const Contact = () => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const planFromUrl = queryParams.get('plan') || '';
-  const servicioFromUrl = queryParams.get('servicio') || '';
-  
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    service: servicioFromUrl || '',
-    plan: planFromUrl || '',
-    message: '',
-    submitted: false,
-    isSubmitting: false
-  });
-  
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormState(prev => ({ ...prev, [name]: value }));
-  };
-  
-  const handleSelectChange = (name: string, value: string) => {
-    setFormState(prev => ({ ...prev, [name]: value }));
-  };
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormState(prev => ({ ...prev, isSubmitting: true }));
-    
-    // Simulate form submission with a timeout
-    setTimeout(() => {
-      toast.success("¡Formulario enviado con éxito! Nos pondremos en contacto contigo pronto.");
-      setFormState(prev => ({ 
-        ...prev, 
-        isSubmitting: false, 
-        submitted: true,
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        service: '',
-        plan: '',
-        message: ''
-      }));
-    }, 1500);
-  };
-  
   return (
     <>
       <section className="pt-32 pb-16 bg-gray-50">
@@ -79,13 +16,13 @@ const Contact = () => {
               Contacta con <span className="text-novativa-teal">Novativa</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Estamos listos para ayudarte a transformar tu negocio con soluciones de inteligencia artificial.
+              Agenda una reunión con nosotros y descubre cómo podemos transformar tu negocio con soluciones de inteligencia artificial.
             </p>
           </div>
         </div>
       </section>
       
-      {/* Contact Form Section */}
+      {/* Calendar Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -161,159 +98,10 @@ const Contact = () => {
               </div>
             </div>
             
-            <div>
-              <h2 className="text-3xl font-bold mb-8">Envíanos un Mensaje</h2>
-              
-              {formState.submitted ? (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center">
-                  <div className="flex justify-center mb-4">
-                    <CheckCircle2 className="text-green-500" size={48} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-green-800 mb-2">¡Mensaje Enviado!</h3>
-                  <p className="text-green-700">
-                    Gracias por contactarnos. Hemos recibido tu mensaje y nos pondremos en contacto contigo a la brevedad posible.
-                  </p>
-                  <Button
-                    className="mt-6 bg-novativa-teal hover:bg-novativa-lightTeal"
-                    onClick={() => setFormState(prev => ({ ...prev, submitted: false }))}
-                  >
-                    Enviar otro mensaje
-                  </Button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                        Nombre Completo *
-                      </label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formState.name}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Tu nombre"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                        Email *
-                      </label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formState.email}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="tu@email.com"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                        Teléfono
-                      </label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        value={formState.phone}
-                        onChange={handleInputChange}
-                        placeholder="+506 1234-5678"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
-                        Empresa
-                      </label>
-                      <Input
-                        id="company"
-                        name="company"
-                        value={formState.company}
-                        onChange={handleInputChange}
-                        placeholder="Nombre de tu empresa"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">
-                        Servicio de interés
-                      </label>
-                      <Select
-                        value={formState.service}
-                        onValueChange={(value) => handleSelectChange('service', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecciona un servicio" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="agente-ia-web">Agente IA Web</SelectItem>
-                          <SelectItem value="agentes-ia-novachannel">Agentes IA + NovaChannel</SelectItem>
-                          <SelectItem value="generacion-contenido">IA para Generación de Contenido</SelectItem>
-                          <SelectItem value="desarrollo-ia">Desarrollo con IA</SelectItem>
-                          <SelectItem value="agentes-autonomos">Agentes Autónomos</SelectItem>
-                          <SelectItem value="otro">Otro</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <label htmlFor="plan" className="block text-sm font-medium text-gray-700 mb-1">
-                        Plan de interés
-                      </label>
-                      <Select
-                        value={formState.plan}
-                        onValueChange={(value) => handleSelectChange('plan', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecciona un plan" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="diamante">Diamante</SelectItem>
-                          <SelectItem value="elite">Elite</SelectItem>
-                          <SelectItem value="starter">Starter</SelectItem>
-                          <SelectItem value="demo">Demo</SelectItem>
-                          <SelectItem value="personalizado">Personalizado</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                      Mensaje *
-                    </label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formState.message}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="¿Cómo podemos ayudarte?"
-                      rows={5}
-                    />
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-novativa-orange hover:bg-novativa-lightOrange"
-                    disabled={formState.isSubmitting}
-                    size="lg"
-                  >
-                    {formState.isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...
-                      </>
-                    ) : (
-                      "Enviar Mensaje"
-                    )}
-                  </Button>
-                </form>
-              )}
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <h2 className="text-3xl font-bold mb-6 text-center">Agenda una Reunión</h2>
+              <div className="tidycal-embed" data-path="mar-1126/15-minute-meeting"></div>
+              <script src="https://asset-tidycal.b-cdn.net/js/embed.js" async></script>
             </div>
           </div>
         </div>
@@ -351,15 +139,12 @@ const Contact = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Programa una demostración gratuita y descubre cómo Novativa puede transformar tu negocio.
           </p>
-          <Button
-            asChild
-            className="bg-white text-novativa-orange hover:bg-gray-100"
-            size="lg"
+          <a 
+            href="tel:+50622222222"
+            className="inline-flex items-center gap-2 bg-white text-novativa-orange hover:bg-gray-100 px-6 py-3 rounded-md font-medium transition-colors"
           >
-            <a href="tel:+50622222222">
-              <Phone className="mr-2 h-5 w-5" /> Llámanos ahora
-            </a>
-          </Button>
+            <Phone className="h-5 w-5" /> Llámanos ahora
+          </a>
         </div>
       </section>
     </>

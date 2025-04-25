@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -97,7 +96,7 @@ const Services = () => {
                 className="bg-novativa-teal hover:bg-novativa-lightTeal"
               >
                 <Link to="/contacto">
-                  Solicita información
+                  Agenda una demostración
                 </Link>
               </Button>
             </div>
@@ -455,7 +454,7 @@ const Services = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">¿Listo para impulsar tu negocio con IA?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Contáctanos hoy mismo para una consulta personalizada y descubre cómo nuestras soluciones pueden transformar tu empresa.
+            Agenda una demostración y descubre cómo nuestras soluciones pueden transformar tu empresa.
           </p>
           <Button
             asChild
@@ -463,7 +462,7 @@ const Services = () => {
             size="lg"
           >
             <Link to="/contacto">
-              Solicita una consulta gratuita
+              Agenda una demostración gratuita
             </Link>
           </Button>
         </div>
