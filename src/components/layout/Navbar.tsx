@@ -32,12 +32,11 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/95 shadow-md backdrop-blur-sm py-3' : 'bg-transparent py-5'
-      }`}
-    >
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      isScrolled ? 'bg-white/95 shadow-md backdrop-blur-sm py-3' : 'bg-transparent py-5'
+    }`}>
       <div className="container mx-auto flex justify-between items-center">
+        {/* Logo */}
         <Link to="/" className="flex items-center">
           <img 
             src="/lovable-uploads/9cce1d6a-72e1-493f-bb16-901571c7e858.png" 
@@ -55,7 +54,9 @@ const Navbar = () => {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-gray-800 hover:text-novativa-teal font-medium">
+                <NavigationMenuTrigger 
+                  className="text-gray-800 hover:text-[#bc3e06] focus:text-[#bc3e06] font-medium data-[state=open]:text-[#bc3e06]"
+                >
                   Servicios
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -64,7 +65,7 @@ const Navbar = () => {
                       <NavigationMenuLink asChild>
                         <Link
                           to="/servicios/novachannel"
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-novativa-teal/50 to-novativa-teal p-6 no-underline outline-none focus:shadow-md"
+                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-[#bc3e06] to-novativa-orange p-6 no-underline outline-none focus:shadow-md"
                         >
                           <div className="mb-2 mt-4 text-lg font-medium text-white">
                             NovaChannel
@@ -79,7 +80,7 @@ const Navbar = () => {
                       <NavigationMenuLink asChild>
                         <Link
                           to="/servicios/agentes-ia"
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground"
                         >
                           <div className="text-sm font-medium">Agentes IA Web</div>
                           <p className="text-sm leading-snug text-muted-foreground">
@@ -92,11 +93,24 @@ const Navbar = () => {
                       <NavigationMenuLink asChild>
                         <Link
                           to="/servicios/generacion-contenido"
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground"
                         >
                           <div className="text-sm font-medium">Generación de Contenido</div>
                           <p className="text-sm leading-snug text-muted-foreground">
                             Creación automática de contenido con IA
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/servicios/desarrollo-ia"
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground"
+                        >
+                          <div className="text-sm font-medium">Desarrollo IA</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            Soluciones personalizadas con IA
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -155,24 +169,31 @@ const Navbar = () => {
               <div className="ml-4 space-y-2">
                 <Link 
                   to="/servicios/novachannel" 
-                  className="block text-gray-600 hover:text-novativa-teal"
+                  className="block text-gray-600 hover:text-[#bc3e06]"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   NovaChannel
                 </Link>
                 <Link 
                   to="/servicios/agentes-ia" 
-                  className="block text-gray-600 hover:text-novativa-teal"
+                  className="block text-gray-600 hover:text-[#bc3e06]"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Agentes IA Web
                 </Link>
                 <Link 
                   to="/servicios/generacion-contenido" 
-                  className="block text-gray-600 hover:text-novativa-teal"
+                  className="block text-gray-600 hover:text-[#bc3e06]"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Generación de Contenido
+                </Link>
+                <Link 
+                  to="/servicios/desarrollo-ia" 
+                  className="block text-gray-600 hover:text-[#bc3e06]"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Desarrollo IA
                 </Link>
               </div>
             </div>

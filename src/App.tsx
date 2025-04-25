@@ -10,6 +10,7 @@ import Services from "./pages/Services";
 import NovaChannel from "./pages/NovaChannel";
 import AIAgents from "./pages/services/AIAgents";
 import ContentGeneration from "./pages/services/ContentGeneration";
+import IADevelopment from "./pages/services/IADevelopment";
 import Pricing from "./pages/Pricing";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
@@ -35,6 +36,7 @@ const App = () => (
                 <Route path="/servicios/novachannel" element={<NovaChannel />} />
                 <Route path="/servicios/agentes-ia" element={<AIAgents />} />
                 <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
+                <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
                 <Route path="/precios" element={<Pricing />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/contacto" element={<Contact />} />
