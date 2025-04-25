@@ -217,7 +217,7 @@ const Home = () => {
               <div className="flex items-center">
                 <div className="mr-4 w-12 h-12 overflow-hidden rounded-full">
                   <img 
-                    src="photo-1581092795360-fd1ca04f0952"
+                    src="/lovable-uploads/55c23136-5363-4c7b-ac4c-01885275003c.png"
                     alt="Ricardo Morales"
                     className="w-full h-full object-cover"
                   />
@@ -243,7 +243,7 @@ const Home = () => {
               <div className="flex items-center">
                 <div className="mr-4 w-12 h-12 overflow-hidden rounded-full">
                   <img 
-                    src="photo-1581091226825-a6a2a5aee158"
+                    src="/lovable-uploads/02884ca4-d39e-4795-ba4f-4b86ae9f8861.png"
                     alt="Laura González"
                     className="w-full h-full object-cover"
                   />
@@ -269,7 +269,7 @@ const Home = () => {
               <div className="flex items-center">
                 <div className="mr-4 w-12 h-12 overflow-hidden rounded-full">
                   <img 
-                    src="photo-1501286353178-1ec871214838"
+                    src="/lovable-uploads/de2f2e10-b891-4730-8f92-9a0b82f33dc8.png"
                     alt="Carlos Jiménez"
                     className="w-full h-full object-cover"
                   />
