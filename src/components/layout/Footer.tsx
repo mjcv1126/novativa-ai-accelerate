@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { Facebook, Instagram, Youtube } from 'lucide-react';
+import { TiktokIcon } from '@/components/shared/TiktokIcon';
 
 const Footer = () => {
   return (
@@ -11,7 +11,7 @@ const Footer = () => {
           <div>
             <Link to="/" className="inline-block mb-6">
               <img 
-                src="/lovable-uploads/4ca26889-5685-42df-b0a0-4032951f24ee.png" 
+                src="/lovable-uploads/b9aa957e-08c9-4897-9b8d-153e6c596fd5.png" 
                 alt="Novativa Logo" 
                 className="h-16 w-auto"
               />
@@ -20,17 +20,17 @@ const Footer = () => {
               Aceleramos tu negocio con soluciones de IA y automatización personalizadas.
             </p>
             <div className="flex space-x-4">
-              <a href="https://facebook.com" aria-label="Facebook" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
+              <a href="https://www.facebook.com/novativa" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="https://twitter.com" aria-label="Twitter" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                <Twitter size={20} />
-              </a>
-              <a href="https://instagram.com" aria-label="Instagram" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
+              <a href="https://www.instagram.com/novativa" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="https://linkedin.com" aria-label="LinkedIn" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                <Linkedin size={20} />
+              <a href="https://www.tiktok.com/@novativa" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
+                <TiktokIcon className="w-5 h-5" />
+              </a>
+              <a href="https://www.youtube.com/@novativa" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
+                <Youtube size={20} />
               </a>
             </div>
           </div>
