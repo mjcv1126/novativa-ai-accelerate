@@ -6,28 +6,49 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet-async';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email('El email no es válido'),
+  password: z.string().min(1, 'La contraseña es requerida'),
+});
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAdminAuth();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
 
     try {
-      const { error } = await login(email, password);
+      const { error } = await login(values.email, values.password);
       if (error) {
         toast({
           title: 'Error de inicio de sesión',
           description: 'Por favor verifica tus credenciales e intenta de nuevo.',
           variant: 'destructive',
         });
+        console.error('Login error:', error);
+      } else {
+        toast({
+          title: 'Inicio de sesión exitoso',
+          description: 'Bienvenido al panel admin.',
+        });
       }
     } catch (error) {
+      console.error('Unexpected error:', error);
       toast({
         title: 'Error',
         description: 'Ha ocurrido un error. Por favor intenta de nuevo.',
@@ -57,45 +78,54 @@ const AdminLogin = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="email">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="tu@email.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="tu@email.com" 
+                          type="email" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="password">
-                  Contraseña
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contraseña</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="password" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-            </form>
+                <Button 
+                  type="submit"
+                  className="w-full bg-novativa-teal hover:bg-novativa-lightTeal mt-4" 
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+                </Button>
+              </form>
+            </Form>
           </CardContent>
-          <CardFooter>
-            <Button 
-              className="w-full bg-novativa-teal hover:bg-novativa-lightTeal" 
-              disabled={isLoading} 
-              onClick={handleSubmit}
-            >
-              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
+        </CardContent>
+      </Card>
+    </div>
     </>
   );
 };

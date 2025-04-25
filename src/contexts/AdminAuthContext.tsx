@@ -7,6 +7,10 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = window.env?.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = window.env?.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
+// Define the hardcoded admin credentials
+const ADMIN_EMAIL = 'soporte@novativa.org';
+const ADMIN_PASSWORD = 'Novativa2025$';
+
 // Make sure we have a URL before creating the client
 const supabase = supabaseUrl 
   ? createClient(supabaseUrl, supabaseAnonKey)
@@ -66,10 +70,33 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const login = async (email: string, password: string) => {
     try {
+      // Fallback authentication when Supabase is not configured
       if (!supabase) {
-        return { error: new Error('Supabase is not properly configured') };
+        setIsLoading(true);
+        
+        // Check if credentials match hardcoded admin values
+        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+          // Set a mock user object
+          const mockUser = {
+            id: '1',
+            email: ADMIN_EMAIL,
+            role: 'admin'
+          };
+          
+          // Store in localStorage to persist session
+          localStorage.setItem('admin_user', JSON.stringify(mockUser));
+          
+          setUser(mockUser);
+          setIsLoading(false);
+          navigate('/admin');
+          return { error: null };
+        } else {
+          setIsLoading(false);
+          return { error: { message: 'Credenciales incorrectas' } };
+        }
       }
       
+      // If Supabase is configured, use it for authentication
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (!error) {
         navigate('/admin');
@@ -83,9 +110,24 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const logout = async () => {
     if (supabase) {
       await supabase.auth.signOut();
+    } else {
+      // Clear local storage for fallback authentication
+      localStorage.removeItem('admin_user');
+      setUser(null);
     }
     navigate('/admin/login');
   };
+
+  // Check for stored user on load when no Supabase
+  useEffect(() => {
+    if (!supabase && !user) {
+      const storedUser = localStorage.getItem('admin_user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+      setIsLoading(false);
+    }
+  }, [user]);
 
   return (
     <AdminAuthContext.Provider
