@@ -6,6 +6,7 @@ import {
   Clock,
   Calendar
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Contact = () => {
   return (
@@ -23,7 +24,6 @@ const Contact = () => {
         </div>
       </section>
       
-      {/* Calendar Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -47,7 +47,14 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg mb-1">Teléfono</h3>
-                    <p className="text-gray-600">+506 2222-2222</p>
+                    <a 
+                      href="https://api.whatsapp.com/send?phone=50432142996" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+                    >
+                      +504 3214-2996
+                    </a>
                   </div>
                 </div>
                 
@@ -107,7 +114,6 @@ const Contact = () => {
         </div>
       </section>
       
-      {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-novativa-orange to-novativa-lightOrange text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">¿Listo para descubrir el potencial de la IA?</h2>
