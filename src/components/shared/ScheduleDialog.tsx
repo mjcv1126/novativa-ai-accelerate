@@ -1,5 +1,6 @@
 
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -12,9 +13,12 @@ interface ScheduleDialogProps {
   variant?: "default" | "outline" | "secondary" | "destructive" | "ghost" | "link";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
+  toPricing?: boolean;
 }
 
-const ScheduleDialog = ({ children, variant, size, className }: ScheduleDialogProps) => {
+const ScheduleDialog = ({ children, variant, size, className, toPricing }: ScheduleDialogProps) => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const loadTidyCal = () => {
       const script = document.createElement('script');
@@ -29,10 +33,21 @@ const ScheduleDialog = ({ children, variant, size, className }: ScheduleDialogPr
     return loadTidyCal();
   }, []);
 
+  const handleClick = () => {
+    if (toPricing) {
+      navigate('/precios');
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={variant} size={size} className={className}>
+        <Button 
+          variant={variant} 
+          size={size} 
+          className={className}
+          onClick={handleClick}
+        >
           {children}
         </Button>
       </DialogTrigger>
