@@ -26,12 +26,12 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
           </a>
         );
       }
-      // Add spacing between sentences
+      // Add spacing between sentences - using a regular span instead of Fragment to avoid React warnings
       return part.split('. ').map((sentence, i) => (
-        <React.Fragment key={i}>
+        <span key={i}>
           {i > 0 && '. '}
           {sentence}
-        </React.Fragment>
+        </span>
       ));
     });
   };
