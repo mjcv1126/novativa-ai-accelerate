@@ -22,6 +22,7 @@ const CTA = () => {
               variant="outline"
               className="border-white text-gray-600 hover:bg-white hover:text-novativa-teal px-6 py-6"
               size="lg"
+              toPricing={true}
             >
               Ver planes y precios
             </ScheduleDialog>
