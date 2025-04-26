@@ -48,149 +48,6 @@ const IACoding = () => {
         </div>
       </section>
 
-      {/* Features Grid with Hover Effects */}
-      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Zap className="text-novativa-teal h-8 w-8" />,
-                title: "Desarrollo Ultra Rápido",
-                description: "Reducimos tiempos de desarrollo hasta en un 70% con IA"
-              },
-              {
-                icon: <Code className="text-novativa-orange h-8 w-8" />,
-                title: "Código Inteligente",
-                description: "Soluciones innovadoras usando las últimas tecnologías"
-              },
-              {
-                icon: <Star className="text-yellow-400 h-8 w-8" />,
-                title: "Calidad Garantizada",
-                description: "Apps elegantes y confiables a una fracción del costo"
-              }
-            ].map((feature, index) => (
-              <div 
-                key={index}
-                className="group relative p-8 rounded-xl overflow-hidden transition-all duration-300 hover:scale-105"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 opacity-50 group-hover:opacity-80 transition-opacity" />
-                <div className="absolute inset-0 bg-novativa-teal/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10">
-                  <div className="bg-black/30 p-4 rounded-full w-fit mb-6">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
-                  <p className="text-gray-300">
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* App Examples Section */}
-      <section className="py-20 bg-black relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/10 to-novativa-orange/10 opacity-20" />
-        <div className="container mx-auto px-4 relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
-            Apps Creadas con IA
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Smartphone className="text-novativa-teal h-8 w-8" />,
-                title: "Delivery App",
-                description: "Sistema completo de delivery con tracking en tiempo real, pagos y notificaciones"
-              },
-              {
-                icon: <Users className="text-novativa-orange h-8 w-8" />,
-                title: "Red Social",
-                description: "Plataforma social con perfiles, posts, comentarios y mensajería instantánea"
-              },
-              {
-                icon: <Calendar className="text-yellow-400 h-8 w-8" />,
-                title: "Sistema de Reservas",
-                description: "Gestión de citas y reservas con calendarios sincronizados y recordatorios"
-              }
-            ].map((example, index) => (
-              <div 
-                key={index}
-                className="relative p-8 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-800 hover:border-novativa-teal/50 transition-all duration-300 group"
-              >
-                <div className="bg-black/30 p-4 rounded-full w-fit mb-6">
-                  {example.icon}
-                </div>
-                <h3 className="text-2xl font-bold mb-4">{example.title}</h3>
-                <p className="text-gray-300 mb-6">
-                  {example.description}
-                </p>
-                <Button 
-                  className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
-                  onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  <Rocket className="mr-2 h-5 w-5" />
-                  Crea tu App
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
-            Beneficios del Desarrollo con IA
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                title: "Desarrollo Ultra Rápido",
-                description: "Reducimos tiempos hasta en un 70% con IA"
-              },
-              {
-                title: "Costos Optimizados",
-                description: "Ahorra hasta un 60% en costos de desarrollo"
-              },
-              {
-                title: "Alta Calidad",
-                description: "Código limpio y mantenible generado por IA"
-              },
-              {
-                title: "Innovación Constante",
-                description: "Siempre usando las últimas tecnologías"
-              }
-            ].map((benefit, index) => (
-              <div 
-                key={index}
-                className="p-6 rounded-xl bg-gradient-to-br from-gray-800/30 to-gray-900/30 border border-gray-800 hover:border-novativa-orange/50 transition-all duration-300"
-              >
-                <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-                  {benefit.title}
-                </h3>
-                <p className="text-gray-300">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <Button 
-              size="lg"
-              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-10 py-8"
-              onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              <Star className="mr-2 h-6 w-6" />
-              ¡Comienza Tu Proyecto Ahora!
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Pricing Comparison with Animation */}
       <section className="py-20 bg-black relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/10 via-transparent to-novativa-orange/10 opacity-30" />
@@ -253,16 +110,183 @@ const IACoding = () => {
         </div>
       </section>
 
-      {/* Schedule Section */}
+      {/* App Examples Section with Visual Cards */}
+      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+            Apps Creadas con IA
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: "EduConnect Pro",
+                description: "Sistema completo de gestión escolar con calificaciones en tiempo real, comunicación padres-maestros y seguimiento de asistencia",
+                image: "https://images.unsplash.com/photo-1497493292307-31c376b6e479?auto=format&fit=crop&q=80&w=1000",
+                features: ["Gestión de calificaciones", "Chat en tiempo real", "Control de asistencia", "Portal para padres"]
+              },
+              {
+                title: "DeliverPro",
+                description: "Sistema de delivery con tracking en tiempo real, gestión de pedidos y notificaciones automáticas",
+                image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&q=80&w=1000",
+                features: ["GPS en tiempo real", "Gestión de pedidos", "Panel de control", "Analytics avanzado"]
+              },
+              {
+                title: "TourBooking",
+                description: "Plataforma de reservas turísticas con calendario dinámico y pagos integrados",
+                image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1000",
+                features: ["Reservas online", "Pagos seguros", "Sistema de reseñas", "Panel admin"]
+              },
+              {
+                title: "MediCare Hub",
+                description: "Sistema de gestión de pacientes para clínicas y consultorios médicos",
+                image: "https://images.unsplash.com/photo-1504813184591-01572f98c85f?auto=format&fit=crop&q=80&w=1000",
+                features: ["Historial médico", "Citas online", "Recetas digitales", "Telemedicina"]
+              }
+            ].map((app, index) => (
+              <div 
+                key={index}
+                className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-1"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative p-6">
+                  <div className="h-48 mb-6 overflow-hidden rounded-lg">
+                    <img 
+                      src={app.image} 
+                      alt={app.title}
+                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
+                    {app.title}
+                  </h3>
+                  <p className="text-gray-300 mb-4">
+                    {app.description}
+                  </p>
+                  <ul className="space-y-2">
+                    {app.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center">
+                        <div className="w-2 h-2 rounded-full bg-novativa-teal mr-2"></div>
+                        <span className="text-sm text-gray-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button 
+                    className="w-full mt-6 bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90"
+                    onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    Crear App Similar
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid with Hover Effects */}
+      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Zap className="text-novativa-teal h-8 w-8" />,
+                title: "Desarrollo Ultra Rápido",
+                description: "Reducimos tiempos de desarrollo hasta en un 70% con IA"
+              },
+              {
+                icon: <Code className="text-novativa-orange h-8 w-8" />,
+                title: "Código Inteligente",
+                description: "Soluciones innovadoras usando las últimas tecnologías"
+              },
+              {
+                icon: <Star className="text-yellow-400 h-8 w-8" />,
+                title: "Calidad Garantizada",
+                description: "Apps elegantes y confiables a una fracción del costo"
+              }
+            ].map((feature, index) => (
+              <div 
+                key={index}
+                className="group relative p-8 rounded-xl overflow-hidden transition-all duration-300 hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 opacity-50 group-hover:opacity-80 transition-opacity" />
+                <div className="absolute inset-0 bg-novativa-teal/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative z-10">
+                  <div className="bg-black/30 p-4 rounded-full w-fit mb-6">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+                  <p className="text-gray-300">
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+            Beneficios del Desarrollo con IA
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                title: "Desarrollo Ultra Rápido",
+                description: "Reducimos tiempos hasta en un 70% con IA"
+              },
+              {
+                title: "Costos Optimizados",
+                description: "Ahorra hasta un 60% en costos de desarrollo"
+              },
+              {
+                title: "Alta Calidad",
+                description: "Código limpio y mantenible generado por IA"
+              },
+              {
+                title: "Innovación Constante",
+                description: "Siempre usando las últimas tecnologías"
+              }
+            ].map((benefit, index) => (
+              <div 
+                key={index}
+                className="p-6 rounded-xl bg-gradient-to-br from-gray-800/30 to-gray-900/30 border border-gray-800 hover:border-novativa-orange/50 transition-all duration-300"
+              >
+                <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
+                  {benefit.title}
+                </h3>
+                <p className="text-gray-300">
+                  {benefit.description}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-12">
+            <Button 
+              size="lg"
+              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-10 py-8"
+              onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              <Star className="mr-2 h-6 w-6" />
+              ¡Comienza Tu Proyecto Ahora!
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Schedule Section with Updated Title */}
       <section id="schedule" className="py-20 bg-black relative">
         <div className="absolute inset-0 bg-gradient-to-t from-novativa-teal/10 to-transparent" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              ¿Listo para Revolucionar tu Idea?
+              ¿Listo para darle vida a tu idea?
             </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Agenda una demo gratuita y descubre cómo la IA puede transformar tu visión en realidad
+              Agenda una videollamada y cuéntanos un poco de tu idea y juntos lo traemos a la vida
             </p>
           </div>
           
