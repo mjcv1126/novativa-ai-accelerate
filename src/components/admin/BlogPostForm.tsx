@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -5,10 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Select,
@@ -19,7 +17,8 @@ import {
 } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
-import { BlogPost, getCategories } from '@/data/blogPosts';
+import { BlogPost } from '@/data/blogPosts';
+import { useAdminData } from '@/contexts/AdminDataContext';
 
 interface BlogPostFormProps {
   post?: BlogPost;
@@ -28,9 +27,10 @@ interface BlogPostFormProps {
 }
 
 const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSubmit, onCancel }) => {
+  const { categories } = useAdminData();
   const [title, setTitle] = useState(post?.title || '');
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
-  const [author, setAuthor] = useState(post?.author || '');
+  const [author, setAuthor] = useState(post?.author || 'Marlon Caballero');
   const [date, setDate] = useState(post?.date || new Date().toLocaleDateString());
   const [category, setCategory] = useState(post?.category || '');
   const [status, setStatus] = useState<'Publicado' | 'Borrador'>(post?.status as 'Publicado' | 'Borrador' || 'Borrador');
@@ -38,7 +38,6 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSubmit, onCancel })
   const [seoDescription, setSeoDescription] = useState(post?.seoDescription || '');
   const [tags, setTags] = useState<string[]>(post?.tags || []);
   const [newTag, setNewTag] = useState('');
-  const categories = getCategories();
 
   const handleAddTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
@@ -65,6 +64,14 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSubmit, onCancel })
       tags,
     });
   };
+
+  // Validar que las categorías disponibles incluyan la categoría actual
+  useEffect(() => {
+    if (category && categories.length > 0 && !categories.some(c => c.name === category)) {
+      // Si la categoría actual no está en la lista, seleccionar la primera categoría
+      setCategory(categories[0].name);
+    }
+  }, [category, categories]);
 
   return (
     <Card className="p-6">
@@ -114,8 +121,8 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSubmit, onCancel })
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
+                    <SelectItem key={cat.id} value={cat.name}>
+                      {cat.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -198,4 +205,4 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSubmit, onCancel })
   );
 };
 
-export default BlogPostForm; 
+export default BlogPostForm;

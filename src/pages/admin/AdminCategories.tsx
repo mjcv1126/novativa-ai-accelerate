@@ -11,21 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from '@/components/ui/badge';
-import { Check, Edit, Plus, Save, Trash, X } from 'lucide-react';
+import { Check, Edit, Eye, Plus, Trash, X } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-
-const initialCategories = [
-  { id: 1, name: "Inteligencia Artificial", postCount: 14, slug: "inteligencia-artificial" },
-  { id: 2, name: "Automatización", postCount: 8, slug: "automatizacion" },
-  { id: 3, name: "Agentes IA", postCount: 6, slug: "agentes-ia" },
-  { id: 4, name: "Marketing Digital", postCount: 5, slug: "marketing-digital" },
-  { id: 5, name: "Generación de Contenido", postCount: 4, slug: "generacion-de-contenido" },
-  { id: 6, name: "Transformación Digital", postCount: 3, slug: "transformacion-digital" },
-  { id: 7, name: "Novachannel", postCount: 10, slug: "novachannel" }
-];
+import { useAdminData } from '@/contexts/AdminDataContext';
+import { Link } from 'react-router-dom';
 
 const AdminCategories = () => {
-  const [categories, setCategories] = useState(initialCategories);
+  const { categories, addCategory, updateCategory, deleteCategory } = useAdminData();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editName, setEditName] = useState('');
   const [newCategory, setNewCategory] = useState('');
@@ -38,37 +30,27 @@ const AdminCategories = () => {
 
   const handleSave = (id: number) => {
     if (editName.trim() !== '') {
-      setCategories(categories.map(cat => 
-        cat.id === id ? { 
-          ...cat, 
-          name: editName, 
-          slug: editName.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        } : cat
-      ));
+      updateCategory(id, editName);
       setEditingId(null);
       setEditName('');
     }
   };
 
   const handleDelete = (id: number) => {
-    setCategories(categories.filter(cat => cat.id !== id));
+    deleteCategory(id);
   };
 
   const handleAddCategory = () => {
     if (newCategory.trim() !== '') {
-      const newId = Math.max(...categories.map(cat => cat.id)) + 1;
-      const newSlug = newCategory
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
-
-      setCategories([...categories, {
-        id: newId,
+      addCategory({
         name: newCategory,
         postCount: 0,
-        slug: newSlug
-      }]);
+        slug: newCategory
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+      });
       setNewCategory('');
       setShowNewForm(false);
     }
@@ -78,6 +60,9 @@ const AdminCategories = () => {
     <>
       <Helmet>
         <title>Administrar Categorías | Novativa</title>
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </Helmet>
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -183,6 +168,14 @@ const AdminCategories = () => {
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
+                    <Link to={`/blog/categoria/${category.slug}`} target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Link>
                     <Button 
                       variant="ghost" 
                       size="icon"

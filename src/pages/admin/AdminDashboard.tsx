@@ -4,12 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FileText, Tag } from 'lucide-react';
 import RecentPostsTable from '@/components/admin/RecentPostsTable';
 import { Helmet } from 'react-helmet-async';
+import { useAdminData } from '@/contexts/AdminDataContext';
 
 const AdminDashboard = () => {
+  const { posts, categories } = useAdminData();
+  const publishedPosts = posts.filter(post => post.status === 'Publicado');
+
   return (
     <>
       <Helmet>
         <title>Dashboard Admin | Novativa</title>
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </Helmet>
       <div className="space-y-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -17,13 +24,13 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <StatCard 
             title="Posts Publicados" 
-            value="30" 
+            value={publishedPosts.length.toString()} 
             description="Posts disponibles en el blog" 
             icon={<FileText className="h-5 w-5 text-novativa-orange" />} 
           />
           <StatCard 
             title="Categorías" 
-            value="7" 
+            value={categories.length.toString()} 
             description="Categorías principales" 
             icon={<Tag className="h-5 w-5 text-purple-500" />} 
           />
