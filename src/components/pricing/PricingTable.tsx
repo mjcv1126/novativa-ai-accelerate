@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Check, HelpCircle } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -16,7 +17,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Badge } from "@/components/ui/badge";
+import { FavoriteBadge } from './FavoriteBadge';
+import { PricingBanner } from './PricingBanner';
+import { InstallationNotes } from './InstallationNotes';
+import { PricingTableRow } from './PricingTableRow';
 import { PlatformIcons } from './PlatformIcons';
 
 type PricingTableProps = {
@@ -26,97 +30,56 @@ type PricingTableProps = {
 const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
   return (
     <div className="relative overflow-x-auto rounded-lg border">
-      <div className="absolute z-10 left-1/2 transform -translate-x-1/2 -top-4">
-        <Badge 
-          className="bg-novativa-orange text-white px-3 py-1 rounded-full text-xs font-semibold 
-            shadow-md hover:bg-novativa-orange/90 transition-all"
-        >
-          Favorito
-        </Badge>
-      </div>
-      
-      {billingCycle === 'annual' && (
-        <div className="bg-green-100 text-green-800 text-center py-2 text-sm">
-          ¡Paga anualmente y obtén la instalación GRATIS! Ahorra $100 USD
-        </div>
-      )}
+      <FavoriteBadge />
+      <PricingBanner billingCycle={billingCycle} />
       
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50">
             <TableHead className="w-1/5">Característica</TableHead>
             <TableHead className="text-center">Diamante</TableHead>
-            <TableHead className="text-center relative">
-              Elite
-            </TableHead>
+            <TableHead className="text-center relative">Elite</TableHead>
             <TableHead className="text-center">Starter</TableHead>
             <TableHead className="text-center">Demo</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">Usuarios Activos / Mes</TableCell>
-            <TableCell className="text-center">14,000</TableCell>
-            <TableCell className="text-center">5,000</TableCell>
-            <TableCell className="text-center">3,000</TableCell>
-            <TableCell className="text-center">50</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Bots/Flujos Automatizados</TableCell>
-            <TableCell className="text-center">20</TableCell>
-            <TableCell className="text-center">15</TableCell>
-            <TableCell className="text-center">10</TableCell>
-            <TableCell className="text-center">5</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Creación de Formularios y Bloques</TableCell>
-            <TableCell className="text-center">Ilimitados</TableCell>
-            <TableCell className="text-center">Ilimitados</TableCell>
-            <TableCell className="text-center">Ilimitados</TableCell>
-            <TableCell className="text-center">Ilimitados</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">NovaChannel: OmniChannel LiveChat</TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Webhooks y API's Disponible</TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Agentes para LiveChat</TableCell>
-            <TableCell className="text-center">5</TableCell>
-            <TableCell className="text-center">3</TableCell>
-            <TableCell className="text-center">2</TableCell>
-            <TableCell className="text-center">N/A</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Usuarios Administradores</TableCell>
-            <TableCell className="text-center">3</TableCell>
-            <TableCell className="text-center">2</TableCell>
-            <TableCell className="text-center">1</TableCell>
-            <TableCell className="text-center">N/A</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Historial de Chat</TableCell>
-            <TableCell className="text-center">65 días</TableCell>
-            <TableCell className="text-center">65 días</TableCell>
-            <TableCell className="text-center">65 días</TableCell>
-            <TableCell className="text-center">15 días</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Onboarding de Implementación</TableCell>
-            <TableCell className="text-center">1 hora</TableCell>
-            <TableCell className="text-center">1 hora</TableCell>
-            <TableCell className="text-center">N/A</TableCell>
-            <TableCell className="text-center">N/A</TableCell>
-          </TableRow>
+          <PricingTableRow 
+            feature="Usuarios Activos / Mes"
+            values={['14,000', '5,000', '3,000', '50']}
+          />
+          <PricingTableRow 
+            feature="Bots/Flujos Automatizados"
+            values={['20', '15', '10', '5']}
+          />
+          <PricingTableRow 
+            feature="Creación de Formularios y Bloques"
+            values={['Ilimitados', 'Ilimitados', 'Ilimitados', 'Ilimitados']}
+          />
+          <PricingTableRow 
+            feature="NovaChannel: OmniChannel LiveChat"
+            values={[true, true, true, true]}
+          />
+          <PricingTableRow 
+            feature="Webhooks y API's Disponible"
+            values={[true, true, true, true]}
+          />
+          <PricingTableRow 
+            feature="Agentes para LiveChat"
+            values={['5', '3', '2', 'N/A']}
+          />
+          <PricingTableRow 
+            feature="Usuarios Administradores"
+            values={['3', '2', '1', 'N/A']}
+          />
+          <PricingTableRow 
+            feature="Historial de Chat"
+            values={['65 días', '65 días', '65 días', '15 días']}
+          />
+          <PricingTableRow 
+            feature="Onboarding de Implementación"
+            values={['1 hora', '1 hora', 'N/A', 'N/A']}
+          />
           
           <TableRow>
             <TableCell className="font-medium">
@@ -140,12 +103,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
               </div>
               <PlatformIcons />
             </TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
+            <TableCell className="text-center text-green-500">
+              <Check className="mx-auto" size={18} />
+            </TableCell>
+            <TableCell className="text-center text-green-500">
+              <Check className="mx-auto" size={18} />
+            </TableCell>
+            <TableCell className="text-center text-green-500">
+              <Check className="mx-auto" size={18} />
+            </TableCell>
+            <TableCell className="text-center text-green-500">
+              <Check className="mx-auto" size={18} />
+            </TableCell>
           </TableRow>
-          
+
           <TableRow>
             <TableCell className="font-medium">Precio Mensual</TableCell>
             <TableCell className="text-center">
@@ -218,15 +189,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
         </TableBody>
       </Table>
       
-      <div className="mt-4 p-4 bg-gray-50 text-sm text-gray-600 space-y-2 rounded-b-lg border-t">
-        {billingCycle === 'annual' && (
-          <p className="text-green-700 font-semibold">
-            • ¡Instalación GRATIS por pago anual! (Ahorro de $100 USD)
-          </p>
-        )}
-        <p>• La integración tiene un costo de instalación único de $100 USD.</p>
-        <p>• Los precios no incluyen costos de API de OpenAI u otras plataformas en caso de ser requeridas.</p>
-      </div>
+      <InstallationNotes billingCycle={billingCycle} />
     </div>
   );
 };
