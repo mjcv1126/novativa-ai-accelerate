@@ -1,11 +1,9 @@
-
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   FileText, 
   Tag, 
-  BarChart, 
   Code, 
   LogOut
 } from 'lucide-react';
@@ -28,9 +26,8 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { title: 'Dashboard', path: '/admin', icon: LayoutDashboard },
-  { title: 'Posts', path: '/admin/posts', icon: FileText },
+  { title: 'Posts', path: '/admin/blog', icon: FileText },
   { title: 'Categorías', path: '/admin/categories', icon: Tag },
-  { title: 'Analítica', path: '/admin/analytics', icon: BarChart },
   { title: 'Scripts', path: '/admin/scripts', icon: Code },
 ];
 

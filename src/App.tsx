@@ -56,7 +56,6 @@ function App() {
               </ProtectedRoute>
             }>
               <Route index element={<AdminDashboard />} />
-              <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="blog" element={<AdminBlogPosts />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="scripts" element={<AdminScripts />} />
