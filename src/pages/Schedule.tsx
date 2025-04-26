@@ -20,6 +20,20 @@ const Schedule = () => {
       sessionStorage.removeItem('schedulePageLoaded');
     };
   }, []);
+  
+  useEffect(() => {
+    // Ensure the Tidycal script is loaded
+    const script = document.createElement('script');
+    script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleRedirect = () => {
     window.open(TIDYCAL_URL, '_blank', 'noopener,noreferrer');
