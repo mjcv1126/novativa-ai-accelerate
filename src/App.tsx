@@ -1,3 +1,4 @@
+
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import Home from '@/pages/Home';
@@ -22,6 +23,7 @@ import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 import NovaChannel from '@/pages/NovaChannel';
 import AdminScripts from '@/pages/admin/AdminScripts';
 import AdminCustomCSS from '@/pages/admin/AdminCustomCSS';
+import Welcome from '@/pages/Welcome';
 import './App.css';
 
 const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => (
