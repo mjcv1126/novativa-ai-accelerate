@@ -26,7 +26,7 @@ const appExamples = [
   {
     title: "DeliverPro",
     description: "Sistema de delivery con tracking en tiempo real, gestión de pedidos y notificaciones automáticas",
-    image: "https://unblast.com/wp-content/uploads/2020/05/Food-Delivery-App-Template.jpg",
+    image: "https://cdn.sketchrepo.com/images/2x/food-delivery-app-freebie-v8.jpg",
     features: ["GPS en tiempo real", "Gestión de pedidos", "Panel de control", "Analytics avanzado"]
   },
   {
