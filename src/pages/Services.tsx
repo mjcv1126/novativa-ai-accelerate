@@ -4,7 +4,6 @@ import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { Button } from '@/components/ui/button';
 import { Bot, MessageSquare, Video, FileText, Users, Code, Clock, BrainCircuit, Mic, Share2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-
 const Services = () => {
   return <>
     <section className="pt-32 pb-16 bg-gray-50">
@@ -88,11 +87,7 @@ const Services = () => {
           </div>
           
           <div className="rounded-xl overflow-hidden shadow-xl bg-white">
-            <img 
-              src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnc2bWF1N2htYnVvZmh0OHZlOWxvMmpodjB1aWx4anVpcXp5ZDZhdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPtjElfqwMOTbH2/giphy.gif"
-              alt="AI Agent Animation" 
-              className="w-full h-[400px] object-cover"
-            />
+            <img alt="AI Agent Animation" src="https://edea.juntadeandalucia.es/bancorecursos/file/41832ff2-cfcb-4923-ac63-5abdf63e5087/1/CDI_1BAC_REA_01_v01.zip/gif_animado_narrador_juvenil.gif" className="w-full h-[400px] object-contain" />
           </div>
         </div>
       </div>
@@ -410,15 +405,11 @@ const Services = () => {
         <p className="text-xl mb-8 max-w-2xl mx-auto">
           Agenda una demostración y descubre cómo nuestras soluciones pueden transformar tu empresa.
         </p>
-        <ScheduleDialog 
-          className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-6" 
-          size="lg"
-        >
+        <ScheduleDialog className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-6" size="lg">
           Agenda una demostración gratuita
         </ScheduleDialog>
       </div>
     </section>
   </>;
 };
-
 export default Services;
