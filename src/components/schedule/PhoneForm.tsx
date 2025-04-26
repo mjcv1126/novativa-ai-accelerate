@@ -1,20 +1,21 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Phone, Gift, Check, User, UserRound } from 'lucide-react';
-import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 import { countries } from './countryData';
+import { supabase } from "@/integrations/supabase/client";
+import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 
-// Get the webhook URL from environment variables
-const HOOK_MAKE_PHONE = import.meta.env.VITE_HOOK_MAKE_PHONE || "";
+const HOOK_MAKE_PHONE = "https://hook.us2.make.com/o7hcnw3x212w2ent64oopy9gku0m4kjz";
 
 const PhoneForm = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [countryCode, setCountryCode] = useState("506");
+  const [countrySearch, setCountrySearch] = useState("");
   const [phone, setPhone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneError, setPhoneError] = useState("");
@@ -22,6 +23,16 @@ const PhoneForm = () => {
   const [lastNameError, setLastNameError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
+
+  // Filter countries based on search
+  const filteredCountries = useMemo(() => {
+    const searchTerm = countrySearch.toLowerCase();
+    return countries.filter(country => 
+      country.name.toLowerCase().includes(searchTerm) ||
+      country.flag.includes(searchTerm) ||
+      country.code.includes(searchTerm)
+    );
+  }, [countrySearch]);
 
   // Get the selected country object
   const selectedCountry = countries.find(c => c.code === countryCode);
@@ -106,11 +117,18 @@ const PhoneForm = () => {
     try {
       console.log("Sending to webhook:", formattedPhone, firstName, lastName);
       
-      if (!HOOK_MAKE_PHONE) {
-        console.error("Webhook URL is not defined!");
-        throw new Error('No se ha configurado la URL del webhook');
-      }
-      
+      // First, store in Supabase
+      const { data, error } = await supabase.rpc('store_contact', {
+        p_first_name: firstName,
+        p_last_name: lastName,
+        p_country_code: countryCode,
+        p_country_name: selectedCountry?.name || '',
+        p_phone: formattedPhone
+      });
+
+      if (error) throw error;
+
+      // Then send to Make.com webhook
       const response = await fetch(HOOK_MAKE_PHONE, {
         method: 'POST',
         headers: {
@@ -119,31 +137,33 @@ const PhoneForm = () => {
         body: JSON.stringify({ 
           phone: formattedPhone,
           firstName,
-          lastName
+          lastName,
+          countryCode,
+          countryName: selectedCountry?.name
         }),
       });
 
-      if (response.ok) {
-        await trackFacebookConversion('Lead', {
-          customData: {
-            content_name: 'Phone number submitted',
-            value: 0.01,
-            currency: 'USD',
-          }
-        });
-        
-        setIsSubmitted(true);
-        toast({
-          title: "¡Genial! 🎉",
-          description: "Te enviaremos el descuento especial por WhatsApp pronto.",
-        });
-        setPhone("");
-        setFirstName("");
-        setLastName("");
-      } else {
-        console.error("Error response:", response.status, response.statusText);
+      if (!response.ok) {
         throw new Error('Error al enviar el número');
       }
+
+      await trackFacebookConversion('Lead', {
+        customData: {
+          content_name: 'Phone number submitted',
+          value: 0.01,
+          currency: 'USD',
+        }
+      });
+      
+      setIsSubmitted(true);
+      toast({
+        title: "¡Genial! 🎉",
+        description: "Te enviaremos el descuento especial por WhatsApp pronto.",
+      });
+      setPhone("");
+      setFirstName("");
+      setLastName("");
+      
     } catch (error) {
       console.error("Error sending number:", error);
       toast({
@@ -218,26 +238,35 @@ const PhoneForm = () => {
         </div>
         
         <div className="flex gap-3">
-          <Select value={countryCode} onValueChange={(value) => {
-            setCountryCode(value);
-            if (phone) {
-              setPhoneError("");
-            }
-          }}>
-            <SelectTrigger className="w-[140px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="max-h-[280px]">
-              {countries.map((country) => (
-                <SelectItem key={`${country.code}-${country.name}`} value={country.code}>
-                  <span className="flex items-center gap-2">
-                    <span>{country.flag}</span>
-                    <span>+{country.code}</span>
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="relative w-[140px]">
+            <Input 
+              type="text"
+              placeholder="Buscar país..."
+              value={countrySearch}
+              onChange={(e) => setCountrySearch(e.target.value)}
+              className="mb-2"
+            />
+            <Select value={countryCode} onValueChange={(value) => {
+              setCountryCode(value);
+              if (phone) {
+                setPhoneError("");
+              }
+            }}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-[280px]">
+                {filteredCountries.map((country) => (
+                  <SelectItem key={`${country.code}-${country.name}`} value={country.code}>
+                    <span className="flex items-center gap-2">
+                      <span>{country.flag}</span>
+                      <span>+{country.code}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           
           <div className="flex-1">
             <Input
