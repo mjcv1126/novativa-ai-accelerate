@@ -17,10 +17,36 @@ const MarlonIAScript = () => {
   });
   const { toast } = useToast();
 
+  // Apply script on initial load
+  useEffect(() => {
+    const applyScript = () => {
+      // For admin preview
+      const previewScriptEl = document.getElementById('marlon-ia-script-preview');
+      if (previewScriptEl) {
+        previewScriptEl.innerHTML = script;
+      }
+      
+      // For actual schedule confirmation page
+      const scriptEl = document.getElementById('marlon-ia-script');
+      if (scriptEl) {
+        scriptEl.innerHTML = script;
+      }
+    };
+    
+    // Apply script on component mount
+    applyScript();
+    
+    // Add an interval to check and apply the script every few seconds
+    // This helps when script element is loaded conditionally/dynamically
+    const interval = setInterval(applyScript, 2000);
+    
+    return () => clearInterval(interval);
+  }, [script]);
+
   const handleSave = () => {
     localStorage.setItem('novativa_marlon_ia_script', script);
     
-    // Apply the script
+    // Apply the script when saved
     const scriptEl = document.getElementById('marlon-ia-script');
     if (scriptEl) {
       scriptEl.innerHTML = script;
@@ -53,6 +79,17 @@ const MarlonIAScript = () => {
         >
           Guardar Script
         </Button>
+        
+        {/* Preview area */}
+        <div className="mt-6">
+          <h4 className="text-sm font-medium mb-2">Vista previa:</h4>
+          <div 
+            id="marlon-ia-script-preview" 
+            className="border rounded-md p-4 min-h-[200px] bg-gray-50"
+          >
+            {/* Script preview will be inserted here */}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
