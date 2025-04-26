@@ -1,12 +1,9 @@
-
 import React from 'react';
 import { Bot, MessageSquare, Video, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ShopifyIcon, WooCommerceIcon, WixIcon, WordpressIcon } from '@/components/shared/EcommerceIcons';
-
 const AIAgents = () => {
-  return (
-    <>
+  return <>
       <section className="pt-32 pb-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -65,44 +62,28 @@ const AIAgents = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center max-w-4xl mx-auto">
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <img 
-                  src="https://cdn.worldvectorlogo.com/logos/shopify.svg"
-                  alt="Shopify"
-                  className="w-20 h-20 object-contain"
-                />
+                <img src="https://cdn.worldvectorlogo.com/logos/shopify.svg" alt="Shopify" className="w-20 h-20 object-contain" />
               </div>
               <p className="mt-3 font-medium">Shopify</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <img 
-                  src="https://cdn.worldvectorlogo.com/logos/woocommerce.svg"
-                  alt="WooCommerce"
-                  className="w-20 h-20 object-contain"
-                />
+                <img src="https://cdn.worldvectorlogo.com/logos/woocommerce.svg" alt="WooCommerce" className="w-20 h-20 object-contain" />
               </div>
               <p className="mt-3 font-medium">WooCommerce</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <img 
-                  src="https://cdn.worldvectorlogo.com/logos/wix.svg"
-                  alt="Wix"
-                  className="w-20 h-20 object-contain"
-                />
+                <img src="https://cdn.worldvectorlogo.com/logos/wix.svg" alt="Wix" className="w-20 h-20 object-contain" />
               </div>
               <p className="mt-3 font-medium">Wix</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <img 
-                  src="https://cdn.worldvectorlogo.com/logos/wordpress-blue.svg"
-                  alt="WordPress"
-                  className="w-20 h-20 object-contain"
-                />
+                <img alt="WordPress" className="w-20 h-20 object-contain" src="https://upload.wikimedia.org/wikipedia/commons/9/98/WordPress_blue_logo.svg" />
               </div>
               <p className="mt-3 font-medium">WordPress</p>
             </div>
@@ -112,11 +93,7 @@ const AIAgents = () => {
             <p className="text-lg text-gray-600 mb-8">
               Nuestros agentes IA se integran perfectamente con las principales plataformas de comercio electrónico y CMS, permitiéndote mejorar la experiencia de tus clientes sin importar qué plataforma utilices.
             </p>
-            <Button
-              asChild
-              size="lg"
-              className="bg-novativa-orange hover:bg-novativa-lightOrange"
-            >
+            <Button asChild size="lg" className="bg-novativa-orange hover:bg-novativa-lightOrange">
               <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
                 Descubre cómo integrar IA en tu plataforma
               </a>
@@ -161,19 +138,13 @@ const AIAgents = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Agenda una demostración y descubre cómo los agentes IA pueden transformar la interacción con tus clientes
           </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white"
-          >
+          <Button asChild size="lg" className="bg-novativa-orange hover:bg-novativa-lightOrange text-white">
             <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
               Agenda una demostración gratuita
             </a>
           </Button>
         </div>
       </section>
-    </>
-  );
+    </>;
 };
-
 export default AIAgents;
