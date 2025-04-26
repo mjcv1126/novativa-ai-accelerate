@@ -1,22 +1,8 @@
 
 import { useState } from 'react';
 import { Message } from '@/types/chat';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
-const createSupabaseClient = () => {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Supabase URL or Anon Key is missing');
-    return null;
-  }
-  
-  return createClient(supabaseUrl, supabaseAnonKey);
-};
-
-const supabase = createSupabaseClient();
 
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -48,10 +34,6 @@ export const useChat = () => {
     setIsLoading(true);
 
     try {
-      if (!supabase) {
-        throw new Error('Supabase client not initialized');
-      }
-
       const { data, error } = await supabase.functions.invoke('assistant-chat', {
         body: {
           message: input,
