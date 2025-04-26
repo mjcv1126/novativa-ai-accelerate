@@ -33,11 +33,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
             <TableHead className="w-1/5">Característica</TableHead>
             <TableHead className="text-center">Diamante</TableHead>
             <TableHead className="text-center relative">
-              Elite
+              <div className="pt-5">Elite</div>
               <Badge 
-                className="absolute -top-4 left-1/2 transform -translate-x-1/2 
-                  bg-purple-600 text-white px-2 py-0.5 rounded-full text-xs font-semibold 
-                  shadow-sm hover:bg-purple-700 transition-colors"
+                className="absolute -top-3 left-1/2 transform -translate-x-1/2 
+                  bg-novativa-orange text-white px-2 py-0.5 rounded-full text-xs font-semibold 
+                  shadow-sm"
               >
                 Favorito
               </Badge>
