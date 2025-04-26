@@ -23,17 +23,17 @@ export const platforms: Platform[] = [
   },
   {
     name: 'Facebook',
-    icon: '/icons/facebook.png',
+    icon: 'https://cdn-icons-png.freepik.com/512/6033/6033716.png',
     color: 'text-blue-700'
   },
   {
     name: 'Web',
-    icon: '/icons/web.png',
+    icon: 'https://cdn-icons-png.flaticon.com/512/5339/5339181.png',
     color: 'text-gray-500'
   },
   {
     name: 'SMS',
-    icon: '/icons/sms.png',
+    icon: 'https://www.freeiconspng.com/thumbs/sms-icon/sms-text-message-icon-0.png',
     color: 'text-gray-600'
   }
 ];
