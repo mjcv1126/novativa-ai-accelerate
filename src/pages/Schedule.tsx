@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ExternalLink } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,19 @@ import { Helmet } from 'react-helmet-async';
 const TIDYCAL_URL = 'https://tidycal.com/novativa';
 
 const Schedule = () => {
+  useEffect(() => {
+    // Prevent caching and force refresh
+    if (!sessionStorage.getItem('schedulePageLoaded')) {
+      sessionStorage.setItem('schedulePageLoaded', 'true');
+      window.location.reload();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      sessionStorage.removeItem('schedulePageLoaded');
+    };
+  }, []);
+
   const handleRedirect = () => {
     window.open(TIDYCAL_URL, '_blank', 'noopener,noreferrer');
   };

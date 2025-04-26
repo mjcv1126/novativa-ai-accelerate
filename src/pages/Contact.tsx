@@ -2,28 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Button } from '@/components/ui/button';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
 
 const Contact = () => {
-  const location = useLocation();
-
   useEffect(() => {
-    // Forzar refresh y limpiar caché
+    // Prevent caching and force refresh
     if (!sessionStorage.getItem('contactPageLoaded')) {
       sessionStorage.setItem('contactPageLoaded', 'true');
-      // Forzar recarga sin caché
       window.location.reload();
     }
 
-    // Limpiar el flag cuando se desmonta el componente
+    // Cleanup on unmount
     return () => {
       sessionStorage.removeItem('contactPageLoaded');
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Ensure the Tidycal script is loaded
     const script = document.createElement('script');
     script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
