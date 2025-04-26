@@ -1,74 +1,17 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Send, ArrowLeft, Menu, Paperclip, Mic, Calendar } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { Message } from '@/types/chat';
 import MessageList from './MessageList';
-import { createClient } from '@supabase/supabase-js';
+import { useChat } from '@/hooks/useChat';
 import { useNavigate } from 'react-router-dom';
 
-// Create Supabase client with proper error handling
-const createSupabaseClient = () => {
-  // Get Supabase URL and key from environment variables
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Supabase URL or Anon Key is missing, using mock client');
-    // Return a mock client that won't make actual network requests
-    return {
-      auth: {
-        getSession: () => Promise.resolve({ data: { session: null } }),
-        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-      },
-      functions: {
-        invoke: () => Promise.reject(new Error('Supabase client not initialized')),
-      }
-    };
-  }
-  
-  return createClient(supabaseUrl, supabaseAnonKey);
-};
-
-const supabase = createSupabaseClient();
-
 const HeroChat = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState('');
-  const [threadId, setThreadId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
-  const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    try {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setUser(session?.user || null);
-      });
-
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user || null);
-      });
-
-      return () => subscription.unsubscribe();
-    } catch (error) {
-      console.error("Error with Supabase auth:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    setMessages([
-      {
-        content: "¡Hola! 👋 Me encantaría mostrarte cómo podemos potenciar tu negocio con IA. ¿Te gustaría agendar una demostración gratuita de 15 minutos? Haz clic en el botón de abajo para programar una llamada 1:1 donde discutiremos estrategias personalizadas para tu empresa.",
-        role: 'assistant',
-        timestamp: new Date(),
-      }
-    ]);
-  }, []);
+  const { messages, isLoading, sendMessage } = useChat();
 
   const handleSchedule = () => {
     navigate('/agenda');
@@ -80,66 +23,9 @@ const HeroChat = () => {
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
-
-    const userMessage: Message = {
-      content: input,
-      role: 'user',
-      timestamp: new Date(),
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    await sendMessage(input);
     setInput('');
-    setIsLoading(true);
-
-    try {
-      const botMessage: Message = {
-        content: "Por el momento no puedo responder en tiempo real. Te invito a agendar una demostración gratuita donde un especialista responderá todas tus preguntas.",
-        role: 'assistant',
-        timestamp: new Date(),
-      };
-
-      // Only try to use Supabase if environment variables are available
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      
-      if (supabaseUrl && supabaseAnonKey) {
-        try {
-          // Use the assistant-chat function
-          const { data, error } = await supabase.functions.invoke('assistant-chat', {
-            body: {
-              message: input,
-              threadId: threadId
-            }
-          });
-
-          if (error) throw error;
-          
-          // Save threadId for future messages
-          if (data.threadId) {
-            setThreadId(data.threadId);
-            console.log("Thread ID saved:", data.threadId);
-          }
-          
-          // Update bot message with response from Supabase function
-          botMessage.content = data.message;
-        } catch (error) {
-          console.error('Error with Supabase function:', error);
-          // Keep default message in case of error
-        }
-      }
-
-      setMessages(prev => [...prev, botMessage]);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: "No se pudo enviar el mensaje. Por favor, intenta nuevamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-      setTimeout(scrollToBottom, 100);
-    }
+    setTimeout(scrollToBottom, 100);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -148,10 +34,6 @@ const HeroChat = () => {
       handleSendMessage();
     }
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   return (
     <Card className="w-full max-w-2xl bg-white shadow-xl border-0 h-[600px] flex flex-col">
