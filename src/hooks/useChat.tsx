@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Message } from '@/types/chat';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -11,7 +11,7 @@ export const useChat = () => {
   const { toast } = useToast();
 
   // Initial greeting message
-  useState(() => {
+  useEffect(() => {
     setMessages([
       {
         content: "¡Hola! 👋 Me encantaría mostrarte cómo podemos potenciar tu negocio con IA. ¿Te gustaría agendar una demostración gratuita de 15 minutos? Haz clic en el botón de abajo para programar una llamada 1:1 donde discutiremos estrategias personalizadas para tu empresa.",
@@ -19,7 +19,7 @@ export const useChat = () => {
         timestamp: new Date(),
       }
     ]);
-  });
+  }, []);
 
   const sendMessage = async (input: string) => {
     if (!input.trim()) return;
@@ -42,7 +42,10 @@ export const useChat = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
 
       if (data.threadId) {
         setThreadId(data.threadId);

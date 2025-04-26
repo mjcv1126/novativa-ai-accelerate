@@ -24,7 +24,7 @@ serve(async (req) => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${OPENAI_API_KEY}`,
-      "OpenAI-Beta": "assistants=v1"
+      "OpenAI-Beta": "assistants=v2"  // Actualizado a v2
     }
 
     let currentThreadId = threadId
