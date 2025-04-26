@@ -1,15 +1,14 @@
-
 /**
  * Handle navigation with forced refresh for specific routes
  * @param path The path to navigate to
  */
 export const navigateWithRefresh = (path: string): void => {
   if (path === '/contacto') {
-    // Force page refresh for these specific routes
-    window.location.href = path;
+    // Open contact page in new tab with forced refresh
+    window.open(path, '_blank');
   } else if (path === '/agenda') {
-    // Redirect /agenda to TidyCal
-    window.location.href = 'https://tidycal.com/novativa/demo-gratis';
+    // Redirect /agenda to TidyCal in new tab
+    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
   } else {
     // For other routes, use normal navigation
     window.history.pushState({}, '', path);

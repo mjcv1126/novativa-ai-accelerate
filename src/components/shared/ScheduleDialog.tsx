@@ -20,8 +20,8 @@ const ScheduleDialog = ({ children, variant, size, className, toPricing }: Sched
       // Navigate to pricing page
       window.location.href = '/precios';
     } else {
-      // Redirect to TidyCal
-      window.location.href = 'https://tidycal.com/novativa/demo-gratis';
+      // Open TidyCal in new tab
+      window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
     }
   };
 
