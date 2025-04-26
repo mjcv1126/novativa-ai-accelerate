@@ -15,6 +15,7 @@ interface SendFoxResponse {
  */
 export const addSubscriberToSendFox = async (email: string): Promise<SendFoxResponse> => {
   try {
+    // Use the correct path for the Supabase function
     const response = await fetch('/functions/subscribe', {
       method: 'POST',
       headers: {
@@ -24,13 +25,17 @@ export const addSubscriberToSendFox = async (email: string): Promise<SendFoxResp
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('SendFox API Error:', errorData);
-      throw new Error(errorData.message || 'Error adding subscriber');
+      console.error('SendFox API Error:', response.status);
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Error data:', errorData);
+      throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
     }
 
     const data = await response.json();
-    return { success: true };
+    return { 
+      success: data.success || true,
+      message: data.message || 'Suscripción exitosa'
+    };
   } catch (error) {
     console.error('SendFox API Error:', error);
     return { 

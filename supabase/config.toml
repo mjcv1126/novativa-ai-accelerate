@@ -1,5 +1,5 @@
 
 project_id = "gktrnjjbhqxkbcvonzxv"
 
-[functions.assistant-chat]
+[functions.subscribe]
 verify_jwt = false

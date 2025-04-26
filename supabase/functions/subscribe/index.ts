@@ -13,15 +13,17 @@ interface ErrorResponse {
   message: string;
 }
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, x-client-info, apikey",
+};
+
 serve(async (req) => {
   // Enable CORS
   if (req.method === "OPTIONS") {
     return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
+      headers: corsHeaders,
       status: 204,
     });
   }
@@ -34,24 +36,44 @@ serve(async (req) => {
     }), {
       headers: { 
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        ...corsHeaders
       },
       status: 405,
     });
   }
 
   try {
+    console.log("Processing subscription request");
+    
     // Parse request body
-    const { email } = await req.json() as SubscribeRequest;
+    let email;
+    try {
+      const body = await req.json();
+      email = body.email;
+      console.log(`Email received: ${email}`);
+    } catch (e) {
+      console.error("Failed to parse request body:", e);
+      return new Response(JSON.stringify({
+        success: false,
+        message: "Invalid request body",
+      }), {
+        headers: { 
+          "Content-Type": "application/json",
+          ...corsHeaders
+        },
+        status: 400,
+      });
+    }
     
     if (!email) {
+      console.error("Email is required");
       return new Response(JSON.stringify({
         success: false,
         message: "Email is required",
       }), {
         headers: { 
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          ...corsHeaders
         },
         status: 400,
       });
@@ -66,7 +88,7 @@ serve(async (req) => {
       }), {
         headers: { 
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          ...corsHeaders
         },
         status: 500,
       });
@@ -101,7 +123,7 @@ serve(async (req) => {
         }), {
           headers: { 
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
+            ...corsHeaders
           },
           status: 200,
         });
@@ -110,12 +132,13 @@ serve(async (req) => {
       return new Response(JSON.stringify({
         success: false,
         message: "Failed to subscribe",
+        error: data.errors || data.message || "Unknown error",
       }), {
         headers: { 
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          ...corsHeaders
         },
-        status: response.status,
+        status: 400,
       });
     }
 
@@ -126,7 +149,7 @@ serve(async (req) => {
     }), {
       headers: { 
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        ...corsHeaders
       },
       status: 200,
     });
@@ -136,10 +159,11 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       success: false,
       message: "Failed to process subscription",
+      error: error instanceof Error ? error.message : String(error),
     }), {
       headers: { 
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        ...corsHeaders
       },
       status: 500,
     });

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,21 +12,26 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-import { blogPosts, getPostsByCategory, getCategories } from '@/data/blogPosts';
+import { blogPosts, getPostsByCategory, getCategories, categoryToUrl } from '@/data/blogPosts';
+import { useAdminData } from '@/contexts/AdminDataContext';
 
 const BlogCategory = () => {
   const { category } = useParams<{ category: string }>();
   const decodedCategory = category ? decodeURIComponent(category.replace(/-+/g, ' ')) : '';
-  const categoryPosts = getPostsByCategory(decodedCategory);
-  const categories = getCategories();
+  const { posts: adminPosts, categories: adminCategories } = useAdminData();
   
-  const categoryToUrl = (cat: string) => {
-    return cat.toLowerCase()
-             .normalize('NFD')
-             .replace(/[\u0300-\u036f]/g, '')
-             .replace(/[^a-z0-9]+/g, '-')
-             .replace(/^-+|-+$/g, '');
-  };
+  // Combine admin and default posts
+  const allPosts = [...adminPosts, ...blogPosts].filter(
+    (post, index, self) => index === self.findIndex(p => p.id === post.id)
+  );
+  
+  // Filter posts by category
+  const categoryPosts = allPosts.filter(post => 
+    post.category.toLowerCase() === decodedCategory.toLowerCase()
+  );
+  
+  // Get categories from admin data
+  const categories = adminCategories.map(cat => cat.name);
   
   if (categoryPosts.length === 0) {
     return (
@@ -41,31 +47,33 @@ const BlogCategory = () => {
                 No se encontraron artículos para la categoría seleccionada.
               </p>
               <div className="mt-8 space-y-4">
-              <Button
-                asChild
+                <Button
+                  asChild
                   className="bg-novativa-teal hover:bg-novativa-lightTeal"
-              >
-                <Link to="/blog">
-                  Volver al blog
-                </Link>
-              </Button>
-                <div className="mt-8">
-                  <h3 className="text-xl font-semibold mb-4">Categorías disponibles:</h3>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {categories.map((cat, index) => (
-                      <Button
-                        key={index}
-                        asChild
-                        variant="outline"
-                        className="border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10"
-                      >
-                        <Link to={`/blog/categoria/${categoryToUrl(cat)}`}>
-                          {cat}
-                        </Link>
-                      </Button>
-                    ))}
+                >
+                  <Link to="/blog">
+                    Volver al blog
+                  </Link>
+                </Button>
+                {categories.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="text-xl font-semibold mb-4">Categorías disponibles:</h3>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {categories.map((cat, index) => (
+                        <Button
+                          key={index}
+                          asChild
+                          variant="outline"
+                          className="border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10"
+                        >
+                          <Link to={`/blog/categoria/${categoryToUrl(cat)}`}>
+                            {cat}
+                          </Link>
+                        </Button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

@@ -168,4 +168,3 @@ const BlogSidebar = ({ onSearch, currentQuery = '' }: BlogSidebarProps) => {
 };
 
 export default BlogSidebar;
-
