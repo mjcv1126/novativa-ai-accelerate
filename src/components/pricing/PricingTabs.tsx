@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PricingTable from './PricingTable';
+import { FavoriteBadge } from './FavoriteBadge';
 import {
   Check,
   MessageSquare,
@@ -21,7 +21,7 @@ const PricingTabs = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white relative">
       <div className="container mx-auto px-4">
         <div className="flex justify-center mb-12">
           <Tabs defaultValue="agentes-ia" className="w-full max-w-4xl">
@@ -34,7 +34,7 @@ const PricingTabs = () => {
             </div>
             
             <TabsContent value="agentes-ia">
-              <div className="mb-8 text-center">
+              <div className="mb-8 text-center relative">
                 <div className="inline-flex items-center p-1 bg-gray-100 rounded-lg mb-8">
                   <Button
                     variant={billingCycle === 'monthly' ? 'default' : 'ghost'}
@@ -52,16 +52,19 @@ const PricingTabs = () => {
                   </Button>
                 </div>
                 
-                <p className="text-gray-600 mb-6">
-                  Nuestros planes Agentes IA + NovaChannel incluyen todas las herramientas necesarias para gestionar la comunicación con tus clientes mediante IA.
-                </p>
-              </div>
+                <div className="relative">
+                  <FavoriteBadge />
+                  <p className="text-gray-600 mb-6">
+                    Nuestros planes Agentes IA + NovaChannel incluyen todas las herramientas necesarias para gestionar la comunicación con tus clientes mediante IA.
+                  </p>
+                </div>
               
-              <PricingTable billingCycle={billingCycle} />
-              
-              <div className="text-center mt-6 text-gray-600 text-sm">
-                <p>Todos los precios están en dólares americanos (USD). Para facturación en moneda local, contáctanos.</p>
-                <p className="mt-2">Si eliges el plan anual, el servicio de Setup Inicial + Creación de Flujos Automatizados es gratis.</p>
+                <PricingTable billingCycle={billingCycle} />
+                
+                <div className="text-center mt-6 text-gray-600 text-sm">
+                  <p>Todos los precios están en dólares americanos (USD). Para facturación en moneda local, contáctanos.</p>
+                  <p className="mt-2">Si eliges el plan anual, el servicio de Setup Inicial + Creación de Flujos Automatizados es gratis.</p>
+                </div>
               </div>
             </TabsContent>
             
