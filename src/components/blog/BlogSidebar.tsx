@@ -106,7 +106,7 @@ const BlogSidebar = ({ onSearch, currentQuery = '' }: BlogSidebarProps) => {
 
       {/* Categories List */}
       <div className="bg-white p-5 rounded-xl shadow-sm">
-        <h3 className="text-lg font-bold mb-3">Categorías</h3>
+        <h3 className="text-lg font-bold mb-4">Categorías</h3>
         <ul className="space-y-2">
           {categoriesWithCount.map((category, index) => (
             <li key={index}>

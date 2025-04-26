@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +20,13 @@ const AdminHeader = () => {
   return (
     <header className="bg-white border-b py-3 px-4 md:px-6 flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <h1 className="font-medium text-lg hidden md:block">Panel Admin de Novativa</h1>
+        <Link to="/" className="flex items-center">
+          <img 
+            src="/lovable-uploads/9cce1d6a-72e1-493f-bb16-901571c7e858.png" 
+            alt="Logo" 
+            className="h-8 md:h-10 w-auto"
+          />
+        </Link>
       </div>
       
       <div className="flex items-center gap-2">

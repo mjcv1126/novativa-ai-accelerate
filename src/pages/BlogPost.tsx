@@ -9,10 +9,52 @@ import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 import { useAdminData } from '@/contexts/AdminDataContext';
 import { useToast } from '@/hooks/use-toast';
-import { NewsletterForm } from '@/components/newsletter/NewsletterForm';
+
+// Create a SendFox Newsletter component
+const SendFoxNewsletter = ({ light = false }: { light?: boolean }) => {
+  return (
+    <form 
+      method="post" 
+      action="https://sendfox.com/form/mpov6q/36n47o" 
+      className="sendfox-form space-y-3" 
+      id="36n47o" 
+      data-async="true" 
+      data-recaptcha="true"
+    >
+      <div className="space-y-2">
+        <input 
+          type="email" 
+          id="sendfox_form_email" 
+          placeholder="Tu Email" 
+          name="email" 
+          required 
+          className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
+            light ? "text-gray-800 focus:ring-novativa-orange" : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
+          }`}
+        />
+        
+        {/* no bots please */}
+        <div style={{ position: "absolute", left: "-5000px" }} aria-hidden="true">
+          <input type="text" name="a_password" tabIndex={-1} value="" autoComplete="off" />
+        </div>
+        
+        <button 
+          type="submit"
+          className={`w-full px-4 py-2 rounded font-medium ${
+            light 
+              ? "bg-novativa-orange hover:bg-novativa-lightOrange text-white" 
+              : "bg-novativa-teal hover:bg-novativa-lightTeal text-white"
+          }`}
+        >
+          Suscribirme
+        </button>
+      </div>
+    </form>
+  );
+};
 
 const BlogPost = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPostType[]>([]);
   const { posts: adminPosts, categories: adminCategories } = useAdminData();
@@ -36,12 +78,28 @@ const BlogPost = () => {
       }
       metaTag.setAttribute('content', tag.content);
     });
+
+    // Add SendFox script
+    const script = document.createElement('script');
+    script.src = "https://cdn.sendfox.com/js/form.js";
+    script.charset = "utf-8";
+    document.body.appendChild(script);
+
+    return () => {
+      // Clean up script when component unmounts
+      document.body.removeChild(script);
+    };
   }, []);
 
   useEffect(() => {
     // Try to find the post in adminPosts first (for most up-to-date data)
-    const foundPost = adminPosts.find(post => post.id === Number(id)) || 
-                      blogPosts.find(post => post.id === Number(id));
+    // First try to find by ID, else by slug
+    const idFromSlug = parseInt(slug || '0', 10);
+    const foundPost = !isNaN(idFromSlug) ? 
+                      (adminPosts.find(post => post.id === idFromSlug) || 
+                      blogPosts.find(post => post.id === idFromSlug)) :
+                      (adminPosts.find(post => post.slug === slug) || 
+                      blogPosts.find(post => post.slug === slug));
     
     if (foundPost) {
       setPost(foundPost);
@@ -69,7 +127,7 @@ const BlogPost = () => {
       
       setRelatedPosts(related);
     }
-  }, [id, adminPosts]);
+  }, [slug, adminPosts]);
 
   // If post not found
   if (!post) {
@@ -249,7 +307,7 @@ const BlogPost = () => {
               <div className="bg-gray-50 rounded-xl p-6 mt-8">
                 <h3 className="text-xl font-bold mb-3">Suscríbete al newsletter</h3>
                 <p className="mb-4">Recibe los últimos artículos y recursos directamente en tu bandeja de entrada.</p>
-                <NewsletterForm />
+                <SendFoxNewsletter />
               </div>
             </div>
             
@@ -316,7 +374,7 @@ const BlogPost = () => {
                 <p className="mb-4 text-white/90">
                   Recibe los últimos artículos y recursos directamente en tu bandeja de entrada.
                 </p>
-                <NewsletterForm light />
+                <SendFoxNewsletter light />
               </div>
             </div>
           </div>

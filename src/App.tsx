@@ -26,37 +26,44 @@ import AdminScripts from '@/pages/admin/AdminScripts';
 import AdminCustomCSS from '@/pages/admin/AdminCustomCSS';
 import './App.css';
 
+// Wrapper component to add page IDs to each route
+const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => (
+  <div id={id}>
+    {children}
+  </div>
+);
+
 function App() {
   return (
     <AdminAuthProvider>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<Layout><Home /></Layout>} />
-        <Route path="/servicios" element={<Layout><Services /></Layout>} />
-        <Route path="/servicios/agentes-ia" element={<Layout><AIAgents /></Layout>} />
-        <Route path="/servicios/contenido" element={<Layout><ContentGeneration /></Layout>} />
-        <Route path="/servicios/desarrollo" element={<Layout><IADevelopment /></Layout>} />
-        <Route path="/precios" element={<Layout><Pricing /></Layout>} />
-        <Route path="/contacto" element={<Layout><Contact /></Layout>} />
-        <Route path="/blog" element={<Layout><Blog /></Layout>} />
-        <Route path="/blog/:slug" element={<Layout><BlogPost /></Layout>} />
-        <Route path="/blog/tag/:tag" element={<Layout><BlogTag /></Layout>} />
-        <Route path="/blog/categoria/:category" element={<Layout><BlogCategory /></Layout>} />
-        <Route path="/novachannel" element={<Layout><NovaChannel /></Layout>} />
-        <Route path="/agenda" element={<Layout><Schedule /></Layout>} />
+        <Route path="/" element={<PageWrapper id="page-id-home"><Layout><Home /></Layout></PageWrapper>} />
+        <Route path="/servicios" element={<PageWrapper id="page-id-services"><Layout><Services /></Layout></PageWrapper>} />
+        <Route path="/servicios/agentes-ia" element={<PageWrapper id="page-id-ai-agents"><Layout><AIAgents /></Layout></PageWrapper>} />
+        <Route path="/servicios/contenido" element={<PageWrapper id="page-id-content"><Layout><ContentGeneration /></Layout></PageWrapper>} />
+        <Route path="/servicios/desarrollo" element={<PageWrapper id="page-id-development"><Layout><IADevelopment /></Layout></PageWrapper>} />
+        <Route path="/precios" element={<PageWrapper id="page-id-pricing"><Layout><Pricing /></Layout></PageWrapper>} />
+        <Route path="/contacto" element={<PageWrapper id="page-id-contact"><Layout><Contact /></Layout></PageWrapper>} />
+        <Route path="/blog" element={<PageWrapper id="page-id-blog"><Layout><Blog /></Layout></PageWrapper>} />
+        <Route path="/blog/:slug" element={<PageWrapper id="page-id-blog-post"><Layout><BlogPost /></Layout></PageWrapper>} />
+        <Route path="/blog/tag/:tag" element={<PageWrapper id="page-id-blog-tag"><Layout><BlogTag /></Layout></PageWrapper>} />
+        <Route path="/blog/categoria/:category" element={<PageWrapper id="page-id-blog-category"><Layout><BlogCategory /></Layout></PageWrapper>} />
+        <Route path="/novachannel" element={<PageWrapper id="page-id-novachannel"><Layout><NovaChannel /></Layout></PageWrapper>} />
+        <Route path="/agenda" element={<PageWrapper id="page-id-schedule"><Layout><Schedule /></Layout></PageWrapper>} />
         
         {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin/login" element={<PageWrapper id="page-id-admin-login"><AdminLogin /></PageWrapper>} />
+        <Route path="/admin" element={<PageWrapper id="page-id-admin"><AdminLayout /></PageWrapper>}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="blog/posts" element={<AdminBlogPosts />} />
-          <Route path="blog/categories" element={<AdminCategories />} />
-          <Route path="scripts" element={<AdminScripts />} />
-          <Route path="custom-css" element={<AdminCustomCSS />} />
+          <Route path="dashboard" element={<PageWrapper id="page-id-admin-dashboard"><AdminDashboard /></PageWrapper>} />
+          <Route path="blog/posts" element={<PageWrapper id="page-id-admin-blog-posts"><AdminBlogPosts /></PageWrapper>} />
+          <Route path="blog/categories" element={<PageWrapper id="page-id-admin-categories"><AdminCategories /></PageWrapper>} />
+          <Route path="scripts" element={<PageWrapper id="page-id-admin-scripts"><AdminScripts /></PageWrapper>} />
+          <Route path="custom-css" element={<PageWrapper id="page-id-admin-custom-css"><AdminCustomCSS /></PageWrapper>} />
         </Route>
         
-        <Route path="*" element={<Layout><NotFound /></Layout>} />
+        <Route path="*" element={<PageWrapper id="page-id-not-found"><Layout><NotFound /></Layout></PageWrapper>} />
       </Routes>
     </AdminAuthProvider>
   );

@@ -47,7 +47,7 @@ const AdminSidebar = () => {
           
           <NavItem to="/admin/scripts" icon={<Code className="w-5 h-5" />} label="Scripts" collapsed={collapsed} />
           <NavItem to="/admin/custom-css" icon={<Palette className="w-5 h-5" />} label="CSS Personalizado" collapsed={collapsed} />
-          <NavItem to="/admin/settings" icon={<Settings className="w-5 h-5" />} label="Configuración" collapsed={collapsed} />
+          <NavItem to="/admin/dashboard" icon={<Settings className="w-5 h-5" />} label="Configuración" collapsed={collapsed} />
         </ul>
       </nav>
     </aside>

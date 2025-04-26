@@ -16,7 +16,7 @@ const Layout = ({ children }: LayoutProps) => {
       <Navbar />
       <AdminDataProvider>
         <CustomCSSProvider>
-          <main className="min-h-screen">
+          <main className="min-h-screen w-full">
             {children}
           </main>
         </CustomCSSProvider>
