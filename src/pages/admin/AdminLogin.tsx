@@ -119,7 +119,7 @@ const AdminLogin = () => {
       return;
     }
 
-    setIsLoading(true);
+    setIsResetting(true);
     try {
       const { error } = await verifyResetCode(resetEmail, resetCode);
       if (error) {
@@ -139,7 +139,7 @@ const AdminLogin = () => {
         variant: 'destructive',
       });
     } finally {
-      setIsLoading(false);
+      setIsResetting(false);
     }
   };
 
@@ -162,7 +162,7 @@ const AdminLogin = () => {
       return;
     }
 
-    setIsLoading(true);
+    setIsResetting(true);
     try {
       const { error } = await updatePassword(resetEmail, resetCode, newPassword);
       if (error) {
@@ -190,7 +190,7 @@ const AdminLogin = () => {
         variant: 'destructive',
       });
     } finally {
-      setIsLoading(false);
+      setIsResetting(false);
     }
   };
 

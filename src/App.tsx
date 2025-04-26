@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
@@ -64,23 +63,21 @@ function App() {
             </Route>
             
             {/* Public Routes */}
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogPost />} />
-              <Route path="/blog/categoria/:category" element={<BlogCategory />} />
-              <Route path="/blog/tag/:tag" element={<BlogTag />} />
-              <Route path="/contacto" element={<Contact />} />
-              <Route path="/precios" element={<Pricing />} />
-              <Route path="/agenda" element={<Schedule />} />
-              <Route path="/novachannel" element={<NovaChannel />} />
-              <Route path="/servicios" element={<Services />} />
-              <Route path="/servicios/novachannel" element={<NovaChannel />} />
-              <Route path="/servicios/agentes-ia" element={<AIAgents />} />
-              <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
-              <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
+            <Route path="/" element={<Layout><Home /></Layout>} />
+            <Route path="/blog" element={<Layout><Blog /></Layout>} />
+            <Route path="/blog/:id" element={<Layout><BlogPost /></Layout>} />
+            <Route path="/blog/categoria/:category" element={<Layout><BlogCategory /></Layout>} />
+            <Route path="/blog/tag/:tag" element={<Layout><BlogTag /></Layout>} />
+            <Route path="/contacto" element={<Layout><Contact /></Layout>} />
+            <Route path="/precios" element={<Layout><Pricing /></Layout>} />
+            <Route path="/agenda" element={<Layout><Schedule /></Layout>} />
+            <Route path="/novachannel" element={<Layout><NovaChannel /></Layout>} />
+            <Route path="/servicios" element={<Layout><Services /></Layout>} />
+            <Route path="/servicios/novachannel" element={<Layout><NovaChannel /></Layout>} />
+            <Route path="/servicios/agentes-ia" element={<Layout><AIAgents /></Layout>} />
+            <Route path="/servicios/generacion-contenido" element={<Layout><ContentGeneration /></Layout>} />
+            <Route path="/servicios/desarrollo-ia" element={<Layout><IADevelopment /></Layout>} />
+            <Route path="*" element={<Layout><NotFound /></Layout>} />
           </Routes>
           <Toaster
             position="top-right"
