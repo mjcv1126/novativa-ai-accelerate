@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HelpCircle, Check } from 'lucide-react';
@@ -190,7 +191,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
               </Button>
             </TableCell>
           </TableRow>
-        </TableBody>
+          </TableBody>
+        </Table>
         
         <InstallationNotes billingCycle={billingCycle} />
       </div>
