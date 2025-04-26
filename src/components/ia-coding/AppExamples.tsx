@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Maximize } from 'lucide-react';
 
 const appExamples = [
   {
@@ -41,36 +42,45 @@ const AppExamples = () => {
           {appExamples.map((app, index) => (
             <div 
               key={index}
-              className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-1"
+              className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-1 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-novativa-teal/20"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative p-6">
-                <div className="h-48 mb-6 overflow-hidden rounded-lg">
+              <div className="relative p-6 h-full flex flex-col">
+                <div className="h-48 mb-6 overflow-hidden rounded-lg relative">
                   <img 
                     src={app.image} 
                     alt={app.title}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
                   />
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="bg-novativa-teal/80 p-2 rounded-full text-white">
+                      <Maximize className="h-5 w-5" />
+                    </div>
+                  </div>
                 </div>
                 <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
                   {app.title}
                 </h3>
-                <p className="text-gray-300 mb-4">
+                <p className="text-gray-300 mb-4 flex-grow">
                   {app.description}
                 </p>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mb-6">
                   {app.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center">
+                    <li 
+                      key={idx} 
+                      className="flex items-center transform transition-transform duration-200 hover:translate-x-2 hover:text-novativa-teal"
+                    >
                       <div className="w-2 h-2 rounded-full bg-novativa-teal mr-2"></div>
                       <span className="text-sm text-gray-300">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 <Button 
-                  className="w-full mt-6 bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90"
+                  className="w-full mt-auto bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 transition-all duration-300 group"
                   onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   Crear App Similar
+                  <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </Button>
               </div>
             </div>
@@ -82,3 +92,4 @@ const AppExamples = () => {
 };
 
 export default AppExamples;
+
