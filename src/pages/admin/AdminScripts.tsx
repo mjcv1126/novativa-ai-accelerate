@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -13,6 +12,7 @@ import { Helmet } from 'react-helmet-async';
 import PredefinedTags from '@/components/admin/scripts/PredefinedTags';
 import NewTagForm from '@/components/admin/scripts/NewTagForm';
 import CustomScripts from '@/components/admin/scripts/CustomScripts';
+import MarlonIAScript from '@/components/admin/scripts/MarlonIAScript';
 
 const AdminScripts = () => {
   const [headerScripts, setHeaderScripts] = useState<string>(() => {
@@ -55,9 +55,9 @@ const AdminScripts = () => {
   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  n.queue=[];t=b.getElementsByTagName(e)[0];
+  s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', 'XXXXXXXXXXXXXXXXX');
   fbq('track', 'PageView');
@@ -85,15 +85,12 @@ const AdminScripts = () => {
   
   const { toast } = useToast();
 
-  // Save tags to localStorage when they change
   useEffect(() => {
     localStorage.setItem('novativa_script_tags', JSON.stringify(tags));
   }, [tags]);
 
-  // Apply active scripts to the page
   useEffect(() => {
     const applyScripts = () => {
-      // Apply header scripts (should be in the head)
       const headerScriptEl = document.getElementById('novativa-header-scripts');
       if (headerScriptEl) {
         headerScriptEl.innerHTML = headerScripts;
@@ -104,7 +101,6 @@ const AdminScripts = () => {
         document.head.appendChild(newScript);
       }
 
-      // Apply predefined script tags that are active
       tags.forEach(tag => {
         if (tag.active) {
           const tagId = `novativa-tag-${tag.id}`;
@@ -119,7 +115,6 @@ const AdminScripts = () => {
             document.head.appendChild(newTag);
           }
         } else {
-          // Remove inactive tags
           const existingTag = document.getElementById(`novativa-tag-${tag.id}`);
           if (existingTag) {
             existingTag.remove();
@@ -128,7 +123,6 @@ const AdminScripts = () => {
       });
     };
 
-    // Don't apply scripts while editing
     if (editingTagId === null) {
       applyScripts();
     }
@@ -170,9 +164,7 @@ const AdminScripts = () => {
       description: `Los scripts para ${location} se han guardado correctamente`,
     });
 
-    // Apply the scripts if not in editing mode
     if (editingTagId === null) {
-      // Apply the scripts code here
       const scriptEl = document.getElementById(`novativa-${location.replace(' ', '-')}-scripts`);
       if (scriptEl) {
         scriptEl.innerHTML = location === 'header' 
@@ -192,7 +184,6 @@ const AdminScripts = () => {
   };
 
   const handleToggleStatus = (id: number) => {
-    // Don't allow toggling while editing
     if (editingTagId !== null) return;
     
     const newTags = tags.map(tag =>
@@ -232,6 +223,7 @@ const AdminScripts = () => {
           <TabsList>
             <TabsTrigger value="predefined">Tags predefinidos</TabsTrigger>
             <TabsTrigger value="custom">Scripts personalizados</TabsTrigger>
+            <TabsTrigger value="marlon">Marlon IA</TabsTrigger>
           </TabsList>
           
           <TabsContent value="predefined">
@@ -277,6 +269,10 @@ const AdminScripts = () => {
               onBodyEndScriptsChange={setBodyEndScripts}
               onSaveScripts={handleSaveScripts}
             />
+          </TabsContent>
+          
+          <TabsContent value="marlon">
+            <MarlonIAScript />
           </TabsContent>
         </Tabs>
       </div>

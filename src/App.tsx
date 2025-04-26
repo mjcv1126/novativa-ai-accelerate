@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import Home from '@/pages/Home';
@@ -24,6 +24,7 @@ import NovaChannel from '@/pages/NovaChannel';
 import AdminScripts from '@/pages/admin/AdminScripts';
 import AdminCustomCSS from '@/pages/admin/AdminCustomCSS';
 import Welcome from '@/pages/Welcome';
+import ScheduleConfirmation from '@/pages/ScheduleConfirmation';
 import './App.css';
 
 const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => (
@@ -55,13 +56,23 @@ function App() {
         
         <Route path="/agenda" element={<Navigate to="https://tidycal.com/novativa/demo-gratis" replace />} />
         
+        <Route path="/agenda/confirmacion" element={
+          <PageWrapper id="page-id-schedule-confirmation">
+            <ScheduleConfirmation />
+          </PageWrapper>
+        } />
+        
         <Route path="/admin/login" element={<PageWrapper id="page-id-admin-login"><AdminLogin /></PageWrapper>} />
         <Route path="/admin" element={<PageWrapper id="page-id-admin"><AdminLayout /></PageWrapper>}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<PageWrapper id="page-id-admin-dashboard"><AdminDashboard /></PageWrapper>} />
           <Route path="blog/posts" element={<PageWrapper id="page-id-admin-blog-posts"><AdminBlogPosts /></PageWrapper>} />
           <Route path="blog/categories" element={<PageWrapper id="page-id-admin-categories"><AdminCategories /></PageWrapper>} />
-          <Route path="scripts" element={<PageWrapper id="page-id-admin-scripts"><AdminScripts /></PageWrapper>} />
+          <Route path="scripts" element={
+            <PageWrapper id="page-id-admin-scripts">
+              <AdminScripts />
+            </PageWrapper>
+          } />
           <Route path="custom-css" element={<PageWrapper id="page-id-admin-custom-css"><AdminCustomCSS /></PageWrapper>} />
         </Route>
         
