@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from '@/components/ui/input';
-import { Save } from 'lucide-react';
+import { Save, Edit2, Check, X } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -22,8 +21,10 @@ const AdminScripts = () => {
   const [bodyEndScripts, setBodyEndScripts] = useState('');
   const [tagName, setTagName] = useState('');
   const [tagCode, setTagCode] = useState('');
-  const [tags, setTags] = useState<{ name: string; code: string; active: boolean }[]>([
+  const [editingTagId, setEditingTagId] = useState<number | null>(null);
+  const [tags, setTags] = useState<{ id: number; name: string; code: string; active: boolean }[]>([
     { 
+      id: 1,
       name: 'Google Analytics', 
       code: `<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -36,6 +37,7 @@ const AdminScripts = () => {
       active: true
     },
     { 
+      id: 2,
       name: 'Facebook Pixel', 
       code: `<!-- Facebook Pixel -->
 <script>
@@ -53,6 +55,7 @@ const AdminScripts = () => {
       active: false
     },
     { 
+      id: 3,
       name: 'HotJar', 
       code: `<!-- Hotjar -->
 <script>
@@ -72,7 +75,12 @@ const AdminScripts = () => {
 
   const handleAddTag = () => {
     if (tagName && tagCode) {
-      setTags([...tags, { name: tagName, code: tagCode, active: false }]);
+      setTags([...tags, { 
+        id: Math.max(...tags.map(t => t.id), 0) + 1,
+        name: tagName, 
+        code: tagCode, 
+        active: false 
+      }]);
       setTagName('');
       setTagCode('');
       toast({
@@ -82,14 +90,38 @@ const AdminScripts = () => {
     }
   };
 
-  const toggleTagStatus = (index: number) => {
-    const newTags = [...tags];
-    newTags[index].active = !newTags[index].active;
+  const startEditingTag = (id: number) => {
+    setEditingTagId(id);
+  };
+
+  const cancelEditingTag = () => {
+    setEditingTagId(null);
+  };
+
+  const saveEditedTag = (id: number, newCode: string) => {
+    const newTags = tags.map(tag => 
+      tag.id === id ? { ...tag, code: newCode } : tag
+    );
     setTags(newTags);
+    setEditingTagId(null);
     toast({
-      title: newTags[index].active ? "Tag activado" : "Tag desactivado",
-      description: `El tag "${newTags[index].name}" ha sido ${newTags[index].active ? "activado" : "desactivado"}`,
+      title: "Tag actualizado",
+      description: `El código del tag ha sido actualizado correctamente`,
     });
+  };
+
+  const toggleTagStatus = (id: number) => {
+    const newTags = tags.map(tag =>
+      tag.id === id ? { ...tag, active: !tag.active } : tag
+    );
+    setTags(newTags);
+    const updatedTag = newTags.find(t => t.id === id);
+    if (updatedTag) {
+      toast({
+        title: updatedTag.active ? "Tag activado" : "Tag desactivado",
+        description: `El tag "${updatedTag.name}" ha sido ${updatedTag.active ? "activado" : "desactivado"}`,
+      });
+    }
   };
 
   const handleSaveScripts = (location: string) => {
@@ -123,25 +155,67 @@ const AdminScripts = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {tags.map((tag, index) => (
-                    <div key={index} className="border rounded-lg p-4">
+                  {tags.map((tag) => (
+                    <div key={tag.id} className="border rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
                         <h3 className="font-medium">{tag.name}</h3>
                         <div className="flex items-center gap-2">
                           <span className={`text-sm ${tag.active ? 'text-green-500' : 'text-red-500'}`}>
                             {tag.active ? 'Activo' : 'Inactivo'}
                           </span>
+                          {editingTagId === tag.id ? (
+                            <>
+                              <Button 
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => saveEditedTag(tag.id, tag.code)}
+                                className="h-8 w-8"
+                              >
+                                <Check className="h-4 w-4 text-green-500" />
+                              </Button>
+                              <Button 
+                                variant="ghost"
+                                size="icon"
+                                onClick={cancelEditingTag}
+                                className="h-8 w-8"
+                              >
+                                <X className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </>
+                          ) : (
+                            <Button 
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => startEditingTag(tag.id)}
+                              className="h-8 w-8"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                          )}
                           <Button 
                             variant={tag.active ? "outline" : "default"}
                             className={tag.active ? "border-red-500 text-red-500 hover:bg-red-50" : "bg-green-500 hover:bg-green-600"}
-                            onClick={() => toggleTagStatus(index)}
+                            onClick={() => toggleTagStatus(tag.id)}
                           >
                             {tag.active ? 'Desactivar' : 'Activar'}
                           </Button>
                         </div>
                       </div>
                       <div className="bg-gray-50 p-3 rounded text-sm font-mono overflow-x-auto">
-                        <pre>{tag.code}</pre>
+                        {editingTagId === tag.id ? (
+                          <Textarea
+                            value={tag.code}
+                            onChange={(e) => {
+                              const newTags = tags.map(t =>
+                                t.id === tag.id ? { ...t, code: e.target.value } : t
+                              );
+                              setTags(newTags);
+                            }}
+                            className="min-h-[150px] font-mono"
+                          />
+                        ) : (
+                          <pre>{tag.code}</pre>
+                        )}
                       </div>
                     </div>
                   ))}
