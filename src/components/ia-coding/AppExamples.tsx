@@ -1,0 +1,84 @@
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+
+const appExamples = [
+  {
+    title: "EduConnect Pro",
+    description: "Sistema completo de gestión escolar con calificaciones en tiempo real, comunicación padres-maestros y seguimiento de asistencia",
+    image: "https://images.unsplash.com/photo-1497493292307-31c376b6e479?auto=format&fit=crop&q=80&w=1000",
+    features: ["Gestión de calificaciones", "Chat en tiempo real", "Control de asistencia", "Portal para padres"]
+  },
+  {
+    title: "DeliverPro",
+    description: "Sistema de delivery con tracking en tiempo real, gestión de pedidos y notificaciones automáticas",
+    image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&q=80&w=1000",
+    features: ["GPS en tiempo real", "Gestión de pedidos", "Panel de control", "Analytics avanzado"]
+  },
+  {
+    title: "TourBooking",
+    description: "Plataforma de reservas turísticas con calendario dinámico y pagos integrados",
+    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1000",
+    features: ["Reservas online", "Pagos seguros", "Sistema de reseñas", "Panel admin"]
+  },
+  {
+    title: "MediCare Hub",
+    description: "Sistema de gestión de pacientes para clínicas y consultorios médicos",
+    image: "https://images.unsplash.com/photo-1504813184591-01572f98c85f?auto=format&fit=crop&q=80&w=1000",
+    features: ["Historial médico", "Citas online", "Recetas digitales", "Telemedicina"]
+  }
+];
+
+const AppExamples = () => {
+  return (
+    <section className="py-20 bg-gradient-to-b from-black to-gray-900">
+      <div className="container mx-auto px-4">
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+          Apps Creadas con IA
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {appExamples.map((app, index) => (
+            <div 
+              key={index}
+              className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-1"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative p-6">
+                <div className="h-48 mb-6 overflow-hidden rounded-lg">
+                  <img 
+                    src={app.image} 
+                    alt={app.title}
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
+                  {app.title}
+                </h3>
+                <p className="text-gray-300 mb-4">
+                  {app.description}
+                </p>
+                <ul className="space-y-2">
+                  {app.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center">
+                      <div className="w-2 h-2 rounded-full bg-novativa-teal mr-2"></div>
+                      <span className="text-sm text-gray-300">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button 
+                  className="w-full mt-6 bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90"
+                  onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Crear App Similar
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default AppExamples;
