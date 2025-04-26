@@ -2,7 +2,6 @@
 import React from 'react';
 import { Code, Smartphone, Laptop } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 
 const IADevelopment = () => {
   return (
@@ -117,13 +116,13 @@ const IADevelopment = () => {
             Agenda una demostración y descubre cómo podemos transformar tu negocio con soluciones de IA para web y móvil
           </p>
           <Button
-            asChild
             size="lg"
             className="bg-novativa-orange hover:bg-novativa-lightOrange text-white"
+            onClick={() => {
+              window.location.href = '/agenda';
+            }}
           >
-            <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
-              Agenda una demostración gratuita
-            </a>
+            Agenda una demostración gratuita
           </Button>
         </div>
       </section>

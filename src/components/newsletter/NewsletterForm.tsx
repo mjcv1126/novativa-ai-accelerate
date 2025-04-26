@@ -37,29 +37,53 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ light = false })
     >
       <div className="space-y-2">
         <div>
+          <label htmlFor="sendfox_form_name" className={`block mb-1 ${light ? "text-white" : "text-gray-700"}`}>
+            Nombre:
+          </label>
           <input 
             type="text" 
             id="sendfox_form_name" 
-            placeholder="Nombre" 
-            name="first_name"
+            placeholder="Tu nombre" 
+            name="first_name" 
+            required
             className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
               light ? "bg-white/10 text-white placeholder-white/70 border border-white/30 focus:ring-novativa-orange" 
               : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
-            }`}
+            }`} 
           />
         </div>
         
         <div>
+          <label htmlFor="sendfox_form_last_name" className={`block mb-1 ${light ? "text-white" : "text-gray-700"}`}>
+            Apellido:
+          </label>
           <input 
-            type="email" 
-            id="sendfox_form_email" 
-            placeholder="Email" 
-            name="email" 
-            required 
+            type="text" 
+            id="sendfox_form_last_name" 
+            placeholder="Tu apellido" 
+            name="last_name" 
+            required
             className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
               light ? "bg-white/10 text-white placeholder-white/70 border border-white/30 focus:ring-novativa-orange" 
               : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
-            }`}
+            }`} 
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="sendfox_form_email" className={`block mb-1 ${light ? "text-white" : "text-gray-700"}`}>
+            Email:
+          </label>
+          <input 
+            type="email" 
+            id="sendfox_form_email" 
+            placeholder="Tu email" 
+            name="email" 
+            required
+            className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
+              light ? "bg-white/10 text-white placeholder-white/70 border border-white/30 focus:ring-novativa-orange" 
+              : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
+            }`} 
           />
         </div>
         

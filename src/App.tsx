@@ -43,6 +43,8 @@ function App() {
         <Route path="/servicios/agentes-ia" element={<PageWrapper id="page-id-ai-agents"><Layout><AIAgents /></Layout></PageWrapper>} />
         <Route path="/servicios/contenido" element={<PageWrapper id="page-id-content"><Layout><ContentGeneration /></Layout></PageWrapper>} />
         <Route path="/servicios/desarrollo" element={<PageWrapper id="page-id-development"><Layout><IADevelopment /></Layout></PageWrapper>} />
+        <Route path="/servicios/desarrollo-ia" element={<PageWrapper id="page-id-development"><Layout><IADevelopment /></Layout></PageWrapper>} />
+        <Route path="/servicios/novachannel" element={<PageWrapper id="page-id-novachannel"><Layout><NovaChannel /></Layout></PageWrapper>} />
         <Route path="/precios" element={<PageWrapper id="page-id-pricing"><Layout><Pricing /></Layout></PageWrapper>} />
         <Route path="/contacto" element={<PageWrapper id="page-id-contact"><Layout><Contact /></Layout></PageWrapper>} />
         <Route path="/blog" element={<PageWrapper id="page-id-blog"><Layout><Blog /></Layout></PageWrapper>} />

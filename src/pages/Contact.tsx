@@ -190,12 +190,12 @@ const Contact = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Programa una demostración gratuita y descubre cómo Novativa puede transformar tu negocio.
           </p>
-          <Link 
-            to="/agenda"
+          <a 
+            href="/agenda"
             className="inline-flex items-center gap-2 bg-white text-novativa-orange hover:bg-gray-100 px-6 py-3 rounded-md font-medium transition-colors"
           >
             <Calendar className="h-5 w-5" /> Agenda una Cita
-          </Link>
+          </a>
         </div>
       </section>
     </>

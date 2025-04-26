@@ -9,6 +9,15 @@ interface MobileNavProps {
 }
 
 const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
+  // Function to handle navigation with refresh for specific routes
+  const handleNavigation = (path: string) => {
+    onClose();
+    if (path === '/contacto' || path === '/agenda') {
+      // For these routes, force a page refresh
+      window.location.href = path;
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -25,7 +34,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           <div className="font-medium text-gray-800 mb-2">Servicios</div>
           <div className="ml-4 space-y-2">
             <Link 
-              to="/servicios/novachannel" 
+              to="/novachannel" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
@@ -39,14 +48,14 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
               Agentes IA Web
             </Link>
             <Link 
-              to="/servicios/generacion-contenido" 
+              to="/servicios/contenido" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
               Generación de Contenido
             </Link>
             <Link 
-              to="/servicios/desarrollo-ia" 
+              to="/servicios/desarrollo" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
@@ -68,21 +77,20 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
         >
           Blog
         </Link>
-        <Link 
-          to="/contacto" 
+        <a 
+          href="/contacto" 
           className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
           onClick={onClose}
         >
           Contacto
-        </Link>
+        </a>
         <Button
           asChild
           className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity"
-          onClick={onClose}
         >
-          <Link to="/agenda">
+          <a href="/agenda">
             Agenda una demo
-          </Link>
+          </a>
         </Button>
       </div>
     </div>

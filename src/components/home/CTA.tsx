@@ -1,6 +1,5 @@
 
 import React from 'react';
-import ScheduleDialog from '@/components/shared/ScheduleDialog';
 
 const CTA = () => {
   return (
@@ -12,20 +11,18 @@ const CTA = () => {
             Impulsa tu empresa con nuestras soluciones de inteligencia artificial y automatización.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
-            <ScheduleDialog
-              className="bg-novativa-orange hover:bg-novativa-lightOrange px-6 py-6 text-white"
-              size="lg"
+            <a
+              href="/agenda"
+              className="inline-flex items-center justify-center gap-2 bg-novativa-orange hover:bg-novativa-lightOrange px-6 py-6 rounded-md text-white font-medium transition-colors text-lg"
             >
               Solicita una demostración gratuita
-            </ScheduleDialog>
-            <ScheduleDialog
-              variant="outline"
-              className="border-white text-gray-600 hover:bg-white hover:text-novativa-teal px-6 py-6"
-              size="lg"
-              toPricing={true}
+            </a>
+            <a
+              href="/precios"
+              className="inline-flex items-center justify-center gap-2 border border-white bg-transparent hover:bg-white hover:text-novativa-teal px-6 py-6 rounded-md text-white font-medium transition-colors text-lg"
             >
               Ver planes y precios
-            </ScheduleDialog>
+            </a>
           </div>
         </div>
       </div>
