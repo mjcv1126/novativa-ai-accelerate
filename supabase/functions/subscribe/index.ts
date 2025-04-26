@@ -6,6 +6,7 @@ const SENDFOX_API_ENDPOINT = "https://api.sendfox.com/contacts";
 
 interface SubscribeRequest {
   email: string;
+  listId?: number;
 }
 
 interface ErrorResponse {
@@ -47,10 +48,12 @@ serve(async (req) => {
     
     // Parse request body
     let email;
+    let listId;
     try {
       const body = await req.json();
       email = body.email;
-      console.log(`Email received: ${email}`);
+      listId = body.listId || 254803; // Default to Novati list if not provided
+      console.log(`Email received: ${email}, List ID: ${listId}`);
     } catch (e) {
       console.error("Failed to parse request body:", e);
       return new Response(JSON.stringify({
@@ -94,7 +97,7 @@ serve(async (req) => {
       });
     }
 
-    console.log(`Subscribing email: ${email} to SendFox`);
+    console.log(`Subscribing email: ${email} to SendFox list: ${listId}`);
 
     // Make request to SendFox API
     const response = await fetch(SENDFOX_API_ENDPOINT, {
@@ -105,7 +108,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         email,
-        lists: [], // Add your list IDs here if needed
+        lists: [listId], // Add the specified list ID
       }),
     });
 

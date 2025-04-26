@@ -1,23 +1,16 @@
-
 import React, { useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Link } from 'react-router-dom';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
-import { setAntiCacheHeaders, forcePageRefresh } from '@/utils/antiCacheHeaders';
+import { setAntiCacheHeaders } from '@/utils/antiCacheHeaders';
 import { toast } from '@/components/ui/sonner';
 
 const Contact = () => {
   useEffect(() => {
-    // Force an immediate refresh when component mounts
-    forcePageRefresh();
-    
     // Apply anti-cache headers
     setAntiCacheHeaders();
-    
-    // Force refresh if loaded from cache
-    forcePageRefresh();
     
     // Load Tidycal script with cache busting
     const loadTidycalScript = () => {

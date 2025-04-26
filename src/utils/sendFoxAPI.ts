@@ -21,7 +21,10 @@ export const addSubscriberToSendFox = async (email: string): Promise<SendFoxResp
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ 
+        email,
+        listId: 254803 // Novati list ID
+      }),
     });
 
     if (!response.ok) {
