@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { FavoriteBadge } from './FavoriteBadge';
 import PricingTable from './PricingTable';
 import { BillingToggle } from './BillingToggle';
 
@@ -21,7 +20,6 @@ export const AgentsIATabContent: React.FC<AgentsIATabContentProps> = ({
       />
       
       <div className="relative">
-        <FavoriteBadge />
         <p className="text-gray-600 mb-6">
           Nuestros planes Agentes IA + NovaChannel incluyen todas las herramientas necesarias para gestionar la comunicación con tus clientes mediante IA.
         </p>
@@ -36,3 +34,4 @@ export const AgentsIATabContent: React.FC<AgentsIATabContentProps> = ({
     </div>
   );
 };
+

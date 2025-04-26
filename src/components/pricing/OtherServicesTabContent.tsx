@@ -24,7 +24,7 @@ export const OtherServicesTabContent: React.FC = () => {
             "Automatizaciones para redes sociales"
           ]}
           buttonText="Solicitar presupuesto"
-          buttonLink="/agenda?servicio=contenido"
+          buttonLink="/agenda"
         />
         
         <ServiceCard
@@ -36,7 +36,7 @@ export const OtherServicesTabContent: React.FC = () => {
             "Desarrollo de soluciones a medida"
           ]}
           buttonText="Solicitar presupuesto"
-          buttonLink="/agenda?servicio=desarrollo"
+          buttonLink="/agenda"
         />
         
         <ServiceCard
@@ -48,7 +48,7 @@ export const OtherServicesTabContent: React.FC = () => {
             "Optimización continua del rendimiento"
           ]}
           buttonText="Solicitar presupuesto"
-          buttonLink="/agenda?servicio=agentes"
+          buttonLink="/agenda"
           buttonVariant="orange"
         />
       </div>
