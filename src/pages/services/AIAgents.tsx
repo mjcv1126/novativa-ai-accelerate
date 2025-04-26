@@ -65,28 +65,44 @@ const AIAgents = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center max-w-4xl mx-auto">
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <ShopifyIcon className="w-16 h-16 text-[#96bf48]" />
+                <img 
+                  src="https://cdn.worldvectorlogo.com/logos/shopify.svg"
+                  alt="Shopify"
+                  className="w-20 h-20 object-contain"
+                />
               </div>
               <p className="mt-3 font-medium">Shopify</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <WooCommerceIcon className="w-16 h-16 text-[#96588a]" />
+                <img 
+                  src="https://cdn.worldvectorlogo.com/logos/woocommerce.svg"
+                  alt="WooCommerce"
+                  className="w-20 h-20 object-contain"
+                />
               </div>
               <p className="mt-3 font-medium">WooCommerce</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <WixIcon className="w-16 h-16 text-black" />
+                <img 
+                  src="https://cdn.worldvectorlogo.com/logos/wix.svg"
+                  alt="Wix"
+                  className="w-20 h-20 object-contain"
+                />
               </div>
               <p className="mt-3 font-medium">Wix</p>
             </div>
             
             <div className="text-center">
               <div className="bg-white p-6 rounded-xl shadow-sm w-32 h-32 flex items-center justify-center">
-                <WordpressIcon className="w-16 h-16 text-[#21759b]" />
+                <img 
+                  src="https://cdn.worldvectorlogo.com/logos/wordpress-blue.svg"
+                  alt="WordPress"
+                  className="w-20 h-20 object-contain"
+                />
               </div>
               <p className="mt-3 font-medium">WordPress</p>
             </div>
