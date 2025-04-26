@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Phone, Gift, Check } from 'lucide-react';
+import { Phone, Gift, Check, User, UserRound } from 'lucide-react';
 import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 import { countries } from './countryData';
 
@@ -12,10 +12,14 @@ import { countries } from './countryData';
 const HOOK_MAKE_PHONE = import.meta.env.VITE_HOOK_MAKE_PHONE || "";
 
 const PhoneForm = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [countryCode, setCountryCode] = useState("506");
   const [phone, setPhone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneError, setPhoneError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
 
@@ -46,20 +50,61 @@ const PhoneForm = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFirstName(value);
+    if (!value) {
+      setNameError("Por favor ingresa tu nombre");
+    } else {
+      setNameError("");
+    }
+  };
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLastName(value);
+    if (!value) {
+      setLastNameError("Por favor ingresa tu apellido");
+    } else {
+      setLastNameError("");
+    }
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!firstName.trim()) {
+      setNameError("Por favor ingresa tu nombre");
+      isValid = false;
+    }
+
+    if (!lastName.trim()) {
+      setLastNameError("Por favor ingresa tu apellido");
+      isValid = false;
+    }
+
     if (!validatePhone(phone)) {
       setPhoneError(`Introduce ${selectedCountry?.minLength} dígitos para ${selectedCountry?.name}`);
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
       return;
     }
-    setPhoneError("");
+    
     setIsSubmitting(true);
     
     const digitsOnly = phone.replace(/\D/g, '');
     const formattedPhone = `+${countryCode}${digitsOnly}`;
     
     try {
-      console.log("Sending to webhook:", formattedPhone);
+      console.log("Sending to webhook:", formattedPhone, firstName, lastName);
       
       if (!HOOK_MAKE_PHONE) {
         console.error("Webhook URL is not defined!");
@@ -71,7 +116,11 @@ const PhoneForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ phone: formattedPhone }),
+        body: JSON.stringify({ 
+          phone: formattedPhone,
+          firstName,
+          lastName
+        }),
       });
 
       if (response.ok) {
@@ -89,6 +138,8 @@ const PhoneForm = () => {
           description: "Te enviaremos el descuento especial por WhatsApp pronto.",
         });
         setPhone("");
+        setFirstName("");
+        setLastName("");
       } else {
         console.error("Error response:", response.status, response.statusText);
         throw new Error('Error al enviar el número');
@@ -113,7 +164,7 @@ const PhoneForm = () => {
         </div>
         <h3 className="text-xl font-semibold mb-2">¡Tu regalo va en camino! 🎁</h3>
         <p className="text-gray-600">
-          Hemos recibido tu número correctamente. Pronto recibirás el descuento especial por WhatsApp.
+          Hemos recibido tu información correctamente. Pronto recibirás el descuento especial por WhatsApp.
         </p>
       </div>
     );
@@ -130,12 +181,42 @@ const PhoneForm = () => {
             ¿No recibiste el descuento? 🎁
           </h3>
           <p className="text-sm text-gray-600">
-            Ingresa tu número aquí
+            Ingresa tus datos aquí
           </p>
         </div>
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-md bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
+            <User className="h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={firstName}
+              onChange={handleFirstNameChange}
+              className="flex-1 outline-none bg-transparent text-gray-800 placeholder:text-gray-400"
+            />
+          </div>
+          {nameError && (
+            <p className="text-red-500 text-xs mt-1 ml-1">{nameError}</p>
+          )}
+          
+          <div className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-md bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
+            <UserRound className="h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Apellido"
+              value={lastName}
+              onChange={handleLastNameChange}
+              className="flex-1 outline-none bg-transparent text-gray-800 placeholder:text-gray-400"
+            />
+          </div>
+          {lastNameError && (
+            <p className="text-red-500 text-xs mt-1 ml-1">{lastNameError}</p>
+          )}
+        </div>
+        
         <div className="flex gap-3">
           <Select value={countryCode} onValueChange={(value) => {
             setCountryCode(value);
@@ -175,7 +256,7 @@ const PhoneForm = () => {
         <Button 
           type="submit" 
           className="w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 hover:opacity-90 transition-all"
-          disabled={isSubmitting || !!phoneError}
+          disabled={isSubmitting || !!phoneError || !!nameError || !!lastNameError}
         >
           {isSubmitting ? "Enviando..." : (
             <span className="flex items-center gap-2">

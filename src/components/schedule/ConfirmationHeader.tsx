@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star } from 'lucide-react';
+import { Star, MessageCircle, Check } from 'lucide-react';
 
 const ConfirmationHeader = () => {
   return (
