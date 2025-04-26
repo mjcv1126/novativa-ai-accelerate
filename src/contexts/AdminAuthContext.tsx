@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
+import { toast } from 'react-hot-toast';
 
 // Check if we have valid Supabase credentials
 const supabaseUrl = window.env?.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
@@ -24,6 +25,7 @@ interface AdminAuthContextType {
   resetPassword: (email: string) => Promise<{ error: any }>;
   verifyResetCode: (email: string, code: string) => Promise<{ error: any }>;
   updatePassword: (email: string, code: string, newPassword: string) => Promise<{ error: any }>;
+  checkSession: () => Promise<void>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType>({
@@ -35,6 +37,7 @@ const AdminAuthContext = createContext<AdminAuthContextType>({
   resetPassword: async () => ({ error: null }),
   verifyResetCode: async () => ({ error: null }),
   updatePassword: async () => ({ error: null }),
+  checkSession: async () => {},
 });
 
 export const useAdminAuth = () => useContext(AdminAuthContext);
@@ -43,20 +46,21 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(!!supabase);
 
-  useEffect(() => {
-    // Si Supabase no está configurado, marcar la carga como completa
-    if (!supabase) {
-      console.error("Supabase no está configurado correctamente. Por favor, configura SUPABASE_URL y SUPABASE_ANON_KEY.");
-      setIsLoading(false);
-      return;
-    }
-
-    // Verificar la sesión actual
-    const checkSession = async () => {
-      try {
-        // Forzar una nueva verificación de sesión
+  // Verificar la sesión actual
+  const checkSession = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      if (!supabase) {
+        // Verificar autenticación local
+        const storedUser = localStorage.getItem('admin_user');
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        } else {
+          setUser(null);
+        }
+      } else {
+        // Verificar autenticación con Supabase
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -70,37 +74,41 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         } else {
           setUser(null);
         }
-      } catch (error) {
-        console.error("Error inesperado al verificar la sesión:", error);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
       }
-    };
-    
-    checkSession();
-
-    // Escuchar cambios en el estado de autenticación
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log("Cambio en el estado de autenticación:", event);
-        
-        if (event === 'SIGNED_OUT') {
-          setUser(null);
-          // Limpiar cualquier dato en caché
-          localStorage.removeItem('admin_user');
-        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          setUser(session?.user || null);
-        }
-        
-        setIsLoading(false);
-      }
-    );
-
-    return () => {
-      authListener?.subscription?.unsubscribe();
-    };
+    } catch (error) {
+      console.error("Error inesperado al verificar la sesión:", error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    checkSession();
+    
+    // Si Supabase está configurado, escuchar cambios en el estado de autenticación
+    if (supabase) {
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          console.log("Cambio en el estado de autenticación:", event);
+          
+          if (event === 'SIGNED_OUT') {
+            setUser(null);
+            // Limpiar cualquier dato en caché
+            localStorage.removeItem('admin_user');
+          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            setUser(session?.user || null);
+          }
+          
+          setIsLoading(false);
+        }
+      );
+
+      return () => {
+        authListener?.subscription?.unsubscribe();
+      };
+    }
+  }, [checkSession]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -121,9 +129,11 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           localStorage.setItem('admin_user', JSON.stringify(mockUser));
           
           setUser(mockUser);
+          toast.success('Inicio de sesión exitoso');
           navigate('/admin');
           return { error: null };
         } else {
+          toast.error('Credenciales incorrectas');
           return { error: { message: 'Credenciales incorrectas' } };
         }
       }
@@ -135,18 +145,22 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       });
       
       if (error) {
+        toast.error(error.message || 'Error de autenticación');
         return { error };
       }
       
       if (data?.user) {
         setUser(data.user);
+        toast.success('Inicio de sesión exitoso');
         navigate('/admin');
         return { error: null };
       }
       
+      toast.error('Error de autenticación');
       return { error: { message: 'Error de autenticación' } };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
+      toast.error('Error inesperado al iniciar sesión');
       return { error: { message: 'Error inesperado' } };
     } finally {
       setIsLoading(false);
@@ -154,26 +168,24 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const logout = async () => {
-    if (supabase) {
-      await supabase.auth.signOut();
-    } else {
-      // Clear local storage for fallback authentication
-      localStorage.removeItem('admin_user');
-      setUser(null);
-    }
-    navigate('/admin/login');
-  };
-
-  // Check for stored user on load when no Supabase
-  useEffect(() => {
-    if (!supabase && !user) {
-      const storedUser = localStorage.getItem('admin_user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+    setIsLoading(true);
+    try {
+      if (supabase) {
+        await supabase.auth.signOut();
+      } else {
+        // Clear local storage for fallback authentication
+        localStorage.removeItem('admin_user');
+        setUser(null);
       }
+      toast.success('Sesión cerrada exitosamente');
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Error al cerrar sesión');
+    } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  };
 
   const resetPassword = async (email: string) => {
     try {
@@ -261,6 +273,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         resetPassword,
         verifyResetCode,
         updatePassword,
+        checkSession,
       }}
     >
       {children}
@@ -270,17 +283,26 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 export const withAdminAuth = (Component: React.ComponentType<any>) => {
   return (props: any) => {
-    const { user, isLoading } = useAdminAuth();
+    const { user, isLoading, checkSession } = useAdminAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (!isLoading && !user) {
-        navigate('/admin/login');
-      }
-    }, [user, isLoading, navigate]);
+      const verifyAuth = async () => {
+        await checkSession();
+        if (!isLoading && !user) {
+          navigate('/admin/login');
+        }
+      };
+      
+      verifyAuth();
+    }, [user, isLoading, navigate, checkSession]);
 
     if (isLoading) {
-      return <div className="flex h-screen items-center justify-center">Cargando...</div>;
+      return (
+        <div className="flex h-screen items-center justify-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-novativa-teal"></div>
+        </div>
+      );
     }
 
     return user ? <Component {...props} /> : null;

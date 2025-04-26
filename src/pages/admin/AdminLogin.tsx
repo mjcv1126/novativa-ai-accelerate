@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,8 @@ import { Helmet } from 'react-helmet-async';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import * as z from 'zod';
 import { Link } from 'react-router-dom';
 
@@ -17,14 +19,16 @@ const formSchema = z.object({
 });
 
 const AdminLogin = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetCode, setResetCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [resetStep, setResetStep] = useState<'email' | 'code' | 'newPassword'>('email');
-  const { login, resetPassword, verifyResetCode, updatePassword } = useAdminAuth();
+  const { login, resetPassword, verifyResetCode, updatePassword, isAuthenticated, isLoading } = useAdminAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,8 +38,15 @@ const AdminLogin = () => {
     },
   });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      const from = location.state?.from || '/admin';
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, location.state]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
+    setIsFormLoading(true);
 
     try {
       const { error } = await login(values.email, values.password);
@@ -55,7 +66,7 @@ const AdminLogin = () => {
         variant: 'destructive',
       });
     } finally {
-      setIsLoading(false);
+      setIsFormLoading(false);
     }
   };
 
@@ -308,6 +319,7 @@ const AdminLogin = () => {
                         placeholder="tu@email.com" 
                         type="email" 
                         {...field} 
+                        disabled={isFormLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -324,6 +336,7 @@ const AdminLogin = () => {
                       <Input 
                         type="password" 
                         {...field} 
+                        disabled={isFormLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -333,9 +346,14 @@ const AdminLogin = () => {
               <Button 
                 type="submit"
                 className="w-full bg-novativa-teal hover:bg-novativa-lightTeal mt-4" 
-                disabled={isLoading}
+                disabled={isFormLoading}
               >
-                {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+                {isFormLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Iniciando sesión...
+                  </>
+                ) : 'Iniciar sesión'}
               </Button>
             </form>
           </Form>
@@ -344,6 +362,7 @@ const AdminLogin = () => {
           <Button
             variant="link"
             onClick={() => setShowResetPassword(true)}
+            disabled={isFormLoading}
           >
             ¿Olvidaste tu contraseña?
           </Button>
@@ -351,6 +370,15 @@ const AdminLogin = () => {
       </Card>
     </div>
   );
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <Loader2 className="animate-spin h-8 w-8 text-novativa-teal" />
+        <span className="ml-2 text-lg">Cargando...</span>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -1,12 +1,24 @@
+
 import React, { useEffect } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { Helmet } from 'react-helmet-async';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const AdminLayout = () => {
-  const { isAuthenticated, isLoading } = useAdminAuth();
+  const { isAuthenticated, isLoading, checkSession } = useAdminAuth();
+
+  // Verificar autenticación al cargar
+  useEffect(() => {
+    const verifyAuth = async () => {
+      await checkSession();
+    };
+    
+    verifyAuth();
+  }, [checkSession]);
 
   // Función para evitar el caché
   useEffect(() => {
@@ -36,16 +48,22 @@ const AdminLayout = () => {
       document.head.appendChild(metaExpires);
     }
     
+    // Mostrar un mensaje de bienvenida una vez autenticado
+    if (isAuthenticated && !isLoading) {
+      toast.success('Bienvenido al panel administrativo');
+    }
+    
     // Limpiar al desmontar
     return () => {
       window.onpageshow = null;
     };
-  }, []);
+  }, [isAuthenticated, isLoading]);
 
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <span className="loading loading-spinner loading-lg"></span>
+        <Loader2 className="animate-spin h-10 w-10 text-novativa-teal" />
+        <span className="ml-2 text-lg">Cargando panel administrativo...</span>
       </div>
     );
   }

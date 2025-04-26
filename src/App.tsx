@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
@@ -35,35 +36,26 @@ import ScrollToTop from '@/components/layout/ScrollToTop';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import { HelmetProvider } from 'react-helmet-async';
+import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 
 function App() {
   return (
     <Router>
       <HelmetProvider>
-        <ScrollToTop />
-        <Helmet>
-          <title>Novativa IA - Soluciones de Inteligencia Artificial</title>
-          <meta name="description" content="Novativa IA ofrece soluciones de inteligencia artificial y automatización para empresas. Optimiza tus procesos y mejora la experiencia de tus clientes con nuestras tecnologías innovadoras." />
-        </Helmet>
-        <Layout>
+        <AdminAuthProvider>
+          <ScrollToTop />
+          <Helmet>
+            <title>Novativa IA - Soluciones de Inteligencia Artificial</title>
+            <meta name="description" content="Novativa IA ofrece soluciones de inteligencia artificial y automatización para empresas. Optimiza tus procesos y mejora la experiencia de tus clientes con nuestras tecnologías innovadoras." />
+          </Helmet>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<BlogPost />} />
-            <Route path="/blog/categoria/:category" element={<BlogCategory />} />
-            <Route path="/blog/tag/:tag" element={<BlogTag />} />
-            <Route path="/contacto" element={<Contact />} />
-            <Route path="/precios" element={<Pricing />} />
-            <Route path="/agenda" element={<Schedule />} />
-            <Route path="/novachannel" element={<NovaChannel />} />
-            <Route path="/servicios" element={<Services />} />
-            <Route path="/servicios/novachannel" element={<NovaChannel />} />
-            <Route path="/servicios/agentes-ia" element={<AIAgents />} />
-            <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
-            <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
-            
             {/* Admin Routes */}
-            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }>
               <Route index element={<AdminDashboard />} />
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="blog" element={<AdminBlogPosts />} />
@@ -71,11 +63,50 @@ function App() {
               <Route path="scripts" element={<AdminScripts />} />
             </Route>
             
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="*" element={<NotFound />} />
+            {/* Public Routes */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:id" element={<BlogPost />} />
+              <Route path="/blog/categoria/:category" element={<BlogCategory />} />
+              <Route path="/blog/tag/:tag" element={<BlogTag />} />
+              <Route path="/contacto" element={<Contact />} />
+              <Route path="/precios" element={<Pricing />} />
+              <Route path="/agenda" element={<Schedule />} />
+              <Route path="/novachannel" element={<NovaChannel />} />
+              <Route path="/servicios" element={<Services />} />
+              <Route path="/servicios/novachannel" element={<NovaChannel />} />
+              <Route path="/servicios/agentes-ia" element={<AIAgents />} />
+              <Route path="/servicios/generacion-contenido" element={<ContentGeneration />} />
+              <Route path="/servicios/desarrollo-ia" element={<IADevelopment />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
           </Routes>
-        </Layout>
-        <Toaster />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+              success: {
+                duration: 3000,
+                iconTheme: {
+                  primary: '#00B37E',
+                  secondary: '#FFFFFF',
+                },
+              },
+              error: {
+                duration: 4000,
+                iconTheme: {
+                  primary: '#F55',
+                  secondary: '#FFFFFF',
+                },
+              },
+            }}
+          />
+        </AdminAuthProvider>
       </HelmetProvider>
     </Router>
   )
