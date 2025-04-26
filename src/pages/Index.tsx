@@ -2,9 +2,20 @@ import { Helmet } from 'react-helmet-async';
 import Home from './Home';
 
 const Index = () => {
+  // Pre-connect to domain for faster resource loading
+  const preconnectDomains = [
+    'https://fonts.googleapis.com',
+    'https://fonts.gstatic.com'
+  ];
+
   return (
     <>
       <Helmet>
+        {/* Preconnect to critical domains */}
+        {preconnectDomains.map(domain => (
+          <link key={domain} rel="preconnect" href={domain} crossOrigin="anonymous" />
+        ))}
+        
         <title>Novativa - Agencia IA y de Automatización que acelera tu negocio</title>
         <meta name="description" content="Novativa es una agencia especializada en inteligencia artificial y automatización que acelera y potencia el crecimiento de tu negocio con soluciones innovadoras." />
         <meta name="keywords" content="novativa, inteligencia artificial, IA, automatización, chatbots, agentes IA, NovaChannel, generación de contenido, desarrollo IA" />

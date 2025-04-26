@@ -3,10 +3,17 @@ import React, { lazy, Suspense } from 'react';
 import Hero from '@/components/home/Hero';
 import Features from '@/components/home/Features';
 import CTA from '@/components/home/CTA';
+import HomeLoading from '@/components/home/HomeLoading';
 
-// Lazy load components that are lower in the page
+// Lazy load components with higher loading priority
 const Testimonials = lazy(() => import('@/components/home/Testimonials'));
-const RecentArticles = lazy(() => import('@/components/home/RecentArticles'));
+const RecentArticles = lazy(() => 
+  Promise.all([
+    import('@/components/home/RecentArticles'),
+    // Add artificial delay to ensure Hero and Features load first
+    new Promise(resolve => setTimeout(resolve, 100))
+  ]).then(([moduleExport]) => moduleExport)
+);
 
 const Home = () => {
   return (
@@ -14,10 +21,8 @@ const Home = () => {
       <Hero />
       <Features />
       <CTA />
-      <Suspense fallback={<div className="py-20 bg-white"></div>}>
+      <Suspense fallback={<HomeLoading />}>
         <Testimonials />
-      </Suspense>
-      <Suspense fallback={<div className="py-20 bg-gray-50"></div>}>
         <RecentArticles />
       </Suspense>
     </>
