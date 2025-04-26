@@ -87,8 +87,12 @@ const Services = () => {
             </Button>
           </div>
           
-          <div className="rounded-xl overflow-hidden shadow-xl">
-            <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2000&auto=format&fit=crop" alt="Agente IA Web" className="w-full h-auto object-cover" />
+          <div className="rounded-xl overflow-hidden shadow-xl bg-white">
+            <img 
+              src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnc2bWF1N2htYnVvZmh0OHZlOWxvMmpodjB1aWx4anVpcXp5ZDZhdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPtjElfqwMOTbH2/giphy.gif"
+              alt="AI Agent Animation" 
+              className="w-full h-[400px] object-cover"
+            />
           </div>
         </div>
       </div>
@@ -402,7 +406,7 @@ const Services = () => {
     {/* CTA Section */}
     <section className="py-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal text-white">
       <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl font-bold mb-6">¿Listo para impulsar tu negocio con IA?</h2>
+        <h2 className="text-3xl font-bold mb-6">��Listo para impulsar tu negocio con IA?</h2>
         <p className="text-xl mb-8 max-w-2xl mx-auto">
           Agenda una demostración y descubre cómo nuestras soluciones pueden transformar tu empresa.
         </p>
