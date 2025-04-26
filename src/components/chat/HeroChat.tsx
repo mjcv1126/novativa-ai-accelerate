@@ -6,7 +6,6 @@ import { Send, ArrowLeft, Menu, Paperclip, Mic, Calendar } from "lucide-react";
 import MessageList from './MessageList';
 import { useChat } from '@/hooks/useChat';
 import { useNavigate } from 'react-router-dom';
-import AnimatedScheduleArrow from '../shared/AnimatedScheduleArrow';
 
 const HeroChat = () => {
   const [input, setInput] = useState('');
@@ -99,15 +98,14 @@ const HeroChat = () => {
           isLoading={isLoading}
           messagesEndRef={messagesEndRef}
         />
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-3">
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
           <Button
             onClick={handleSchedule}
-            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white gap-2"
+            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white gap-2 animate-subtle-shake"
           >
             <Calendar className="w-5 h-5" />
             Agendar Demo Gratis
           </Button>
-          <AnimatedScheduleArrow />
         </div>
       </CardContent>
 
