@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -10,22 +9,33 @@ import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 import { useAdminData } from '@/contexts/AdminDataContext';
 import { useToast } from '@/hooks/use-toast';
 import { NewsletterForm } from '@/components/newsletter/NewsletterForm';
-
 const BlogPost = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const {
+    slug
+  } = useParams<{
+    slug: string;
+  }>();
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPostType[]>([]);
-  const { posts: adminPosts, categories: adminCategories } = useAdminData();
-  const { toast } = useToast();
-
+  const {
+    posts: adminPosts,
+    categories: adminCategories
+  } = useAdminData();
+  const {
+    toast
+  } = useToast();
   useEffect(() => {
     // Add anti-cache meta tags
-    const metaTags = [
-      { httpEquiv: 'Cache-Control', content: 'no-cache, no-store, must-revalidate' },
-      { httpEquiv: 'Pragma', content: 'no-cache' },
-      { httpEquiv: 'Expires', content: '0' }
-    ];
-
+    const metaTags = [{
+      httpEquiv: 'Cache-Control',
+      content: 'no-cache, no-store, must-revalidate'
+    }, {
+      httpEquiv: 'Pragma',
+      content: 'no-cache'
+    }, {
+      httpEquiv: 'Expires',
+      content: '0'
+    }];
     metaTags.forEach(tag => {
       let metaTag = document.querySelector(`meta[http-equiv="${tag.httpEquiv}"]`);
       if (!metaTag) {
@@ -36,21 +46,16 @@ const BlogPost = () => {
       metaTag.setAttribute('content', tag.content);
     });
   }, []);
-
   useEffect(() => {
     if (!slug) return;
-    
+
     // Try to find the post in adminPosts first (for most up-to-date data)
     // First try to find by ID, else by slug
     const idFromSlug = parseInt(slug || '0', 10);
-    const foundPost = !isNaN(idFromSlug) ? 
-                      (adminPosts.find(post => post.id === idFromSlug) || 
-                      blogPosts.find(post => post.id === idFromSlug)) :
-                      blogPosts.find(post => String(post.id) === slug);
-    
+    const foundPost = !isNaN(idFromSlug) ? adminPosts.find(post => post.id === idFromSlug) || blogPosts.find(post => post.id === idFromSlug) : blogPosts.find(post => String(post.id) === slug);
     if (foundPost) {
       setPost(foundPost);
-      
+
       // Track ViewContent event with enhanced data
       trackFacebookConversion('ViewContent', {
         customData: {
@@ -62,38 +67,28 @@ const BlogPost = () => {
           value: 0.00 // Set appropriate value if applicable
         }
       });
-      
+
       // Get related posts from the same category
-      const allPosts = [...adminPosts, ...blogPosts].filter(
-        (post, index, self) => index === self.findIndex(p => p.id === post.id)
-      );
-      
-      const related = allPosts
-        .filter(p => p.category === foundPost.category && p.id !== foundPost.id)
-        .slice(0, 3);
-      
+      const allPosts = [...adminPosts, ...blogPosts].filter((post, index, self) => index === self.findIndex(p => p.id === post.id));
+      const related = allPosts.filter(p => p.category === foundPost.category && p.id !== foundPost.id).slice(0, 3);
       setRelatedPosts(related);
     }
   }, [slug, adminPosts]);
 
   // If post not found
   if (!post) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] py-16">
+    return <div className="flex flex-col items-center justify-center min-h-[60vh] py-16">
         <h1 className="text-2xl font-bold mb-4">Artículo no encontrado</h1>
         <p className="text-gray-600 mb-6">El artículo que estás buscando no existe o ha sido movido.</p>
         <Button asChild className="bg-novativa-teal hover:bg-novativa-lightTeal">
           <Link to="/blog">Volver al Blog</Link>
         </Button>
-      </div>
-    );
+      </div>;
   }
 
   // Get all available categories from admin data
   const availableCategories = adminCategories.map(cat => cat.name);
-
-  return (
-    <>
+  return <>
       <LouisebotWidget />
       <Helmet>
         <title>{post.title} | Novativa Blog</title>
@@ -108,11 +103,7 @@ const BlogPost = () => {
       <section className="pt-32 pb-8 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="mb-6">
-            <Button
-              asChild
-              variant="outline"
-              className="mb-6"
-            >
+            <Button asChild variant="outline" className="mb-6">
               <Link to="/blog" className="flex items-center">
                 <ArrowLeft size={16} className="mr-2" /> Volver al blog
               </Link>
@@ -124,15 +115,9 @@ const BlogPost = () => {
               <span className="bg-novativa-teal/10 text-novativa-teal px-3 py-1 rounded-full text-sm">
                 {post.category}
               </span>
-              {post.tags && post.tags.map((tag, index) => (
-                <Link 
-                  key={index} 
-                  to={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200"
-                >
+              {post.tags && post.tags.map((tag, index) => <Link key={index} to={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200">
                   {tag}
-                </Link>
-              ))}
+                </Link>)}
             </div>
             
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
@@ -164,11 +149,7 @@ const BlogPost = () => {
             {/* Main Content */}
             <div className="lg:col-span-8">
               <div className="mb-8 rounded-xl overflow-hidden">
-                <img 
-                  src={post.image} 
-                  alt={post.title} 
-                  className="w-full h-auto object-cover max-h-[500px]"
-                />
+                <img src={post.image} alt={post.title} className="w-full h-auto object-cover max-h-[500px]" />
               </div>
               
               <div className="prose prose-lg max-w-none">
@@ -213,32 +194,20 @@ const BlogPost = () => {
               </div>
               
               {/* Tags Section */}
-              {post.tags && post.tags.length > 0 && (
-                <div className="border-t border-b py-6 my-8">
+              {post.tags && post.tags.length > 0 && <div className="border-t border-b py-6 my-8">
                   <div className="flex flex-wrap items-center gap-2">
                     <Tag size={18} className="text-gray-500 mr-2" />
-                    {post.tags.map((tag, index) => (
-                      <Link 
-                        key={index}
-                        to={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm"
-                      >
+                    {post.tags.map((tag, index) => <Link key={index} to={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`} className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm">
                         {tag}
-                      </Link>
-                    ))}
+                      </Link>)}
                   </div>
-                </div>
-              )}
+                </div>}
               
               {/* Author Section */}
               <div className="bg-gray-50 rounded-xl p-6 mt-8">
                 <div className="flex items-center">
                   <div className="w-16 h-16 rounded-full bg-gray-300 mr-4 overflow-hidden">
-                    <img 
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(post.author)}&background=0D9488&color=fff`}
-                      alt={post.author}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(post.author)}&background=0D9488&color=fff`} alt={post.author} className="w-full h-full object-cover" />
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">{post.author}</h3>
@@ -263,21 +232,11 @@ const BlogPost = () => {
               {/* Related Posts */}
               <div className="bg-gray-50 rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-bold mb-4">Artículos Relacionados</h3>
-                {relatedPosts.length > 0 ? (
-                  <div className="space-y-4">
-                    {relatedPosts.map((relatedPost) => (
-                      <Link 
-                        key={relatedPost.id}
-                        to={`/blog/${relatedPost.id}`}
-                        className="block group"
-                      >
+                {relatedPosts.length > 0 ? <div className="space-y-4">
+                    {relatedPosts.map(relatedPost => <Link key={relatedPost.id} to={`/blog/${relatedPost.id}`} className="block group">
                         <div className="flex gap-3">
                           <div className="w-20 h-20 rounded overflow-hidden flex-shrink-0">
-                            <img 
-                              src={relatedPost.image} 
-                              alt={relatedPost.title} 
-                              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                            />
+                            <img src={relatedPost.image} alt={relatedPost.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                           </div>
                           <div>
                             <h4 className="font-medium text-gray-900 group-hover:text-novativa-teal transition duration-300 line-clamp-2">
@@ -288,39 +247,27 @@ const BlogPost = () => {
                             </p>
                           </div>
                         </div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-600">No hay artículos relacionados disponibles.</p>
-                )}
+                      </Link>)}
+                  </div> : <p className="text-gray-600">No hay artículos relacionados disponibles.</p>}
               </div>
               
               {/* Categories */}
               <div className="bg-gray-50 rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-bold mb-4">Categorías</h3>
                 <div className="space-y-2">
-                  {availableCategories.map((category, index) => (
-                    <Link 
-                      key={index}
-                      to={`/blog/categoria/${category.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="flex items-center justify-between py-2 px-3 hover:bg-gray-100 rounded-md transition duration-200"
-                    >
+                  {availableCategories.map((category, index) => <Link key={index} to={`/blog/categoria/${category.toLowerCase().replace(/\s+/g, '-')}`} className="flex items-center justify-between py-2 px-3 hover:bg-gray-100 rounded-md transition duration-200">
                       <span>{category}</span>
                       <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">
                         {adminPosts.filter(p => p.category === category).length}
                       </span>
-                    </Link>
-                  ))}
+                    </Link>)}
                 </div>
               </div>
               
               {/* Subscribe Form */}
               <div className="bg-novativa-teal rounded-xl p-6 text-white">
-                <h3 className="text-xl font-bold mb-3">Suscríbete al newsletter</h3>
-                <p className="mb-4 text-white/90">
-                  Recibe los últimos artículos y recursos directamente en tu bandeja de entrada.
-                </p>
+                
+                
                 <NewsletterForm light />
               </div>
             </div>
@@ -335,19 +282,13 @@ const BlogPost = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Descubre cómo nuestras soluciones de inteligencia artificial y automatización pueden impulsar el crecimiento de tu empresa.
           </p>
-          <Button
-            asChild
-            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6"
-            size="lg"
-          >
+          <Button asChild className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6" size="lg">
             <Link to="/contacto">
               Solicitar una consulta gratuita
             </Link>
           </Button>
         </div>
       </section>
-    </>
-  );
+    </>;
 };
-
 export default BlogPost;
