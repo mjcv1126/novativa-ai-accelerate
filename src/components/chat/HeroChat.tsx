@@ -9,15 +9,15 @@ import MessageList from './MessageList';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 
-// Get Supabase URL and key from environment variables
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
 // Create Supabase client with proper error handling
 const createSupabaseClient = () => {
+  // Get Supabase URL and key from environment variables
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Supabase URL or Anon Key is missing');
-    // Return a dummy client that won't make actual network requests
+    console.error('Supabase URL or Anon Key is missing, using mock client');
+    // Return a mock client that won't make actual network requests
     return {
       auth: {
         getSession: () => Promise.resolve({ data: { session: null } }),
@@ -45,15 +45,19 @@ const HeroChat = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-    });
+    try {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user || null);
+      });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user || null);
+      });
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    } catch (error) {
+      console.error("Error with Supabase auth:", error);
+    }
   }, []);
 
   useEffect(() => {
@@ -88,59 +92,45 @@ const HeroChat = () => {
     setIsLoading(true);
 
     try {
-      // Intentamos usar la función 'assistant-chat' en Supabase
-      // Si no hay configuración de Supabase, intentamos la función 'chat' normal
-      let responseData;
-      
-      if (supabaseUrl && supabaseAnonKey) {
-        // Usar el asistente específico con ID asst_0n98mnqxf4SiqOHMDvv5Jbbs
-        const { data, error } = await supabase.functions.invoke('assistant-chat', {
-          body: {
-            message: input,
-            threadId: threadId
-          }
-        });
-
-        if (error) throw error;
-        responseData = data;
-        
-        // Guardar threadId para futuros mensajes
-        if (data.threadId) {
-          setThreadId(data.threadId);
-          console.log("Thread ID guardado:", data.threadId);
-        }
-      } else {
-        // Fallback a la API chat normal
-        const { data, error } = await supabase.functions.invoke('chat', {
-          body: {
-            messages: [
-              ...messages.map(msg => ({
-                role: msg.role,
-                content: msg.content
-              })),
-              {
-                role: 'user',
-                content: input
-              }
-            ]
-          }
-        });
-        
-        if (error) throw error;
-        responseData = {
-          message: data.choices[0].message.content,
-        };
-      }
-
       const botMessage: Message = {
-        content: responseData.message,
+        content: "Por el momento no puedo responder en tiempo real. Te invito a agendar una demostración gratuita donde un especialista responderá todas tus preguntas.",
         role: 'assistant',
         timestamp: new Date(),
       };
 
+      // Only try to use Supabase if environment variables are available
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (supabaseUrl && supabaseAnonKey) {
+        try {
+          // Use the assistant-chat function
+          const { data, error } = await supabase.functions.invoke('assistant-chat', {
+            body: {
+              message: input,
+              threadId: threadId
+            }
+          });
+
+          if (error) throw error;
+          
+          // Save threadId for future messages
+          if (data.threadId) {
+            setThreadId(data.threadId);
+            console.log("Thread ID saved:", data.threadId);
+          }
+          
+          // Update bot message with response from Supabase function
+          botMessage.content = data.message;
+        } catch (error) {
+          console.error('Error with Supabase function:', error);
+          // Keep default message in case of error
+        }
+      }
+
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Error al enviar mensaje:', error);
+      console.error('Error sending message:', error);
       toast({
         title: "Error",
         description: "No se pudo enviar el mensaje. Por favor, intenta nuevamente.",
