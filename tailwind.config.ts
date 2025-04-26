@@ -105,6 +105,20 @@ export default {
 					"0%, 100%": { transform: "translateX(0)" },
 					"25%": { transform: "translateX(-2px) rotate(-1deg)" },
 					"75%": { transform: "translateX(2px) rotate(1deg)" }
+				},
+				"bounce-slow": {
+					"0%, 100%": { 
+						transform: "translateX(0)",
+						animationTimingFunction: "cubic-bezier(0.8, 0, 1, 1)"
+					},
+					"50%": { 
+						transform: "translateX(10%)",
+						animationTimingFunction: "cubic-bezier(0, 0, 0.2, 1)"
+					}
+				},
+				"pulse-subtle": {
+					"0%, 100%": { opacity: "1" },
+					"50%": { opacity: "0.6" }
 				}
 			},
 			animation: {
@@ -114,7 +128,9 @@ export default {
 				"blink": "blink 1s infinite",
 				"fade-in": "fade-in 0.5s ease-out",
 				"fade-out": "fade-out 0.5s ease-out forwards",
-				"subtle-shake": "subtle-shake 3s ease-in-out infinite"
+				"subtle-shake": "subtle-shake 3s ease-in-out infinite",
+				"bounce-slow": "bounce-slow 2s infinite",
+				"pulse-subtle": "pulse-subtle 2s infinite"
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
