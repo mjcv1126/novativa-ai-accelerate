@@ -36,6 +36,7 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ light = false })
         description: "No pudimos procesar tu suscripción. Por favor intenta de nuevo.",
         variant: "destructive",
       });
+      console.error('Newsletter subscription error:', error);
     } finally {
       setIsSubmitting(false);
     }

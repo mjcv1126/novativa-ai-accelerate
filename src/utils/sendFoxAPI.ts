@@ -25,6 +25,7 @@ export const addSubscriberToSendFox = async (email: string): Promise<SendFoxResp
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('SendFox API Error:', errorData);
       throw new Error(errorData.message || 'Error adding subscriber');
     }
 

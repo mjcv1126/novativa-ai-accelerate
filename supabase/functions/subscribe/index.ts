@@ -72,6 +72,8 @@ serve(async (req) => {
       });
     }
 
+    console.log(`Subscribing email: ${email} to SendFox`);
+
     // Make request to SendFox API
     const response = await fetch(SENDFOX_API_ENDPOINT, {
       method: "POST",
@@ -86,6 +88,7 @@ serve(async (req) => {
     });
 
     const data = await response.json();
+    console.log("SendFox API response:", data);
 
     if (!response.ok) {
       console.error("SendFox API error:", data);
