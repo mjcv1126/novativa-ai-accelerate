@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -8,6 +7,8 @@ import { blogPosts, BlogPost as BlogPostType, getPostsByCategory } from '@/data/
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 import { useAdminData } from '@/contexts/AdminDataContext';
+import { useToast } from '@/hooks/use-toast';
+import { NewsletterForm } from '@/components/newsletter/NewsletterForm';
 
 const BlogPost = () => {
   const { id } = useParams<{ id: string }>();
@@ -319,73 +320,6 @@ const BlogPost = () => {
         </div>
       </section>
     </>
-  );
-};
-
-// Create a reusable component for the newsletter form
-const NewsletterForm = ({ light = false }) => {
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch('/.netlify/functions/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) throw new Error('Error al suscribir');
-
-      toast({
-        title: "¡Bienvenido a la comunidad IA!",
-        description: "Pronto recibirás nuestras actualizaciones.",
-      });
-      
-      setEmail('');
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "No pudimos procesar tu suscripción. Por favor intenta de nuevo.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Tu email"
-        required
-        className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
-          light 
-            ? "text-gray-800 focus:ring-novativa-orange" 
-            : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
-        }`}
-      />
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className={`w-full ${
-          light 
-            ? "bg-novativa-orange hover:bg-novativa-lightOrange text-white" 
-            : "bg-novativa-teal hover:bg-novativa-lightTeal text-white"
-        }`}
-      >
-        {isSubmitting ? "Enviando..." : "Suscribirme"}
-      </Button>
-    </form>
   );
 };
 
