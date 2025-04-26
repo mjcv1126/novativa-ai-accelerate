@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Check, X, HelpCircle, MessageSquare, Globe } from 'lucide-react';
@@ -16,12 +17,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { 
-  Whatsapp,
-  Instagram,
-  Facebook,
-  Telegram
-} from 'lucide-react';
 
 type PricingTableProps = {
   billingCycle: 'monthly' | 'annual';
@@ -126,12 +121,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
                 </TooltipProvider>
               </div>
               <div className="flex gap-2 mt-2 text-gray-500">
-                <Whatsapp size={16} />
-                <Telegram size={16} />
-                <Instagram size={16} />
-                <Facebook size={16} />
+                <MessageSquare size={16} className="text-green-500" />
+                <MessageSquare size={16} className="text-blue-500" />
+                <MessageSquare size={16} className="text-pink-500" />
+                <MessageSquare size={16} className="text-blue-700" />
                 <Globe size={16} />
-                <MessageSquare size={16} title="SMS" />
+                <MessageSquare size={16} />
               </div>
             </TableCell>
             <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
