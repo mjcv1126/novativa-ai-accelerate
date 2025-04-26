@@ -81,7 +81,7 @@ function App() {
         
         <Route path="/iacoding" element={
           <PageWrapper id="page-id-iacoding">
-            <Layout><IACoding /></Layout>
+            <IACoding />
           </PageWrapper>
         } />
         

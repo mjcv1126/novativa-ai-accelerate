@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Zap, Rocket, Code, Star } from 'lucide-react';
+import { Zap, Rocket, Code, Star, Smartphone, Users, Calendar } from 'lucide-react';
 import TidyCalEmbed from '@/components/schedule/TidyCalEmbed';
 
 const IACoding = () => {
@@ -87,6 +86,107 @@ const IACoding = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* App Examples Section */}
+      <section className="py-20 bg-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/10 to-novativa-orange/10 opacity-20" />
+        <div className="container mx-auto px-4 relative z-10">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+            Apps Creadas con IA
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Smartphone className="text-novativa-teal h-8 w-8" />,
+                title: "Delivery App",
+                description: "Sistema completo de delivery con tracking en tiempo real, pagos y notificaciones"
+              },
+              {
+                icon: <Users className="text-novativa-orange h-8 w-8" />,
+                title: "Red Social",
+                description: "Plataforma social con perfiles, posts, comentarios y mensajería instantánea"
+              },
+              {
+                icon: <Calendar className="text-yellow-400 h-8 w-8" />,
+                title: "Sistema de Reservas",
+                description: "Gestión de citas y reservas con calendarios sincronizados y recordatorios"
+              }
+            ].map((example, index) => (
+              <div 
+                key={index}
+                className="relative p-8 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-800 hover:border-novativa-teal/50 transition-all duration-300 group"
+              >
+                <div className="bg-black/30 p-4 rounded-full w-fit mb-6">
+                  {example.icon}
+                </div>
+                <h3 className="text-2xl font-bold mb-4">{example.title}</h3>
+                <p className="text-gray-300 mb-6">
+                  {example.description}
+                </p>
+                <Button 
+                  className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
+                  onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <Rocket className="mr-2 h-5 w-5" />
+                  Crea tu App
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+            Beneficios del Desarrollo con IA
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                title: "Desarrollo Ultra Rápido",
+                description: "Reducimos tiempos hasta en un 70% con IA"
+              },
+              {
+                title: "Costos Optimizados",
+                description: "Ahorra hasta un 60% en costos de desarrollo"
+              },
+              {
+                title: "Alta Calidad",
+                description: "Código limpio y mantenible generado por IA"
+              },
+              {
+                title: "Innovación Constante",
+                description: "Siempre usando las últimas tecnologías"
+              }
+            ].map((benefit, index) => (
+              <div 
+                key={index}
+                className="p-6 rounded-xl bg-gradient-to-br from-gray-800/30 to-gray-900/30 border border-gray-800 hover:border-novativa-orange/50 transition-all duration-300"
+              >
+                <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
+                  {benefit.title}
+                </h3>
+                <p className="text-gray-300">
+                  {benefit.description}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-12">
+            <Button 
+              size="lg"
+              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-10 py-8"
+              onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              <Star className="mr-2 h-6 w-6" />
+              ¡Comienza Tu Proyecto Ahora!
+            </Button>
           </div>
         </div>
       </section>
