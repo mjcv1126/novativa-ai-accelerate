@@ -14,18 +14,37 @@ const Schedule = () => {
     // Force refresh if loaded from cache
     forcePageRefresh();
     
-    // Load Tidycal script only once when component mounts
-    const script = document.createElement('script');
-    script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
-    script.async = true;
-    
-    // Check if script is already loaded to prevent duplicates
-    if (!document.querySelector('script[src="https://asset-tidycal.b-cdn.net/js/embed.js"]')) {
+    // Improved TidyCal script loading
+    const loadTidycalScript = () => {
+      // First remove any existing script to prevent duplicates
+      const existingScript = document.querySelector('script[src="https://asset-tidycal.b-cdn.net/js/embed.js"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+      
+      // Create and load a new script
+      const script = document.createElement('script');
+      script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
+      script.async = true;
+      script.onload = () => {
+        console.log('TidyCal script loaded successfully');
+        // Force reinitialize if needed
+        if (window.TidyCal && typeof window.TidyCal.init === 'function') {
+          window.TidyCal.init();
+        }
+      };
+      script.onerror = (error) => {
+        console.error('Error loading TidyCal script:', error);
+      };
+      
       document.body.appendChild(script);
-    }
-
+    };
+    
+    // Small timeout to ensure DOM is fully rendered
+    setTimeout(loadTidycalScript, 300);
+    
     return () => {
-      // No need to remove script on unmount - it can be reused on revisits
+      // Cleanup not needed as script remains for better performance
     };
   }, []);
 
@@ -35,15 +54,18 @@ const Schedule = () => {
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
+        <title>Agenda tu Demo Gratuito | Novativa IA</title>
+        <meta name="description" content="Agenda una demostración gratuita con nuestro equipo y descubre cómo Novativa IA puede transformar tu negocio con inteligencia artificial." />
       </Helmet>
       <LouisebotWidget />
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="w-full bg-white p-8 rounded-xl shadow-lg">
+            <h1 className="text-2xl font-bold text-center mb-6">Agenda tu Demostración Gratuita</h1>
             <div 
               className="tidycal-embed" 
               data-path="novativa/demo-gratis"
-              style={{ minHeight: '600px', width: '100%' }}
+              style={{ minHeight: '700px', width: '100%' }}
             ></div>
           </div>
         </div>
