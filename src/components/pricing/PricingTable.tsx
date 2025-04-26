@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HelpCircle, Check } from 'lucide-react';
@@ -39,8 +38,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
               <TableHead className="w-1/5">Característica</TableHead>
               <TableHead className="text-center">Diamante</TableHead>
               <TableHead className="text-center relative">
-                Elite
-                <div className="absolute left-1/2 -top-14 transform -translate-x-1/2">
+                <div className="relative">
+                  Elite
                   <FavoriteBadge />
                 </div>
               </TableHead>
