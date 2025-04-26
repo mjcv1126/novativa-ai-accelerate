@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Check, X, HelpCircle, MessageSquare, Globe } from 'lucide-react';
+import { Check, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -17,6 +16,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { PlatformIcons } from './PlatformIcons';
 
 type PricingTableProps = {
   billingCycle: 'monthly' | 'annual';
@@ -24,13 +25,20 @@ type PricingTableProps = {
 
 const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
   return (
-    <div className="overflow-x-auto rounded-lg border">
+    <div className="relative overflow-x-auto rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50">
             <TableHead className="w-1/5">Característica</TableHead>
             <TableHead className="text-center">Diamante</TableHead>
-            <TableHead className="text-center">Elite</TableHead>
+            <TableHead className="text-center relative">
+              Elite
+              <Badge 
+                className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-novativa-orange text-white"
+              >
+                Favorito
+              </Badge>
+            </TableHead>
             <TableHead className="text-center">Starter</TableHead>
             <TableHead className="text-center">Demo</TableHead>
           </TableRow>
@@ -120,33 +128,37 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <div className="flex gap-2 mt-2 text-gray-500">
-                <MessageSquare size={16} className="text-green-500" />
-                <MessageSquare size={16} className="text-blue-500" />
-                <MessageSquare size={16} className="text-pink-500" />
-                <MessageSquare size={16} className="text-blue-700" />
-                <Globe size={16} />
-                <MessageSquare size={16} />
-              </div>
+              <PlatformIcons />
             </TableCell>
             <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
             <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
             <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
-            <TableCell className="text-center text-red-500"><X className="mx-auto" size={18} /></TableCell>
+            <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
           </TableRow>
           
           <TableRow>
             <TableCell className="font-medium">Precio Mensual</TableCell>
-            <TableCell className="text-center font-bold">
-              {billingCycle === 'monthly' ? '$99.00' : '$84.15'}
+            <TableCell className="text-center">
+              <span className="text-2xl font-bold text-novativa-teal">
+                {billingCycle === 'monthly' ? '$99.00' : '$84.15'}
+              </span>
+              <span className="block text-sm text-gray-500">/mes</span>
             </TableCell>
-            <TableCell className="text-center font-bold">
-              {billingCycle === 'monthly' ? '$60.00' : '$51.00'}
+            <TableCell className="text-center">
+              <span className="text-2xl font-bold text-novativa-teal">
+                {billingCycle === 'monthly' ? '$60.00' : '$51.00'}
+              </span>
+              <span className="block text-sm text-gray-500">/mes</span>
             </TableCell>
-            <TableCell className="text-center font-bold">
-              {billingCycle === 'monthly' ? '$49.00' : '$41.65'}
+            <TableCell className="text-center">
+              <span className="text-2xl font-bold text-novativa-orange">
+                {billingCycle === 'monthly' ? '$49.00' : '$41.65'}
+              </span>
+              <span className="block text-sm text-gray-500">/mes</span>
             </TableCell>
-            <TableCell className="text-center font-bold">Gratis</TableCell>
+            <TableCell className="text-center">
+              <span className="text-2xl font-bold">Gratis</span>
+            </TableCell>
           </TableRow>
           
           <TableRow>
@@ -195,6 +207,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
           </TableRow>
         </TableBody>
       </Table>
+      
+      <div className="mt-4 p-4 bg-gray-50 text-sm text-gray-600 space-y-2 rounded-b-lg border-t">
+        <p>• La integración tiene un costo de instalación único de $100 USD.</p>
+        <p>• Los precios no incluyen costos de API de OpenAI u otras plataformas en caso de ser requeridas.</p>
+      </div>
     </div>
   );
 };
