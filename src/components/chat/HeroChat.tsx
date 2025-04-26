@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+
+import React, { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ const HeroChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { messages, isLoading, sendMessage } = useChat();
+  const [isChatbotActive, setIsChatbotActive] = useState(false);
 
   const handleSchedule = () => {
     navigate('/agenda');
@@ -23,7 +25,39 @@ const HeroChat = () => {
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
+    
+    // Enviar mensaje al chat normal
     await sendMessage(input);
+    
+    // Activar el widget de Chatbot y enviarle el mensaje
+    if (!isChatbotActive) {
+      const chatbotWidget = document.querySelector('#louisebotwidget') as HTMLIFrameElement;
+      if (chatbotWidget) {
+        chatbotWidget.contentWindow?.postMessage({ type: 'OPEN_WIDGET' }, '*');
+        setIsChatbotActive(true);
+      }
+
+      // Pequeño delay para asegurar que el widget está abierto
+      setTimeout(() => {
+        const chatbotWidget = document.querySelector('#louisebotwidget') as HTMLIFrameElement;
+        if (chatbotWidget) {
+          chatbotWidget.contentWindow?.postMessage(
+            { type: 'SEND_MESSAGE', message: input },
+            '*'
+          );
+        }
+      }, 1000);
+    } else {
+      // Si ya está activo, solo enviamos el mensaje
+      const chatbotWidget = document.querySelector('#louisebotwidget') as HTMLIFrameElement;
+      if (chatbotWidget) {
+        chatbotWidget.contentWindow?.postMessage(
+          { type: 'SEND_MESSAGE', message: input },
+          '*'
+        );
+      }
+    }
+
     setInput('');
     setTimeout(scrollToBottom, 100);
   };
