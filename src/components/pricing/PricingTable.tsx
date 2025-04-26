@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HelpCircle, Check } from 'lucide-react';
@@ -29,21 +28,26 @@ type PricingTableProps = {
 
 const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
   return (
-    <div className="relative overflow-x-auto rounded-lg border">
-      <FavoriteBadge />
-      <PricingBanner billingCycle={billingCycle} />
-      
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-50">
-            <TableHead className="w-1/5">Característica</TableHead>
-            <TableHead className="text-center">Diamante</TableHead>
-            <TableHead className="text-center relative">Elite</TableHead>
-            <TableHead className="text-center">Starter</TableHead>
-            <TableHead className="text-center">Demo</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+    <div className="relative">
+      <div className="relative overflow-x-auto rounded-lg border">
+        <PricingBanner billingCycle={billingCycle} />
+        
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50">
+              <TableHead className="w-1/5">Característica</TableHead>
+              <TableHead className="text-center">Diamante</TableHead>
+              <TableHead className="text-center relative">
+                Elite
+                <div className="absolute left-1/2 -top-14 transform -translate-x-1/2">
+                  <FavoriteBadge />
+                </div>
+              </TableHead>
+              <TableHead className="text-center">Starter</TableHead>
+              <TableHead className="text-center">Demo</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
           <PricingTableRow 
             feature="Usuarios Activos / Mes"
             values={['14,000', '5,000', '3,000', '50']}
@@ -187,9 +191,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
             </TableCell>
           </TableRow>
         </TableBody>
-      </Table>
-      
-      <InstallationNotes billingCycle={billingCycle} />
+        
+        <InstallationNotes billingCycle={billingCycle} />
+      </div>
     </div>
   );
 };
