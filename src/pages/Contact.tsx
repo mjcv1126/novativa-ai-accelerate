@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Link } from 'react-router-dom';
@@ -9,9 +9,20 @@ import { setAntiCacheHeaders } from '@/utils/antiCacheHeaders';
 import { toast } from '@/components/ui/sonner';
 
 const Contact = () => {
+  const [hasRefreshed, setHasRefreshed] = useState(false);
+
   useEffect(() => {
     // Apply anti-cache headers
     setAntiCacheHeaders();
+    
+    // One-time refresh logic
+    const shouldRefresh = !sessionStorage.getItem('contactPageRefreshed');
+    if (shouldRefresh && !hasRefreshed) {
+      sessionStorage.setItem('contactPageRefreshed', 'true');
+      setHasRefreshed(true);
+      window.location.reload();
+      return;
+    }
     
     // Improved TidyCal script loading with cache busting
     const loadTidycalScript = () => {
@@ -46,7 +57,7 @@ const Contact = () => {
     return () => {
       // Cleanup not needed as script remains for better performance
     };
-  }, []);
+  }, [hasRefreshed]);
 
   return (
     <>

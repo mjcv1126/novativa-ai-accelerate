@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Card,
@@ -15,17 +15,28 @@ import NewTagForm from '@/components/admin/scripts/NewTagForm';
 import CustomScripts from '@/components/admin/scripts/CustomScripts';
 
 const AdminScripts = () => {
-  const [headerScripts, setHeaderScripts] = useState('');
-  const [bodyStartScripts, setBodyStartScripts] = useState('');
-  const [bodyEndScripts, setBodyEndScripts] = useState('');
+  const [headerScripts, setHeaderScripts] = useState<string>(() => {
+    return localStorage.getItem('novativa_header_scripts') || '';
+  });
+  
+  const [bodyStartScripts, setBodyStartScripts] = useState<string>(() => {
+    return localStorage.getItem('novativa_body_start_scripts') || '';
+  });
+  
+  const [bodyEndScripts, setBodyEndScripts] = useState<string>(() => {
+    return localStorage.getItem('novativa_body_end_scripts') || '';
+  });
+  
   const [tagName, setTagName] = useState('');
   const [tagCode, setTagCode] = useState('');
   const [editingTagId, setEditingTagId] = useState<number | null>(null);
-  const [tags, setTags] = useState<{ id: number; name: string; code: string; active: boolean }[]>([
-    { 
-      id: 1,
-      name: 'Google Analytics', 
-      code: `<!-- Google Analytics -->
+  const [tags, setTags] = useState<{ id: number; name: string; code: string; active: boolean }[]>(() => {
+    const savedTags = localStorage.getItem('novativa_script_tags');
+    return savedTags ? JSON.parse(savedTags) : [
+      { 
+        id: 1,
+        name: 'Google Analytics', 
+        code: `<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -33,12 +44,12 @@ const AdminScripts = () => {
   gtag('js', new Date());
   gtag('config', 'G-XXXXXXXXXX');
 </script>`,
-      active: true
-    },
-    { 
-      id: 2,
-      name: 'Facebook Pixel', 
-      code: `<!-- Facebook Pixel -->
+        active: true
+      },
+      { 
+        id: 2,
+        name: 'Facebook Pixel', 
+        code: `<!-- Facebook Pixel -->
 <script>
   !function(f,b,e,v,n,t,s)
   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -51,12 +62,12 @@ const AdminScripts = () => {
   fbq('init', 'XXXXXXXXXXXXXXXXX');
   fbq('track', 'PageView');
 </script>`,
-      active: false
-    },
-    { 
-      id: 3,
-      name: 'HotJar', 
-      code: `<!-- Hotjar -->
+        active: false
+      },
+      { 
+        id: 3,
+        name: 'HotJar', 
+        code: `<!-- Hotjar -->
 <script>
   (function(h,o,t,j,a,r){
       h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
@@ -67,15 +78,67 @@ const AdminScripts = () => {
       a.appendChild(r);
   })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 </script>`,
-      active: false
-    },
-  ]);
+        active: false
+      },
+    ];
+  });
+  
   const { toast } = useToast();
+
+  // Save tags to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('novativa_script_tags', JSON.stringify(tags));
+  }, [tags]);
+
+  // Apply active scripts to the page
+  useEffect(() => {
+    const applyScripts = () => {
+      // Apply header scripts (should be in the head)
+      const headerScriptEl = document.getElementById('novativa-header-scripts');
+      if (headerScriptEl) {
+        headerScriptEl.innerHTML = headerScripts;
+      } else if (headerScripts) {
+        const newScript = document.createElement('div');
+        newScript.id = 'novativa-header-scripts';
+        newScript.innerHTML = headerScripts;
+        document.head.appendChild(newScript);
+      }
+
+      // Apply predefined script tags that are active
+      tags.forEach(tag => {
+        if (tag.active) {
+          const tagId = `novativa-tag-${tag.id}`;
+          const existingTag = document.getElementById(tagId);
+          
+          if (existingTag) {
+            existingTag.innerHTML = tag.code;
+          } else {
+            const newTag = document.createElement('div');
+            newTag.id = tagId;
+            newTag.innerHTML = tag.code;
+            document.head.appendChild(newTag);
+          }
+        } else {
+          // Remove inactive tags
+          const existingTag = document.getElementById(`novativa-tag-${tag.id}`);
+          if (existingTag) {
+            existingTag.remove();
+          }
+        }
+      });
+    };
+
+    // Don't apply scripts while editing
+    if (editingTagId === null) {
+      applyScripts();
+    }
+  }, [tags, headerScripts, editingTagId]);
 
   const handleAddTag = () => {
     if (tagName && tagCode) {
+      const newId = Math.max(...tags.map(t => t.id), 0) + 1;
       setTags([...tags, { 
-        id: Math.max(...tags.map(t => t.id), 0) + 1,
+        id: newId,
         name: tagName, 
         code: tagCode, 
         active: false 
@@ -90,10 +153,35 @@ const AdminScripts = () => {
   };
 
   const handleSaveScripts = (location: string) => {
+    switch (location) {
+      case 'header':
+        localStorage.setItem('novativa_header_scripts', headerScripts);
+        break;
+      case 'inicio del body':
+        localStorage.setItem('novativa_body_start_scripts', bodyStartScripts);
+        break;
+      case 'final del body':
+        localStorage.setItem('novativa_body_end_scripts', bodyEndScripts);
+        break;
+    }
+
     toast({
       title: "Scripts guardados",
       description: `Los scripts para ${location} se han guardado correctamente`,
     });
+
+    // Apply the scripts if not in editing mode
+    if (editingTagId === null) {
+      // Apply the scripts code here
+      const scriptEl = document.getElementById(`novativa-${location.replace(' ', '-')}-scripts`);
+      if (scriptEl) {
+        scriptEl.innerHTML = location === 'header' 
+          ? headerScripts 
+          : location === 'inicio del body' 
+            ? bodyStartScripts
+            : bodyEndScripts;
+      }
+    }
   };
 
   const handleUpdateTag = (id: number, newCode: string) => {
@@ -104,6 +192,9 @@ const AdminScripts = () => {
   };
 
   const handleToggleStatus = (id: number) => {
+    // Don't allow toggling while editing
+    if (editingTagId !== null) return;
+    
     const newTags = tags.map(tag =>
       tag.id === id ? { ...tag, active: !tag.active } : tag
     );
@@ -162,13 +253,15 @@ const AdminScripts = () => {
                     onToggleStatus={handleToggleStatus}
                     onUpdateTag={handleUpdateTag}
                   />
-                  <NewTagForm
-                    tagName={tagName}
-                    tagCode={tagCode}
-                    onTagNameChange={setTagName}
-                    onTagCodeChange={setTagCode}
-                    onAddTag={handleAddTag}
-                  />
+                  {editingTagId === null && (
+                    <NewTagForm
+                      tagName={tagName}
+                      tagCode={tagCode}
+                      onTagNameChange={setTagName}
+                      onTagCodeChange={setTagCode}
+                      onAddTag={handleAddTag}
+                    />
+                  )}
                 </CardContent>
               </Card>
             </div>

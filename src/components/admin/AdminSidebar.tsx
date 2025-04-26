@@ -1,117 +1,85 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Tag, 
-  Code, 
-  LogOut
-} from 'lucide-react';
-import { useAdminAuth } from '@/contexts/AdminAuthContext';
-import { Button } from '@/components/ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { ChevronLeft, LayoutDashboard, FileText, Tag, Settings, Code, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-
-type NavItem = {
-  title: string;
-  path: string;
-  icon: React.ElementType;
-};
-
-const navItems: NavItem[] = [
-  { title: 'Dashboard', path: '/admin', icon: LayoutDashboard },
-  { title: 'Posts', path: '/admin/blog', icon: FileText },
-  { title: 'Categorías', path: '/admin/categories', icon: Tag },
-  { title: 'Scripts', path: '/admin/scripts', icon: Code },
-];
 
 const AdminSidebar = () => {
-  const { logout } = useAdminAuth();
   const [collapsed, setCollapsed] = useState(false);
 
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed);
+  };
+
   return (
-    <Collapsible
-      open={!collapsed}
-      onOpenChange={(open) => setCollapsed(!open)}
+    <aside
       className={cn(
-        'bg-white border-r transition-all duration-300 h-screen',
-        collapsed ? 'w-16' : 'w-64'
+        "bg-sidebar-background text-sidebar-foreground border-r border-sidebar-border h-screen transition-all",
+        collapsed ? "w-[60px]" : "w-[250px]"
       )}
     >
-      <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between p-4 border-b">
-          {!collapsed && (
-            <NavLink to="/admin" className="flex items-center">
-              <img 
-                src="/lovable-uploads/9cce1d6a-72e1-493f-bb16-901571c7e858.png" 
-                alt="Novativa Logo" 
-                className="h-8 w-auto" 
-              />
-              <span className="ml-2 font-bold text-lg">Admin</span>
-            </NavLink>
-          )}
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="icon" className="ml-auto">
-              {collapsed ? (
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8.5 2L14 7.5L8.5 13" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M1 7.5H14" stroke="currentColor" strokeLinecap="round" />
-                </svg>
-              ) : (
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.5 2L1 7.5L6.5 13" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M1 7.5H14" stroke="currentColor" strokeLinecap="round" />
-                </svg>
-              )}
-            </Button>
-          </CollapsibleTrigger>
+      <div className="flex items-center justify-between h-16 px-3 border-b border-sidebar-border">
+        <div className={cn("overflow-hidden", collapsed && "hidden")}>
+          <h1 className="font-bold text-lg">Novativa Admin</h1>
         </div>
-
-        <ScrollArea className="flex-1">
-          <CollapsibleContent className="flex-1" forceMount>
-            <nav className="flex flex-col p-2">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={({ isActive }) => cn(
-                    'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
-                    isActive 
-                      ? 'bg-novativa-teal/10 text-novativa-teal font-medium' 
-                      : 'text-gray-700 hover:bg-gray-100',
-                    collapsed && 'justify-center'
-                  )}
-                  end={item.path === '/admin'}
-                >
-                  <item.icon className={cn('h-5 w-5', collapsed ? 'mx-auto' : '')} />
-                  {!collapsed && <span>{item.title}</span>}
-                </NavLink>
-              ))}
-            </nav>
-          </CollapsibleContent>
-        </ScrollArea>
-
-        <div className="p-2 border-t mt-auto">
-          <Button
-            variant="ghost"
-            onClick={logout}
-            className={cn(
-              'w-full flex items-center gap-3 justify-start text-red-500 hover:bg-red-50 hover:text-red-600',
-              collapsed && 'justify-center'
-            )}
-          >
-            <LogOut className="h-5 w-5" />
-            {!collapsed && <span>Cerrar sesión</span>}
-          </Button>
-        </div>
+        <button
+          onClick={toggleSidebar}
+          className="p-1 rounded-md hover:bg-sidebar-accent"
+        >
+          <ChevronLeft className={cn("w-5 h-5 transition-transform", collapsed && "rotate-180")}/>
+        </button>
       </div>
-    </Collapsible>
+
+      <nav className="p-2">
+        <ul className="space-y-1">
+          <NavItem to="/admin/dashboard" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" collapsed={collapsed} />
+          
+          <div className={cn("px-3 py-2 text-xs uppercase text-sidebar-foreground/50", collapsed && "hidden")}>
+            Blog
+          </div>
+          
+          <NavItem to="/admin/blog/posts" icon={<FileText className="w-5 h-5" />} label="Artículos" collapsed={collapsed} />
+          <NavItem to="/admin/blog/categories" icon={<Tag className="w-5 h-5" />} label="Categorías" collapsed={collapsed} />
+          
+          <div className={cn("px-3 py-2 text-xs uppercase text-sidebar-foreground/50", collapsed && "hidden")}>
+            Configuración
+          </div>
+          
+          <NavItem to="/admin/scripts" icon={<Code className="w-5 h-5" />} label="Scripts" collapsed={collapsed} />
+          <NavItem to="/admin/custom-css" icon={<Palette className="w-5 h-5" />} label="CSS Personalizado" collapsed={collapsed} />
+          <NavItem to="/admin/settings" icon={<Settings className="w-5 h-5" />} label="Configuración" collapsed={collapsed} />
+        </ul>
+      </nav>
+    </aside>
+  );
+};
+
+interface NavItemProps {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  collapsed: boolean;
+}
+
+const NavItem = ({ to, icon, label, collapsed }: NavItemProps) => {
+  return (
+    <li>
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
+            isActive
+              ? "bg-sidebar-accent text-sidebar-accent-foreground"
+              : "hover:bg-sidebar-accent/50 text-sidebar-foreground/80 hover:text-sidebar-accent-foreground",
+            collapsed && "justify-center"
+          )
+        }
+      >
+        {icon}
+        <span className={cn("whitespace-nowrap", collapsed && "hidden")}>{label}</span>
+      </NavLink>
+    </li>
   );
 };
 

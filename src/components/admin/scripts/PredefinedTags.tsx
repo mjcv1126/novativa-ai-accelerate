@@ -1,19 +1,11 @@
 
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Edit2, Check, X } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from 'react';
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Pencil, Check, X } from "lucide-react";
 
-interface TagType {
+interface Tag {
   id: number;
   name: string;
   code: string;
@@ -21,11 +13,11 @@ interface TagType {
 }
 
 interface PredefinedTagsProps {
-  tags: TagType[];
+  tags: Tag[];
   editingTagId: number | null;
   onStartEditing: (id: number) => void;
   onCancelEditing: () => void;
-  onSaveTag: (id: number, newCode: string) => void;
+  onSaveTag: (id: number, code: string) => void;
   onToggleStatus: (id: number) => void;
   onUpdateTag: (id: number, code: string) => void;
 }
@@ -39,67 +31,91 @@ const PredefinedTags = ({
   onToggleStatus,
   onUpdateTag
 }: PredefinedTagsProps) => {
-  const { toast } = useToast();
+  // Store the original code when we start editing
+  const [originalCode, setOriginalCode] = useState<string>("");
+
+  const handleStartEditing = (id: number, currentCode: string) => {
+    setOriginalCode(currentCode);
+    onStartEditing(id);
+  };
+
+  const handleCancelEditing = () => {
+    // Restore the original code if editing is cancelled
+    if (editingTagId !== null) {
+      onUpdateTag(editingTagId, originalCode);
+    }
+    onCancelEditing();
+  };
 
   return (
     <div className="space-y-4">
       {tags.map((tag) => (
         <div key={tag.id} className="border rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="font-medium">{tag.name}</h3>
-            <div className="flex items-center gap-2">
-              <span className={`text-sm ${tag.active ? 'text-green-500' : 'text-red-500'}`}>
-                {tag.active ? 'Activo' : 'Inactivo'}
-              </span>
+            <div className="font-medium">{tag.name}</div>
+            <div className="flex items-center gap-4">
+              {/* Don't allow toggle while editing */}
               {editingTagId === tag.id ? (
-                <>
-                  <Button 
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onSaveTag(tag.id, tag.code)}
-                    className="h-8 w-8"
-                  >
-                    <Check className="h-4 w-4 text-green-500" />
-                  </Button>
-                  <Button 
-                    variant="ghost"
-                    size="icon"
-                    onClick={onCancelEditing}
-                    className="h-8 w-8"
-                  >
-                    <X className="h-4 w-4 text-red-500" />
-                  </Button>
-                </>
+                <div className="text-sm text-gray-500 italic">
+                  Guardando cambios...
+                </div>
               ) : (
-                <Button 
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onStartEditing(tag.id)}
-                  className="h-8 w-8"
-                >
-                  <Edit2 className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Switch 
+                    checked={tag.active} 
+                    onCheckedChange={() => onToggleStatus(tag.id)} 
+                    id={`tag-${tag.id}`} 
+                  />
+                  <span className="text-sm text-gray-600">
+                    {tag.active ? "Activo" : "Inactivo"}
+                  </span>
+                </div>
               )}
-              <Button 
-                variant={tag.active ? "outline" : "default"}
-                className={tag.active ? "border-red-500 text-red-500 hover:bg-red-50" : "bg-green-500 hover:bg-green-600"}
-                onClick={() => onToggleStatus(tag.id)}
-              >
-                {tag.active ? 'Desactivar' : 'Activar'}
-              </Button>
             </div>
           </div>
-          <div className="bg-gray-50 p-3 rounded text-sm font-mono overflow-x-auto">
-            {editingTagId === tag.id ? (
-              <Textarea
+          
+          {editingTagId === tag.id ? (
+            <>
+              <Textarea 
                 value={tag.code}
                 onChange={(e) => onUpdateTag(tag.id, e.target.value)}
-                className="min-h-[150px] font-mono"
+                className="mb-2 h-[120px] font-mono text-sm"
               />
-            ) : (
-              <pre>{tag.code}</pre>
-            )}
-          </div>
+              <div className="flex justify-end gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleCancelEditing}
+                  className="flex gap-1"
+                >
+                  <X className="h-4 w-4" /> Cancelar
+                </Button>
+                <Button 
+                  size="sm" 
+                  onClick={() => onSaveTag(tag.id, tag.code)}
+                  className="flex gap-1 bg-novativa-teal hover:bg-novativa-lightTeal"
+                >
+                  <Check className="h-4 w-4" /> Guardar
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <pre className="bg-gray-100 p-2 rounded text-xs overflow-auto max-h-[120px] whitespace-pre-wrap">
+                {tag.code}
+              </pre>
+              <div className="flex justify-end mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleStartEditing(tag.id, tag.code)}
+                  className="flex gap-1"
+                >
+                  <Pencil className="h-4 w-4" /> Editar código
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       ))}
     </div>

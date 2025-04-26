@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
 import { setAntiCacheHeaders } from '@/utils/antiCacheHeaders';
@@ -8,9 +8,20 @@ import { toast } from '@/components/ui/sonner';
 const TIDYCAL_URL = 'https://tidycal.com/novativa';
 
 const Schedule = () => {
+  const [hasRefreshed, setHasRefreshed] = useState(false);
+
   useEffect(() => {
     // Apply anti-cache headers
     setAntiCacheHeaders();
+    
+    // One-time refresh logic
+    const shouldRefresh = !sessionStorage.getItem('schedulePageRefreshed');
+    if (shouldRefresh && !hasRefreshed) {
+      sessionStorage.setItem('schedulePageRefreshed', 'true');
+      setHasRefreshed(true);
+      window.location.reload();
+      return;
+    }
     
     // Improved TidyCal script loading with cache busting
     const loadTidycalScript = () => {
@@ -45,7 +56,7 @@ const Schedule = () => {
     return () => {
       // Cleanup not needed as script remains for better performance
     };
-  }, []);
+  }, [hasRefreshed]);
 
   return (
     <>
