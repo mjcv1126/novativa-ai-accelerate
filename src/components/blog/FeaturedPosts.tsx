@@ -2,6 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BlogPost } from '@/data/blogPosts';
+import { format, parse } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 interface FeaturedPostsProps {
   filteredPosts: BlogPost[];
@@ -9,7 +11,14 @@ interface FeaturedPostsProps {
 
 const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ filteredPosts }) => {
   const recentPosts = filteredPosts
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort((a, b) => {
+      // Parse the date strings (format: DD/MM/YYYY) into Date objects
+      const dateA = parse(a.date, 'dd/MM/yyyy', new Date());
+      const dateB = parse(b.date, 'dd/MM/yyyy', new Date());
+      
+      // Sort in descending order (newest first)
+      return dateB.getTime() - dateA.getTime();
+    })
     .slice(0, 2);
 
   return (
