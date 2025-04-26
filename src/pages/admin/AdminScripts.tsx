@@ -1,19 +1,18 @@
+
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from '@/components/ui/input';
-import { Save, Edit2, Check, X } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { Helmet } from 'react-helmet-async';
-import { useToast } from '@/components/ui/use-toast';
+import PredefinedTags from '@/components/admin/scripts/PredefinedTags';
+import NewTagForm from '@/components/admin/scripts/NewTagForm';
+import CustomScripts from '@/components/admin/scripts/CustomScripts';
 
 const AdminScripts = () => {
   const [headerScripts, setHeaderScripts] = useState('');
@@ -90,27 +89,21 @@ const AdminScripts = () => {
     }
   };
 
-  const startEditingTag = (id: number) => {
-    setEditingTagId(id);
-  };
-
-  const cancelEditingTag = () => {
-    setEditingTagId(null);
-  };
-
-  const saveEditedTag = (id: number, newCode: string) => {
-    const newTags = tags.map(tag => 
-      tag.id === id ? { ...tag, code: newCode } : tag
-    );
-    setTags(newTags);
-    setEditingTagId(null);
+  const handleSaveScripts = (location: string) => {
     toast({
-      title: "Tag actualizado",
-      description: `El código del tag ha sido actualizado correctamente`,
+      title: "Scripts guardados",
+      description: `Los scripts para ${location} se han guardado correctamente`,
     });
   };
 
-  const toggleTagStatus = (id: number) => {
+  const handleUpdateTag = (id: number, newCode: string) => {
+    const newTags = tags.map(tag =>
+      tag.id === id ? { ...tag, code: newCode } : tag
+    );
+    setTags(newTags);
+  };
+
+  const handleToggleStatus = (id: number) => {
     const newTags = tags.map(tag =>
       tag.id === id ? { ...tag, active: !tag.active } : tag
     );
@@ -124,10 +117,15 @@ const AdminScripts = () => {
     }
   };
 
-  const handleSaveScripts = (location: string) => {
+  const handleSaveTag = (id: number, newCode: string) => {
+    const newTags = tags.map(tag => 
+      tag.id === id ? { ...tag, code: newCode } : tag
+    );
+    setTags(newTags);
+    setEditingTagId(null);
     toast({
-      title: "Scripts guardados",
-      description: `Los scripts para ${location} se han guardado correctamente`,
+      title: "Tag actualizado",
+      description: `El código del tag ha sido actualizado correctamente`,
     });
   };
 
@@ -155,183 +153,37 @@ const AdminScripts = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {tags.map((tag) => (
-                    <div key={tag.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-medium">{tag.name}</h3>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-sm ${tag.active ? 'text-green-500' : 'text-red-500'}`}>
-                            {tag.active ? 'Activo' : 'Inactivo'}
-                          </span>
-                          {editingTagId === tag.id ? (
-                            <>
-                              <Button 
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => saveEditedTag(tag.id, tag.code)}
-                                className="h-8 w-8"
-                              >
-                                <Check className="h-4 w-4 text-green-500" />
-                              </Button>
-                              <Button 
-                                variant="ghost"
-                                size="icon"
-                                onClick={cancelEditingTag}
-                                className="h-8 w-8"
-                              >
-                                <X className="h-4 w-4 text-red-500" />
-                              </Button>
-                            </>
-                          ) : (
-                            <Button 
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => startEditingTag(tag.id)}
-                              className="h-8 w-8"
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                          <Button 
-                            variant={tag.active ? "outline" : "default"}
-                            className={tag.active ? "border-red-500 text-red-500 hover:bg-red-50" : "bg-green-500 hover:bg-green-600"}
-                            onClick={() => toggleTagStatus(tag.id)}
-                          >
-                            {tag.active ? 'Desactivar' : 'Activar'}
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="bg-gray-50 p-3 rounded text-sm font-mono overflow-x-auto">
-                        {editingTagId === tag.id ? (
-                          <Textarea
-                            value={tag.code}
-                            onChange={(e) => {
-                              const newTags = tags.map(t =>
-                                t.id === tag.id ? { ...t, code: e.target.value } : t
-                              );
-                              setTags(newTags);
-                            }}
-                            className="min-h-[150px] font-mono"
-                          />
-                        ) : (
-                          <pre>{tag.code}</pre>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                  <PredefinedTags
+                    tags={tags}
+                    editingTagId={editingTagId}
+                    onStartEditing={setEditingTagId}
+                    onCancelEditing={() => setEditingTagId(null)}
+                    onSaveTag={handleSaveTag}
+                    onToggleStatus={handleToggleStatus}
+                    onUpdateTag={handleUpdateTag}
+                  />
+                  <NewTagForm
+                    tagName={tagName}
+                    tagCode={tagCode}
+                    onTagNameChange={setTagName}
+                    onTagCodeChange={setTagCode}
+                    onAddTag={handleAddTag}
+                  />
                 </CardContent>
-                <CardHeader className="border-t pt-6 mt-4">
-                  <CardTitle>Agregar Nuevo Tag</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium">Nombre del Tag</label>
-                    <Input 
-                      value={tagName}
-                      onChange={(e) => setTagName(e.target.value)}
-                      placeholder="Ej: LinkedIn Pixel"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Código</label>
-                    <Textarea 
-                      value={tagCode}
-                      onChange={(e) => setTagCode(e.target.value)}
-                      placeholder="Pega aquí el código del tag..."
-                      className="min-h-[150px] font-mono"
-                    />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    onClick={handleAddTag}
-                    className="bg-novativa-teal hover:bg-novativa-lightTeal"
-                    disabled={!tagName || !tagCode}
-                  >
-                    Agregar Tag
-                  </Button>
-                </CardFooter>
               </Card>
             </div>
           </TabsContent>
           
           <TabsContent value="custom">
-            <div className="grid grid-cols-1 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Scripts en Header</CardTitle>
-                  <CardDescription>
-                    Estos scripts se cargarán en la sección head de tu sitio web
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Textarea 
-                    value={headerScripts}
-                    onChange={(e) => setHeaderScripts(e.target.value)}
-                    placeholder="<!-- Inserta aquí tus scripts para el head -->"
-                    className="min-h-[150px] font-mono"
-                  />
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    onClick={() => handleSaveScripts('header')}
-                    className="bg-novativa-teal hover:bg-novativa-lightTeal flex gap-2"
-                  >
-                    <Save className="h-4 w-4" /> Guardar Scripts de Header
-                  </Button>
-                </CardFooter>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Scripts al inicio del Body</CardTitle>
-                  <CardDescription>
-                    Estos scripts se cargarán justo después de la etiqueta body
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Textarea 
-                    value={bodyStartScripts}
-                    onChange={(e) => setBodyStartScripts(e.target.value)}
-                    placeholder="<!-- Inserta aquí tus scripts para el inicio del body -->"
-                    className="min-h-[150px] font-mono"
-                  />
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    onClick={() => handleSaveScripts('inicio del body')}
-                    className="bg-novativa-teal hover:bg-novativa-lightTeal flex gap-2"
-                  >
-                    <Save className="h-4 w-4" /> Guardar Scripts de Inicio
-                  </Button>
-                </CardFooter>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Scripts al final del Body</CardTitle>
-                  <CardDescription>
-                    Estos scripts se cargarán justo antes del cierre de la etiqueta body
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Textarea 
-                    value={bodyEndScripts}
-                    onChange={(e) => setBodyEndScripts(e.target.value)}
-                    placeholder="<!-- Inserta aquí tus scripts para el final del body -->"
-                    className="min-h-[150px] font-mono"
-                  />
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    onClick={() => handleSaveScripts('final del body')}
-                    className="bg-novativa-teal hover:bg-novativa-lightTeal flex gap-2"
-                  >
-                    <Save className="h-4 w-4" /> Guardar Scripts de Final
-                  </Button>
-                </CardFooter>
-              </Card>
-            </div>
+            <CustomScripts
+              headerScripts={headerScripts}
+              bodyStartScripts={bodyStartScripts}
+              bodyEndScripts={bodyEndScripts}
+              onHeaderScriptsChange={setHeaderScripts}
+              onBodyStartScriptsChange={setBodyStartScripts}
+              onBodyEndScriptsChange={setBodyEndScripts}
+              onSaveScripts={handleSaveScripts}
+            />
           </TabsContent>
         </Tabs>
       </div>
