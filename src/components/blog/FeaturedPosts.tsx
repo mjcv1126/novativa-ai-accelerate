@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BlogPost } from '@/data/blogPosts';
-import { format, parse } from 'date-fns';
+import { format, parse, isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 interface FeaturedPostsProps {
@@ -12,9 +12,31 @@ interface FeaturedPostsProps {
 const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ filteredPosts }) => {
   const recentPosts = filteredPosts
     .sort((a, b) => {
-      // Parse the date strings (format: DD/MM/YYYY) into Date objects
-      const dateA = parse(a.date, 'dd/MM/yyyy', new Date());
-      const dateB = parse(b.date, 'dd/MM/yyyy', new Date());
+      // Try to parse the date strings, handling different formats
+      let dateA: Date;
+      let dateB: Date;
+      
+      // First try DD/MM/YYYY format
+      dateA = parse(a.date, 'dd/MM/yyyy', new Date());
+      dateB = parse(b.date, 'dd/MM/yyyy', new Date());
+      
+      // If parsing failed (invalid date), try MM/DD/YYYY format which might come from backend
+      if (!isValid(dateA)) {
+        dateA = parse(a.date, 'MM/dd/yyyy', new Date());
+      }
+      
+      if (!isValid(dateB)) {
+        dateB = parse(b.date, 'MM/dd/yyyy', new Date());
+      }
+      
+      // As a fallback, try direct Date parsing
+      if (!isValid(dateA)) {
+        dateA = new Date(a.date);
+      }
+      
+      if (!isValid(dateB)) {
+        dateB = new Date(b.date);
+      }
       
       // Sort in descending order (newest first)
       return dateB.getTime() - dateA.getTime();
