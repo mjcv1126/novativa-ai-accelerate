@@ -7,6 +7,13 @@
   text-align: left;
 }
 
+/* Add some global styles to ensure proper layout */
+body, html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* Keep other animation styles */
 @keyframes logo-spin {
   from {
@@ -21,4 +28,10 @@
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
+}
+
+/* Add styles for page IDs for custom CSS targeting */
+[id^="page-id-"] {
+  width: 100%;
+  display: contents;
 }

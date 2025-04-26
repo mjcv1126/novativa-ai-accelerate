@@ -5,6 +5,7 @@ import { FileText, Tag } from 'lucide-react';
 import RecentPostsTable from '@/components/admin/RecentPostsTable';
 import { Helmet } from 'react-helmet-async';
 import { useAdminData } from '@/contexts/AdminDataContext';
+import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const { posts, categories } = useAdminData();
@@ -13,13 +14,22 @@ const AdminDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Dashboard Admin | Novativa</title>
+        <title>Dashboard Admin</title>
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
       </Helmet>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <Link to="/">
+            <img 
+              src="/lovable-uploads/9cce1d6a-72e1-493f-bb16-901571c7e858.png" 
+              alt="Logo" 
+              className="h-10 w-auto"
+            />
+          </Link>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <StatCard 

@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +16,7 @@ import {
 const AdminHeader = () => {
   const { user, logout } = useAdminAuth();
   const email = user?.email || '';
+  const navigate = useNavigate();
   
   return (
     <header className="bg-white border-b py-3 px-4 md:px-6 flex items-center justify-between">
@@ -52,7 +53,7 @@ const AdminHeader = () => {
               <span className="text-xs text-gray-500">Administrador</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/admin/custom-css')}>
               <Settings className="mr-2 h-4 w-4" />
               <span>Configuración</span>
             </DropdownMenuItem>

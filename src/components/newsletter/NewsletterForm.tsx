@@ -30,22 +30,38 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ light = false })
     <form 
       method="post" 
       action="https://sendfox.com/form/mpov6q/36n47o" 
-      className="sendfox-form space-y-3" 
+      className={`sendfox-form space-y-3 ${light ? "text-white" : ""}`} 
       id="36n47o" 
       data-async="true" 
       data-recaptcha="true"
     >
       <div className="space-y-2">
-        <input 
-          type="email" 
-          id="sendfox_form_email" 
-          placeholder="Tu Email" 
-          name="email" 
-          required 
-          className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
-            light ? "text-gray-800 focus:ring-novativa-orange" : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
-          }`}
-        />
+        <div>
+          <input 
+            type="text" 
+            id="sendfox_form_name" 
+            placeholder="Nombre" 
+            name="first_name"
+            className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
+              light ? "bg-white/10 text-white placeholder-white/70 border border-white/30 focus:ring-novativa-orange" 
+              : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
+            }`}
+          />
+        </div>
+        
+        <div>
+          <input 
+            type="email" 
+            id="sendfox_form_email" 
+            placeholder="Email" 
+            name="email" 
+            required 
+            className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
+              light ? "bg-white/10 text-white placeholder-white/70 border border-white/30 focus:ring-novativa-orange" 
+              : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
+            }`}
+          />
+        </div>
         
         {/* no bots please */}
         <div style={{ position: "absolute", left: "-5000px" }} aria-hidden="true">

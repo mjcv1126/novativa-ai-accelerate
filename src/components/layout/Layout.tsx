@@ -12,18 +12,18 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <>
+    <div className="flex flex-col min-h-screen w-full">
       <Navbar />
       <AdminDataProvider>
         <CustomCSSProvider>
-          <main className="min-h-screen w-full">
+          <main className="flex-grow w-full">
             {children}
           </main>
         </CustomCSSProvider>
       </AdminDataProvider>
       <Footer />
       <Toaster />
-    </>
+    </div>
   );
 };
 
