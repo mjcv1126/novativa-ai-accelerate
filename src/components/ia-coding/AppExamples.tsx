@@ -1,48 +1,51 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Maximize } from 'lucide-react';
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const appExamples = [
   {
     title: "EduConnect Pro",
     description: "Sistema completo de gestión escolar con calificaciones en tiempo real, comunicación padres-maestros y seguimiento de asistencia",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=1000",
+    image: "https://img.freepik.com/free-psd/flat-design-education-instagram-stories-template_23-2149375967.jpg",
     features: ["Gestión de calificaciones", "Chat en tiempo real", "Control de asistencia", "Portal para padres"]
   },
   {
     title: "NovaPOS",
     description: "Sistema de punto de venta e inventario con inteligencia artificial para pronósticos y optimización de stock",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1000",
+    image: "https://cdn.dribbble.com/userupload/35514295/file/original-1d78eb1ed10897ca10e1e82b9a5e402e.png?resize=752x&vertical=center",
     features: ["Control de inventario", "Punto de venta", "Reportes financieros", "Pronósticos IA"]
   },
   {
     title: "SmartStore AI",
     description: "Plataforma de ecommerce con asistentes IA que mejoran la experiencia de compra y aumentan las ventas",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=1000",
+    image: "https://unblast.com/wp-content/uploads/2020/05/E-commerce-App-Redesign-Template-2.jpg",
     features: ["Agentes IA de ventas", "Recomendaciones personalizadas", "Análisis predictivo", "Chat en vivo"]
   },
   {
     title: "DeliverPro",
     description: "Sistema de delivery con tracking en tiempo real, gestión de pedidos y notificaciones automáticas",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80&w=1000",
+    image: "https://unblast.com/wp-content/uploads/2020/05/Food-Delivery-App-Template.jpg",
     features: ["GPS en tiempo real", "Gestión de pedidos", "Panel de control", "Analytics avanzado"]
   },
   {
     title: "TourBooking",
     description: "Plataforma de reservas turísticas con calendario dinámico y pagos integrados",
-    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=1000",
+    image: "https://s3-alpha.figma.com/hub/file/2194155352527571946/21b07483-cb22-4750-87f9-1ef6608ab0ee-cover.png",
     features: ["Reservas online", "Pagos seguros", "Sistema de reseñas", "Panel admin"]
   },
   {
     title: "MediCare Hub",
     description: "Sistema de gestión de pacientes para clínicas y consultorios médicos",
-    image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&q=80&w=1000",
+    image: "https://img.freepik.com/free-vector/medical-booking-app-concept_23-2148562986.jpg",
     features: ["Historial médico", "Citas online", "Recetas digitales", "Telemedicina"]
   }
 ];
 
 const AppExamples = () => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   return (
     <section className="py-20 bg-gradient-to-b from-black to-gray-900">
       <div className="container mx-auto px-4">
@@ -58,7 +61,10 @@ const AppExamples = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20 opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative p-6 h-full flex flex-col">
-                <div className="h-48 mb-6 overflow-hidden rounded-lg relative">
+                <div 
+                  className="h-48 mb-6 overflow-hidden rounded-lg relative cursor-pointer"
+                  onClick={() => setSelectedImage(app.image)}
+                >
                   <img 
                     src={app.image} 
                     alt={app.title}
@@ -99,9 +105,20 @@ const AppExamples = () => {
           ))}
         </div>
       </div>
+
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="max-w-4xl h-auto p-0 border-none bg-transparent">
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="App Preview"
+              className="w-full h-auto rounded-lg object-contain"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
 
 export default AppExamples;
-

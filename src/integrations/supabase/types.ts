@@ -45,14 +45,16 @@ export type Database = {
     }
     Functions: {
       store_contact: {
-        Args: {
-          p_first_name: string
-          p_last_name: string
-          p_country_code: string
-          p_country_name: string
-          p_phone: string
-        }
-        Returns: string
+        Args:
+          | Record<PropertyKey, never>
+          | {
+              p_first_name: string
+              p_last_name: string
+              p_country_code: string
+              p_country_name: string
+              p_phone: string
+            }
+        Returns: undefined
       }
     }
     Enums: {
