@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Calendar, Filter, Search, User } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-import { blogPosts, getCategories } from '@/data/blogPosts';
+import { blogPosts, getCategories, BlogPost } from '@/data/blogPosts';
 import { Input } from "@/components/ui/input";
 import { 
   Pagination, 
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/pagination";
 import { NewsletterForm } from '@/components/newsletter/NewsletterForm';
 import { useAdminData } from '@/contexts/AdminDataContext';
+import BlogSidebar from '@/components/blog/BlogSidebar';
 
 const Blog = () => {
   // Get data from both default data and admin data
@@ -40,6 +40,7 @@ const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [filteredPosts, setFilteredPosts] = useState(allPosts);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sidebarSearchResults, setSidebarSearchResults] = useState<BlogPost[]>([]);
   const postsPerPage = 9;
   
   // Filter posts based on search and category
@@ -63,6 +64,21 @@ const Blog = () => {
     // Reset to first page when filters change
     setCurrentPage(1); 
   }, [searchQuery, selectedCategory, allPosts]);
+
+  // Handle sidebar search results
+  useEffect(() => {
+    if (sidebarSearchResults.length > 0) {
+      setFilteredPosts(sidebarSearchResults);
+      setCurrentPage(1);
+    } else if (sidebarSearchResults.length === 0 && searchQuery === '') {
+      // Reset to all posts if sidebar search is cleared
+      let result = allPosts;
+      if (selectedCategory) {
+        result = result.filter(post => post.category === selectedCategory);
+      }
+      setFilteredPosts(result);
+    }
+  }, [sidebarSearchResults, allPosts, selectedCategory, searchQuery]);
   
   // Pagination logic
   const indexOfLastPost = currentPage * postsPerPage;
@@ -240,161 +256,141 @@ const Blog = () => {
             </div>
           </div>
           
-          {/* Search and Filter Section */}
-          <div className="mb-8">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Buscar artículos por título, contenido o palabras clave..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
+          {/* Blog Content with Sidebar Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Sidebar (Left Column) */}
+            <div className="lg:col-span-1 order-2 lg:order-1">
+              <BlogSidebar 
+                onSearch={setSidebarSearchResults}
+                currentQuery={searchQuery}
+              />
+            </div>
+            
+            {/* Main Content (Right Column) */}
+            <div className="lg:col-span-3 order-1 lg:order-2">
+              {/* Search and Filter Section */}
+              <div className="mb-8">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Buscar artículos por título, contenido o palabras clave..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Filter className="text-gray-500 h-4 w-4" />
+                    <select
+                      className="border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-novativa-teal"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                      <option value="">Todas las categorías</option>
+                      {availableCategories.map((cat, index) => (
+                        <option key={index} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
               
-              <div className="flex items-center gap-2">
-                <Filter className="text-gray-500 h-4 w-4" />
-                <select
-                  className="border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-novativa-teal"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                  <option value="">Todas las categorías</option>
-                  {availableCategories.map((cat, index) => (
-                    <option key={index} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-          
-          {/* More Articles Section */}
-          <div className="border-t pt-12">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold">
-                {searchQuery || selectedCategory 
-                  ? `Resultados (${filteredPosts.length})` 
-                  : "Artículos Recientes"}
-              </h2>
-            </div>
-            
-            {filteredPosts.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {currentPosts.map((post) => (
-                    <Card key={post.id} className="overflow-hidden">
-                      <div className="h-48 overflow-hidden">
-                        <img 
-                          src={post.image} 
-                          alt={post.title} 
-                          className="w-full h-full object-cover transition duration-300 hover:scale-105"
-                        />
-                      </div>
-                      <CardHeader>
-                        <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
-                          <span className="text-novativa-orange font-medium">{post.category}</span>
-                          <span>{post.date}</span>
-                        </div>
-                        <CardTitle className="text-xl">{post.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-gray-600 line-clamp-3">{post.excerpt}</p>
-                      </CardContent>
-                      <CardFooter className="flex justify-between items-center">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <User size={14} className="mr-1" />
-                          <span>{post.author}</span>
-                        </div>
-                        <Button
-                          asChild
-                          variant="link"
-                          className="text-novativa-teal flex items-center hover:text-novativa-lightTeal"
-                        >
-                          <Link to={`/blog/${post.id}`}>
-                            Leer más <ArrowRight size={14} className="ml-1" />
-                          </Link>
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  ))}
+              {/* Articles Section */}
+              <div className="border-t pt-12">
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-2xl md:text-3xl font-bold">
+                    {searchQuery || selectedCategory || sidebarSearchResults.length > 0
+                      ? `Resultados (${filteredPosts.length})` 
+                      : "Artículos Recientes"}
+                  </h2>
                 </div>
                 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="mt-12">
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious 
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                          />
-                        </PaginationItem>
-                        
-                        {renderPaginationItems()}
-                        
-                        <PaginationItem>
-                          <PaginationNext 
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                          />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
+                {filteredPosts.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {currentPosts.map((post) => (
+                        <Card key={post.id} className="overflow-hidden">
+                          <div className="h-48 overflow-hidden">
+                            <img 
+                              src={post.image} 
+                              alt={post.title} 
+                              className="w-full h-full object-cover transition duration-300 hover:scale-105"
+                            />
+                          </div>
+                          <CardHeader>
+                            <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
+                              <span className="text-novativa-orange font-medium">{post.category}</span>
+                              <span>{post.date}</span>
+                            </div>
+                            <CardTitle className="text-xl">{post.title}</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-gray-600 line-clamp-3">{post.excerpt}</p>
+                          </CardContent>
+                          <CardFooter className="flex justify-between items-center">
+                            <div className="flex items-center text-sm text-gray-500">
+                              <User size={14} className="mr-1" />
+                              <span>{post.author}</span>
+                            </div>
+                            <Button
+                              asChild
+                              variant="link"
+                              className="text-novativa-teal flex items-center hover:text-novativa-lightTeal"
+                            >
+                              <Link to={`/blog/${post.id}`}>
+                                Leer más <ArrowRight size={14} className="ml-1" />
+                              </Link>
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      ))}
+                    </div>
+                    
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                      <div className="mt-12">
+                        <Pagination>
+                          <PaginationContent>
+                            <PaginationItem>
+                              <PaginationPrevious 
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                              />
+                            </PaginationItem>
+                            
+                            {renderPaginationItems()}
+                            
+                            <PaginationItem>
+                              <PaginationNext 
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                              />
+                            </PaginationItem>
+                          </PaginationContent>
+                        </Pagination>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-xl text-gray-600">No se encontraron artículos que coincidan con tu búsqueda.</p>
+                    <Button 
+                      onClick={() => {
+                        setSearchQuery('');
+                        setSelectedCategory('');
+                        setSidebarSearchResults([]);
+                      }}
+                      className="mt-4 bg-novativa-teal hover:bg-novativa-lightTeal"
+                    >
+                      Ver todos los artículos
+                    </Button>
                   </div>
                 )}
-              </>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-xl text-gray-600">No se encontraron artículos que coincidan con tu búsqueda.</p>
-                <Button 
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedCategory('');
-                  }}
-                  className="mt-4 bg-novativa-teal hover:bg-novativa-lightTeal"
-                >
-                  Ver todos los artículos
-                </Button>
               </div>
-            )}
-          </div>
-        </div>
-      </section>
-      
-      {/* Categories and Subscribe Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-2">
-              <h2 className="text-2xl font-bold mb-6">Categorías</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {availableCategories.map((category, index) => (
-                  <Button
-                    key={index}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    className={`border-novativa-teal justify-start ${
-                      selectedCategory === category 
-                        ? "bg-novativa-teal text-white" 
-                        : "text-novativa-teal hover:bg-novativa-teal/10"
-                    }`}
-                    onClick={() => setSelectedCategory(category === selectedCategory ? '' : category)}
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            
-            <div className="bg-white p-6 rounded-xl shadow-sm">
-              <h2 className="text-2xl font-bold mb-4">Suscríbete a nuestro newsletter</h2>
-              <p className="text-gray-600 mb-6">
-                Recibe las últimas noticias, artículos y recursos sobre IA y automatización directamente en tu bandeja de entrada.
-              </p>
-              <NewsletterForm />
             </div>
           </div>
         </div>
