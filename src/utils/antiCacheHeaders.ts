@@ -1,3 +1,4 @@
+
 /**
  * Anti-cache headers utility for pages that need to be refreshed
  */
@@ -33,5 +34,6 @@ export const setAntiCacheHeaders = (): void => {
  */
 export const forcePageRefresh = (): void => {
   // Force an immediate page refresh
-  window.location.reload(true);
+  window.location.reload();
 };
+
