@@ -221,8 +221,8 @@ const BlogPost = () => {
               
               {/* Newsletter Form */}
               <div className="bg-gray-50 rounded-xl p-6 mt-8">
-                <h3 className="text-xl font-bold mb-3">Suscríbete al newsletter</h3>
-                <p className="mb-4">Recibe los últimos artículos y recursos directamente en tu bandeja de entrada.</p>
+                
+                
                 <NewsletterForm />
               </div>
             </div>
@@ -276,19 +276,7 @@ const BlogPost = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">¿Listo para implementar soluciones de {post.category}?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Descubre cómo nuestras soluciones de inteligencia artificial y automatización pueden impulsar el crecimiento de tu empresa.
-          </p>
-          <Button asChild className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6" size="lg">
-            <Link to="/contacto">
-              Solicitar una consulta gratuita
-            </Link>
-          </Button>
-        </div>
-      </section>
+      
     </>;
 };
 export default BlogPost;
