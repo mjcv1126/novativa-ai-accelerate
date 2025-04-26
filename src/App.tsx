@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -13,6 +14,7 @@ import BlogCategory from '@/pages/BlogCategory';
 import AIAgents from '@/pages/services/AIAgents';
 import ContentGeneration from '@/pages/services/ContentGeneration';
 import IADevelopment from '@/pages/services/IADevelopment';
+import MobileAppDevelopment from '@/pages/services/MobileAppDevelopment';
 import AdminLayout from '@/pages/admin/AdminLayout';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminBlogPosts from '@/pages/admin/AdminBlogPosts';
@@ -44,6 +46,7 @@ function App() {
         <Route path="/servicios/contenido" element={<PageWrapper id="page-id-content"><Layout><ContentGeneration /></Layout></PageWrapper>} />
         <Route path="/servicios/desarrollo" element={<PageWrapper id="page-id-development"><Layout><IADevelopment /></Layout></PageWrapper>} />
         <Route path="/servicios/desarrollo-ia" element={<Navigate to="/servicios/desarrollo" replace />} />
+        <Route path="/servicios/apps" element={<PageWrapper id="page-id-mobile-apps"><Layout><MobileAppDevelopment /></Layout></PageWrapper>} />
         <Route path="/servicios/novachannel" element={<Navigate to="/novachannel" replace />} />
         <Route path="/precios" element={<PageWrapper id="page-id-pricing"><Layout><Pricing /></Layout></PageWrapper>} />
         <Route path="/contacto" element={<PageWrapper id="page-id-contact"><Layout><Contact /></Layout></PageWrapper>} />

@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +11,6 @@ export const usePhoneForm = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [countryCode, setCountryCode] = useState("506");
-  const [countrySearch, setCountrySearch] = useState("");
   const [phone, setPhone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneError, setPhoneError] = useState("");
@@ -111,10 +111,10 @@ export const usePhoneForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
+          firstName: firstName,
+          lastName: lastName,
           phone: formattedPhone,
-          firstName,
-          lastName,
-          countryCode,
+          countryCode: countryCode,
           countryName: selectedCountry?.name
         }),
       });
@@ -156,7 +156,6 @@ export const usePhoneForm = () => {
     firstName,
     lastName,
     countryCode,
-    countrySearch,
     phone,
     isSubmitting,
     phoneError,
@@ -165,7 +164,6 @@ export const usePhoneForm = () => {
     isSubmitted,
     selectedCountry,
     setCountryCode,
-    setCountrySearch,
     handlePhoneChange,
     handleFirstNameChange,
     handleLastNameChange,
