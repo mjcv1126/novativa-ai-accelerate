@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/newsletter/NewsletterForm';
-import { blogPosts, BlogPost } from '@/data/blogPosts';
+import { blogPosts, BlogPost, categoryToUrl } from '@/data/blogPosts';
 import { useAdminData } from '@/contexts/AdminDataContext';
 
 interface BlogSidebarProps {
@@ -111,7 +111,7 @@ const BlogSidebar = ({ onSearch, currentQuery = '' }: BlogSidebarProps) => {
           {categoriesWithCount.map((category, index) => (
             <li key={index}>
               <Link 
-                to={`/blog/category/${encodeURIComponent(category.name.toLowerCase())}`}
+                to={`/blog/categoria/${categoryToUrl(category.name)}`}
                 className="flex justify-between items-center text-gray-700 hover:text-novativa-teal transition-colors py-1.5 px-2 rounded hover:bg-gray-50"
               >
                 <span>{category.name}</span>
@@ -168,3 +168,4 @@ const BlogSidebar = ({ onSearch, currentQuery = '' }: BlogSidebarProps) => {
 };
 
 export default BlogSidebar;
+
