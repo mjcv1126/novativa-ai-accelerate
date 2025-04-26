@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
 import { setAntiCacheHeaders, forcePageRefresh } from '@/utils/antiCacheHeaders';
+import { toast } from '@/components/ui/sonner';
 
 const TIDYCAL_URL = 'https://tidycal.com/novativa';
 
@@ -14,17 +15,17 @@ const Schedule = () => {
     // Force refresh if loaded from cache
     forcePageRefresh();
     
-    // Improved TidyCal script loading
+    // Improved TidyCal script loading with cache busting
     const loadTidycalScript = () => {
       // First remove any existing script to prevent duplicates
-      const existingScript = document.querySelector('script[src="https://asset-tidycal.b-cdn.net/js/embed.js"]');
+      const existingScript = document.querySelector('script[src*="asset-tidycal.b-cdn.net/js/embed.js"]');
       if (existingScript) {
         existingScript.remove();
       }
       
-      // Create and load a new script
+      // Create and load a new script with cache busting
       const script = document.createElement('script');
-      script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
+      script.src = `https://asset-tidycal.b-cdn.net/js/embed.js?v=${new Date().getTime()}`;
       script.async = true;
       script.onload = () => {
         console.log('TidyCal script loaded successfully');
@@ -35,6 +36,7 @@ const Schedule = () => {
       };
       script.onerror = (error) => {
         console.error('Error loading TidyCal script:', error);
+        toast.error('Error al cargar el calendario. Por favor, recarga la página.');
       };
       
       document.body.appendChild(script);
@@ -51,9 +53,9 @@ const Schedule = () => {
   return (
     <>
       <Helmet>
-        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
         <meta httpEquiv="Pragma" content="no-cache" />
-        <meta httpEquiv="Expires" content="0" />
+        <meta httpEquiv="Expires" content="-1" />
         <title>Agenda tu Demo Gratuito | Novativa IA</title>
         <meta name="description" content="Agenda una demostración gratuita con nuestro equipo y descubre cómo Novativa IA puede transformar tu negocio con inteligencia artificial." />
       </Helmet>

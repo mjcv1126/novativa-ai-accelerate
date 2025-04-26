@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
 import { setAntiCacheHeaders, forcePageRefresh } from '@/utils/antiCacheHeaders';
+import { toast } from '@/components/ui/sonner';
 
 const Contact = () => {
   useEffect(() => {
@@ -15,27 +16,43 @@ const Contact = () => {
     // Force refresh if loaded from cache
     forcePageRefresh();
     
-    // Load Tidycal script only once when component mounts
-    const script = document.createElement('script');
-    script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
-    script.async = true;
-    
-    // Check if script is already loaded to prevent duplicates
-    if (!document.querySelector('script[src="https://asset-tidycal.b-cdn.net/js/embed.js"]')) {
+    // Load Tidycal script with cache busting
+    const loadTidycalScript = () => {
+      const existingScript = document.querySelector('script[src*="asset-tidycal.b-cdn.net/js/embed.js"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+      
+      const script = document.createElement('script');
+      script.src = `https://asset-tidycal.b-cdn.net/js/embed.js?v=${new Date().getTime()}`;
+      script.async = true;
+      script.onload = () => {
+        console.log('TidyCal script loaded successfully');
+        if (window.TidyCal && typeof window.TidyCal.init === 'function') {
+          window.TidyCal.init();
+        }
+      };
+      script.onerror = (error) => {
+        console.error('Error loading TidyCal script:', error);
+        toast.error('Error al cargar el calendario. Por favor, recarga la página.');
+      };
+      
       document.body.appendChild(script);
-    }
-
+    };
+    
+    setTimeout(loadTidycalScript, 300);
+    
     return () => {
-      // No need to remove script on unmount - it can be reused on revisits
+      // Cleanup not needed as script remains for better performance
     };
   }, []);
 
   return (
     <>
       <Helmet>
-        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
         <meta httpEquiv="Pragma" content="no-cache" />
-        <meta httpEquiv="Expires" content="0" />
+        <meta httpEquiv="Expires" content="-1" />
       </Helmet>
       <LouisebotWidget />
       <section className="pt-32 pb-16 bg-gray-50">

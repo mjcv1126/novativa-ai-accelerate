@@ -5,9 +5,9 @@
 
 export const setAntiCacheHeaders = (): void => {
   const metaTags = [
-    { httpEquiv: 'Cache-Control', content: 'no-cache, no-store, must-revalidate' },
+    { httpEquiv: 'Cache-Control', content: 'no-cache, no-store, must-revalidate, max-age=0' },
     { httpEquiv: 'Pragma', content: 'no-cache' },
-    { httpEquiv: 'Expires', content: '0' }
+    { httpEquiv: 'Expires', content: '-1' }
   ];
 
   metaTags.forEach(tag => {
@@ -19,15 +19,26 @@ export const setAntiCacheHeaders = (): void => {
     }
     metaTag.setAttribute('content', tag.content);
   });
+  
+  // Add cache-busting query parameter to all scripts
+  const scripts = document.getElementsByTagName('script');
+  Array.from(scripts).forEach(script => {
+    if (script.src && !script.src.includes('?')) {
+      script.src = `${script.src}?v=${new Date().getTime()}`;
+    }
+  });
 };
 
 /**
  * Force page refresh if it was loaded from cache
  */
 export const forcePageRefresh = (): void => {
-  // Check if page was loaded from cache
-  if (performance.navigation.type === 2) {
-    // Reload the page
+  if (performance.getEntriesByType('navigation').length > 0) {
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    if (navigation.type === 'back_forward') {
+      window.location.reload();
+    }
+  } else if (performance.navigation && performance.navigation.type === 2) {
     window.location.reload();
   }
 };
