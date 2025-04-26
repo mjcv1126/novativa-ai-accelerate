@@ -1,61 +1,35 @@
 
 import React, { useState } from 'react';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Por favor ingresa un email válido.",
-  }),
-});
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { addSubscriberToSendFox } from '@/utils/sendFoxAPI';
 
 interface NewsletterFormProps {
   light?: boolean;
 }
 
-export function NewsletterForm({ light = false }: NewsletterFormProps) {
-  const { toast } = useToast();
+export const NewsletterForm: React.FC<NewsletterFormProps> = ({ light = false }) => {
+  const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-    },
-  });
+  const { toast } = useToast();
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      setIsSubmitting(true);
-      const response = await fetch('/.netlify/functions/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) throw new Error('Error al suscribir');
+      const response = await addSubscriberToSendFox(email);
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Error al suscribir');
+      }
 
       toast({
         title: "¡Bienvenido a la comunidad IA!",
         description: "Pronto recibirás nuestras actualizaciones.",
       });
       
-      form.reset();
+      setEmail('');
     } catch (error) {
       toast({
         title: "Error",
@@ -65,47 +39,35 @@ export function NewsletterForm({ light = false }: NewsletterFormProps) {
     } finally {
       setIsSubmitting(false);
     }
-  }
-
-  const formClasses = light ? "text-white" : "";
-  const inputClasses = light 
-    ? "bg-white/10 text-white border-white/30 placeholder:text-white/70 focus:ring-white/50" 
-    : "";
+  };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={`space-y-4 ${formClasses}`}>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className={light ? "text-white" : ""}>Email</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="tu@email.com" 
-                  {...field} 
-                  className={inputClasses} 
-                  disabled={isSubmitting}
-                />
-              </FormControl>
-              <FormDescription className={light ? "text-white/80" : ""}>
-                Recibe nuestras actualizaciones y ofertas especiales.
-              </FormDescription>
-              <FormMessage className={light ? "text-orange-200" : ""} />
-            </FormItem>
-          )}
-        />
-        <Button 
-          type="submit" 
-          className={`w-full ${light 
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Tu email"
+        required
+        className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
+          light 
+            ? "text-gray-800 focus:ring-novativa-orange" 
+            : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
+        }`}
+      />
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className={`w-full ${
+          light 
             ? "bg-novativa-orange hover:bg-novativa-lightOrange text-white" 
-            : "bg-novativa-teal hover:bg-novativa-lightTeal text-white"}`}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Enviando..." : "Suscribirse"}
-        </Button>
-      </form>
-    </Form>
+            : "bg-novativa-teal hover:bg-novativa-lightTeal text-white"
+        }`}
+      >
+        {isSubmitting ? "Enviando..." : "Suscribirme"}
+      </Button>
+    </form>
   );
-}
+};
+
+export default NewsletterForm;

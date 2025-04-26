@@ -1,95 +1,144 @@
 
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const SENDFOX_API_KEY = Deno.env.get('SENDFOX_API_KEY')
-const SENDFOX_LIST_ID = '1'
+const SENDFOX_API_KEY = Deno.env.get("SENDFOX_API_KEY");
+const SENDFOX_API_ENDPOINT = "https://api.sendfox.com/contacts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+interface SubscribeRequest {
+  email: string;
+}
+
+interface ErrorResponse {
+  success: boolean;
+  message: string;
 }
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', {
-      headers: corsHeaders
-    })
+  // Enable CORS
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+      status: 204,
+    });
+  }
+
+  // Only accept POST requests
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ 
+      success: false, 
+      message: "Method not allowed" 
+    }), {
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      status: 405,
+    });
   }
 
   try {
-    const { email } = await req.json()
-
+    // Parse request body
+    const { email } = await req.json() as SubscribeRequest;
+    
     if (!email) {
-      return new Response(
-        JSON.stringify({ error: 'Email es requerido' }), 
-        { 
-          status: 400, 
-          headers: { 
-            'Content-Type': 'application/json',
-            ...corsHeaders
-          } 
-        }
-      )
+      return new Response(JSON.stringify({
+        success: false,
+        message: "Email is required",
+      }), {
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        status: 400,
+      });
     }
 
+    // Verify SendFox API key exists
     if (!SENDFOX_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: 'API key no configurada' }), 
-        { 
-          status: 500, 
-          headers: { 
-            'Content-Type': 'application/json',
-            ...corsHeaders
-          } 
-        }
-      )
+      console.error("SendFox API key not found");
+      return new Response(JSON.stringify({
+        success: false,
+        message: "Server configuration error",
+      }), {
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        status: 500,
+      });
     }
 
-    console.log(`Enviando suscripción para: ${email}`)
-
-    const response = await fetch('https://api.sendfox.com/contacts', {
-      method: 'POST',
+    // Make request to SendFox API
+    const response = await fetch(SENDFOX_API_ENDPOINT, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SENDFOX_API_KEY}`
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SENDFOX_API_KEY}`,
       },
       body: JSON.stringify({
         email,
-        lists: [SENDFOX_LIST_ID]
-      })
-    })
+        lists: [], // Add your list IDs here if needed
+      }),
+    });
 
-    const responseData = await response.json()
-    
+    const data = await response.json();
+
     if (!response.ok) {
-      console.error('Error en SendFox API:', responseData)
-      throw new Error(`Error en SendFox API: ${JSON.stringify(responseData)}`)
+      console.error("SendFox API error:", data);
+      
+      // Check if email already exists (common error)
+      if (data.errors?.email?.includes("has already been taken")) {
+        return new Response(JSON.stringify({
+          success: true,
+          message: "Email already subscribed",
+        }), {
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          },
+          status: 200,
+        });
+      }
+
+      return new Response(JSON.stringify({
+        success: false,
+        message: "Failed to subscribe",
+      }), {
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        status: response.status,
+      });
     }
 
-    console.log('Suscripción exitosa:', responseData)
-
-    return new Response(
-      JSON.stringify({ success: true, data: responseData }), 
-      { 
-        headers: { 
-          'Content-Type': 'application/json',
-          ...corsHeaders
-        } 
-      }
-    )
+    // Successful subscription
+    return new Response(JSON.stringify({
+      success: true,
+      message: "Successfully subscribed",
+    }), {
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      status: 200,
+    });
   } catch (error) {
-    console.error('Error en función subscribe:', error)
+    console.error("Error processing subscription:", error);
     
-    return new Response(
-      JSON.stringify({ error: error.message }), 
-      { 
-        status: 400, 
-        headers: { 
-          'Content-Type': 'application/json',
-          ...corsHeaders
-        } 
-      }
-    )
+    return new Response(JSON.stringify({
+      success: false,
+      message: "Failed to process subscription",
+    }), {
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+      status: 500,
+    });
   }
-})
+});

@@ -3,22 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { BlogPost } from '@/data/blogPosts';
 import { useAdminData } from '@/contexts/AdminDataContext';
+import CategorySelect from './blog/CategorySelect';
+import StatusSelect from './blog/StatusSelect';
+import TagInput from './blog/TagInput';
 
 interface BlogPostFormProps {
   post?: BlogPost;
@@ -37,18 +27,6 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSubmit, onCancel })
   const [image, setImage] = useState(post?.image || '');
   const [seoDescription, setSeoDescription] = useState(post?.seoDescription || '');
   const [tags, setTags] = useState<string[]>(post?.tags || []);
-  const [newTag, setNewTag] = useState('');
-
-  const handleAddTag = () => {
-    if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
-      setNewTag('');
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,33 +91,17 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSubmit, onCancel })
             </div>
           </div>
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Categoría</label>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar categoría" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.name}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Estado</label>
-              <Select value={status} onValueChange={(value: 'Publicado' | 'Borrador') => setStatus(value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar estado" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Publicado">Publicado</SelectItem>
-                  <SelectItem value="Borrador">Borrador</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <CategorySelect 
+              category={category} 
+              categories={categories} 
+              setCategory={setCategory} 
+            />
+            
+            <StatusSelect 
+              status={status} 
+              setStatus={setStatus} 
+            />
+            
             <div>
               <label className="block text-sm font-medium mb-1">URL de la imagen</label>
               <Input
@@ -158,39 +120,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSubmit, onCancel })
           </div>
         </div>
 
-        <div className="space-y-4">
-          <label className="block text-sm font-medium">Tags</label>
-          <div className="flex gap-2">
-            <Input
-              value={newTag}
-              onChange={(e) => setNewTag(e.target.value)}
-              placeholder="Agregar nuevo tag"
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddTag();
-                }
-              }}
-            />
-            <Button type="button" onClick={handleAddTag}>
-              Agregar
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveTag(tag)}
-                  className="ml-1 hover:text-red-500"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            ))}
-          </div>
-        </div>
+        <TagInput tags={tags} setTags={setTags} />
 
         <div className="flex justify-end gap-4">
           <Button type="button" variant="outline" onClick={onCancel}>
