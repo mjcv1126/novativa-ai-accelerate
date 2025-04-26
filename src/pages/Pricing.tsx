@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -18,6 +17,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { 
+  Whatsapp,
+  Instagram,
+  Facebook,
+  Globe,
+  MessageSquare,
+  Telegram
+} from 'lucide-react';
 
 const Pricing = () => {
   const [billingCycle, setBillingCycle] = useState('monthly');
@@ -148,6 +155,40 @@ const Pricing = () => {
                         <TableCell className="text-center">1 hora</TableCell>
                         <TableCell className="text-center">N/A</TableCell>
                         <TableCell className="text-center">N/A</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center gap-2">
+                            Integrable con plataformas
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                    <HelpCircle className="h-4 w-4" />
+                                    <span className="sr-only">Información</span>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p className="max-w-xs">
+                                    Integra tu agente IA con múltiples plataformas de mensajería
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                          <div className="flex gap-2 mt-2 text-gray-500">
+                            <Whatsapp size={16} />
+                            <Telegram size={16} />
+                            <Instagram size={16} />
+                            <Facebook size={16} />
+                            <Globe size={16} />
+                            <MessageSquare size={16} title="SMS" />
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
+                        <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
+                        <TableCell className="text-center text-green-500"><Check className="mx-auto" size={18} /></TableCell>
+                        <TableCell className="text-center text-red-500"><X className="mx-auto" size={18} /></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">Precio Mensual</TableCell>
