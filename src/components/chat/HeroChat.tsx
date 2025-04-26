@@ -1,13 +1,13 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Send, ArrowLeft, Menu, Paperclip, Mic } from "lucide-react";
+import { Send, ArrowLeft, Menu, Paperclip, Mic, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from '@/types/chat';
 import MessageList from './MessageList';
 import { createClient } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
 
 // Get Supabase URL and key from environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
@@ -42,6 +42,7 @@ const HeroChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -58,12 +59,16 @@ const HeroChat = () => {
   useEffect(() => {
     setMessages([
       {
-        content: "¡Hola! 👋 Soy Marlon, tu asistente virtual en Novativa. 🚀 ¿Te gustaría conocer cómo podemos potenciar tu negocio con IA? 💡 Agenda una llamada de 15 minutos aquí: https://tidycal.com/novativa/15-minute-meeting",
+        content: "¡Hola! 👋 Me encantaría mostrarte cómo podemos potenciar tu negocio con IA. ¿Te gustaría agendar una demostración gratuita de 15 minutos? Haz clic en el botón de abajo para programar una llamada 1:1 donde discutiremos estrategias personalizadas para tu empresa.",
         role: 'assistant',
         timestamp: new Date(),
       }
     ]);
   }, []);
+
+  const handleSchedule = () => {
+    navigate('/agenda');
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -182,12 +187,21 @@ const HeroChat = () => {
         </Button>
       </div>
 
-      <CardContent className="p-0 flex-1 overflow-hidden">
+      <CardContent className="p-0 flex-1 overflow-hidden relative">
         <MessageList 
           messages={messages}
           isLoading={isLoading}
           messagesEndRef={messagesEndRef}
         />
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+          <Button
+            onClick={handleSchedule}
+            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white gap-2"
+          >
+            <Calendar className="w-5 h-5" />
+            Agendar Demo Gratis
+          </Button>
+        </div>
       </CardContent>
 
       <CardFooter className="p-4 border-t">
