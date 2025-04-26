@@ -10,6 +10,9 @@ import { toast } from '@/components/ui/sonner';
 
 const Contact = () => {
   useEffect(() => {
+    // Force an immediate refresh when component mounts
+    forcePageRefresh();
+    
     // Apply anti-cache headers
     setAntiCacheHeaders();
     

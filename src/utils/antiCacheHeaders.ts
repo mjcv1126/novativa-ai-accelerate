@@ -1,4 +1,3 @@
-
 /**
  * Anti-cache headers utility for pages that need to be refreshed
  */
@@ -33,12 +32,6 @@ export const setAntiCacheHeaders = (): void => {
  * Force page refresh if it was loaded from cache
  */
 export const forcePageRefresh = (): void => {
-  if (performance.getEntriesByType('navigation').length > 0) {
-    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    if (navigation.type === 'back_forward') {
-      window.location.reload();
-    }
-  } else if (performance.navigation && performance.navigation.type === 2) {
-    window.location.reload();
-  }
+  // Force an immediate page refresh
+  window.location.reload(true);
 };

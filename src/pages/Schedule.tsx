@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
@@ -9,11 +8,11 @@ const TIDYCAL_URL = 'https://tidycal.com/novativa';
 
 const Schedule = () => {
   useEffect(() => {
+    // Force an immediate refresh when component mounts
+    forcePageRefresh();
+    
     // Apply anti-cache headers
     setAntiCacheHeaders();
-    
-    // Force refresh if loaded from cache
-    forcePageRefresh();
     
     // Improved TidyCal script loading with cache busting
     const loadTidycalScript = () => {
