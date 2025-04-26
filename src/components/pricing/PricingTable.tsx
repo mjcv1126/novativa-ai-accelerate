@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Check, HelpCircle } from 'lucide-react';
@@ -34,7 +35,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
             <TableHead className="text-center relative">
               Elite
               <Badge 
-                className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-novativa-orange text-white"
+                className="absolute -top-4 left-1/2 transform -translate-x-1/2 
+                  bg-purple-600 text-white px-2 py-0.5 rounded-full text-xs font-semibold 
+                  shadow-sm hover:bg-purple-700 transition-colors"
               >
                 Favorito
               </Badge>
