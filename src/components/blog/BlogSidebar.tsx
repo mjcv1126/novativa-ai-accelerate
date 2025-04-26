@@ -97,9 +97,9 @@ const BlogSidebar = ({ onSearch, currentQuery = '' }: BlogSidebarProps) => {
 
       {/* Newsletter Subscription */}
       <div className="bg-white p-5 rounded-xl shadow-sm">
-        <h3 className="text-lg font-bold mb-3">Suscríbete al newsletter</h3>
-        <p className="text-gray-600 mb-4 text-sm">
-          Recibe las últimas noticias, artículos y recursos sobre IA y automatización directamente en tu bandeja de entrada.
+        <h3 className="text-lg font-bold mb-2">Suscríbete al newsletter</h3>
+        <p className="text-sm opacity-90 mb-4">
+          Recibe los últimos artículos y recursos directamente en tu bandeja de entrada.
         </p>
         <NewsletterForm />
       </div>

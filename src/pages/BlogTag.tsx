@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,12 +12,38 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-import { blogPosts, getPostsByTag, getAllTags } from '@/data/blogPosts';
+import { blogPosts, getPostsByTag } from '@/data/blogPosts';
+import { useAdminData } from '@/contexts/AdminDataContext';
 
 const BlogTag = () => {
   const { tag } = useParams<{ tag: string }>();
   const decodedTag = tag ? decodeURIComponent(tag.replace(/-+/g, ' ')) : '';
-  const tagPosts = getPostsByTag(decodedTag);
+  const { posts: adminPosts } = useAdminData();
+  
+  // Combine admin posts and static blog posts
+  const allPosts = [...adminPosts, ...blogPosts];
+  
+  // Get all unique tags from the combined posts
+  const getAllTags = () => {
+    const allTags = allPosts.reduce((tags: string[], post) => {
+      if (post.tags) {
+        tags.push(...post.tags);
+      }
+      return tags;
+    }, []);
+    return [...new Set(allTags)];
+  };
+  
+  // Get posts by tag
+  const getFilteredPostsByTag = (tagToFilter: string) => {
+    return allPosts.filter(post => 
+      post.tags?.some(postTag => 
+        postTag.toLowerCase() === tagToFilter.toLowerCase()
+      )
+    );
+  };
+  
+  const tagPosts = getFilteredPostsByTag(decodedTag);
   const allTags = getAllTags();
   
   const tagToUrl = (tag: string) => {
@@ -179,4 +206,4 @@ const BlogTag = () => {
   );
 };
 
-export default BlogTag; 
+export default BlogTag;

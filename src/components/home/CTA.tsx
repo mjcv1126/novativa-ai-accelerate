@@ -2,6 +2,10 @@
 import React from 'react';
 
 const CTA = () => {
+  const openTidyCal = () => {
+    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  };
+
   return (
     <section className="py-20 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal text-white">
       <div className="container mx-auto px-4">
@@ -11,14 +15,12 @@ const CTA = () => {
             Impulsa tu empresa con nuestras soluciones de inteligencia artificial y automatización.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
-            <a
-              href="https://tidycal.com/novativa/demo-gratis"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={openTidyCal}
               className="inline-flex items-center justify-center gap-2 bg-novativa-orange hover:bg-novativa-lightOrange px-6 py-6 rounded-md text-white font-medium transition-colors text-lg"
             >
               Solicita una demostración gratuita
-            </a>
+            </button>
             <a
               href="/precios"
               className="inline-flex items-center justify-center gap-2 border border-white bg-transparent hover:bg-white hover:text-novativa-teal px-6 py-6 rounded-md text-white font-medium transition-colors text-lg"

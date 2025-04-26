@@ -7,6 +7,7 @@ import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
 import { setAntiCacheHeaders } from '@/utils/antiCacheHeaders';
 import { toast } from '@/components/ui/sonner';
+import { Button } from '@/components/ui/button';
 
 const Contact = () => {
   const [hasRefreshed, setHasRefreshed] = useState(false);
@@ -59,6 +60,10 @@ const Contact = () => {
     };
   }, [hasRefreshed]);
 
+  const openTidyCal = () => {
+    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  };
+
   return (
     <>
       <Helmet>
@@ -67,6 +72,24 @@ const Contact = () => {
         <meta httpEquiv="Expires" content="-1" />
       </Helmet>
       <LouisebotWidget />
+      
+      {/* Prominent CTA banner */}
+      <section className="py-8 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white sticky top-0 z-10">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <h3 className="text-xl font-bold">¿Necesitas una respuesta rápida?</h3>
+            <Button 
+              onClick={openTidyCal}
+              className="bg-white text-[#1A1F2C] hover:bg-gray-100 transition-colors px-6 py-2 rounded-md font-semibold flex items-center gap-2"
+              size="lg"
+            >
+              <Calendar className="w-5 h-5" /> 
+              Agenda una reunión ahora
+            </Button>
+          </div>
+        </div>
+      </section>
+      
       <section className="pt-32 pb-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -190,12 +213,12 @@ const Contact = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Programa una demostración gratuita y descubre cómo Novativa puede transformar tu negocio.
           </p>
-          <a 
-            href="/agenda"
-            className="inline-flex items-center gap-2 bg-white text-novativa-orange hover:bg-gray-100 px-6 py-3 rounded-md font-medium transition-colors"
+          <Button 
+            onClick={openTidyCal}
+            className="bg-white text-novativa-orange hover:bg-gray-100 px-8 py-6 rounded-md font-semibold flex items-center gap-2 text-lg"
           >
-            <Calendar className="h-5 w-5" /> Agenda una Cita
-          </a>
+            <Calendar className="h-6 w-6" /> Agenda una Cita
+          </Button>
         </div>
       </section>
     </>

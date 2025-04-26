@@ -1,3 +1,4 @@
+
 /**
  * Handle navigation with forced refresh for specific routes
  * @param path The path to navigate to
