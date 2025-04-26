@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Layout from '@/components/layout/Layout';
@@ -19,7 +18,7 @@ import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminBlogPosts from '@/pages/admin/AdminBlogPosts';
 import AdminCategories from '@/pages/admin/AdminCategories';
 import AdminLogin from '@/pages/admin/AdminLogin';
-import { ScrollToTop } from '@/components/layout/ScrollToTop';
+import ScrollToTop from '@/components/layout/ScrollToTop';
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 import NovaChannel from '@/pages/NovaChannel';
 import Schedule from '@/pages/Schedule';
