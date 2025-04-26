@@ -8,7 +8,7 @@ export interface Platform {
 export const platforms: Platform[] = [
   {
     name: 'WhatsApp',
-    icon: '/icons/whatsapp.png',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png',
     color: 'text-green-500'
   },
   {
