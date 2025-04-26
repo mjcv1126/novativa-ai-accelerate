@@ -17,7 +17,7 @@ const MarlonIAScript = () => {
   });
   const { toast } = useToast();
 
-  // Apply script on initial load
+  // Apply script on initial load and whenever script changes
   useEffect(() => {
     const applyScript = () => {
       // For admin preview
@@ -30,13 +30,30 @@ const MarlonIAScript = () => {
       const scriptEl = document.getElementById('marlon-ia-script');
       if (scriptEl) {
         scriptEl.innerHTML = script;
+        
+        // Execute any scripts that might be in the HTML
+        const scriptTags = scriptEl.querySelectorAll('script');
+        scriptTags.forEach(oldScript => {
+          const newScript = document.createElement('script');
+          
+          // Copy all attributes
+          Array.from(oldScript.attributes).forEach(attr => {
+            newScript.setAttribute(attr.name, attr.value);
+          });
+          
+          // Copy the content
+          newScript.textContent = oldScript.textContent;
+          
+          // Replace the old with the new
+          oldScript.parentNode?.replaceChild(newScript, oldScript);
+        });
       }
     };
     
-    // Apply script on component mount
+    // Apply script on component mount and whenever script changes
     applyScript();
     
-    // Add an interval to check and apply the script every few seconds
+    // Add an interval to check and apply the script periodically
     // This helps when script element is loaded conditionally/dynamically
     const interval = setInterval(applyScript, 2000);
     
@@ -50,6 +67,17 @@ const MarlonIAScript = () => {
     const scriptEl = document.getElementById('marlon-ia-script');
     if (scriptEl) {
       scriptEl.innerHTML = script;
+      
+      // Execute scripts
+      const scriptTags = scriptEl.querySelectorAll('script');
+      scriptTags.forEach(oldScript => {
+        const newScript = document.createElement('script');
+        Array.from(oldScript.attributes).forEach(attr => {
+          newScript.setAttribute(attr.name, attr.value);
+        });
+        newScript.textContent = oldScript.textContent;
+        oldScript.parentNode?.replaceChild(newScript, oldScript);
+      });
     }
     
     toast({
