@@ -18,6 +18,9 @@ const countries = [
   { code: "1", name: "Estados Unidos", flag: "🇺🇸" },
 ];
 
+// Get the webhook URL from environment variables
+const HOOK_MAKE_PHONE = import.meta.env.VITE_HOOK_MAKE_PHONE || "";
+
 const ScheduleConfirmation = () => {
   const [countryCode, setCountryCode] = useState("506");
   const [phone, setPhone] = useState("");
@@ -28,7 +31,7 @@ const ScheduleConfirmation = () => {
     const formattedPhone = `+${countryCode}${phone.replace(/[-\s]/g, '')}`;
     
     try {
-      const response = await fetch(Deno.env.get("HOOK_MAKE_PHONE") || "", {
+      const response = await fetch(HOOK_MAKE_PHONE, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
