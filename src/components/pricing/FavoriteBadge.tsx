@@ -1,6 +1,6 @@
 
 import { Badge } from "@/components/ui/badge";
-import { star } from "lucide-react";
+import { Star } from "lucide-react";
 
 export const FavoriteBadge = () => {
   return (
