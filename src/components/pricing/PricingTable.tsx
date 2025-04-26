@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Check, HelpCircle } from 'lucide-react';
@@ -27,20 +26,21 @@ type PricingTableProps = {
 const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
   return (
     <div className="relative overflow-x-auto rounded-lg border">
+      <div className="absolute z-10 left-1/2 transform -translate-x-1/2 -top-4">
+        <Badge 
+          className="bg-novativa-orange text-white px-3 py-1 rounded-full text-xs font-semibold 
+            shadow-md hover:bg-novativa-orange/90 transition-all"
+        >
+          Favorito
+        </Badge>
+      </div>
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50">
             <TableHead className="w-1/5">Característica</TableHead>
             <TableHead className="text-center">Diamante</TableHead>
             <TableHead className="text-center relative">
-              <div className="pt-5">Elite</div>
-              <Badge 
-                className="absolute -top-3 left-1/2 transform -translate-x-1/2 
-                  bg-novativa-orange text-white px-2 py-0.5 rounded-full text-xs font-semibold 
-                  shadow-sm"
-              >
-                Favorito
-              </Badge>
+              Elite
             </TableHead>
             <TableHead className="text-center">Starter</TableHead>
             <TableHead className="text-center">Demo</TableHead>
