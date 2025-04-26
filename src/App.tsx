@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import Home from '@/pages/Home';
@@ -25,7 +24,6 @@ import AdminScripts from '@/pages/admin/AdminScripts';
 import AdminCustomCSS from '@/pages/admin/AdminCustomCSS';
 import './App.css';
 
-// Wrapper component to add page IDs to each route
 const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => (
   <div id={id}>
     {children}
@@ -51,11 +49,10 @@ function App() {
         <Route path="/blog/tag/:tag" element={<PageWrapper id="page-id-blog-tag"><Layout><BlogTag /></Layout></PageWrapper>} />
         <Route path="/blog/categoria/:category" element={<PageWrapper id="page-id-blog-category"><Layout><BlogCategory /></Layout></PageWrapper>} />
         <Route path="/novachannel" element={<PageWrapper id="page-id-novachannel"><Layout><NovaChannel /></Layout></PageWrapper>} />
+        <Route path="/welcome" element={<PageWrapper id="page-id-welcome"><Layout><Welcome /></Layout></PageWrapper>} />
         
-        {/* Redirect /agenda to TidyCal */}
         <Route path="/agenda" element={<Navigate to="https://tidycal.com/novativa/demo-gratis" replace />} />
         
-        {/* Admin Routes */}
         <Route path="/admin/login" element={<PageWrapper id="page-id-admin-login"><AdminLogin /></PageWrapper>} />
         <Route path="/admin" element={<PageWrapper id="page-id-admin"><AdminLayout /></PageWrapper>}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />

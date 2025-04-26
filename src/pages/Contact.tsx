@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
@@ -13,10 +12,8 @@ const Contact = () => {
   const [hasRefreshed, setHasRefreshed] = useState(false);
 
   useEffect(() => {
-    // Apply anti-cache headers
     setAntiCacheHeaders();
     
-    // One-time refresh logic
     const shouldRefresh = !sessionStorage.getItem('contactPageRefreshed');
     if (shouldRefresh && !hasRefreshed) {
       sessionStorage.setItem('contactPageRefreshed', 'true');
@@ -25,21 +22,17 @@ const Contact = () => {
       return;
     }
     
-    // Improved TidyCal script loading with cache busting
     const loadTidycalScript = () => {
-      // First remove any existing script to prevent duplicates
       const existingScript = document.querySelector('script[src*="asset-tidycal.b-cdn.net/js/embed.js"]');
       if (existingScript) {
         existingScript.remove();
       }
       
-      // Create and load a new script with cache busting
       const script = document.createElement('script');
       script.src = `https://asset-tidycal.b-cdn.net/js/embed.js?v=${new Date().getTime()}`;
       script.async = true;
       script.onload = () => {
         console.log('TidyCal script loaded successfully');
-        // Force reinitialize if needed
         if (window.TidyCal && typeof window.TidyCal.init === 'function') {
           window.TidyCal.init();
         }
@@ -52,11 +45,9 @@ const Contact = () => {
       document.body.appendChild(script);
     };
     
-    // Small timeout to ensure DOM is fully rendered
     setTimeout(loadTidycalScript, 300);
     
     return () => {
-      // Cleanup not needed as script remains for better performance
     };
   }, [hasRefreshed]);
 
@@ -73,7 +64,6 @@ const Contact = () => {
       </Helmet>
       <LouisebotWidget />
       
-      {/* Prominent CTA banner */}
       <section className="py-8 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white sticky top-0 z-10">
         <div className="container mx-auto px-4 text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -204,21 +194,6 @@ const Contact = () => {
               <div className="tidycal-embed" data-path="novativa/demo-gratis"></div>
             </div>
           </div>
-        </div>
-      </section>
-      
-      <section className="py-16 bg-gradient-to-r from-novativa-orange to-novativa-lightOrange text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">¿Listo para descubrir el potencial de la IA?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Programa una demostración gratuita y descubre cómo Novativa puede transformar tu negocio.
-          </p>
-          <Button 
-            onClick={openTidyCal}
-            className="bg-white text-novativa-orange hover:bg-gray-100 px-8 py-6 rounded-md font-semibold flex items-center gap-2 text-lg"
-          >
-            <Calendar className="h-6 w-6" /> Agenda una Cita
-          </Button>
         </div>
       </section>
     </>
