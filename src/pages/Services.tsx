@@ -272,7 +272,7 @@ const Services = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1 rounded-xl overflow-hidden shadow-xl">
-            <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2000&auto=format&fit=crop" alt="IA para Generación de Contenido" className="w-full h-auto object-cover" />
+            <img alt="IA para Generación de Contenido" className="w-full h-auto object-cover" src="https://cdn-site-assets.veed.io/cdn-cgi/image/width=1536,quality=75,format=auto/AI_Avatar_6a9e429709/AI_Avatar_6a9e429709.png" />
           </div>
           
           <div className="order-1 lg:order-2">
@@ -287,10 +287,8 @@ const Services = () => {
                   <FileText className="text-novativa-orange" size={20} />
                 </div>
                 <div className="ml-3">
-                  <h3 className="font-bold">Clonación de Estilos</h3>
-                  <p className="text-gray-600">
-                    Generamos contenido que mantiene el tono y estilo de tu marca.
-                  </p>
+                  <h3 className="font-bold">Clonación de Avatar</h3>
+                  <p className="text-gray-600">Generamos un avatar identico a ti o la persona de tu preferencia que mantiene el tono y estilo de tu marca.</p>
                 </div>
               </div>
               
