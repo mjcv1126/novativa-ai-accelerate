@@ -1,50 +1,33 @@
 
 import React, { useEffect } from 'react';
-import { ExternalLink } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
 
 const TIDYCAL_URL = 'https://tidycal.com/novativa';
 
 const Schedule = () => {
   useEffect(() => {
-    // Prevent caching and force refresh
-    if (!sessionStorage.getItem('schedulePageLoaded')) {
-      sessionStorage.setItem('schedulePageLoaded', 'true');
-      window.location.reload();
-    }
-
-    // Cleanup on unmount
-    return () => {
-      sessionStorage.removeItem('schedulePageLoaded');
-    };
-  }, []);
-  
-  useEffect(() => {
-    // Ensure the Tidycal script is loaded
+    // Load Tidycal script only once when component mounts
     const script = document.createElement('script');
     script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
     script.async = true;
-    document.body.appendChild(script);
+    
+    // Check if script is already loaded to prevent duplicates
+    if (!document.querySelector('script[src="https://asset-tidycal.b-cdn.net/js/embed.js"]')) {
+      document.body.appendChild(script);
+    }
 
     return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
+      // No need to remove script on unmount - it can be reused on revisits
     };
   }, []);
-
-  const handleRedirect = () => {
-    window.open(TIDYCAL_URL, '_blank', 'noopener,noreferrer');
-  };
 
   return (
     <>
       <Helmet>
-        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-        <meta http-equiv="Pragma" content="no-cache" />
-        <meta http-equiv="Expires" content="0" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </Helmet>
       <LouisebotWidget />
       <section className="py-16">

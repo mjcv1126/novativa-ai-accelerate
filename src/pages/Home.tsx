@@ -1,10 +1,12 @@
 
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import Hero from '@/components/home/Hero';
 import Features from '@/components/home/Features';
 import CTA from '@/components/home/CTA';
-import Testimonials from '@/components/home/Testimonials';
-import RecentArticles from '@/components/home/RecentArticles';
+
+// Lazy load components that are lower in the page
+const Testimonials = lazy(() => import('@/components/home/Testimonials'));
+const RecentArticles = lazy(() => import('@/components/home/RecentArticles'));
 
 const Home = () => {
   return (
@@ -12,8 +14,12 @@ const Home = () => {
       <Hero />
       <Features />
       <CTA />
-      <Testimonials />
-      <RecentArticles />
+      <Suspense fallback={<div className="py-20 bg-white"></div>}>
+        <Testimonials />
+      </Suspense>
+      <Suspense fallback={<div className="py-20 bg-gray-50"></div>}>
+        <RecentArticles />
+      </Suspense>
     </>
   );
 };

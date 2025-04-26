@@ -1,45 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
 
 const Contact = () => {
-  useEffect(() => {
-    // Prevent caching and force refresh
-    if (!sessionStorage.getItem('contactPageLoaded')) {
-      sessionStorage.setItem('contactPageLoaded', 'true');
-      window.location.reload();
-    }
-
-    // Cleanup on unmount
-    return () => {
-      sessionStorage.removeItem('contactPageLoaded');
-    };
-  }, []);
-
-  useEffect(() => {
-    // Ensure the Tidycal script is loaded
+  React.useEffect(() => {
+    // Load Tidycal script only once when component mounts
     const script = document.createElement('script');
     script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
     script.async = true;
-    document.body.appendChild(script);
+    
+    // Check if script is already loaded to prevent duplicates
+    if (!document.querySelector('script[src="https://asset-tidycal.b-cdn.net/js/embed.js"]')) {
+      document.body.appendChild(script);
+    }
 
     return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
+      // No need to remove script on unmount - it can be reused on revisits
     };
   }, []);
 
   return (
     <>
       <Helmet>
-        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-        <meta http-equiv="Pragma" content="no-cache" />
-        <meta http-equiv="Expires" content="0" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </Helmet>
       <LouisebotWidget />
       <section className="pt-32 pb-16 bg-gray-50">
