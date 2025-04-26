@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -27,6 +26,7 @@ import AdminScripts from '@/pages/admin/AdminScripts';
 import AdminCustomCSS from '@/pages/admin/AdminCustomCSS';
 import Welcome from '@/pages/Welcome';
 import ScheduleConfirmation from '@/pages/ScheduleConfirmation';
+import IACoding from '@/pages/IACoding';
 import './App.css';
 
 const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => (
@@ -78,6 +78,12 @@ function App() {
           } />
           <Route path="custom-css" element={<PageWrapper id="page-id-admin-custom-css"><AdminCustomCSS /></PageWrapper>} />
         </Route>
+        
+        <Route path="/iacoding" element={
+          <PageWrapper id="page-id-iacoding">
+            <Layout><IACoding /></Layout>
+          </PageWrapper>
+        } />
         
         <Route path="*" element={<PageWrapper id="page-id-not-found"><Layout><NotFound /></Layout></PageWrapper>} />
       </Routes>
