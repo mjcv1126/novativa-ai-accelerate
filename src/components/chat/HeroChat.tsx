@@ -9,7 +9,7 @@ import { Message } from '@/types/chat';
 import MessageList from './MessageList';
 import { createClient } from '@supabase/supabase-js';
 
-// Get Supabase URL and key from environment variables or default to empty string with a fallback check
+// Get Supabase URL and key from environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
@@ -83,26 +83,52 @@ const HeroChat = () => {
     setIsLoading(true);
 
     try {
-      if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error('Supabase configuration is missing');
-      }
+      // Intentamos usar la función 'assistant-chat' en Supabase
+      // Si no hay configuración de Supabase, intentamos la función 'chat' normal
+      let responseData;
+      
+      if (supabaseUrl && supabaseAnonKey) {
+        // Usar el asistente específico con ID asst_0n98mnqxf4SiqOHMDvv5Jbbs
+        const { data, error } = await supabase.functions.invoke('assistant-chat', {
+          body: {
+            message: input,
+            threadId: threadId
+          }
+        });
 
-      const { data, error } = await supabase.functions.invoke('assistant-chat', {
-        body: {
-          message: input,
-          threadId: threadId
+        if (error) throw error;
+        responseData = data;
+        
+        // Guardar threadId para futuros mensajes
+        if (data.threadId) {
+          setThreadId(data.threadId);
+          console.log("Thread ID guardado:", data.threadId);
         }
-      });
-
-      if (error) throw error;
-
-      // Save the threadId for future messages
-      if (data.threadId) {
-        setThreadId(data.threadId);
+      } else {
+        // Fallback a la API chat normal
+        const { data, error } = await supabase.functions.invoke('chat', {
+          body: {
+            messages: [
+              ...messages.map(msg => ({
+                role: msg.role,
+                content: msg.content
+              })),
+              {
+                role: 'user',
+                content: input
+              }
+            ]
+          }
+        });
+        
+        if (error) throw error;
+        responseData = {
+          message: data.choices[0].message.content,
+        };
       }
 
       const botMessage: Message = {
-        content: data.message,
+        content: responseData.message,
         role: 'assistant',
         timestamp: new Date(),
       };
