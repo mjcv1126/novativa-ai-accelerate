@@ -6,7 +6,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export const TableHeader: React.FC = () => {
+export const PricingTableHeader: React.FC = () => {
   return (
     <TableHeader>
       <TableRow className="bg-gray-50">

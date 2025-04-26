@@ -1,10 +1,9 @@
-
 import React from 'react';
 import {
   Table,
   TableBody,
 } from "@/components/ui/table";
-import { TableHeader } from './TableHeader';
+import { PricingTableHeader } from './TableHeader';
 import { PricingRow } from './PricingRow';
 import { PlatformIntegrations } from './PlatformIntegrations';
 import { PricingTableRow } from './PricingTableRow';
@@ -46,7 +45,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
         <PricingBanner billingCycle={billingCycle} />
         
         <Table>
-          <TableHeader />
+          <PricingTableHeader />
           <TableBody>
             <PricingTableRow 
               feature="Usuarios Activos / Mes"
