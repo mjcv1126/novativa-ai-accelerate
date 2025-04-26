@@ -14,7 +14,6 @@ const PhoneForm = () => {
     firstName,
     lastName,
     countryCode,
-    countrySearch,
     phone,
     isSubmitting,
     phoneError,
@@ -23,7 +22,6 @@ const PhoneForm = () => {
     isSubmitted,
     selectedCountry,
     setCountryCode,
-    setCountrySearch,
     handlePhoneChange,
     handleFirstNameChange,
     handleLastNameChange,
@@ -33,13 +31,6 @@ const PhoneForm = () => {
   if (isSubmitted) {
     return <SuccessMessage />;
   }
-
-  // Filter countries based on search
-  const filteredCountries = countries.filter(country => 
-    country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
-    country.flag.includes(countrySearch.toLowerCase()) ||
-    country.code.includes(countrySearch.toLowerCase())
-  );
 
   return (
     <>
@@ -76,20 +67,13 @@ const PhoneForm = () => {
         </div>
         
         <div className="flex gap-3">
-          <div className="relative w-[140px]">
-            <Input 
-              type="text"
-              placeholder="Buscar país..."
-              value={countrySearch}
-              onChange={(e) => setCountrySearch(e.target.value)}
-              className="mb-2"
-            />
+          <div className="w-[140px]">
             <Select value={countryCode} onValueChange={setCountryCode}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="max-h-[280px]">
-                {filteredCountries.map((country) => (
+                {countries.map((country) => (
                   <SelectItem key={`${country.code}-${country.name}`} value={country.code}>
                     <span className="flex items-center gap-2">
                       <span>{country.flag}</span>

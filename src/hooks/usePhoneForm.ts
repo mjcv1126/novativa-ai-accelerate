@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -96,9 +95,6 @@ export const usePhoneForm = () => {
     const formattedPhone = `+${countryCode}${digitsOnly}`;
     
     try {
-      console.log("Sending to webhook:", formattedPhone, firstName, lastName);
-      
-      // First, store in Supabase
       const { data, error } = await supabase.rpc('store_contact', {
         p_first_name: firstName,
         p_last_name: lastName,
@@ -109,7 +105,6 @@ export const usePhoneForm = () => {
 
       if (error) throw error;
 
-      // Then send to Make.com webhook
       const response = await fetch(HOOK_MAKE_PHONE, {
         method: 'POST',
         headers: {
