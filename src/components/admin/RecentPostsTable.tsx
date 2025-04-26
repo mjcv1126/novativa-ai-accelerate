@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, ExternalLink, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, Eye, MoreHorizontal, Trash } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,52 +21,51 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 
-// Sample data (replace with Supabase data in production)
 const posts = [
   {
     id: 1,
     title: "Cómo la IA está transformando el servicio al cliente en 2025",
-    author: "María González",
+    author: "Marlon Caballero",
     date: "15/04/2025",
     category: "Inteligencia Artificial",
     status: "Publicado",
-    views: 1245,
+    views: 0,
   },
   {
     id: 2,
     title: "Automatización de procesos: La clave para la eficiencia empresarial",
-    author: "Carlos Ramírez",
+    author: "Marlon Caballero",
     date: "10/04/2025",
     category: "Automatización",
     status: "Publicado",
-    views: 987,
+    views: 0,
   },
   {
     id: 3,
     title: "Agentes IA: El futuro de la interacción digital",
-    author: "Laura Sánchez",
+    author: "Marlon Caballero",
     date: "05/04/2025",
     category: "Agentes IA",
     status: "Publicado",
-    views: 756,
+    views: 0,
   },
   {
     id: 4,
     title: "Estrategias de marketing digital para 2025",
-    author: "Roberto Méndez",
+    author: "Marlon Caballero",
     date: "01/04/2025",
     category: "Marketing Digital",
-    status: "Borrador",
+    status: "Publicado",
     views: 0,
   },
   {
     id: 5,
     title: "Clonación de voz: Aplicaciones prácticas para tu negocio",
-    author: "Diego Flores",
+    author: "Marlon Caballero",
     date: "20/03/2025",
     category: "Tecnología de Voz",
     status: "Publicado",
-    views: 432,
+    views: 0,
   }
 ];
 
@@ -81,8 +80,7 @@ const RecentPostsTable = () => {
             <TableHead>Autor</TableHead>
             <TableHead>Fecha</TableHead>
             <TableHead>Estado</TableHead>
-            <TableHead className="text-right">Vistas</TableHead>
-            <TableHead className="text-right">Acciones</TableHead>
+            <TableCell className="text-right">Acciones</TableCell>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -94,13 +92,12 @@ const RecentPostsTable = () => {
               <TableCell>{post.date}</TableCell>
               <TableCell>
                 <Badge 
-                  variant={post.status === "Publicado" ? "default" : "outline"}
-                  className={post.status === "Publicado" ? "bg-green-500" : ""}
+                  variant="default"
+                  className="bg-green-500"
                 >
                   {post.status}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right">{post.views.toLocaleString()}</TableCell>
               <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -112,13 +109,15 @@ const RecentPostsTable = () => {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to={`/blog/${post.id}`} className="flex items-center" target="_blank" rel="noopener noreferrer">
+                        <Eye className="mr-2 h-4 w-4" />
+                        <span>Ver</span>
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Edit className="mr-2 h-4 w-4" />
                       <span>Editar</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      <span>Ver</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="text-red-500 focus:text-red-500">
                       <Trash className="mr-2 h-4 w-4" />

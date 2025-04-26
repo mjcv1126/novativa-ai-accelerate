@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +20,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChevronDown, Edit, Eye, Filter, Plus, Search, Trash } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import BlogPostForm from '@/components/admin/BlogPostForm';
+import { Link } from 'react-router-dom';
 import { BlogPost } from '@/data/blogPosts';
 
 const initialPosts: BlogPost[] = [
@@ -257,6 +259,15 @@ const AdminBlogPosts = () => {
                       <TableCell className="text-right">{post.views}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
+                          <Link
+                            to={`/blog/${post.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button variant="ghost" size="icon">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </Link>
                           <Button
                             variant="ghost"
                             size="icon"

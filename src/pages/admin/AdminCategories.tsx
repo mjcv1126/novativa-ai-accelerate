@@ -14,16 +14,14 @@ import { Badge } from '@/components/ui/badge';
 import { Check, Edit, Plus, Save, Trash, X } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 
-// Sample data (replace with Supabase data in production)
 const initialCategories = [
   { id: 1, name: "Inteligencia Artificial", postCount: 14, slug: "inteligencia-artificial" },
   { id: 2, name: "Automatización", postCount: 8, slug: "automatizacion" },
   { id: 3, name: "Agentes IA", postCount: 6, slug: "agentes-ia" },
   { id: 4, name: "Marketing Digital", postCount: 5, slug: "marketing-digital" },
   { id: 5, name: "Generación de Contenido", postCount: 4, slug: "generacion-de-contenido" },
-  { id: 6, name: "Tecnología de Voz", postCount: 3, slug: "tecnologia-de-voz" },
-  { id: 7, name: "Desarrollo Web", postCount: 2, slug: "desarrollo-web" },
-  { id: 8, name: "Análisis de Datos", postCount: 1, slug: "analisis-de-datos" },
+  { id: 6, name: "Transformación Digital", postCount: 3, slug: "transformacion-digital" },
+  { id: 7, name: "Novachannel", postCount: 10, slug: "novachannel" }
 ];
 
 const AdminCategories = () => {
@@ -41,7 +39,11 @@ const AdminCategories = () => {
   const handleSave = (id: number) => {
     if (editName.trim() !== '') {
       setCategories(categories.map(cat => 
-        cat.id === id ? { ...cat, name: editName, slug: editName.toLowerCase().replace(/\s+/g, '-') } : cat
+        cat.id === id ? { 
+          ...cat, 
+          name: editName, 
+          slug: editName.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        } : cat
       ));
       setEditingId(null);
       setEditName('');
@@ -55,11 +57,17 @@ const AdminCategories = () => {
   const handleAddCategory = () => {
     if (newCategory.trim() !== '') {
       const newId = Math.max(...categories.map(cat => cat.id)) + 1;
+      const newSlug = newCategory
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
       setCategories([...categories, {
         id: newId,
         name: newCategory,
         postCount: 0,
-        slug: newCategory.toLowerCase().replace(/\s+/g, '-')
+        slug: newSlug
       }]);
       setNewCategory('');
       setShowNewForm(false);
@@ -93,6 +101,11 @@ const AdminCategories = () => {
                 placeholder="Nombre de la categoría"
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleAddCategory();
+                  }
+                }}
               />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
@@ -123,6 +136,11 @@ const AdminCategories = () => {
                   <Input
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSave(category.id);
+                      }
+                    }}
                     autoFocus
                   />
                 ) : (

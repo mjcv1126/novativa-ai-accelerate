@@ -17,14 +17,14 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <StatCard 
             title="Posts Publicados" 
-            value="36" 
-            description="6 nuevos este mes" 
+            value="30" 
+            description="Posts disponibles en el blog" 
             icon={<FileText className="h-5 w-5 text-novativa-orange" />} 
           />
           <StatCard 
             title="Categorías" 
-            value="8" 
-            description="2 agregadas recientemente" 
+            value="7" 
+            description="Categorías principales" 
             icon={<Tag className="h-5 w-5 text-purple-500" />} 
           />
         </div>
