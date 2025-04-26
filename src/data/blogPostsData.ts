@@ -1,3 +1,4 @@
+
 // This file contains just the raw blog posts data
 export interface BlogPost {
   id: number;
@@ -442,5 +443,5 @@ export const blogPosts: BlogPost[] = [
     image: "https://images.unsplash.com/photo-1517131147490-25966059a9e1",
     seoDescription: "IA en exploración espacial, automatización de misiones, análisis de datos y optimización de la investigación. Transforma tu exploración espacial con inteligencia artificial.",
     tags: ["Exploración Espacial", "Inteligencia Artificial", "Misiones", "Datos"]
-  },
-  {
+  }
+];

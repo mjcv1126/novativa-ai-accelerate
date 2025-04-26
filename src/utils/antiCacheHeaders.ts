@@ -1,6 +1,6 @@
 
 /**
- * Anti-cache headers utility for admin pages
+ * Anti-cache headers utility for pages that need to be refreshed
  */
 
 export const setAntiCacheHeaders = (): void => {
@@ -19,4 +19,15 @@ export const setAntiCacheHeaders = (): void => {
     }
     metaTag.setAttribute('content', tag.content);
   });
+};
+
+/**
+ * Force page refresh if it was loaded from cache
+ */
+export const forcePageRefresh = (): void => {
+  // Check if page was loaded from cache
+  if (performance.navigation.type === 2) {
+    // Reload the page
+    window.location.reload();
+  }
 };

@@ -1,12 +1,20 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Link } from 'react-router-dom';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
+import { setAntiCacheHeaders, forcePageRefresh } from '@/utils/antiCacheHeaders';
 
 const Contact = () => {
-  React.useEffect(() => {
+  useEffect(() => {
+    // Apply anti-cache headers
+    setAntiCacheHeaders();
+    
+    // Force refresh if loaded from cache
+    forcePageRefresh();
+    
     // Load Tidycal script only once when component mounts
     const script = document.createElement('script');
     script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';

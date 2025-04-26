@@ -2,11 +2,18 @@
 import React, { useEffect } from 'react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
+import { setAntiCacheHeaders, forcePageRefresh } from '@/utils/antiCacheHeaders';
 
 const TIDYCAL_URL = 'https://tidycal.com/novativa';
 
 const Schedule = () => {
   useEffect(() => {
+    // Apply anti-cache headers
+    setAntiCacheHeaders();
+    
+    // Force refresh if loaded from cache
+    forcePageRefresh();
+    
     // Load Tidycal script only once when component mounts
     const script = document.createElement('script');
     script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
