@@ -34,6 +34,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
           Favorito
         </Badge>
       </div>
+      
+      {billingCycle === 'annual' && (
+        <div className="bg-green-100 text-green-800 text-center py-2 text-sm">
+          ¡Paga anualmente y obtén la instalación GRATIS! Ahorra $100 USD
+        </div>
+      )}
+      
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50">
@@ -212,6 +219,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
       </Table>
       
       <div className="mt-4 p-4 bg-gray-50 text-sm text-gray-600 space-y-2 rounded-b-lg border-t">
+        {billingCycle === 'annual' && (
+          <p className="text-green-700 font-semibold">
+            • ¡Instalación GRATIS por pago anual! (Ahorro de $100 USD)
+          </p>
+        )}
         <p>• La integración tiene un costo de instalación único de $100 USD.</p>
         <p>• Los precios no incluyen costos de API de OpenAI u otras plataformas en caso de ser requeridas.</p>
       </div>
