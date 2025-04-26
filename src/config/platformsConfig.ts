@@ -13,12 +13,12 @@ export const platforms: Platform[] = [
   },
   {
     name: 'Telegram',
-    icon: '/icons/telegram.png',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/2048px-Telegram_logo.svg.png',
     color: 'text-blue-500'
   },
   {
     name: 'Instagram',
-    icon: '/icons/instagram.png',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1024px-Instagram_icon.png',
     color: 'text-pink-500'
   },
   {
