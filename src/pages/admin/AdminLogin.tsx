@@ -26,6 +26,7 @@ const AdminLogin = () => {
   const [newPassword, setNewPassword] = useState('');
   const [resetStep, setResetStep] = useState<'email' | 'code' | 'newPassword'>('email');
   const { login, resetPassword, verifyResetCode, updatePassword, isAuthenticated, isLoading } = useAdminAuth();
+  const [isResetting, setIsResetting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -80,7 +81,7 @@ const AdminLogin = () => {
       return;
     }
 
-    setIsLoading(true);
+    setIsResetting(true);
     try {
       const { error } = await resetPassword(resetEmail);
       if (error) {
@@ -104,7 +105,7 @@ const AdminLogin = () => {
         variant: 'destructive',
       });
     } finally {
-      setIsLoading(false);
+      setIsResetting(false);
     }
   };
 
@@ -224,9 +225,9 @@ const AdminLogin = () => {
               <Button 
                 className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
                 onClick={handleResetPassword}
-                disabled={isLoading}
+                disabled={isResetting}
               >
-                {isLoading ? 'Enviando...' : 'Enviar código'}
+                {isResetting ? 'Enviando...' : 'Enviar código'}
               </Button>
             </div>
           )}
@@ -245,9 +246,9 @@ const AdminLogin = () => {
               <Button 
                 className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
                 onClick={handleVerifyCode}
-                disabled={isLoading}
+                disabled={isResetting}
               >
-                {isLoading ? 'Verificando...' : 'Verificar código'}
+                {isResetting ? 'Verificando...' : 'Verificar código'}
               </Button>
             </div>
           )}
@@ -266,9 +267,9 @@ const AdminLogin = () => {
               <Button 
                 className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
                 onClick={handleUpdatePassword}
-                disabled={isLoading}
+                disabled={isResetting}
               >
-                {isLoading ? 'Actualizando...' : 'Actualizar contraseña'}
+                {isResetting ? 'Actualizando...' : 'Actualizar contraseña'}
               </Button>
             </div>
           )}
