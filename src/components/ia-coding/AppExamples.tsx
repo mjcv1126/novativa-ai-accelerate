@@ -7,25 +7,37 @@ const appExamples = [
   {
     title: "EduConnect Pro",
     description: "Sistema completo de gestión escolar con calificaciones en tiempo real, comunicación padres-maestros y seguimiento de asistencia",
-    image: "https://images.unsplash.com/photo-1497493292307-31c376b6e479?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80&w=1000",
     features: ["Gestión de calificaciones", "Chat en tiempo real", "Control de asistencia", "Portal para padres"]
+  },
+  {
+    title: "NovaPOS",
+    description: "Sistema de punto de venta e inventario con inteligencia artificial para pronósticos y optimización de stock",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1000",
+    features: ["Control de inventario", "Punto de venta", "Reportes financieros", "Pronósticos IA"]
+  },
+  {
+    title: "SmartStore AI",
+    description: "Plataforma de ecommerce con asistentes IA que mejoran la experiencia de compra y aumentan las ventas",
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1000",
+    features: ["Agentes IA de ventas", "Recomendaciones personalizadas", "Análisis predictivo", "Chat en vivo"]
   },
   {
     title: "DeliverPro",
     description: "Sistema de delivery con tracking en tiempo real, gestión de pedidos y notificaciones automáticas",
-    image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=1000",
     features: ["GPS en tiempo real", "Gestión de pedidos", "Panel de control", "Analytics avanzado"]
   },
   {
     title: "TourBooking",
     description: "Plataforma de reservas turísticas con calendario dinámico y pagos integrados",
-    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=1000",
     features: ["Reservas online", "Pagos seguros", "Sistema de reseñas", "Panel admin"]
   },
   {
     title: "MediCare Hub",
     description: "Sistema de gestión de pacientes para clínicas y consultorios médicos",
-    image: "https://images.unsplash.com/photo-1504813184591-01572f98c85f?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=1000",
     features: ["Historial médico", "Citas online", "Recetas digitales", "Telemedicina"]
   }
 ];
