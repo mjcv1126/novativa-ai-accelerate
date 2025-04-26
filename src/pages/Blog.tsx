@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-import { BlogPost } from '@/data/blogPosts';
+import { BlogPost, blogPosts } from '@/data/blogPosts';
 import { useAdminData } from '@/contexts/AdminDataContext';
 import BlogSidebar from '@/components/blog/BlogSidebar';
 import FeaturedPosts from '@/components/blog/FeaturedPosts';

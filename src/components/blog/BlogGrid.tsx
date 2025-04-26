@@ -163,7 +163,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious 
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
                       className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
                     />
                   </PaginationItem>
@@ -172,7 +172,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({
                   
                   <PaginationItem>
                     <PaginationNext 
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
                       className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
                     />
                   </PaginationItem>
