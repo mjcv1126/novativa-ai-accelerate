@@ -9,7 +9,6 @@ import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 import { useAdminData } from '@/contexts/AdminDataContext';
 import { useToast } from '@/hooks/use-toast';
 import { NewsletterForm } from '@/components/newsletter/NewsletterForm';
-
 const BlogPost = () => {
   const {
     slug
@@ -149,11 +148,6 @@ const BlogPost = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-8">
-              {/* Newsletter Form - Now placed first */}
-              <div className="bg-gray-50 rounded-xl p-6 mb-8">
-                <NewsletterForm />
-              </div>
-              
               <div className="mb-8 rounded-xl overflow-hidden">
                 <img src={post.image} alt={post.title} className="w-full h-auto object-cover max-h-[500px]" />
               </div>
@@ -226,16 +220,15 @@ const BlogPost = () => {
               </div>
               
               {/* Newsletter Form */}
-              
+              <div className="bg-gray-50 rounded-xl p-6 mt-8">
+                
+                
+                <NewsletterForm />
+              </div>
             </div>
             
             {/* Sidebar */}
             <div className="lg:col-span-4">
-              {/* Newsletter Form - Moved to the top of the Sidebar */}
-              <div className="bg-novativa-teal rounded-xl p-6 text-white mb-8">
-                <NewsletterForm light />
-              </div>
-              
               {/* Related Posts */}
               <div className="bg-gray-50 rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-bold mb-4">Artículos Relacionados</h3>
@@ -272,7 +265,11 @@ const BlogPost = () => {
               </div>
               
               {/* Subscribe Form */}
-              
+              <div className="bg-novativa-teal rounded-xl p-6 text-white">
+                
+                
+                <NewsletterForm light />
+              </div>
             </div>
           </div>
         </div>
