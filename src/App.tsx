@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
@@ -23,7 +24,6 @@ import IADevelopment from '@/pages/services/IADevelopment';
 // Admin imports
 import AdminLayout from '@/pages/admin/AdminLayout';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
-import AdminAnalytics from '@/pages/admin/AdminAnalytics';
 import AdminBlogPosts from '@/pages/admin/AdminBlogPosts';
 import AdminCategories from '@/pages/admin/AdminCategories';
 import AdminScripts from '@/pages/admin/AdminScripts';
