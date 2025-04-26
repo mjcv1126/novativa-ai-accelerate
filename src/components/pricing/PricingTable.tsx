@@ -153,7 +153,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
                 asChild
                 className="bg-novativa-teal hover:bg-novativa-lightTeal w-full"
               >
-                <Link to="/contacto?plan=diamante">
+                <Link to="/agenda">
                   Seleccionar
                 </Link>
               </Button>
@@ -163,7 +163,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
                 asChild
                 className="bg-novativa-teal hover:bg-novativa-lightTeal w-full"
               >
-                <Link to="/contacto?plan=elite">
+                <Link to="/agenda">
                   Seleccionar
                 </Link>
               </Button>
@@ -173,7 +173,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
                 asChild
                 className="bg-novativa-orange hover:bg-novativa-lightOrange w-full"
               >
-                <Link to="/contacto?plan=starter">
+                <Link to="/agenda">
                   Seleccionar
                 </Link>
               </Button>
@@ -184,7 +184,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ billingCycle }) => {
                 variant="outline"
                 className="border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10 w-full"
               >
-                <Link to="/contacto?plan=demo">
+                <Link to="/agenda">
                   Probar
                 </Link>
               </Button>
