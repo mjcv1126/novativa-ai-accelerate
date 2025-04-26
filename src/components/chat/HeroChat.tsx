@@ -102,7 +102,7 @@ const HeroChat = () => {
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
           <Button
             onClick={handleSchedule}
-            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white gap-2"
+            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white gap-2 animate-subtle-shake"
           >
             <Calendar className="w-5 h-5" />
             Agendar Demo Gratis

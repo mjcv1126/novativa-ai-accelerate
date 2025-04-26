@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -101,6 +100,11 @@ export default {
 				"fade-out": {
 					from: { opacity: "1" },
 					to: { opacity: "0", display: "none" }
+				},
+				"subtle-shake": {
+					"0%, 100%": { transform: "translateX(0)" },
+					"25%": { transform: "translateX(-2px) rotate(-1deg)" },
+					"75%": { transform: "translateX(2px) rotate(1deg)" }
 				}
 			},
 			animation: {
@@ -109,7 +113,8 @@ export default {
 				"typewriter": "typewriter 4s steps(40) forwards",
 				"blink": "blink 1s infinite",
 				"fade-in": "fade-in 0.5s ease-out",
-				"fade-out": "fade-out 0.5s ease-out forwards"
+				"fade-out": "fade-out 0.5s ease-out forwards",
+				"subtle-shake": "subtle-shake 3s ease-in-out infinite"
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
