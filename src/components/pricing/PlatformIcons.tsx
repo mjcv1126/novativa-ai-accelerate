@@ -36,15 +36,18 @@ const platforms = [
 
 export const PlatformIcons = () => {
   return (
-    <div className="flex gap-2 mt-2">
+    <div className="flex gap-4 mt-2 items-center">
       {platforms.map((platform) => (
-        <img
-          key={platform.name}
-          src={platform.icon}
-          alt={`${platform.name} icon`}
-          className={`w-4 h-4 ${platform.color}`}
-        />
+        <div key={platform.name} className="flex flex-col items-center gap-1">
+          <img
+            src={platform.icon}
+            alt={`${platform.name} icon`}
+            className="w-6 h-6 object-contain"
+          />
+          <span className={`text-xs ${platform.color}`}>{platform.name}</span>
+        </div>
       ))}
     </div>
   );
 };
+
