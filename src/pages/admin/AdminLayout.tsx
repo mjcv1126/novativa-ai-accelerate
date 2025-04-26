@@ -30,13 +30,16 @@ const AdminLayout = () => {
       }
     };
     
-    // Agregar headers para evitar el caché
-    const metaTags = document.querySelectorAll('meta[http-equiv="Cache-Control"]');
-    if (metaTags.length === 0) {
-      const meta = document.createElement('meta');
-      meta.httpEquiv = "Cache-Control";
-      meta.content = "no-cache, no-store, must-revalidate";
-      document.head.appendChild(meta);
+    // Añadir meta tags para evitar el caché (asegurando que se aplica a todas las páginas admin)
+    const addNoCacheHeaders = () => {
+      document.querySelector('meta[http-equiv="Cache-Control"]')?.remove();
+      document.querySelector('meta[http-equiv="Pragma"]')?.remove();
+      document.querySelector('meta[http-equiv="Expires"]')?.remove();
+      
+      const metaCache = document.createElement('meta');
+      metaCache.httpEquiv = "Cache-Control";
+      metaCache.content = "no-cache, no-store, must-revalidate";
+      document.head.appendChild(metaCache);
       
       const metaPragma = document.createElement('meta');
       metaPragma.httpEquiv = "Pragma";
@@ -47,7 +50,9 @@ const AdminLayout = () => {
       metaExpires.httpEquiv = "Expires";
       metaExpires.content = "0";
       document.head.appendChild(metaExpires);
-    }
+    };
+    
+    addNoCacheHeaders();
     
     // Mostrar un mensaje de bienvenida una vez autenticado
     if (isAuthenticated && !isLoading) {

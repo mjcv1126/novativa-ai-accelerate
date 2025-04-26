@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -6,15 +7,18 @@ import { ArrowLeft, Calendar, User, Tag, Eye } from 'lucide-react';
 import { blogPosts, BlogPost as BlogPostType, getPostsByCategory } from '@/data/blogPosts';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
+import { useAdminData } from '@/contexts/AdminDataContext';
 
 const BlogPost = () => {
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPostType[]>([]);
+  const { posts: adminPosts, categories: adminCategories } = useAdminData();
 
   useEffect(() => {
-    // Find the post with the matching ID
-    const foundPost = blogPosts.find(post => post.id === Number(id));
+    // Try to find the post in adminPosts first (for most up-to-date data)
+    const foundPost = adminPosts.find(post => post.id === Number(id)) || 
+                      blogPosts.find(post => post.id === Number(id));
     
     if (foundPost) {
       setPost(foundPost);
@@ -32,13 +36,17 @@ const BlogPost = () => {
       });
       
       // Get related posts from the same category
-      const related = getPostsByCategory(foundPost.category)
-        .filter(p => p.id !== foundPost.id)
+      const allPosts = [...adminPosts, ...blogPosts].filter(
+        (post, index, self) => index === self.findIndex(p => p.id === post.id)
+      );
+      
+      const related = allPosts
+        .filter(p => p.category === foundPost.category && p.id !== foundPost.id)
         .slice(0, 3);
       
       setRelatedPosts(related);
     }
-  }, [id]);
+  }, [id, adminPosts]);
 
   // If post not found
   if (!post) {
@@ -53,6 +61,9 @@ const BlogPost = () => {
     );
   }
 
+  // Get all available categories from admin data
+  const availableCategories = adminCategories.map(cat => cat.name);
+
   return (
     <>
       <LouisebotWidget />
@@ -60,6 +71,9 @@ const BlogPost = () => {
         <title>{post.title} | Novativa Blog</title>
         <meta name="description" content={post.seoDescription || post.excerpt} />
         {post.tags && <meta name="keywords" content={post.tags.join(', ')} />}
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </Helmet>
       
       {/* Hero Section */}
@@ -207,6 +221,13 @@ const BlogPost = () => {
                   Experto en soluciones de {post.category.toLowerCase()} con amplia experiencia en implementación de tecnologías avanzadas para empresas de diversos sectores.
                 </p>
               </div>
+              
+              {/* Newsletter Form */}
+              <div className="bg-gray-50 rounded-xl p-6 mt-8">
+                <h3 className="text-xl font-bold mb-3">Suscríbete al newsletter</h3>
+                <p className="mb-4">Recibe los últimos artículos y recursos directamente en tu bandeja de entrada.</p>
+                <NewsletterForm />
+              </div>
             </div>
             
             {/* Sidebar */}
@@ -251,7 +272,7 @@ const BlogPost = () => {
               <div className="bg-gray-50 rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-bold mb-4">Categorías</h3>
                 <div className="space-y-2">
-                  {Array.from(new Set(blogPosts.map(p => p.category))).map((category, index) => (
+                  {availableCategories.map((category, index) => (
                     <Link 
                       key={index}
                       to={`/blog/categoria/${category.toLowerCase().replace(/\s+/g, '-')}`}
@@ -259,7 +280,7 @@ const BlogPost = () => {
                     >
                       <span>{category}</span>
                       <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">
-                        {blogPosts.filter(p => p.category === category).length}
+                        {adminPosts.filter(p => p.category === category).length}
                       </span>
                     </Link>
                   ))}
@@ -272,19 +293,7 @@ const BlogPost = () => {
                 <p className="mb-4 text-white/90">
                   Recibe los últimos artículos y recursos directamente en tu bandeja de entrada.
                 </p>
-                <form className="space-y-3">
-                  <input
-                    type="email"
-                    placeholder="Tu email"
-                    className="w-full px-4 py-2 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-novativa-orange"
-                  />
-                  <Button
-                    type="submit"
-                    className="w-full bg-novativa-orange hover:bg-novativa-lightOrange text-white"
-                  >
-                    Suscribirme
-                  </Button>
-                </form>
+                <NewsletterForm light />
               </div>
             </div>
           </div>
@@ -310,6 +319,73 @@ const BlogPost = () => {
         </div>
       </section>
     </>
+  );
+};
+
+// Create a reusable component for the newsletter form
+const NewsletterForm = ({ light = false }) => {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) throw new Error('Error al suscribir');
+
+      toast({
+        title: "¡Bienvenido a la comunidad IA!",
+        description: "Pronto recibirás nuestras actualizaciones.",
+      });
+      
+      setEmail('');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No pudimos procesar tu suscripción. Por favor intenta de nuevo.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Tu email"
+        required
+        className={`w-full px-4 py-2 rounded focus:outline-none focus:ring-2 ${
+          light 
+            ? "text-gray-800 focus:ring-novativa-orange" 
+            : "border border-gray-300 focus:ring-novativa-teal focus:border-novativa-teal"
+        }`}
+      />
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className={`w-full ${
+          light 
+            ? "bg-novativa-orange hover:bg-novativa-lightOrange text-white" 
+            : "bg-novativa-teal hover:bg-novativa-lightTeal text-white"
+        }`}
+      >
+        {isSubmitting ? "Enviando..." : "Suscribirme"}
+      </Button>
+    </form>
   );
 };
 

@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,12 +10,140 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowRight, Calendar, User } from 'lucide-react';
+import { ArrowRight, Calendar, Filter, Search, User } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { blogPosts, getCategories } from '@/data/blogPosts';
+import { Input } from "@/components/ui/input";
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationEllipsis, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious 
+} from "@/components/ui/pagination";
+import { NewsletterForm } from '@/components/newsletter/NewsletterForm';
+import { useAdminData } from '@/contexts/AdminDataContext';
 
 const Blog = () => {
-  const categories = getCategories();
+  // Get data from both default data and admin data
+  const { posts: adminPosts, categories: adminCategories } = useAdminData();
+  const allPosts = [...adminPosts, ...blogPosts].filter(
+    (post, index, self) => index === self.findIndex(p => p.id === post.id)
+  );
+  
+  // Categories from admin data
+  const availableCategories = adminCategories.map(cat => cat.name);
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [filteredPosts, setFilteredPosts] = useState(allPosts);
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 9;
+  
+  // Filter posts based on search and category
+  useEffect(() => {
+    let result = allPosts;
+    
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(post => 
+        post.title.toLowerCase().includes(query) || 
+        post.excerpt.toLowerCase().includes(query) || 
+        (post.tags && post.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
+    }
+    
+    if (selectedCategory) {
+      result = result.filter(post => post.category === selectedCategory);
+    }
+    
+    setFilteredPosts(result);
+    // Reset to first page when filters change
+    setCurrentPage(1); 
+  }, [searchQuery, selectedCategory, allPosts]);
+  
+  // Pagination logic
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  
+  // Helper function to render pagination items
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink 
+              onClick={() => setCurrentPage(i)}
+              isActive={currentPage === i}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    } else {
+      // Always show first page
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink 
+            onClick={() => setCurrentPage(1)}
+            isActive={currentPage === 1}
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+      );
+      
+      // Show ellipsis if current page is far from start
+      if (currentPage > 3) {
+        items.push(<PaginationEllipsis key="ellipsis-1" />);
+      }
+      
+      // Pages around current page
+      const startVisible = Math.max(2, currentPage - 1);
+      const endVisible = Math.min(totalPages - 1, currentPage + 1);
+      
+      for (let i = startVisible; i <= endVisible; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink 
+              onClick={() => setCurrentPage(i)}
+              isActive={currentPage === i}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+      
+      // Show ellipsis if current page is far from end
+      if (currentPage < totalPages - 2) {
+        items.push(<PaginationEllipsis key="ellipsis-2" />);
+      }
+      
+      // Always show last page
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink 
+            onClick={() => setCurrentPage(totalPages)}
+            isActive={currentPage === totalPages}
+          >
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+    
+    return items;
+  };
   
   return (
     <>
@@ -37,41 +166,45 @@ const Blog = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             <div className="relative rounded-xl overflow-hidden h-[400px] shadow-lg">
-              <img 
-                src={blogPosts[0].image} 
-                alt={blogPosts[0].title} 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
-                <span className="text-novativa-orange bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-sm inline-block mb-3 font-medium">
-                  {blogPosts[0].category}
-                </span>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                  {blogPosts[0].title}
-                </h2>
-                <p className="text-white/80 mb-4 line-clamp-2">
-                  {blogPosts[0].excerpt}
-                </p>
-                <div className="flex items-center text-white/80 text-sm mb-4">
-                  <User size={14} className="mr-1" />
-                  <span>{blogPosts[0].author}</span>
-                  <span className="mx-2">•</span>
-                  <Calendar size={14} className="mr-1" />
-                  <span>{blogPosts[0].date}</span>
-                </div>
-                <Button
-                  asChild
-                  className="bg-novativa-teal hover:bg-novativa-lightTeal w-fit"
-                >
-                  <Link to={`/blog/${blogPosts[0].id}`}>
-                    Leer artículo
-                  </Link>
-                </Button>
-              </div>
+              {filteredPosts[0] && (
+                <>
+                  <img 
+                    src={filteredPosts[0].image} 
+                    alt={filteredPosts[0].title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
+                    <span className="text-novativa-orange bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-sm inline-block mb-3 font-medium">
+                      {filteredPosts[0].category}
+                    </span>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                      {filteredPosts[0].title}
+                    </h2>
+                    <p className="text-white/80 mb-4 line-clamp-2">
+                      {filteredPosts[0].excerpt}
+                    </p>
+                    <div className="flex items-center text-white/80 text-sm mb-4">
+                      <User size={14} className="mr-1" />
+                      <span>{filteredPosts[0].author}</span>
+                      <span className="mx-2">•</span>
+                      <Calendar size={14} className="mr-1" />
+                      <span>{filteredPosts[0].date}</span>
+                    </div>
+                    <Button
+                      asChild
+                      className="bg-novativa-teal hover:bg-novativa-lightTeal w-fit"
+                    >
+                      <Link to={`/blog/${filteredPosts[0].id}`}>
+                        Leer artículo
+                      </Link>
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {blogPosts.slice(1, 5).map((post) => (
+              {filteredPosts.slice(1, 5).map((post) => (
                 <Card key={post.id} className="overflow-hidden h-full flex flex-col">
                   <div className="h-40 overflow-hidden">
                     <img 
@@ -107,56 +240,127 @@ const Blog = () => {
             </div>
           </div>
           
+          {/* Search and Filter Section */}
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Buscar artículos por título, contenido o palabras clave..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Filter className="text-gray-500 h-4 w-4" />
+                <select
+                  className="border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-novativa-teal"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value="">Todas las categorías</option>
+                  {availableCategories.map((cat, index) => (
+                    <option key={index} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+          
           {/* More Articles Section */}
           <div className="border-t pt-12">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold">Artículos Recientes</h2>
-              <Button 
-                variant="outline" 
-                className="border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10"
-              >
-                Ver todos
-              </Button>
+              <h2 className="text-2xl md:text-3xl font-bold">
+                {searchQuery || selectedCategory 
+                  ? `Resultados (${filteredPosts.length})` 
+                  : "Artículos Recientes"}
+              </h2>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.map((post) => (
-                <Card key={post.id} className="overflow-hidden">
-                  <div className="h-48 overflow-hidden">
-                    <img 
-                      src={post.image} 
-                      alt={post.title} 
-                      className="w-full h-full object-cover transition duration-300 hover:scale-105"
-                    />
+            {filteredPosts.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {currentPosts.map((post) => (
+                    <Card key={post.id} className="overflow-hidden">
+                      <div className="h-48 overflow-hidden">
+                        <img 
+                          src={post.image} 
+                          alt={post.title} 
+                          className="w-full h-full object-cover transition duration-300 hover:scale-105"
+                        />
+                      </div>
+                      <CardHeader>
+                        <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
+                          <span className="text-novativa-orange font-medium">{post.category}</span>
+                          <span>{post.date}</span>
+                        </div>
+                        <CardTitle className="text-xl">{post.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-gray-600 line-clamp-3">{post.excerpt}</p>
+                      </CardContent>
+                      <CardFooter className="flex justify-between items-center">
+                        <div className="flex items-center text-sm text-gray-500">
+                          <User size={14} className="mr-1" />
+                          <span>{post.author}</span>
+                        </div>
+                        <Button
+                          asChild
+                          variant="link"
+                          className="text-novativa-teal flex items-center hover:text-novativa-lightTeal"
+                        >
+                          <Link to={`/blog/${post.id}`}>
+                            Leer más <ArrowRight size={14} className="ml-1" />
+                          </Link>
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+                
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-12">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                        
+                        {renderPaginationItems()}
+                        
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
                   </div>
-                  <CardHeader>
-                    <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
-                      <span className="text-novativa-orange font-medium">{post.category}</span>
-                      <span>{post.date}</span>
-                    </div>
-                    <CardTitle className="text-xl">{post.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 line-clamp-3">{post.excerpt}</p>
-                  </CardContent>
-                  <CardFooter className="flex justify-between items-center">
-                    <div className="flex items-center text-sm text-gray-500">
-                      <User size={14} className="mr-1" />
-                      <span>{post.author}</span>
-                    </div>
-                    <Button
-                      asChild
-                      variant="link"
-                      className="text-novativa-teal flex items-center hover:text-novativa-lightTeal"
-                    >
-                      <Link to={`/blog/${post.id}`}>
-                        Leer más <ArrowRight size={14} className="ml-1" />
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-xl text-gray-600">No se encontraron artículos que coincidan con tu búsqueda.</p>
+                <Button 
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedCategory('');
+                  }}
+                  className="mt-4 bg-novativa-teal hover:bg-novativa-lightTeal"
+                >
+                  Ver todos los artículos
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -168,16 +372,18 @@ const Blog = () => {
             <div className="lg:col-span-2">
               <h2 className="text-2xl font-bold mb-6">Categorías</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {categories.map((category, index) => (
+                {availableCategories.map((category, index) => (
                   <Button
                     key={index}
-                    asChild
-                    variant="outline"
-                    className="border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10 justify-start"
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    className={`border-novativa-teal justify-start ${
+                      selectedCategory === category 
+                        ? "bg-novativa-teal text-white" 
+                        : "text-novativa-teal hover:bg-novativa-teal/10"
+                    }`}
+                    onClick={() => setSelectedCategory(category === selectedCategory ? '' : category)}
                   >
-                    <Link to={`/blog/categoria/${category.toLowerCase().replace(/\s+/g, '-')}`}>
-                      {category}
-                    </Link>
+                    {category}
                   </Button>
                 ))}
               </div>
@@ -188,31 +394,7 @@ const Blog = () => {
               <p className="text-gray-600 mb-6">
                 Recibe las últimas noticias, artículos y recursos sobre IA y automatización directamente en tu bandeja de entrada.
               </p>
-              <form className="space-y-4">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Nombre"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-novativa-teal focus:border-novativa-teal"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-novativa-teal focus:border-novativa-teal"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-novativa-orange hover:bg-novativa-lightOrange"
-                >
-                  Suscribirse
-                </Button>
-                <p className="text-xs text-gray-500">
-                  Al suscribirte, aceptas nuestra política de privacidad. No compartiremos tu información con terceros.
-                </p>
-              </form>
+              <NewsletterForm />
             </div>
           </div>
         </div>
