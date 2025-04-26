@@ -15,7 +15,7 @@ interface SendFoxResponse {
  */
 export const addSubscriberToSendFox = async (email: string): Promise<SendFoxResponse> => {
   try {
-    const response = await fetch('/.netlify/functions/subscribe', {
+    const response = await fetch('/functions/subscribe', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
