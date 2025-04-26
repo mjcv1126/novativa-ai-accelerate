@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
@@ -12,18 +13,21 @@ const Contact = () => {
     // Apply anti-cache headers
     setAntiCacheHeaders();
     
-    // Load Tidycal script with cache busting
+    // Improved TidyCal script loading with cache busting
     const loadTidycalScript = () => {
+      // First remove any existing script to prevent duplicates
       const existingScript = document.querySelector('script[src*="asset-tidycal.b-cdn.net/js/embed.js"]');
       if (existingScript) {
         existingScript.remove();
       }
       
+      // Create and load a new script with cache busting
       const script = document.createElement('script');
       script.src = `https://asset-tidycal.b-cdn.net/js/embed.js?v=${new Date().getTime()}`;
       script.async = true;
       script.onload = () => {
         console.log('TidyCal script loaded successfully');
+        // Force reinitialize if needed
         if (window.TidyCal && typeof window.TidyCal.init === 'function') {
           window.TidyCal.init();
         }
@@ -36,6 +40,7 @@ const Contact = () => {
       document.body.appendChild(script);
     };
     
+    // Small timeout to ensure DOM is fully rendered
     setTimeout(loadTidycalScript, 300);
     
     return () => {
