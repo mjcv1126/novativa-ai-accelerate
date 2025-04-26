@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { toast } from '@/components/ui/sonner';
 
 interface NewsletterFormProps {
   light?: boolean;
@@ -15,15 +16,25 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({ light = false })
       script.src = "https://cdn.sendfox.com/js/form.js";
       script.charset = "utf-8";
       document.body.appendChild(script);
-      
-      return () => {
-        // Clean up only if this component added the script
-        const scriptToRemove = document.querySelector('script[src="https://cdn.sendfox.com/js/form.js"]');
-        if (scriptToRemove) {
-          document.body.removeChild(scriptToRemove);
-        }
-      };
     }
+
+    // Override form submission to show success message
+    const handleFormSubmit = (e: Event) => {
+      const form = e.target as HTMLFormElement;
+      if (form && form.classList.contains('sendfox-form')) {
+        // Don't intercept the original submission
+        // Just add our toast notification
+        setTimeout(() => {
+          toast.success("¡Bienvenido a Novativa!");
+        }, 1000);
+      }
+    };
+
+    document.addEventListener('submit', handleFormSubmit);
+    
+    return () => {
+      document.removeEventListener('submit', handleFormSubmit);
+    };
   }, []);
 
   return (

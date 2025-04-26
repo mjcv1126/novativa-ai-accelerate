@@ -12,9 +12,13 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
   // Function to handle navigation with refresh for specific routes
   const handleNavigation = (path: string) => {
     onClose();
-    if (path === '/contacto' || path === '/agenda') {
+    if (path === '/contacto') {
       // For these routes, force a page refresh
       window.location.href = path;
+    } else if (path === '/agenda') {
+      // Redirect to TidyCal
+      window.location.href = 'https://tidycal.com/novativa/demo-gratis';
+      return;
     }
   };
 
@@ -55,7 +59,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
               Generación de Contenido
             </Link>
             <Link 
-              to="/servicios/desarrollo" 
+              to="/servicios/desarrollo-ia" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
@@ -80,17 +84,15 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
         <a 
           href="/contacto" 
           className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
-          onClick={onClose}
+          onClick={() => handleNavigation('/contacto')}
         >
           Contacto
         </a>
         <Button
-          asChild
           className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity"
+          onClick={() => handleNavigation('/agenda')}
         >
-          <a href="/agenda">
-            Agenda una demo
-          </a>
+          Agenda una demo
         </Button>
       </div>
     </div>

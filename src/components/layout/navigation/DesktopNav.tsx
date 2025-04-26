@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
@@ -19,7 +20,7 @@ const DesktopNav = () => {
               <ul className="grid w-[400px] gap-3 p-4">
                 <li className="row-span-3">
                   <NavigationMenuLink asChild>
-                    <Link to="/servicios/novachannel" className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-[#bc3e06] to-novativa-orange p-6 no-underline outline-none focus:shadow-md">
+                    <Link to="/novachannel" className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-[#bc3e06] to-novativa-orange p-6 no-underline outline-none focus:shadow-md">
                       <div className="mb-2 mt-4 text-lg font-medium text-white">
                         NovaChannel
                       </div>
@@ -41,7 +42,7 @@ const DesktopNav = () => {
                 </li>
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link to="/servicios/generacion-contenido" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                    <Link to="/servicios/contenido" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                       <div className="text-sm font-medium">Generación de Contenido</div>
                       <p className="text-sm leading-snug text-muted-foreground">
                         Creación automática de contenido con IA

@@ -14,8 +14,8 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
-  // Determine if we're on the contact or agenda page
-  const isSpecialPage = location.pathname === '/contacto' || location.pathname === '/agenda';
+  // Determine if we're on the contact page
+  const isSpecialPage = location.pathname === '/contacto';
 
   return (
     <div className="flex flex-col min-h-screen w-full">

@@ -21,7 +21,6 @@ import AdminLogin from '@/pages/admin/AdminLogin';
 import ScrollToTop from '@/components/layout/ScrollToTop';
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 import NovaChannel from '@/pages/NovaChannel';
-import Schedule from '@/pages/Schedule';
 import AdminScripts from '@/pages/admin/AdminScripts';
 import AdminCustomCSS from '@/pages/admin/AdminCustomCSS';
 import './App.css';
@@ -52,7 +51,9 @@ function App() {
         <Route path="/blog/tag/:tag" element={<PageWrapper id="page-id-blog-tag"><Layout><BlogTag /></Layout></PageWrapper>} />
         <Route path="/blog/categoria/:category" element={<PageWrapper id="page-id-blog-category"><Layout><BlogCategory /></Layout></PageWrapper>} />
         <Route path="/novachannel" element={<PageWrapper id="page-id-novachannel"><Layout><NovaChannel /></Layout></PageWrapper>} />
-        <Route path="/agenda" element={<PageWrapper id="page-id-schedule"><Layout><Schedule /></Layout></PageWrapper>} />
+        
+        {/* Redirect /agenda to TidyCal */}
+        <Route path="/agenda" element={<Navigate to="https://tidycal.com/novativa/demo-gratis" replace />} />
         
         {/* Admin Routes */}
         <Route path="/admin/login" element={<PageWrapper id="page-id-admin-login"><AdminLogin /></PageWrapper>} />

@@ -12,7 +12,9 @@ const CTA = () => {
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <a
-              href="/agenda"
+              href="https://tidycal.com/novativa/demo-gratis"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-novativa-orange hover:bg-novativa-lightOrange px-6 py-6 rounded-md text-white font-medium transition-colors text-lg"
             >
               Solicita una demostración gratuita
