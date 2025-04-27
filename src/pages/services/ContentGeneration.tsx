@@ -1,12 +1,9 @@
-
 import React from 'react';
 import { Video, BrainCircuit, Mic, Share2, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-
 const ContentGeneration = () => {
-  return (
-    <>
+  return <>
       <section className="pt-32 pb-16 bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -17,14 +14,7 @@ const ContentGeneration = () => {
               Crea flujos autónomos de contenido con tu clon digital y IA avanzada
             </p>
             <div className="relative max-w-4xl mx-auto">
-              <video 
-                autoPlay 
-                loop 
-                muted 
-                playsInline
-                className="rounded-xl shadow-2xl w-full"
-                poster="https://cdn-site-assets.veed.io/cdn-cgi/image/width=1536,quality=75,format=auto/AI_Avatar_6a9e429709/AI_Avatar_6a9e429709.png"
-              >
+              <video autoPlay loop muted playsInline className="rounded-xl shadow-2xl w-full" poster="https://cdn-site-assets.veed.io/cdn-cgi/image/width=1536,quality=75,format=auto/AI_Avatar_6a9e429709/AI_Avatar_6a9e429709.png">
                 <source src="https://cdn.heygen.ai/video/homepage/avatar_4.mp4" type="video/mp4" />
               </video>
             </div>
@@ -40,11 +30,7 @@ const ContentGeneration = () => {
                 <div className="bg-indigo-600 p-3 rounded-xl">
                   <Bot className="h-6 w-6 text-white" />
                 </div>
-                <img 
-                  src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWc2Z2ZoNzhia2l3YnlnemM4ZGwwYnJpNmF6Y3NhcTlrdnZpY2VwbiZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/YRzrFxhzHynD2/giphy.gif"
-                  alt="AI Avatar Creation"
-                  className="w-12 h-12 rounded-xl object-cover"
-                />
+                <img alt="AI Avatar Creation" className="w-12 h-12 rounded-xl object-cover" src="https://school.mangoanimate.com/wp-content/uploads/2024/08/AI-talking-avatar.gif" />
               </div>
               <h3 className="text-xl font-bold mb-3">Avatar Inteligente</h3>
               <p className="text-gray-600">
@@ -57,11 +43,7 @@ const ContentGeneration = () => {
                 <div className="bg-indigo-600 p-3 rounded-xl">
                   <Mic className="h-6 w-6 text-white" />
                 </div>
-                <img 
-                  src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExem1heG0wMzMzNXQybDUybnU0anVyajJmdjVxNzk5b3Eyc2ZocTZ4biZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/QVTHI5cVUDNzkbCxGc/giphy.gif"
-                  alt="Voice Cloning"
-                  className="w-12 h-12 rounded-xl object-cover"
-                />
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExem1heG0wMzMzNXQybDUybnU0anVyajJmdjVxNzk5b3Eyc2ZocTZ4biZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/QVTHI5cVUDNzkbCxGc/giphy.gif" alt="Voice Cloning" className="w-12 h-12 rounded-xl object-cover" />
               </div>
               <h3 className="text-xl font-bold mb-3">Clonación de Voz</h3>
               <p className="text-gray-600">
@@ -74,11 +56,7 @@ const ContentGeneration = () => {
                 <div className="bg-indigo-600 p-3 rounded-xl">
                   <BrainCircuit className="h-6 w-6 text-white" />
                 </div>
-                <img 
-                  src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWkxbWttcWpjbW5qMjhldGE0NmVhcHU5eHE0ZGU3c2Zram5keWpkZSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/l4FGrYKtP0pBGpBGo/giphy.gif"
-                  alt="Autonomous Creation"
-                  className="w-12 h-12 rounded-xl object-cover"
-                />
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWkxbWttcWpjbW5qMjhldGE0NmVhcHU5eHE0ZGU3c2Zram5keWpkZSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/l4FGrYKtP0pBGpBGo/giphy.gif" alt="Autonomous Creation" className="w-12 h-12 rounded-xl object-cover" />
               </div>
               <h3 className="text-xl font-bold mb-3">Flujos Autónomos</h3>
               <p className="text-gray-600">
@@ -124,36 +102,14 @@ const ContentGeneration = () => {
                 </div>
               </div>
               <div className="relative">
-                <img 
-                  src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExemVyb3JhYzB2cDN0dmo3ZDY0OG5oZGJ5YzhqNXk4OTlsb2V2NTM2dyZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/NKEt9elQ5cR68/giphy.gif"
-                  alt="AI Automation Flow" 
-                  className="rounded-xl shadow-lg w-full"
-                />
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExemVyb3JhYzB2cDN0dmo3ZDY0OG5oZGJ5YzhqNXk4OTlsb2V2NTM2dyZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/NKEt9elQ5cR68/giphy.gif" alt="AI Automation Flow" className="rounded-xl shadow-lg w-full" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">¿Listo para automatizar tu creación de contenido?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Descubre cómo la IA puede revolucionar tu estrategia de contenido con flujos autónomos personalizados
-          </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-white text-indigo-600 hover:bg-gray-100"
-          >
-            <a href="https://tidycal.com/novativa/demo-gratis" target="_blank" rel="noopener noreferrer">
-              Agenda una demostración gratuita
-            </a>
-          </Button>
-        </div>
-      </section>
-    </>
-  );
+      
+    </>;
 };
-
 export default ContentGeneration;
