@@ -27,6 +27,7 @@ import AdminCustomCSS from '@/pages/admin/AdminCustomCSS';
 import Welcome from '@/pages/Welcome';
 import ScheduleConfirmation from '@/pages/ScheduleConfirmation';
 import IACoding from '@/pages/IACoding';
+import KnowledgeBase from '@/pages/KnowledgeBase';
 import './App.css';
 
 const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => (
@@ -82,6 +83,12 @@ function App() {
         <Route path="/iacoding" element={
           <PageWrapper id="page-id-iacoding">
             <IACoding />
+          </PageWrapper>
+        } />
+        
+        <Route path="/knowledge" element={
+          <PageWrapper id="page-id-knowledge">
+            <Layout><KnowledgeBase /></Layout>
           </PageWrapper>
         } />
         
