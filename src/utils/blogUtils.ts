@@ -1,5 +1,6 @@
 
 import { setAntiCacheHeaders } from "./antiCacheHeaders";
+import { blogPosts } from "@/data/blogPostsData";
 
 /**
  * Apply anti-cache measures specifically for blog pages
@@ -31,19 +32,25 @@ export const setupBlogPage = () => {
 
 /**
  * Check if a blog post exists in the available data
+ * @param idOrSlug - Post ID or slug string
  */
-export const postExists = (slug: string): boolean => {
-  // Import blogPosts directly to ensure we get the latest data
-  const { blogPosts } = require('../data/blogPostsData');
-  return blogPosts.some(post => post.slug === slug);
+export const postExists = (idOrSlug: string): boolean => {
+  // Check if it's a numeric ID
+  const id = Number(idOrSlug);
+  if (!isNaN(id)) {
+    return blogPosts.some(post => post.id === id);
+  }
+  
+  // If not numeric, treat as slug (although our current implementation uses IDs)
+  return false;
 };
 
 /**
  * Get the correct URL for a blog post
  */
-export const getBlogPostUrl = (slug: string): string => {
-  if (postExists(slug)) {
-    return `/blog/${slug}`;
+export const getBlogPostUrl = (id: number): string => {
+  if (postExists(id.toString())) {
+    return `/blog/${id}`;
   }
   // Fallback to blog index if post doesn't exist
   return '/blog';

@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { blogPosts } from '@/data/blogPostsData';
+import { blogPosts, getCategories } from '@/data/blogPosts';
 import { setupBlogPage, postExists } from '@/utils/blogUtils';
 import BlogHeader from '@/components/blog/BlogHeader';
 import CommentsSection from '@/components/blog/CommentsSection';
@@ -12,6 +13,12 @@ const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  
+  // Get all available categories
+  const availableCategories = getCategories();
+  
   useEffect(() => {
     // Apply anti-cache measures
     setupBlogPage();
@@ -22,8 +29,9 @@ const BlogPost = () => {
     }
   }, [slug, navigate]);
 
-  // Find the post data
-  const post = blogPosts.find(post => post.slug === slug);
+  // Find the post data - blogPosts uses id, not slug
+  const postId = Number(slug);
+  const post = blogPosts.find(post => post.id === postId);
   
   // Handle loading or not found state
   if (!post) {
@@ -34,7 +42,13 @@ const BlogPost = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pt-20 pb-12">
-      <BlogHeader />
+      <BlogHeader 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        availableCategories={availableCategories}
+      />
       <div className="container mx-auto px-4 mt-10">
         <article className="mb-16">
           <header className="mb-8">
@@ -45,8 +59,12 @@ const BlogPost = () => {
               <span>{post.author}</span>
             </div>
           </header>
-          <img src={post.imageUrl} alt={post.title} className="w-full rounded-lg shadow-md mb-8" />
-          <div className="prose prose-lg max-w-none text-gray-800" dangerouslySetInnerHTML={{ __html: post.content }} />
+          <img src={post.image} alt={post.title} className="w-full rounded-lg shadow-md mb-8" />
+          <div className="prose prose-lg max-w-none text-gray-800">
+            {/* Render excerpt since we don't have content field */}
+            <p>{post.excerpt}</p>
+            <p>Este es un artículo de demostración sobre {post.category}.</p>
+          </div>
         </article>
 
         <section className="mb-16">
