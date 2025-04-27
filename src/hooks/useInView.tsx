@@ -1,8 +1,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-export const useInView = (options = { threshold: 0.1 }) => {
-  const ref = useRef<HTMLElement>(null);
+// Update the type to be generic, with HTMLDivElement as the default type
+export const useInView = <T extends HTMLElement = HTMLDivElement>(options = { threshold: 0.1 }) => {
+  const ref = useRef<T>(null);
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
