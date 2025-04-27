@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import BlogHeader from '@/components/blog/BlogHeader';
 import BlogGrid from '@/components/blog/BlogGrid';
 import BlogSidebar from '@/components/blog/BlogSidebar';
-import { setupBlogPage } from '@/utils/blogUtils';
-import { blogPosts, getCategories } from '@/data/blogPosts';
+import { setupBlogPage, getAllPosts } from '@/utils/blogUtils';
+import { getCategories } from '@/data/blogPosts';
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,6 +12,9 @@ const Blog = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 9;
   const [sidebarSearchResults, setSidebarSearchResults] = useState([]);
+  
+  // Use getAllPosts to get all blog posts including admin posts
+  const blogPosts = getAllPosts();
 
   // Filter posts based on search and category
   const filteredPosts = blogPosts.filter(post => {

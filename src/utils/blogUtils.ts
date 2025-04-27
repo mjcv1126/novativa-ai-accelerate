@@ -1,6 +1,7 @@
 
 import { setAntiCacheHeaders } from "./antiCacheHeaders";
 import { blogPosts } from "@/data/blogPostsData";
+import { useAdminData } from "@/contexts/AdminDataContext";
 
 /**
  * Apply anti-cache measures specifically for blog pages
@@ -31,18 +32,57 @@ export const setupBlogPage = () => {
 };
 
 /**
+ * Get all available posts, combining blog posts data with admin posts
+ */
+export const getAllPosts = () => {
+  try {
+    // Try to access admin data context if available
+    const adminContext = require('@/contexts/AdminDataContext');
+    if (adminContext && adminContext.useAdminData) {
+      const { posts } = adminContext.useAdminData();
+      if (posts && Array.isArray(posts)) {
+        // Merge blog posts and admin posts, avoiding duplicates by ID
+        const allIds = new Set([...blogPosts.map(post => post.id), ...posts.map(post => post.id)]);
+        const allPosts = [];
+        
+        allIds.forEach(id => {
+          const adminPost = posts.find(post => post.id === id);
+          const blogPost = blogPosts.find(post => post.id === id);
+          // Prefer admin post if it exists
+          if (adminPost && adminPost.status === 'Publicado') {
+            allPosts.push(adminPost);
+          } else if (blogPost) {
+            allPosts.push(blogPost);
+          }
+        });
+        
+        return allPosts;
+      }
+    }
+  } catch (error) {
+    console.log('Admin context not available:', error);
+  }
+  
+  // Fallback to regular blogPosts
+  return blogPosts;
+};
+
+/**
  * Check if a blog post exists in the available data
  * @param idOrSlug - Post ID or slug string
  */
 export const postExists = (idOrSlug: string): boolean => {
+  // Get all available posts
+  const allPosts = getAllPosts();
+  
   // Check if it's a numeric ID
   const id = Number(idOrSlug);
   if (!isNaN(id)) {
-    return blogPosts.some(post => post.id === id);
+    return allPosts.some(post => post.id === id);
   }
   
   // If not numeric, try to find by post title (as a basic slug)
-  return blogPosts.some(post => 
+  return allPosts.some(post => 
     post.title.toLowerCase().replace(/\s+/g, '-') === idOrSlug.toLowerCase()
   );
 };
@@ -51,7 +91,9 @@ export const postExists = (idOrSlug: string): boolean => {
  * Get the correct URL for a blog post
  */
 export const getBlogPostUrl = (id: number): string => {
-  const post = blogPosts.find(post => post.id === id);
+  const allPosts = getAllPosts();
+  const post = allPosts.find(post => post.id === id);
+  
   if (post) {
     return `/blog/${id}`;
   }
@@ -64,7 +106,8 @@ export const getBlogPostUrl = (id: number): string => {
  * @param id - Post ID
  */
 export const getPostById = (id: number) => {
-  return blogPosts.find(post => post.id === id);
+  const allPosts = getAllPosts();
+  return allPosts.find(post => post.id === id);
 };
 
 /**

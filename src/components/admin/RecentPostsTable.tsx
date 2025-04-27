@@ -21,7 +21,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { useAdminData } from '@/contexts/AdminDataContext';
-import { getBlogPostUrl, postExists, getPostById } from '@/utils/blogUtils';
+import { postExists } from '@/utils/blogUtils';
 
 const RecentPostsTable = () => {
   const { posts } = useAdminData();
@@ -46,8 +46,8 @@ const RecentPostsTable = () => {
         </TableHeader>
         <TableBody>
           {recentPosts.map((post) => {
-            // Check if the post exists in the actual blog data
-            const postExistsInBlog = postExists(post.id.toString());
+            // Check if the post exists in the actual blog data or is a published admin post
+            const postExistsInBlog = post.status === 'Publicado' || postExists(post.id.toString());
             
             return (
               <TableRow key={post.id}>

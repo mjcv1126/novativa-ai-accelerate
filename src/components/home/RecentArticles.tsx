@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { blogPosts } from "@/data/blogPosts";
 import { Calendar } from "lucide-react";
+import { getAllPosts } from "@/utils/blogUtils";
 
 const RecentArticles = () => {
+  // Get all posts including admin posts
+  const allPosts = getAllPosts();
+  
   // Get the 6 most recent posts
-  const recentPosts = blogPosts
+  const recentPosts = allPosts
     .sort((a, b) => new Date(b.date.split('/').reverse().join('-')).getTime() - 
                     new Date(a.date.split('/').reverse().join('-')).getTime())
     .slice(0, 6);

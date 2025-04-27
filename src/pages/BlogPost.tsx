@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { blogPosts, getCategories, getSimilarPosts } from '@/data/blogPosts';
+import { getSimilarPosts } from '@/data/blogPosts';
 import { setupBlogPage, postExists, formatBlogDate, getPostById } from '@/utils/blogUtils';
 import BlogHeader from '@/components/blog/BlogHeader';
 import CommentsSection from '@/components/blog/CommentsSection';
@@ -18,7 +18,7 @@ const BlogPost = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   
   // Get all available categories
-  const availableCategories = getCategories();
+  const availableCategories = [];
   
   useEffect(() => {
     // Apply anti-cache measures
