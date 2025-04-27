@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/layout/Layout';
 
@@ -6,7 +5,6 @@ const RefundPolicy = () => {
   return (
     <div className="py-16 bg-white">
       <div className="container mx-auto px-4 max-w-4xl">
-        <br>.</br>
         <h1 className="text-3xl font-bold mb-8">Política de Reembolsos de Novativa</h1>
         <p className="text-gray-600 mb-6">Fecha de última actualización: 27 de abril de 2025</p>
         <p className="mb-8">Esta Política de Reembolsos forma parte integral de los Términos y Condiciones de Servicio de ADN Emprendedor LLC, operando comercialmente como Novativa ("Novativa", "nosotros", "nuestro").</p>

@@ -55,39 +55,29 @@ export const getAllPosts = () => {
 };
 
 /**
- * Check if a blog post exists in the available data
- * @param idOrSlug - Post ID or slug string
+ * Check if a post exists
+ * @param id - Post ID
  */
-export const postExists = (idOrSlug: string): boolean => {
-  // Get all available posts
+export const postExists = (id: number | string): boolean => {
   const allPosts = getAllPosts();
-  
-  // Check if it's a numeric ID
-  const id = Number(idOrSlug);
-  if (!isNaN(id)) {
-    const exists = allPosts.some(post => post.id === id);
-    console.log(`Checking if post ${id} exists:`, exists);
-    return exists;
-  }
-  
-  // If not numeric, try to find by post title (as a basic slug)
-  const exists = allPosts.some(post => 
-    post.title.toLowerCase().replace(/\s+/g, '-') === idOrSlug.toLowerCase()
-  );
-  console.log(`Checking if post with slug ${idOrSlug} exists:`, exists);
-  return exists;
+  const postId = typeof id === 'string' ? Number(id) : id;
+  return !isNaN(postId) && allPosts.some(post => post.id === postId);
 };
 
 /**
  * Get the correct URL for a blog post
  */
-export const getBlogPostUrl = (id: number): string => {
+export const getBlogPostUrl = (id: number | string): string => {
   const allPosts = getAllPosts();
-  const post = allPosts.find(post => post.id === id);
+  const postId = typeof id === 'string' ? Number(id) : id;
   
-  if (post) {
-    return `/blog/${id}`;
+  if (!isNaN(postId)) {
+    const post = allPosts.find(post => post.id === postId);
+    if (post) {
+      return `/blog/${post.id}`;
+    }
   }
+  
   // Fallback to blog index if post doesn't exist
   return '/blog';
 };
