@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
@@ -52,7 +51,10 @@ const DesktopNav = () => {
                 </li>
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link to="/servicios/desarrollo-ia" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                    <Link 
+                      to="/iacoding" 
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground"
+                    >
                       <div className="text-sm font-medium">Desarrollo IA</div>
                       <p className="text-sm leading-snug text-muted-foreground">
                         Soluciones personalizadas con IA

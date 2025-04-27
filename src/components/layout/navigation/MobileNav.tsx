@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -59,7 +58,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
               Generación de Contenido
             </Link>
             <Link 
-              to="/servicios/desarrollo-ia" 
+              to="/iacoding" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >

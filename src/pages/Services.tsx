@@ -358,7 +358,7 @@ const Services = () => {
               </li>
             </ul>
             <ScheduleDialog className="bg-novativa-teal hover:bg-novativa-lightTeal">
-              Solicitar información
+              <Link to="/iacoding">Solicitar información</Link>
             </ScheduleDialog>
           </div>
           
@@ -399,7 +399,7 @@ const Services = () => {
     {/* CTA Section */}
     <section className="py-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal text-white">
       <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl font-bold mb-6">��Listo para impulsar tu negocio con IA?</h2>
+        <h2 className="text-3xl font-bold mb-6">¿Listo para impulsar tu negocio con IA?</h2>
         <p className="text-xl mb-8 max-w-2xl mx-auto">
           Agenda una demostración y descubre cómo nuestras soluciones pueden transformar tu empresa.
         </p>
