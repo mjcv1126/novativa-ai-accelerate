@@ -1,4 +1,3 @@
-
 import { setAntiCacheHeaders } from "./antiCacheHeaders";
 import { blogPosts } from "@/data/blogPostsData";
 import { useAdminData } from "@/contexts/AdminDataContext";
@@ -78,13 +77,17 @@ export const postExists = (idOrSlug: string): boolean => {
   // Check if it's a numeric ID
   const id = Number(idOrSlug);
   if (!isNaN(id)) {
-    return allPosts.some(post => post.id === id);
+    const exists = allPosts.some(post => post.id === id);
+    console.log(`Checking if post ${id} exists:`, exists);
+    return exists;
   }
   
   // If not numeric, try to find by post title (as a basic slug)
-  return allPosts.some(post => 
+  const exists = allPosts.some(post => 
     post.title.toLowerCase().replace(/\s+/g, '-') === idOrSlug.toLowerCase()
   );
+  console.log(`Checking if post with slug ${idOrSlug} exists:`, exists);
+  return exists;
 };
 
 /**

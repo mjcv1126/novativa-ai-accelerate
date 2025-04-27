@@ -1,11 +1,9 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSimilarPosts } from '@/data/blogPosts';
 import { setupBlogPage, postExists, formatBlogDate, getPostById } from '@/utils/blogUtils';
 import BlogHeader from '@/components/blog/BlogHeader';
 import CommentsSection from '@/components/blog/CommentsSection';
-import Newsletter from '@/components/blog/Newsletter';
 import SimilarPosts from '@/components/blog/SimilarPosts';
 import { Badge } from '@/components/ui/badge';
 import { User, Calendar, Tag } from 'lucide-react';
@@ -28,6 +26,7 @@ const BlogPost = () => {
     if (slug && !postExists(slug)) {
       console.log(`Post with ID ${slug} not found, redirecting to blog`);
       navigate('/blog', { replace: true });
+      return;
     }
   }, [slug, navigate]);
 
@@ -127,14 +126,6 @@ const BlogPost = () => {
             Comentarios
           </h2>
           <CommentsSection />
-        </section>
-
-        <section className="mb-16 bg-white shadow-sm rounded-lg p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <span className="bg-novativa-teal h-5 w-1 mr-3 rounded-full inline-block"></span>
-            Subscríbete al Newsletter
-          </h2>
-          <Newsletter />
         </section>
       </div>
     </div>
