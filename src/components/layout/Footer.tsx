@@ -136,8 +136,8 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} Novativa. Todos los derechos reservados.
             </p>
             <div className="flex space-x-6">
-              <Link to="/politica-privacidad" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
-                Política de Privacidad
+              <Link to="/politica-reembolso" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
+                Política de Reembolso
               </Link>
               <Link to="/terminos-servicio" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
                 Términos de Servicio
