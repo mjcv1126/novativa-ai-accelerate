@@ -56,7 +56,7 @@ const ContentGeneration = () => {
                 <div className="bg-indigo-600 p-3 rounded-xl">
                   <BrainCircuit className="h-6 w-6 text-white" />
                 </div>
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWkxbWttcWpjbW5qMjhldGE0NmVhcHU5eHE0ZGU3c2Zram5keWpkZSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/l4FGrYKtP0pBGpBGo/giphy.gif" alt="Autonomous Creation" className="w-12 h-12 rounded-xl object-cover" />
+                <img alt="Autonomous Creation" className="w-12 h-12 rounded-xl object-cover" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F690739661570884013%2F&psig=AOvVaw3MWMR0d2ya6byALQe_3ik7&ust=1745810273025000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCNCkz52g94wDFQAAAAAdAAAAABAE" />
               </div>
               <h3 className="text-xl font-bold mb-3">Flujos Autónomos</h3>
               <p className="text-gray-600">
