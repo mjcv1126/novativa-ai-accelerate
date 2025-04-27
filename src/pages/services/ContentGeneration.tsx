@@ -43,7 +43,7 @@ const ContentGeneration = () => {
                 <div className="bg-indigo-600 p-3 rounded-xl">
                   <Mic className="h-6 w-6 text-white" />
                 </div>
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExem1heG0wMzMzNXQybDUybnU0anVyajJmdjVxNzk5b3Eyc2ZocTZ4biZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/QVTHI5cVUDNzkbCxGc/giphy.gif" alt="Voice Cloning" className="w-12 h-12 rounded-xl object-cover" />
+                <img alt="Voice Cloning" className="w-12 h-12 rounded-xl object-cover" src="https://i.pinimg.com/originals/19/e4/21/19e421ce92a12f4bfdc1171abb28486c.gif" />
               </div>
               <h3 className="text-xl font-bold mb-3">Clonación de Voz</h3>
               <p className="text-gray-600">
