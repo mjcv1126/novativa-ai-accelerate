@@ -44,7 +44,7 @@ function App() {
         <Route path="/servicios" element={<PageWrapper id="page-id-services"><Layout><Services /></Layout></PageWrapper>} />
         <Route path="/servicios/agentes-ia" element={<PageWrapper id="page-id-ai-agents"><Layout><AIAgents /></Layout></PageWrapper>} />
         <Route path="/servicios/contenido" element={<PageWrapper id="page-id-content"><Layout><ContentGeneration /></Layout></PageWrapper>} />
-        <Route path="/servicios/desarrollo" element={<PageWrapper id="page-id-development"><Layout><IADevelopment /></Layout></PageWrapper>} />
+        <Route path="/servicios/desarrollo" element={<Navigate to="/iacoding" replace />} />
         <Route path="/servicios/desarrollo-ia" element={<Navigate to="/servicios/desarrollo" replace />} />
         <Route path="/servicios/apps" element={<PageWrapper id="page-id-mobile-apps"><Layout><MobileAppDevelopment /></Layout></PageWrapper>} />
         <Route path="/servicios/novachannel" element={<Navigate to="/novachannel" replace />} />
