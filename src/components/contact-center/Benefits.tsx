@@ -1,20 +1,32 @@
 
 import React from 'react';
 import { Shield, BarChart, Clock } from 'lucide-react';
+import { useInView } from '@/hooks/useInView';
 
-const BenefitCard = ({ icon: Icon, title, description }: {
+const BenefitCard = ({ icon: Icon, title, description, delay }: {
   icon: React.ElementType;
   title: string;
   description: string;
-}) => (
-  <div className="text-center">
-    <div className="w-16 h-16 mx-auto mb-4 bg-[#1A1F2C]/10 rounded-full flex items-center justify-center">
-      <Icon className="text-[#1A1F2C]" size={32} />
+  delay: string;
+}) => {
+  const { ref, isInView } = useInView();
+  
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: delay }}
+      className={`text-center transition-all duration-700 transform ${
+        isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+      }`}
+    >
+      <div className="w-16 h-16 mx-auto mb-4 bg-[#1A1F2C]/10 rounded-full flex items-center justify-center">
+        <Icon className="text-[#1A1F2C]" size={32} />
+      </div>
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
     </div>
-    <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p className="text-gray-600">{description}</p>
-  </div>
-);
+  );
+};
 
 const Benefits = () => {
   const benefits = [
@@ -41,7 +53,11 @@ const Benefits = () => {
         <h2 className="text-3xl font-bold mb-12 text-center">Beneficios de Nuestro Contact Center</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
-            <BenefitCard key={index} {...benefit} />
+            <BenefitCard 
+              key={index} 
+              {...benefit} 
+              delay={`${index * 200}ms`}
+            />
           ))}
         </div>
       </div>
@@ -50,4 +66,3 @@ const Benefits = () => {
 };
 
 export default Benefits;
-
