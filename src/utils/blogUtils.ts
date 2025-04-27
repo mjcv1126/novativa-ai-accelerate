@@ -1,5 +1,5 @@
 import { setAntiCacheHeaders } from "./antiCacheHeaders";
-import { blogPosts } from "@/data/blogPostsData";
+import { blogPosts } from "@/data/blog/posts/data";
 import { useAdminData } from "@/contexts/AdminDataContext";
 
 /**
@@ -34,36 +34,24 @@ export const setupBlogPage = () => {
  * Get all available posts, combining blog posts data with admin posts
  */
 export const getAllPosts = () => {
+  const allPosts = [...blogPosts];
+  
   try {
-    // Try to access admin data context if available
-    const adminContext = require('@/contexts/AdminDataContext');
-    if (adminContext && adminContext.useAdminData) {
-      const { posts } = adminContext.useAdminData();
-      if (posts && Array.isArray(posts)) {
-        // Merge blog posts and admin posts, avoiding duplicates by ID
-        const allIds = new Set([...blogPosts.map(post => post.id), ...posts.map(post => post.id)]);
-        const allPosts = [];
-        
-        allIds.forEach(id => {
-          const adminPost = posts.find(post => post.id === id);
-          const blogPost = blogPosts.find(post => post.id === id);
-          // Prefer admin post if it exists
-          if (adminPost && adminPost.status === 'Publicado') {
-            allPosts.push(adminPost);
-          } else if (blogPost) {
-            allPosts.push(blogPost);
-          }
-        });
-        
-        return allPosts;
-      }
+    // Get admin context using hook if available
+    const adminData = useAdminData();
+    if (adminData && adminData.posts) {
+      // Only add admin posts that aren't in blogPosts
+      adminData.posts.forEach(adminPost => {
+        if (!allPosts.some(post => post.id === adminPost.id)) {
+          allPosts.push(adminPost);
+        }
+      });
     }
   } catch (error) {
     console.log('Admin context not available:', error);
   }
   
-  // Fallback to regular blogPosts
-  return blogPosts;
+  return allPosts;
 };
 
 /**
