@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Bot, Settings, BarChart3, PenTool, CheckCircle2, Zap, ArrowRight } from 'lucide-react';
+import { Bot, Settings, BarChart3, PenTool, CheckCircle2, Zap, ArrowRight, HeadphonesIcon } from 'lucide-react';
 
-const FeatureCard = ({ icon: Icon, title, description, className = '' }) => (
+const FeatureCard = ({ icon: Icon, title, description, className = '', url = '/servicios' }) => (
   <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow">
     <div className={`${className} p-3 rounded-full w-fit mb-6`}>
       <Icon className={className.includes('orange') ? 'text-novativa-orange' : 'text-novativa-teal'} size={28} />
@@ -11,7 +10,7 @@ const FeatureCard = ({ icon: Icon, title, description, className = '' }) => (
     <h3 className="text-xl font-bold mb-3">{title}</h3>
     <p className="text-gray-600 mb-4">{description}</p>
     <Link 
-      to="/servicios" 
+      to={url} 
       className="text-novativa-teal hover:text-novativa-lightTeal flex items-center font-medium"
     >
       Conocer más <ArrowRight size={16} className="ml-1" />
@@ -56,6 +55,13 @@ const Features = () => {
       title: "Soporte Prioritario",
       description: "Atención personalizada y soporte técnico para todas nuestras soluciones.",
       className: "bg-novativa-orange/10"
+    },
+    {
+      icon: HeadphonesIcon,
+      title: "Contact Center Humano",
+      description: "Servicio profesional de atención al cliente, ventas y soporte técnico con agentes capacitados 24/7.",
+      className: "bg-novativa-orange/10",
+      url: "/servicios/contact-center"
     }
   ];
 

@@ -31,6 +31,16 @@ const DesktopNav = () => {
                 </li>
                 <li>
                   <NavigationMenuLink asChild>
+                    <Link to="/servicios/contact-center" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                      <div className="text-sm font-medium">Contact Center Humano</div>
+                      <p className="text-sm leading-snug text-muted-foreground">
+                        Servicio de atención al cliente profesional
+                      </p>
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
+                <li>
+                  <NavigationMenuLink asChild>
                     <Link to="/servicios/agentes-ia" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                       <div className="text-sm font-medium">Agentes IA Web</div>
                       <p className="text-sm leading-snug text-muted-foreground">

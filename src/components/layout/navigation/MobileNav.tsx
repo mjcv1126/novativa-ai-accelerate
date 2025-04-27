@@ -64,6 +64,13 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
             >
               Desarrollo IA
             </Link>
+            <Link 
+              to="/servicios/contact-center" 
+              className="block text-gray-600 hover:text-[#bc3e06]"
+              onClick={onClose}
+            >
+              Contact Center Humano
+            </Link>
           </div>
         </div>
         <Link 

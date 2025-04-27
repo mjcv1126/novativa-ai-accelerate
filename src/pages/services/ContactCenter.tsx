@@ -1,29 +1,34 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Users, Phone, MessageSquare, BarChart, Shield, Clock } from 'lucide-react';
+import { Users, Phone, MessageSquare, BarChart, Shield, Clock, HeadphonesIcon, MailOpen } from 'lucide-react';
 
 const ContactCenter = () => {
   return (
     <>
-      <section className="pt-32 pb-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal">
-        <div className="container mx-auto px-4">
+      <section className="pt-32 pb-16 bg-gradient-to-r from-[#1A1F2C] to-[#2C3E50] relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:16px]" />
+        <div className="container mx-auto px-4 relative">
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white bg-clip-text">
               Contact Center Humano
             </h1>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+            <p className="text-xl text-white/90 max-w-3xl mx-auto animate-fade-in">
               La perfecta combinación de atención humana personalizada con la eficiencia de la IA
             </p>
+          </div>
+          <div className="flex justify-center">
+            <Button asChild size="lg" className="bg-white text-[#1A1F2C] hover:bg-gray-100 animate-fade-in">
+              <Link to="/contacto">Solicitar Información</Link>
+            </Button>
           </div>
         </div>
       </section>
 
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">
+          <div className="max-w-3xl mx-auto text-center mb-12 animate-fade-in">
+            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-[#1A1F2C] to-[#2C3E50] bg-clip-text text-transparent">
               Servicio al Cliente de Calidad Superior
             </h2>
             <p className="text-lg text-gray-600">
@@ -31,10 +36,10 @@ const ContactCenter = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100">
-              <div className="w-12 h-12 bg-novativa-teal/10 rounded-lg flex items-center justify-center mb-4">
-                <Phone className="text-novativa-teal" size={24} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="w-12 h-12 bg-[#1A1F2C]/10 rounded-lg flex items-center justify-center mb-4">
+                <Phone className="text-[#1A1F2C]" size={24} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Atención Telefónica</h3>
               <p className="text-gray-600">
@@ -42,9 +47,9 @@ const ContactCenter = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100">
-              <div className="w-12 h-12 bg-novativa-teal/10 rounded-lg flex items-center justify-center mb-4">
-                <MessageSquare className="text-novativa-teal" size={24} />
+            <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="w-12 h-12 bg-[#1A1F2C]/10 rounded-lg flex items-center justify-center mb-4">
+                <MessageSquare className="text-[#1A1F2C]" size={24} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Chat en Vivo</h3>
               <p className="text-gray-600">
@@ -52,13 +57,23 @@ const ContactCenter = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100">
-              <div className="w-12 h-12 bg-novativa-teal/10 rounded-lg flex items-center justify-center mb-4">
-                <Users className="text-novativa-teal" size={24} />
+            <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="w-12 h-12 bg-[#1A1F2C]/10 rounded-lg flex items-center justify-center mb-4">
+                <HeadphonesIcon className="text-[#1A1F2C]" size={24} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Equipo Especializado</h3>
+              <h3 className="text-xl font-semibold mb-2">Soporte 24/7</h3>
               <p className="text-gray-600">
-                Personal altamente capacitado y dedicado a diferentes industrias y necesidades.
+                Atención continua los 365 días del año con personal altamente capacitado.
+              </p>
+            </div>
+
+            <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="w-12 h-12 bg-[#1A1F2C]/10 rounded-lg flex items-center justify-center mb-4">
+                <MailOpen className="text-[#1A1F2C]" size={24} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Email Support</h3>
+              <p className="text-gray-600">
+                Gestión profesional de correos electrónicos con tiempos de respuesta garantizados.
               </p>
             </div>
           </div>
@@ -74,19 +89,19 @@ const ContactCenter = () => {
               <ul className="space-y-3">
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Atención de consultas y reclamos</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Seguimiento de casos</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Soporte post-venta</p>
                 </li>
@@ -96,19 +111,19 @@ const ContactCenter = () => {
               <ul className="space-y-3">
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Campañas de ventas salientes</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Generación de leads</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Encuestas de satisfacción</p>
                 </li>
@@ -120,19 +135,19 @@ const ContactCenter = () => {
               <ul className="space-y-3">
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Recordatorio de pagos</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Negociación de pagos</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Seguimiento de acuerdos</p>
                 </li>
@@ -142,19 +157,19 @@ const ContactCenter = () => {
               <ul className="space-y-3">
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Estudios de mercado</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Análisis de competencia</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-novativa-teal rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#1A1F2C] rounded-full"></div>
                   </div>
                   <p className="ml-3 text-gray-600">Feedback de clientes</p>
                 </li>
@@ -169,8 +184,8 @@ const ContactCenter = () => {
           <h2 className="text-3xl font-bold mb-12 text-center">Beneficios de Nuestro Contact Center</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-novativa-teal/10 rounded-full flex items-center justify-center">
-                <Shield className="text-novativa-teal" size={32} />
+              <div className="w-16 h-16 mx-auto mb-4 bg-[#1A1F2C]/10 rounded-full flex items-center justify-center">
+                <Shield className="text-[#1A1F2C]" size={32} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Reducción de Costos</h3>
               <p className="text-gray-600">
@@ -179,8 +194,8 @@ const ContactCenter = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-novativa-teal/10 rounded-full flex items-center justify-center">
-                <BarChart className="text-novativa-teal" size={32} />
+              <div className="w-16 h-16 mx-auto mb-4 bg-[#1A1F2C]/10 rounded-full flex items-center justify-center">
+                <BarChart className="text-[#1A1F2C]" size={32} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Métricas en Tiempo Real</h3>
               <p className="text-gray-600">
@@ -189,8 +204,8 @@ const ContactCenter = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-novativa-teal/10 rounded-full flex items-center justify-center">
-                <Clock className="text-novativa-teal" size={32} />
+              <div className="w-16 h-16 mx-auto mb-4 bg-[#1A1F2C]/10 rounded-full flex items-center justify-center">
+                <Clock className="text-[#1A1F2C]" size={32} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Disponibilidad 24/7</h3>
               <p className="text-gray-600">
@@ -201,13 +216,14 @@ const ContactCenter = () => {
         </div>
       </section>
 
-      <section className="py-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">¿Listo para mejorar tu servicio al cliente?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
+      <section className="py-16 bg-gradient-to-r from-[#1A1F2C] to-[#2C3E50] relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:16px]" />
+        <div className="container mx-auto px-4 text-center relative">
+          <h2 className="text-3xl font-bold mb-6 text-white">¿Listo para mejorar tu servicio al cliente?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto text-white/90">
             Contáctanos hoy mismo para una consulta personalizada y descubre cómo podemos ayudarte.
           </p>
-          <Button asChild className="bg-white text-novativa-teal hover:bg-gray-100">
+          <Button asChild size="lg" className="bg-white text-[#1A1F2C] hover:bg-gray-100">
             <Link to="/contacto">Solicitar Información</Link>
           </Button>
         </div>
