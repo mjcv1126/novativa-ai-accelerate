@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import BlogHeader from '@/components/blog/BlogHeader';
 import BlogGrid from '@/components/blog/BlogGrid';
 import BlogSidebar from '@/components/blog/BlogSidebar';
+import RecentPostsCarousel from '@/components/blog/RecentPostsCarousel';
 import { setupBlogPage, getAllPosts } from '@/utils/blogUtils';
 import { getCategories } from '@/data/blogPosts';
 
@@ -13,8 +14,15 @@ const Blog = () => {
   const postsPerPage = 9;
   const [sidebarSearchResults, setSidebarSearchResults] = useState([]);
   
-  // Use getAllPosts to get all blog posts including admin posts
-  const blogPosts = getAllPosts();
+  // Get all posts and sort by date (most recent first)
+  const blogPosts = getAllPosts().sort((a, b) => {
+    const dateA = new Date(a.date.split('/').reverse().join('-'));
+    const dateB = new Date(b.date.split('/').reverse().join('-'));
+    return dateB.getTime() - dateA.getTime();
+  });
+
+  // Get the 6 most recent posts for the carousel
+  const recentPosts = blogPosts.slice(0, 6);
 
   // Filter posts based on search and category
   const filteredPosts = blogPosts.filter(post => {
@@ -53,12 +61,13 @@ const Blog = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pt-20 pb-32">
+      <RecentPostsCarousel recentPosts={recentPosts} />
       <BlogHeader 
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
-        availableCategories={availableCategories}
+        availableCategories={getCategories()}
       />
       <div className="container mx-auto px-4 mt-10">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -89,3 +98,4 @@ const Blog = () => {
 };
 
 export default Blog;
+
