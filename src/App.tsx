@@ -29,6 +29,7 @@ import ScheduleConfirmation from '@/pages/ScheduleConfirmation';
 import IACoding from '@/pages/IACoding';
 import KnowledgeBase from '@/pages/KnowledgeBase';
 import './App.css';
+import ContactCenter from '@/pages/services/ContactCenter';
 
 const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => (
   <div id={id}>
@@ -89,6 +90,12 @@ function App() {
         <Route path="/knowledge" element={
           <PageWrapper id="page-id-knowledge">
             <Layout><KnowledgeBase /></Layout>
+          </PageWrapper>
+        } />
+        
+        <Route path="/servicios/contact-center" element={
+          <PageWrapper id="page-id-contact-center">
+            <Layout><ContactCenter /></Layout>
           </PageWrapper>
         } />
         
