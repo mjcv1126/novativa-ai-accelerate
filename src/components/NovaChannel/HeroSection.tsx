@@ -6,7 +6,7 @@ import { platforms } from '@/config/platformsConfig';
 const HeroSection = () => {
   return (
     <section className="min-h-screen pt-32 pb-16 bg-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-white/80" />
       <div 
         className="absolute inset-0 opacity-20"
         style={{
@@ -31,9 +31,9 @@ const HeroSection = () => {
             <Button
               asChild
               size="lg"
-              className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6 text-lg rounded-full transition-transform hover:scale-105 shadow-lg"
+              className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6 text-lg rounded-full transition-all hover:scale-105 shadow-lg animate-pulse-slow"
             >
-              <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
+              <a href="https://chat.novativa.org/register" target="_blank" rel="noopener noreferrer">
                 ¡Pruébalo Gratis! ✨
               </a>
             </Button>

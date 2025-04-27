@@ -15,9 +15,9 @@ const CTASection = () => {
         <Button
           asChild
           size="lg"
-          className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6 text-lg rounded-full transition-transform hover:scale-105 shadow-lg"
+          className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6 text-lg rounded-xl transition-all hover:scale-105 shadow-lg animate-pulse-slow border-2 border-novativa-orange"
         >
-          <a href="https://tidycal.com/novativa" target="_blank" rel="noopener noreferrer">
+          <a href="https://chat.novativa.org/register" target="_blank" rel="noopener noreferrer">
             Agenda una Demo Personalizada 🎯
           </a>
         </Button>

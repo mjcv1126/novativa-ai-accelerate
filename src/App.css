@@ -30,6 +30,20 @@ body, html {
   }
 }
 
+/* Add animations */
+@keyframes pulse-slow {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s infinite;
+}
+
 /* Add styles for page IDs for custom CSS targeting */
 [id^="page-id-"] {
   width: 100%;
