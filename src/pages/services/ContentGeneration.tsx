@@ -56,7 +56,7 @@ const ContentGeneration = () => {
                 <div className="bg-indigo-600 p-3 rounded-xl">
                   <BrainCircuit className="h-6 w-6 text-white" />
                 </div>
-                <img alt="Autonomous Creation" className="w-12 h-12 rounded-xl object-cover" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F690739661570884013%2F&psig=AOvVaw3MWMR0d2ya6byALQe_3ik7&ust=1745810273025000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCNCkz52g94wDFQAAAAAdAAAAABAE" />
+                <img alt="Autonomous Creation" className="w-12 h-12 rounded-xl object-cover" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWl3aHByNjExanh3aXNncTZ0cm9lZ2RncGlqZmdmZ21ldGJkcmJ6OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OQKfMFE85TeOCJ88EB/giphy.gif" />
               </div>
               <h3 className="text-xl font-bold mb-3">Flujos Autónomos</h3>
               <p className="text-gray-600">
@@ -102,7 +102,7 @@ const ContentGeneration = () => {
                 </div>
               </div>
               <div className="relative">
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExemVyb3JhYzB2cDN0dmo3ZDY0OG5oZGJ5YzhqNXk4OTlsb2V2NTM2dyZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/NKEt9elQ5cR68/giphy.gif" alt="AI Automation Flow" className="rounded-xl shadow-lg w-full" />
+                <img alt="AI Automation Flow" className="rounded-xl shadow-lg w-full" src="https://miro.medium.com/v2/resize:fit:1400/1*aZuI7LYUUlk-cA_foVCL6A.gif" />
               </div>
             </div>
           </div>
