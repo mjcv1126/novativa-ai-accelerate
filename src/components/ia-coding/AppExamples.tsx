@@ -68,7 +68,7 @@ const AppExamples = () => {
                   <img 
                     src={app.image} 
                     alt={app.title}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="bg-novativa-teal/80 p-2 rounded-full text-white">
@@ -112,7 +112,7 @@ const AppExamples = () => {
             <img
               src={selectedImage}
               alt="App Preview"
-              className="w-full h-auto rounded-lg object-contain"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
             />
           )}
         </DialogContent>
