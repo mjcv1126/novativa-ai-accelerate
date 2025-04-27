@@ -10,7 +10,7 @@ const ScheduleConfirmation = () => {
         <ConfirmationHeader />
         <MarlonIASection />
         <div className="max-w-3xl mx-auto bg-white bg-opacity-80 backdrop-blur-lg rounded-xl shadow-lg p-8 border border-purple-100">
-          <h2 className="text-2xl font-bold text-center mb-6">¿No recibiste el descuento? 🎁</h2>
+          <h2 className="text-2xl font-bold text-center mb-6">Pregunta cómo recibir un descuento especial con este agente 🤝</h2>
           <div style={{ width: '100%', height: '600px', border: 'none' }}>
             <iframe 
               src="https://chat.novativa.org/web-bot/landing/3zBcClgcGe2nz6GJuWFS2KzybqTY8sWnUpRolSQ0" 
