@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, User } from 'lucide-react';
 import { BlogPost } from '@/data/blogPosts';
+import { navigateWithRefresh } from '@/utils/navigationUtils';
 
 interface PostCardsProps {
   posts: BlogPost[];
@@ -44,13 +44,11 @@ const PostCards: React.FC<PostCardsProps> = ({ posts }) => {
               <span>{post.author}</span>
             </div>
             <Button
-              asChild
               variant="link"
               className="text-novativa-teal flex items-center hover:text-novativa-lightTeal"
+              onClick={() => navigateWithRefresh(`/blog/${post.id}`)}
             >
-              <Link to={`/blog/${post.id}`}>
-                Leer más <ArrowRight size={14} className="ml-1" />
-              </Link>
+              Leer más <ArrowRight size={14} className="ml-1" />
             </Button>
           </CardFooter>
         </Card>
