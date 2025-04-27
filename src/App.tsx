@@ -29,6 +29,7 @@ import ScheduleConfirmation from '@/pages/ScheduleConfirmation';
 import IACoding from '@/pages/IACoding';
 import KnowledgeBase from '@/pages/KnowledgeBase';
 import RefundPolicy from '@/pages/RefundPolicy';
+import TermsAndConditions from '@/pages/TermsAndConditions';
 import './App.css';
 import ContactCenter from '@/pages/services/ContactCenter';
 
@@ -103,6 +104,12 @@ function App() {
         <Route path="/politica-reembolso" element={
           <PageWrapper id="page-id-refund-policy">
             <Layout><RefundPolicy /></Layout>
+          </PageWrapper>
+        } />
+        
+        <Route path="/terminos-condiciones" element={
+          <PageWrapper id="page-id-terms">
+            <Layout><TermsAndConditions /></Layout>
           </PageWrapper>
         } />
         

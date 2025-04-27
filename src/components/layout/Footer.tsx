@@ -139,8 +139,8 @@ const Footer = () => {
               <Link to="/politica-reembolso" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
                 Política de Reembolso
               </Link>
-              <Link to="/terminos-servicio" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
-                Términos de Servicio
+              <Link to="/terminos-condiciones" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
+                Privacidad | Términos y Condiciones
               </Link>
               <Link 
                 to="/admin/login" 
