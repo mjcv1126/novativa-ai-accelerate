@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { blogPosts, getCategories, getSimilarPosts } from '@/data/blogPosts';
-import { setupBlogPage, postExists, formatBlogDate } from '@/utils/blogUtils';
+import { setupBlogPage, postExists, formatBlogDate, getPostById } from '@/utils/blogUtils';
 import BlogHeader from '@/components/blog/BlogHeader';
 import CommentsSection from '@/components/blog/CommentsSection';
 import Newsletter from '@/components/blog/Newsletter';
@@ -26,13 +26,14 @@ const BlogPost = () => {
     
     // Check if post exists, redirect to blog if not
     if (slug && !postExists(slug)) {
+      console.log(`Post with ID ${slug} not found, redirecting to blog`);
       navigate('/blog', { replace: true });
     }
   }, [slug, navigate]);
 
-  // Find the post data - blogPosts uses id, not slug
+  // Find the post data
   const postId = Number(slug);
-  const post = blogPosts.find(post => post.id === postId);
+  const post = getPostById(postId);
   
   // Handle loading or not found state
   if (!post) {

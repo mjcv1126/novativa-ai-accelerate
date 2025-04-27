@@ -41,19 +41,30 @@ export const postExists = (idOrSlug: string): boolean => {
     return blogPosts.some(post => post.id === id);
   }
   
-  // If not numeric, treat as slug (although our current implementation uses IDs)
-  return false;
+  // If not numeric, try to find by post title (as a basic slug)
+  return blogPosts.some(post => 
+    post.title.toLowerCase().replace(/\s+/g, '-') === idOrSlug.toLowerCase()
+  );
 };
 
 /**
  * Get the correct URL for a blog post
  */
 export const getBlogPostUrl = (id: number): string => {
-  if (postExists(id.toString())) {
+  const post = blogPosts.find(post => post.id === id);
+  if (post) {
     return `/blog/${id}`;
   }
   // Fallback to blog index if post doesn't exist
   return '/blog';
+};
+
+/**
+ * Get post by ID
+ * @param id - Post ID
+ */
+export const getPostById = (id: number) => {
+  return blogPosts.find(post => post.id === id);
 };
 
 /**

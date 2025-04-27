@@ -21,7 +21,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { useAdminData } from '@/contexts/AdminDataContext';
-import { getBlogPostUrl, postExists } from '@/utils/blogUtils';
+import { getBlogPostUrl, postExists, getPostById } from '@/utils/blogUtils';
 
 const RecentPostsTable = () => {
   const { posts } = useAdminData();
@@ -45,55 +45,60 @@ const RecentPostsTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {recentPosts.map((post) => (
-            <TableRow key={post.id}>
-              <TableCell className="font-medium">{post.title}</TableCell>
-              <TableCell>{post.category}</TableCell>
-              <TableCell>{post.author}</TableCell>
-              <TableCell>{post.date}</TableCell>
-              <TableCell>
-                <Badge 
-                  variant="default"
-                  className={post.status === 'Publicado' ? "bg-green-500" : "bg-gray-500"}
-                >
-                  {post.status}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Abrir menú</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {postExists(post.id.toString()) ? (
-                      <DropdownMenuItem asChild>
-                        <Link to={`/blog/${post.id}`} className="flex items-center" target="_blank" rel="noopener noreferrer">
+          {recentPosts.map((post) => {
+            // Check if the post exists in the actual blog data
+            const postExistsInBlog = postExists(post.id.toString());
+            
+            return (
+              <TableRow key={post.id}>
+                <TableCell className="font-medium">{post.title}</TableCell>
+                <TableCell>{post.category}</TableCell>
+                <TableCell>{post.author}</TableCell>
+                <TableCell>{post.date}</TableCell>
+                <TableCell>
+                  <Badge 
+                    variant="default"
+                    className={post.status === 'Publicado' ? "bg-green-500" : "bg-gray-500"}
+                  >
+                    {post.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Abrir menú</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {postExistsInBlog ? (
+                        <DropdownMenuItem asChild>
+                          <Link to={`/blog/${post.id}`} className="flex items-center" target="_blank" rel="noopener noreferrer">
+                            <Eye className="mr-2 h-4 w-4" />
+                            <span>Ver</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem disabled className="flex items-center opacity-50">
                           <Eye className="mr-2 h-4 w-4" />
-                          <span>Ver</span>
+                          <span>No disponible</span>
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem asChild>
+                        <Link to={`/admin/blog`} state={{ editPostId: post.id }} className="flex items-center">
+                          <Edit className="mr-2 h-4 w-4" />
+                          <span>Editar</span>
                         </Link>
                       </DropdownMenuItem>
-                    ) : (
-                      <DropdownMenuItem disabled className="flex items-center opacity-50">
-                        <Eye className="mr-2 h-4 w-4" />
-                        <span>No disponible</span>
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuItem asChild>
-                      <Link to={`/admin/blog`} state={{ editPostId: post.id }} className="flex items-center">
-                        <Edit className="mr-2 h-4 w-4" />
-                        <span>Editar</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
