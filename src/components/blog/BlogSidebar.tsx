@@ -1,16 +1,18 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { NewsletterForm } from '@/components/newsletter/NewsletterForm';
 import { blogPosts, BlogPost, categoryToUrl } from '@/data/blogPosts';
 import { useAdminData } from '@/contexts/AdminDataContext';
+
 interface BlogSidebarProps {
   onSearch?: (results: BlogPost[]) => void;
   currentQuery?: string;
 }
+
 const BlogSidebar = ({
   onSearch,
   currentQuery = ''
@@ -51,7 +53,9 @@ const BlogSidebar = ({
     setSearchResults(results);
     if (onSearch) onSearch(results);
   }, [searchQuery, allPosts, onSearch]);
-  return <div className="space-y-8">
+
+  return (
+    <div className="space-y-8">
       {/* Search Box */}
       <div className="bg-white p-5 rounded-xl shadow-sm">
         <h3 className="text-lg font-bold mb-3">Buscar artículos</h3>
@@ -61,41 +65,38 @@ const BlogSidebar = ({
         </div>
 
         {/* Live search results */}
-        {searchResults.length > 0 && searchQuery.trim() !== '' && <div className="mt-3 max-h-60 overflow-y-auto border rounded-md p-2">
+        {searchResults.length > 0 && searchQuery.trim() !== '' && (
+          <div className="mt-3 max-h-60 overflow-y-auto border rounded-md p-2">
             <p className="text-sm font-medium text-gray-500 mb-2">
               {searchResults.length} resultado(s) encontrado(s):
             </p>
             <ul className="space-y-2">
-              {searchResults.map(post => <li key={post.id} className="text-sm hover:bg-gray-50 p-1 rounded">
+              {searchResults.map(post => (
+                <li key={post.id} className="text-sm hover:bg-gray-50 p-1 rounded">
                   <Link to={`/blog/${post.id}`} className="text-novativa-teal block" onClick={() => setSearchQuery('')}>
                     {post.title}
                   </Link>
-                </li>)}
+                </li>
+              ))}
             </ul>
-          </div>}
-      </div>
-
-      {/* Newsletter Subscription */}
-      <div className="bg-white p-5 rounded-xl shadow-sm">
-        <h3 className="text-lg font-bold mb-2">
-      </h3>
-        <p className="text-sm opacity-90 mb-4">
-      </p>
-        <NewsletterForm />
+          </div>
+        )}
       </div>
 
       {/* Categories List */}
       <div className="bg-white p-5 rounded-xl shadow-sm">
         <h3 className="text-lg font-bold mb-4">Categorías</h3>
         <ul className="space-y-2">
-          {categoriesWithCount.map((category, index) => <li key={index}>
+          {categoriesWithCount.map((category, index) => (
+            <li key={index}>
               <Link to={`/blog/categoria/${categoryToUrl(category.name)}`} className="flex justify-between items-center text-gray-700 hover:text-novativa-teal transition-colors py-1.5 px-2 rounded hover:bg-gray-50">
                 <span>{category.name}</span>
                 <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
                   {category.count}
                 </span>
               </Link>
-            </li>)}
+            </li>
+          ))}
         </ul>
       </div>
 
@@ -103,7 +104,8 @@ const BlogSidebar = ({
       <div className="bg-white p-5 rounded-xl shadow-sm">
         <h3 className="text-lg font-bold mb-3">Artículos recientes</h3>
         <div className="space-y-4">
-          {recentPosts.map(post => <Card key={post.id} className="overflow-hidden">
+          {recentPosts.map(post => (
+            <Card key={post.id} className="overflow-hidden">
               <CardHeader className="pb-2 space-y-0">
                 <Link to={`/blog/${post.id}`} className="block">
                   <img src={post.image} alt={post.title} className="w-full h-24 object-cover rounded" />
@@ -125,9 +127,12 @@ const BlogSidebar = ({
                   <Link to={`/blog/${post.id}`}>Leer más</Link>
                 </Button>
               </CardFooter>
-            </Card>)}
+            </Card>
+          ))}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default BlogSidebar;
