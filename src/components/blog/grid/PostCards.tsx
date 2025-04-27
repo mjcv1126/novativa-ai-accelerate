@@ -10,13 +10,19 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, User } from 'lucide-react';
 import { BlogPost } from '@/data/blogPosts';
-import { navigateWithRefresh } from '@/utils/navigationUtils';
+import { useNavigate } from 'react-router-dom';
 
 interface PostCardsProps {
   posts: BlogPost[];
 }
 
 const PostCards: React.FC<PostCardsProps> = ({ posts }) => {
+  const navigate = useNavigate();
+
+  const handleReadMore = (postId: number) => {
+    navigate(`/blog/${postId}`);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {posts.map((post) => (
@@ -46,7 +52,7 @@ const PostCards: React.FC<PostCardsProps> = ({ posts }) => {
             <Button
               variant="link"
               className="text-novativa-teal flex items-center hover:text-novativa-lightTeal"
-              onClick={() => navigateWithRefresh(`/blog/${post.id}`)}
+              onClick={() => handleReadMore(post.id)}
             >
               Leer más <ArrowRight size={14} className="ml-1" />
             </Button>
