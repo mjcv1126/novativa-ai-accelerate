@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -8,8 +9,10 @@ import BlogPostsTable from '@/components/admin/blog/BlogPostsTable';
 import BlogPostsSearch from '@/components/admin/blog/BlogPostsSearch';
 import BlogPostsPagination from '@/components/admin/blog/BlogPostsPagination';
 import { BlogPost } from '@/data/blogPosts';
+import { useLocation } from 'react-router-dom';
 
 const AdminBlogPosts = () => {
+  const location = useLocation();
   const { posts, addPost, updatePost, deletePost } = useAdminData();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPosts, setFilteredPosts] = useState(posts);
@@ -23,6 +26,18 @@ const AdminBlogPosts = () => {
   });
   const [filterStatus, setFilterStatus] = useState('all');
   
+  // Revisar si hay un post para editar en la navegación
+  useEffect(() => {
+    const state = location.state as { editPostId?: number } | null;
+    if (state?.editPostId) {
+      const postToEdit = posts.find(p => p.id === state.editPostId);
+      if (postToEdit) {
+        setEditingPost(postToEdit);
+        setShowForm(true);
+      }
+    }
+  }, [location, posts]);
+  
   useEffect(() => {
     let result = [...posts];
     
@@ -31,7 +46,7 @@ const AdminBlogPosts = () => {
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         post.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
         post.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
       );
     }
     
@@ -92,6 +107,12 @@ const AdminBlogPosts = () => {
     }
   };
 
+  const handleEditClick = (post: BlogPost) => {
+    setEditingPost(post);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
       <Helmet>
@@ -105,7 +126,10 @@ const AdminBlogPosts = () => {
           <h1 className="text-3xl font-bold">Posts del Blog</h1>
           <Button 
             className="bg-novativa-teal hover:bg-novativa-lightTeal"
-            onClick={() => setShowForm(true)}
+            onClick={() => {
+              setEditingPost(undefined);
+              setShowForm(true);
+            }}
           >
             <Plus className="mr-2 h-4 w-4" /> Nuevo Post
           </Button>
@@ -133,7 +157,7 @@ const AdminBlogPosts = () => {
         
         <BlogPostsTable
           currentPosts={currentPosts}
-          onEdit={setEditingPost}
+          onEdit={handleEditClick}
           onDelete={deletePost}
           sortConfig={sortConfig}
           handleSort={handleSort}
