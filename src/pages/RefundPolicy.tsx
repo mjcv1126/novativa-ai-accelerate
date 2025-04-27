@@ -6,6 +6,7 @@ const RefundPolicy = () => {
   return (
     <div className="py-16 bg-white">
       <div className="container mx-auto px-4 max-w-4xl">
+        <br>.</br>
         <h1 className="text-3xl font-bold mb-8">Política de Reembolsos de Novativa</h1>
         <p className="text-gray-600 mb-6">Fecha de última actualización: 27 de abril de 2025</p>
         <p className="mb-8">Esta Política de Reembolsos forma parte integral de los Términos y Condiciones de Servicio de ADN Emprendedor LLC, operando comercialmente como Novativa ("Novativa", "nosotros", "nuestro").</p>
@@ -64,7 +65,7 @@ const RefundPolicy = () => {
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">5. Modificaciones a la Política de Reembolsos</h2>
-          <p className="mb-4">Novativa se reserva el derecho de modificar en cualquier momento esta Política de Reembolsos. Cualquier cambio será efectivo inmediatamente después de su publicación en nuestro sitio web: www.novativa.org/refund-policy</p>
+          <p className="mb-4">Novativa se reserva el derecho de modificar en cualquier momento esta Política de Reembolsos. Cualquier cambio será efectivo inmediatamente después de su publicación en nuestro sitio web: www.novativa.org/politica-reembolso</p>
         </section>
 
         <section className="mb-8">
