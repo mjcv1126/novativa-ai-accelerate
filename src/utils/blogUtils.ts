@@ -55,3 +55,20 @@ export const getBlogPostUrl = (id: number): string => {
   // Fallback to blog index if post doesn't exist
   return '/blog';
 };
+
+/**
+ * Format a date string into a more readable format
+ */
+export const formatBlogDate = (dateString: string): string => {
+  // Handle DD/MM/YYYY format
+  const parts = dateString.split('/');
+  if (parts.length === 3) {
+    const [day, month, year] = parts;
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const monthIndex = parseInt(month, 10) - 1;
+    return `${day} de ${months[monthIndex]} de ${year}`;
+  }
+  
+  // Return original if format doesn't match
+  return dateString;
+};

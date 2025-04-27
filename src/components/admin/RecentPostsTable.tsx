@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Eye, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, Eye, MoreHorizontal } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +21,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { useAdminData } from '@/contexts/AdminDataContext';
+import { getBlogPostUrl, postExists } from '@/utils/blogUtils';
 
 const RecentPostsTable = () => {
   const { posts } = useAdminData();
@@ -69,12 +70,19 @@ const RecentPostsTable = () => {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to={`/blog/${post.id}`} className="flex items-center" target="_blank" rel="noopener noreferrer">
+                    {postExists(post.id.toString()) ? (
+                      <DropdownMenuItem asChild>
+                        <Link to={`/blog/${post.id}`} className="flex items-center" target="_blank" rel="noopener noreferrer">
+                          <Eye className="mr-2 h-4 w-4" />
+                          <span>Ver</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem disabled className="flex items-center opacity-50">
                         <Eye className="mr-2 h-4 w-4" />
-                        <span>Ver</span>
-                      </Link>
-                    </DropdownMenuItem>
+                        <span>No disponible</span>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem asChild>
                       <Link to={`/admin/blog`} state={{ editPostId: post.id }} className="flex items-center">
                         <Edit className="mr-2 h-4 w-4" />
