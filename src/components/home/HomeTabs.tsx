@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, Share2, PenTool, MessageSquare } from 'lucide-react';
@@ -175,8 +174,8 @@ const HomeTabs = () => {
                 </div>
                 <div className="bg-gray-100 rounded-lg p-6">
                   <img 
-                    src="https://media.tenor.com/5ry-200hErMAAAAM/hacker-hacker-man.gif" 
-                    alt="AI Development Animation" 
+                    src="/lovable-uploads/eaf9db43-e577-4f1c-b869-7125722367e0.png" 
+                    alt="AI Development" 
                     className="rounded-lg shadow-lg mx-auto"
                   />
                 </div>
