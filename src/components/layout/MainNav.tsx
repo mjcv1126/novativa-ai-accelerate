@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import NavItems from './NavItems';
 import MobileNav from './MobileNav';
 import { Button } from "@/components/ui/button";
 import {
