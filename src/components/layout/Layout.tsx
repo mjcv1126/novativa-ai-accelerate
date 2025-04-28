@@ -7,7 +7,6 @@ import { AdminDataProvider } from '@/contexts/AdminDataContext';
 import { Toaster } from '@/components/ui/toaster';
 import { CustomCSSProvider } from '@/contexts/CustomCSSContext';
 import { useLocation } from 'react-router-dom';
-import FloatingLanguageSwitcher from '@/components/shared/FloatingLanguageSwitcher';
 
 type LayoutProps = {
   children: ReactNode;
@@ -20,7 +19,6 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="flex flex-col min-h-screen w-full">
       {!isContactPage && <Navbar />}
-      <FloatingLanguageSwitcher />
       <AdminDataProvider>
         <CustomCSSProvider>
           <main className="flex-grow w-full">

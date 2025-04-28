@@ -1,9 +1,6 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/shared/LanguageSwitcher';
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -11,8 +8,6 @@ interface MobileNavProps {
 }
 
 const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
-  const { t } = useLanguage();
-
   // Function to handle navigation with refresh for specific routes
   const handleNavigation = (path: string) => {
     onClose();
@@ -31,19 +26,15 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
   return (
     <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg animate-fade-in">
       <div className="container mx-auto py-4 flex flex-col space-y-4">
-        <div className="flex justify-end px-4">
-          <LanguageSwitcher />
-        </div>
-
         <Link 
           to="/" 
           className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
           onClick={onClose}
         >
-          {t('navigation.home')}
+          Inicio
         </Link>
         <div className="px-4 py-2">
-          <div className="font-medium text-gray-800 mb-2">{t('navigation.services')}</div>
+          <div className="font-medium text-gray-800 mb-2">Servicios</div>
           <div className="ml-4 space-y-2">
             <Link 
               to="/novachannel" 
@@ -57,28 +48,28 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
-              {t('services.aiAgents')}
+              Agentes IA Web
             </Link>
             <Link 
               to="/servicios/contenido" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
-              {t('services.content')}
+              Generación de Contenido
             </Link>
             <Link 
               to="/iacoding" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
-              {t('services.development')}
+              Desarrollo IA
             </Link>
             <Link 
               to="/servicios/contact-center" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
-              {t('services.contactCenter')}
+              Contact Center Humano
             </Link>
           </div>
         </div>
@@ -87,27 +78,27 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
           onClick={onClose}
         >
-          {t('navigation.pricing')}
+          Precios
         </Link>
         <Link 
           to="/blog" 
           className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
           onClick={onClose}
         >
-          {t('navigation.blog')}
+          Blog
         </Link>
         <a 
           href="/contacto" 
           className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
           onClick={() => handleNavigation('/contacto')}
         >
-          {t('navigation.contact')}
+          Contacto
         </a>
         <Button
           className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity"
           onClick={() => handleNavigation('/agenda')}
         >
-          {t('navigation.scheduleDemo')}
+          Agenda una demo
         </Button>
       </div>
     </div>

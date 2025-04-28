@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
@@ -9,11 +8,9 @@ import { toast } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
 import ContactInfo from '@/components/contact/ContactInfo';
 import ContactMeetingCalendar from '@/components/contact/ContactMeetingCalendar';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 const Contact = () => {
   const [hasRefreshed, setHasRefreshed] = useState(false);
-  const { t, language } = useLanguage();
 
   useEffect(() => {
     setAntiCacheHeaders();
@@ -43,16 +40,14 @@ const Contact = () => {
       };
       script.onerror = (error) => {
         console.error('Error loading TidyCal script:', error);
-        toast.error(language === 'es' ? 
-          'Error al cargar el calendario. Por favor, recarga la página.' : 
-          'Error loading calendar. Please reload the page.');
+        toast.error('Error al cargar el calendario. Por favor, recarga la página.');
       };
       
       document.body.appendChild(script);
     };
     
     setTimeout(loadTidycalScript, 300);
-  }, [hasRefreshed, language]);
+  }, [hasRefreshed]);
 
   const openTidyCal = () => {
     window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
@@ -64,24 +59,20 @@ const Contact = () => {
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="-1" />
-        <html lang={language} />
-        <title>
-          {language === 'es' ? 'Contacta con Novativa' : 'Contact Novativa'}
-        </title>
       </Helmet>
       <LouisebotWidget />
       
       <header className="fixed w-full top-0 z-50 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <h3 className="text-xl font-bold text-white">{t('contact.quickResponse')}</h3>
+            <h3 className="text-xl font-bold text-white">¿Necesitas una respuesta rápida?</h3>
             <Button 
               onClick={openTidyCal}
               className="bg-white text-[#1A1F2C] hover:bg-gray-100 transition-colors px-6 py-2 rounded-md font-semibold flex items-center gap-2"
               size="lg"
             >
               <Calendar className="w-5 h-5" /> 
-              {t('contact.scheduleNow')}
+              Agenda una reunión ahora
             </Button>
           </div>
         </div>
@@ -91,14 +82,10 @@ const Contact = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              {language === 'es' ? (
-                <>Contacta con <span className="text-novativa-teal">Novativa</span></>
-              ) : (
-                <>Contact <span className="text-novativa-teal">Novativa</span></>
-              )}
+              Contacta con <span className="text-novativa-teal">Novativa</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t('contact.subtitle')}
+              Agenda una reunión con nosotros y descubre cómo podemos transformar tu negocio con soluciones de inteligencia artificial.
             </p>
           </div>
         </div>
