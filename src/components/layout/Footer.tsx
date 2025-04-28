@@ -1,155 +1,108 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Youtube, MapPin, Mail, Phone } from 'lucide-react';
-import { TiktokIcon } from '@/components/shared/TiktokIcon';
+import NovativaLogo from '@/components/shared/NovativaLogo';
+import { Button } from '@/components/ui/button';
+import { Calendar, Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+  
   return (
-    <footer className="bg-gray-900 text-white pt-16 pb-8">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          <div>
-            <Link to="/" className="inline-block mb-6">
-              <img 
-                src="/lovable-uploads/221f5f0b-c84b-48c0-a0c8-1be5c060bcc6.png" 
-                alt="Novativa Logo" 
-                className="h-16 w-auto"
-              />
-            </Link>
-            <p className="text-gray-300 mb-6">
-              Aceleramos tu negocio con soluciones de IA y automatización personalizadas.
+    <footer className="bg-gray-900 text-gray-300 pt-12 pb-8">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          <div className="lg:col-span-2">
+            <NovativaLogo variant="light" />
+            <p className="mt-4 mb-6 text-gray-400 max-w-md">
+              Soluciones de inteligencia artificial y automatización para potenciar tu negocio. Nos especializamos en transformar ideas en soluciones tecnológicas innovadoras.
             </p>
             <div className="flex space-x-4">
-              <a href="https://www.facebook.com/novativa.ai" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                <Facebook size={20} />
+              <a href="https://twitter.com/novativa_ai" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <Twitter aria-hidden="true" />
+                <span className="sr-only">Twitter</span>
               </a>
-              <a href="https://www.instagram.com/novativa.ai" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                <Instagram size={20} />
+              <a href="https://facebook.com/novativa.ai" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <Facebook aria-hidden="true" />
+                <span className="sr-only">Facebook</span>
               </a>
-              <a href="https://www.tiktok.com/@novativa.ai" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                <TiktokIcon className="w-5 h-5" />
+              <a href="https://instagram.com/novativa.ai" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <Instagram aria-hidden="true" />
+                <span className="sr-only">Instagram</span>
               </a>
-              <a href="https://www.youtube.com/@novativa.ai" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                <Youtube size={20} />
+              <a href="https://linkedin.com/company/novativa-ai" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <Linkedin aria-hidden="true" />
+                <span className="sr-only">LinkedIn</span>
               </a>
             </div>
           </div>
           
           <div>
-            <h3 className="text-lg font-bold mb-6 border-l-4 border-novativa-orange pl-3">Servicios</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-semibold mb-4">Servicios</h3>
+            <ul className="space-y-2">
               <li>
-                <Link to="/servicios" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Agentes IA Web
-                </Link>
+                <Link to="/servicios/agentes-ia" className="hover:text-white transition-colors">Agentes de IA</Link>
               </li>
               <li>
-                <Link to="/servicios" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Agentes IA + NovaChannel
-                </Link>
+                <Link to="/servicios/contenido" className="hover:text-white transition-colors">Generación de Contenido</Link>
               </li>
               <li>
-                <Link to="/servicios" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  IA para Generación de Contenido
-                </Link>
+                <Link to="/iacoding" className="hover:text-white transition-colors">Desarrollo de IA</Link>
               </li>
               <li>
-                <Link to="/servicios" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Desarrollo con IA
-                </Link>
+                <Link to="/servicios/apps" className="hover:text-white transition-colors">Aplicaciones Móviles</Link>
               </li>
               <li>
-                <Link to="/servicios" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Agentes Autónomos
-                </Link>
+                <Link to="/novachannel" className="hover:text-white transition-colors">NovaChannel</Link>
+              </li>
+              <li>
+                <Link to="/servicios/contact-center" className="hover:text-white transition-colors">Contact Center IA</Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-lg font-bold mb-6 border-l-4 border-novativa-orange pl-3">Enlaces</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-semibold mb-4">Empresa</h3>
+            <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Inicio
-                </Link>
+                <Link to="/servicios" className="hover:text-white transition-colors">Servicios</Link>
               </li>
               <li>
-                <Link to="/servicios" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Servicios
-                </Link>
+                <Link to="/precios" className="hover:text-white transition-colors">Precios</Link>
               </li>
               <li>
-                <Link to="/precios" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Precios
-                </Link>
+                <Link to="/contacto" className="hover:text-white transition-colors">Contacto</Link>
               </li>
               <li>
-                <Link to="/blog" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link to="/contacto" className="text-gray-300 hover:text-novativa-lightTeal transition-colors">
-                  Contacto
-                </Link>
+                <Link to="/knowledge" className="hover:text-white transition-colors">Knowledge Base</Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-lg font-bold mb-6 border-l-4 border-novativa-orange pl-3">Contacto</h3>
-            <ul className="space-y-4">
-              <li className="flex">
-                <MapPin className="mr-3 text-novativa-orange flex-shrink-0" size={20} />
-                <span className="text-gray-300">
-                  San José, Costa Rica | Miami, Florida | San Pedro Sula, Honduras
-                </span>
+            <h3 className="text-white font-semibold mb-4">Legal</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/terminos-condiciones" className="hover:text-white transition-colors">Términos y Condiciones</Link>
               </li>
-              <li className="flex">
-                <Mail className="mr-3 text-novativa-orange flex-shrink-0" size={20} />
-                <a 
-                  href="mailto:soporte@novativa.org" 
-                  className="text-gray-300 hover:text-novativa-lightTeal transition-colors"
-                >
-                  soporte@novativa.org
-                </a>
-              </li>
-              <li className="flex">
-                <Phone className="mr-3 text-novativa-orange flex-shrink-0" size={20} />
-                <a 
-                  href="https://api.whatsapp.com/send?phone=50432142996" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-gray-300 hover:text-[#7E69AB] transition-colors"
-                >
-                  +504 3214-2996
-                </a>
+              <li>
+                <Link to="/politica-reembolso" className="hover:text-white transition-colors">Política de Reembolso</Link>
               </li>
             </ul>
+            
+            <div className="mt-8">
+              <Button className="w-full bg-novativa-teal hover:bg-novativa-lightTeal flex items-center gap-2" asChild>
+                <a href="https://tidycal.com/novativa/demo-gratis" target="_blank" rel="noopener noreferrer">
+                  <Calendar className="h-4 w-4" />
+                  <span>Agendar Demo</span>
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
         
-        <div className="border-t border-gray-800 pt-8 mt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm mb-4 md:mb-0">
-              &copy; {new Date().getFullYear()} Novativa. Todos los derechos reservados.
-            </p>
-            <div className="flex space-x-6">
-              <Link to="/politica-reembolso" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
-                Política de Reembolso
-              </Link>
-              <Link to="/terminos-condiciones" className="text-gray-400 hover:text-novativa-lightTeal text-sm transition-colors">
-                Privacidad | Términos y Condiciones
-              </Link>
-              <Link 
-                to="/admin/login" 
-                className="text-gray-400 hover:text-novativa-lightTeal text-xs transition-colors ml-2"
-              >
-                Admin
-              </Link>
-            </div>
-          </div>
+        <div className="border-t border-gray-800 mt-12 pt-6 text-sm text-center text-gray-400">
+          <p>&copy; {currentYear} Novativa. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

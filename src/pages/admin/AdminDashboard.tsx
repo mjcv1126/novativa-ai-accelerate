@@ -1,88 +1,84 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Tag } from 'lucide-react';
-import RecentPostsTable from '@/components/admin/RecentPostsTable';
+import { Calendar, Users, Activity } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { useAdminData } from '@/contexts/AdminDataContext';
-import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
-  const { posts, categories } = useAdminData();
-  const publishedPosts = posts.filter(post => post.status === 'Publicado');
-
   return (
     <>
       <Helmet>
-        <title>Dashboard Admin</title>
-        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-        <meta httpEquiv="Pragma" content="no-cache" />
-        <meta httpEquiv="Expires" content="0" />
+        <title>Dashboard | Admin Panel</title>
       </Helmet>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <Link to="/">
-            <img 
-              src="/lovable-uploads/9cce1d6a-72e1-493f-bb16-901571c7e858.png" 
-              alt="Logo" 
-              className="h-10 w-auto"
-            />
-          </Link>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Usuarios Totales</CardTitle>
+              <Users className="h-4 w-4 text-gray-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">120</div>
+              <p className="text-xs text-gray-500">+10% del mes anterior</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Sesiones Esta Semana</CardTitle>
+              <Activity className="h-4 w-4 text-gray-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">432</div>
+              <p className="text-xs text-gray-500">+5% de la semana anterior</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Eventos Próximos</CardTitle>
+              <Calendar className="h-4 w-4 text-gray-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">3</div>
+              <p className="text-xs text-gray-500">Para los próximos 30 días</p>
+            </CardContent>
+          </Card>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <StatCard 
-            title="Posts Publicados" 
-            value={publishedPosts.length.toString()} 
-            description="Posts disponibles en el blog" 
-            icon={<FileText className="h-5 w-5 text-novativa-orange" />} 
-          />
-          <StatCard 
-            title="Categorías" 
-            value={categories.length.toString()} 
-            description="Categorías principales" 
-            icon={<Tag className="h-5 w-5 text-purple-500" />} 
-          />
+        <div className="grid grid-cols-1 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Actividad Reciente</CardTitle>
+              <CardDescription>
+                Resumen de las acciones más recientes en la plataforma
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="border-b pb-4">
+                  <p className="font-medium">Actualización de sistema</p>
+                  <p className="text-sm text-gray-500">Nueva versión implementada: 2.4.0</p>
+                  <p className="text-xs text-gray-400">Hace 2 días</p>
+                </div>
+                <div className="border-b pb-4">
+                  <p className="font-medium">Reporte mensual generado</p>
+                  <p className="text-sm text-gray-500">El reporte de Mayo está disponible</p>
+                  <p className="text-xs text-gray-400">Hace 5 días</p>
+                </div>
+                <div>
+                  <p className="font-medium">Nueva configuración</p>
+                  <p className="text-sm text-gray-500">Se habilitó la integración con WhatsApp</p>
+                  <p className="text-xs text-gray-400">Hace 1 semana</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>Posts Recientes</CardTitle>
-            <CardDescription>Los últimos posts publicados en tu blog</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RecentPostsTable />
-          </CardContent>
-        </Card>
       </div>
     </>
-  );
-};
-
-interface StatCardProps {
-  title: string;
-  value: string;
-  description: string;
-  icon?: React.ReactNode;
-}
-
-const StatCard = ({ title, value, description, icon }: StatCardProps) => {
-  return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-sm font-medium text-gray-500">{title}</p>
-            <h3 className="text-2xl font-bold mt-1">{value}</h3>
-            <p className="text-xs text-gray-500 mt-1">{description}</p>
-          </div>
-          <div className="bg-gray-100 p-2 rounded-full">
-            {icon}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
   );
 };
 

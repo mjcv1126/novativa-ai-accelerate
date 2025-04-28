@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -6,17 +7,12 @@ import Services from '@/pages/Services';
 import NotFound from '@/pages/NotFound';
 import Pricing from '@/pages/Pricing';
 import Contact from '@/pages/Contact';
-import Blog from '@/pages/Blog';
-import BlogPost from '@/pages/BlogPost';
-import BlogTag from '@/pages/BlogTag';
-import BlogCategory from '@/pages/BlogCategory';
 import AIAgents from '@/pages/services/AIAgents';
 import ContentGeneration from '@/pages/services/ContentGeneration';
 import IADevelopment from '@/pages/services/IADevelopment';
 import MobileAppDevelopment from '@/pages/services/MobileAppDevelopment';
 import AdminLayout from '@/pages/admin/AdminLayout';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
-import AdminBlogPosts from '@/pages/admin/AdminBlogPosts';
 import AdminCategories from '@/pages/admin/AdminCategories';
 import AdminLogin from '@/pages/admin/AdminLogin';
 import ScrollToTop from '@/components/layout/ScrollToTop';
@@ -54,10 +50,6 @@ function App() {
         <Route path="/servicios/novachannel" element={<Navigate to="/novachannel" replace />} />
         <Route path="/precios" element={<PageWrapper id="page-id-pricing"><Layout><Pricing /></Layout></PageWrapper>} />
         <Route path="/contacto" element={<PageWrapper id="page-id-contact"><Layout><Contact /></Layout></PageWrapper>} />
-        <Route path="/blog" element={<PageWrapper id="page-id-blog"><Layout><Blog /></Layout></PageWrapper>} />
-        <Route path="/blog/:slug" element={<PageWrapper id="page-id-blog-post"><Layout><BlogPost /></Layout></PageWrapper>} />
-        <Route path="/blog/tag/:tag" element={<PageWrapper id="page-id-blog-tag"><Layout><BlogTag /></Layout></PageWrapper>} />
-        <Route path="/blog/categoria/:category" element={<PageWrapper id="page-id-blog-category"><Layout><BlogCategory /></Layout></PageWrapper>} />
         <Route path="/novachannel" element={<PageWrapper id="page-id-novachannel"><Layout><NovaChannel /></Layout></PageWrapper>} />
         <Route path="/welcome" element={<PageWrapper id="page-id-welcome"><Layout><Welcome /></Layout></PageWrapper>} />
         
@@ -73,8 +65,7 @@ function App() {
         <Route path="/admin" element={<PageWrapper id="page-id-admin"><AdminLayout /></PageWrapper>}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<PageWrapper id="page-id-admin-dashboard"><AdminDashboard /></PageWrapper>} />
-          <Route path="blog/posts" element={<PageWrapper id="page-id-admin-blog-posts"><AdminBlogPosts /></PageWrapper>} />
-          <Route path="blog/categories" element={<PageWrapper id="page-id-admin-categories"><AdminCategories /></PageWrapper>} />
+          <Route path="categories" element={<PageWrapper id="page-id-admin-categories"><AdminCategories /></PageWrapper>} />
           <Route path="scripts" element={
             <PageWrapper id="page-id-admin-scripts">
               <AdminScripts />

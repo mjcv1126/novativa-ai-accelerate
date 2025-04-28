@@ -1,30 +1,39 @@
 
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import Hero from '@/components/home/Hero';
 import Features from '@/components/home/Features';
-import CTA from '@/components/home/CTA';
-import HomeLoading from '@/components/home/HomeLoading';
+import Services from '@/components/home/Services';
+import Testimonials from '@/components/home/Testimonials';
+import CallToAction from '@/components/home/CallToAction';
+import PartnerLogos from '@/components/home/PartnerLogos';
+import HowItWorks from '@/components/home/HowItWorks';
+import Benefits from '@/components/home/Benefits';
+import FAQ from '@/components/home/FAQ';
+import LouisebotWidget from '@/components/shared/LouisebotWidget';
+import { Helmet } from 'react-helmet-async';
+import HomeTabs from '@/components/home/HomeTabs';
 
-// Lazy load components with higher loading priority
-const Testimonials = lazy(() => import('@/components/home/Testimonials'));
-const RecentArticles = lazy(() => 
-  Promise.all([
-    import('@/components/home/RecentArticles'),
-    // Add artificial delay to ensure Hero and Features load first
-    new Promise(resolve => setTimeout(resolve, 100))
-  ]).then(([moduleExport]) => moduleExport)
-);
-
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <>
+      <Helmet>
+        <title>Novativa | Soluciones de IA y Automatización Para Tu Negocio</title>
+        <meta 
+          name="description" 
+          content="Transforma tu negocio con soluciones de inteligencia artificial y automatización personalizadas. Aumenta tus ventas y mejora la experiencia del cliente."
+        />
+      </Helmet>
+      <LouisebotWidget />
       <Hero />
+      <PartnerLogos />
+      <HomeTabs />
       <Features />
-      <CTA />
-      <Suspense fallback={<HomeLoading />}>
-        <Testimonials />
-        <RecentArticles />
-      </Suspense>
+      <Services />
+      <HowItWorks />
+      <Benefits />
+      <Testimonials />
+      <FAQ />
+      <CallToAction />
     </>
   );
 };
