@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -65,7 +64,6 @@ function App() {
         <Route path="/admin" element={<PageWrapper id="page-id-admin"><AdminLayout /></PageWrapper>}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<PageWrapper id="page-id-admin-dashboard"><AdminDashboard /></PageWrapper>} />
-          <Route path="categories" element={<PageWrapper id="page-id-admin-categories"><AdminCategories /></PageWrapper>} />
           <Route path="scripts" element={
             <PageWrapper id="page-id-admin-scripts">
               <AdminScripts />
