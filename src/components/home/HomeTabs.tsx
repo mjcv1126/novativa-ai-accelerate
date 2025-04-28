@@ -3,10 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, Share2, PenTool, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-
 const HomeTabs = () => {
-  return (
-    <section className="py-16 bg-white">
+  return <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8">
@@ -62,11 +60,7 @@ const HomeTabs = () => {
                   </Button>
                 </div>
                 <div className="bg-gray-100 rounded-lg p-6">
-                  <img 
-                    src="/lovable-uploads/0c1c88bd-2391-4fa2-b5f0-0e97a595fd49.png" 
-                    alt="Chatbot Interface" 
-                    className="rounded-lg shadow-lg mx-auto"
-                  />
+                  <img src="/lovable-uploads/0c1c88bd-2391-4fa2-b5f0-0e97a595fd49.png" alt="Chatbot Interface" className="rounded-lg shadow-lg mx-auto" />
                 </div>
               </div>
             </TabsContent>
@@ -99,11 +93,7 @@ const HomeTabs = () => {
                   </Button>
                 </div>
                 <div className="bg-gray-100 rounded-lg p-6">
-                  <img 
-                    src="/lovable-uploads/0badf3e6-586c-4660-86d6-0e50a6ffb597.png" 
-                    alt="NovaChannel Platform" 
-                    className="rounded-lg shadow-lg mx-auto"
-                  />
+                  <img src="/lovable-uploads/0badf3e6-586c-4660-86d6-0e50a6ffb597.png" alt="NovaChannel Platform" className="rounded-lg shadow-lg mx-auto" />
                 </div>
               </div>
             </TabsContent>
@@ -136,11 +126,7 @@ const HomeTabs = () => {
                   </Button>
                 </div>
                 <div className="bg-gray-100 rounded-lg p-6">
-                  <img 
-                    src="/lovable-uploads/4ca26889-5685-42df-b0a0-4032951f24ee.png" 
-                    alt="Content Generation" 
-                    className="rounded-lg shadow-lg mx-auto"
-                  />
+                  <img alt="Content Generation" className="rounded-lg shadow-lg mx-auto" src="https://buzoapp.com/wp-content/uploads/2025/04/novativa-avatar-clone.png" />
                 </div>
               </div>
             </TabsContent>
@@ -173,19 +159,13 @@ const HomeTabs = () => {
                   </Button>
                 </div>
                 <div className="bg-gray-100 rounded-lg p-6">
-                  <img 
-                    src="/lovable-uploads/4c9113e1-f909-4bba-be7b-03a0406c55bd.png" 
-                    alt="AI Development Interface" 
-                    className="rounded-lg shadow-lg mx-auto"
-                  />
+                  <img src="/lovable-uploads/4c9113e1-f909-4bba-be7b-03a0406c55bd.png" alt="AI Development Interface" className="rounded-lg shadow-lg mx-auto" />
                 </div>
               </div>
             </TabsContent>
           </Tabs>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HomeTabs;
