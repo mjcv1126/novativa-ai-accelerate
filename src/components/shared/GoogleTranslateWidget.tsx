@@ -5,6 +5,16 @@ import { Globe } from 'lucide-react';
 declare global {
   interface Window {
     googleTranslateElementInit: () => void;
+    google: {
+      translate: {
+        TranslateElement: {
+          new (options: any, element: string): any;
+          InlineLayout: {
+            SIMPLE: number;
+          };
+        };
+      };
+    };
   }
 }
 
@@ -20,11 +30,11 @@ const GoogleTranslateWidget = () => {
 
     // Inicializar el widget cuando el script esté cargado
     window.googleTranslateElementInit = () => {
-      new (window as any).google.translate.TranslateElement(
+      new window.google.translate.TranslateElement(
         {
           pageLanguage: 'es',
           includedLanguages: 'en,es,fr,de', // Español, Inglés, Francés, Alemán
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false,
         },
         'google_translate_element'
@@ -50,7 +60,7 @@ const GoogleTranslateWidget = () => {
       </div>
 
       {/* Estilos personalizados para hacer el widget más minimalista */}
-      <style jsx global>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         /* Ocultar el logo y el marco de Google */
         .goog-te-gadget-simple {
           background-color: transparent !important;
@@ -84,7 +94,7 @@ const GoogleTranslateWidget = () => {
         body {
           top: 0 !important;
         }
-      `}</style>
+      `}} />
     </div>
   );
 };
