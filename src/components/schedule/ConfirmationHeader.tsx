@@ -8,7 +8,7 @@ const ConfirmationHeader = () => {
       <div className="flex flex-col items-center mb-6">
         <div className="mb-4 w-48 h-auto relative">
           <img 
-            src="/lovable-uploads/b9aa957e-08c9-4897-9b8d-153e6c596fd5.png" 
+            src="/lovable-uploads/d9c08571-214e-4163-bee5-427cb5806051.png" 
             alt="Novativa Logo" 
             className="w-full animate-pulse-subtle"
           />
