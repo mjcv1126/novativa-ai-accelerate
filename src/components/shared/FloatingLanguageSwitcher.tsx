@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Globe } from 'lucide-react';
+import { Flag } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,7 +51,7 @@ const FloatingLanguageSwitcher: React.FC = () => {
   return (
     <div 
       className={cn(
-        "fixed left-4 top-1/2 transform -translate-y-1/2 z-50 transition-all duration-300",
+        "fixed left-4 top-1/3 transform -translate-y-1/2 z-50 transition-all duration-300",
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none",
         "group"
       )}
@@ -62,9 +62,7 @@ const FloatingLanguageSwitcher: React.FC = () => {
             className="flex items-center justify-center w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 group-hover:bg-white"
             aria-label="Cambiar idioma"
           >
-            <Globe 
-              className="h-5 w-5 text-gray-600 group-hover:text-novativa-teal transition-colors" 
-            />
+            <span className="text-lg">{currentLanguage?.flag}</span>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent 

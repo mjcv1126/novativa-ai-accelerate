@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
-import { Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -41,7 +40,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className }) => {
           className={`flex items-center gap-2 px-2 hover:bg-gray-100 hover:text-gray-900 ${className}`}
           aria-label={t('common.languageSelector')}
         >
-          <Globe className="h-4 w-4" />
+          <span className="text-base">{currentLanguage?.flag}</span>
           <span>{currentLanguage?.code.toUpperCase()}</span>
         </Button>
       </DropdownMenuTrigger>

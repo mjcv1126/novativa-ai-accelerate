@@ -14,25 +14,22 @@ import HomeTabs from '@/components/home/HomeTabs';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Home: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   const metaDescriptions = {
     es: "Transforma tu negocio con soluciones de inteligencia artificial y automatización personalizadas. Aumenta tus ventas y mejora la experiencia del cliente.",
-    en: "Transform your business with customized AI and automation solutions. Increase your sales and enhance customer experience."
-  };
-
-  const titles = {
-    es: "Novativa | Soluciones de IA y Automatización Para Tu Negocio",
-    en: "Novativa | AI and Automation Solutions For Your Business"
+    en: "Transform your business with customized AI and automation solutions. Increase your sales and enhance customer experience.",
+    fr: "Transformez votre entreprise avec des solutions d'intelligence artificielle et d'automatisation personnalisées. Augmentez vos ventes et améliorez l'expérience client.",
+    de: "Transformieren Sie Ihr Unternehmen mit maßgeschneiderten KI- und Automatisierungslösungen. Steigern Sie Ihren Umsatz und verbessern Sie das Kundenerlebnis."
   };
 
   return (
     <>
       <Helmet>
-        <title>{titles[language]}</title>
+        <title>{t('hero.title')}</title>
         <meta 
           name="description" 
-          content={metaDescriptions[language]}
+          content={metaDescriptions[language] || metaDescriptions.es}
         />
         <html lang={language} />
       </Helmet>
