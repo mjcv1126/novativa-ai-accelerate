@@ -14,7 +14,7 @@ const StickyHeaderCTA = () => {
   };
 
   return (
-    <div className="sticky top-0 left-0 right-0 bg-gradient-to-r from-novativa-darkTeal to-novativa-teal py-2 shadow-lg z-50 px-4">
+    <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-novativa-darkTeal to-novativa-teal py-2 shadow-lg z-50 px-4">
       <div className="container mx-auto flex flex-row justify-between items-center">
         <div className="flex items-center">
           <h3 className="text-white text-base font-medium mr-2">¿Listo para empezar tu proyecto con IA?</h3>
