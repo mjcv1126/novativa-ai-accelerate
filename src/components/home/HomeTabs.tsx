@@ -174,8 +174,8 @@ const HomeTabs = () => {
                 </div>
                 <div className="bg-gray-100 rounded-lg p-6">
                   <img 
-                    src="/lovable-uploads/8d19e3cc-82b2-4101-9c68-c405323f6c52.png" 
-                    alt="AI Development" 
+                    src="https://media.tenor.com/5ry-200hErMAAAAM/hacker-hacker-man.gif" 
+                    alt="AI Development Animation" 
                     className="rounded-lg shadow-lg mx-auto"
                   />
                 </div>
