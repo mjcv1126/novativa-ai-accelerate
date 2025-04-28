@@ -112,22 +112,22 @@ const HomeTabs = () => {
             <TabsContent value="content" className="space-y-4">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h3 className="text-2xl font-bold mb-4">Generación de Contenido</h3>
+                  <h3 className="text-2xl font-bold mb-4">Clonación de Avatar y Generación de Videos</h3>
                   <p className="text-gray-600 mb-4">
-                    Crea contenido de alta calidad en minutos con nuestras herramientas de generación basadas en inteligencia artificial.
+                    Crea tu clon digital para producir contenido de video de alta calidad automáticamente. Recupera tu tiempo, reduce costos y genera contenido viral sin contratar actores o editores.
                   </p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Textos optimizados para SEO</span>
+                      <span>Clonación de avatar digital con tu imagen y voz</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Creación de imágenes y gráficos</span>
+                      <span>Creación automática de videos virales</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Adaptación a tu tono de comunicación</span>
+                      <span>Ahorro en costos de contratación de actores y editores</span>
                     </li>
                   </ul>
                   <Button asChild>
