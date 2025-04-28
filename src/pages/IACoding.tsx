@@ -6,7 +6,7 @@ import AppExamples from '@/components/ia-coding/AppExamples';
 import FeaturesList from '@/components/ia-coding/FeaturesList';
 import Benefits from '@/components/ia-coding/Benefits';
 import ScheduleDemo from '@/components/ia-coding/ScheduleDemo';
-import StickyFooterCTA from '@/components/ia-coding/StickyFooterCTA';
+import StickyHeaderCTA from '@/components/ia-coding/StickyFooterCTA';
 
 const IACoding = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,13 +17,13 @@ const IACoding = () => {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden pb-16">
+      <StickyHeaderCTA />
       <HeroSection isVisible={isVisible} />
       <PricingComparison />
       <AppExamples />
       <FeaturesList />
       <Benefits />
       <ScheduleDemo />
-      <StickyFooterCTA />
     </div>
   );
 };

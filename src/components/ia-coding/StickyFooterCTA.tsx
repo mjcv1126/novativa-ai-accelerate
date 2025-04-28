@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
 import { fbTrack } from '@/utils/fbPixel';
 
-const StickyFooterCTA = () => {
+const StickyHeaderCTA = () => {
   const handleScheduleClick = () => {
     // Track the click event with Facebook Pixel
     fbTrack('IADevelopmentScheduleClick');
@@ -14,7 +14,7 @@ const StickyFooterCTA = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-novativa-darkTeal to-novativa-teal py-2 shadow-lg z-50 px-4">
+    <div className="sticky top-0 left-0 right-0 bg-gradient-to-r from-novativa-darkTeal to-novativa-teal py-2 shadow-lg z-50 px-4">
       <div className="container mx-auto flex flex-row justify-between items-center">
         <div className="flex items-center">
           <h3 className="text-white text-base font-medium mr-2">¿Listo para empezar tu proyecto con IA?</h3>
@@ -33,4 +33,4 @@ const StickyFooterCTA = () => {
   );
 };
 
-export default StickyFooterCTA;
+export default StickyHeaderCTA;

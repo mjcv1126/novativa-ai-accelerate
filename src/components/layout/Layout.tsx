@@ -15,10 +15,12 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const isContactPage = location.pathname === '/contacto';
+  const isIACodingPage = location.pathname === '/iacoding';
 
   return (
     <div className="flex flex-col min-h-screen w-full">
-      {!isContactPage && <Navbar />}
+      {!isContactPage && !isIACodingPage && <Navbar />}
+      {!isIACodingPage && isContactPage && <Navbar />}
       <AdminDataProvider>
         <CustomCSSProvider>
           <main className="flex-grow w-full">
