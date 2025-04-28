@@ -1,18 +1,16 @@
-
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-import { blogPosts, getPostsByTag } from '@/data/blogPosts';
+import { blogPosts, getPostsByTag, getCategories, categoryToUrl } from '@/data/blogPosts';
 import { useAdminData } from '@/contexts/AdminDataContext';
 
 const BlogTag = () => {
@@ -20,10 +18,8 @@ const BlogTag = () => {
   const decodedTag = tag ? decodeURIComponent(tag.replace(/-+/g, ' ')) : '';
   const { posts: adminPosts } = useAdminData();
   
-  // Combine admin posts and static blog posts
   const allPosts = [...adminPosts, ...blogPosts];
   
-  // Get all unique tags from the combined posts
   const getAllTags = () => {
     const allTags = allPosts.reduce((tags: string[], post) => {
       if (post.tags) {
@@ -34,7 +30,6 @@ const BlogTag = () => {
     return [...new Set(allTags)];
   };
   
-  // Get posts by tag
   const getFilteredPostsByTag = (tagToFilter: string) => {
     return allPosts.filter(post => 
       post.tags?.some(postTag => 
@@ -117,7 +112,6 @@ const BlogTag = () => {
         </div>
       </section>
       
-      {/* Posts Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -161,7 +155,6 @@ const BlogTag = () => {
         </div>
       </section>
       
-      {/* Tags Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div>
@@ -184,7 +177,6 @@ const BlogTag = () => {
         </div>
       </section>
       
-      {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">¿Listo para transformar tu negocio con IA?</h2>

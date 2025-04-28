@@ -15,9 +15,10 @@ export const getAllTags = () => {
 };
 
 /**
- * Get posts by tag
+ * Get posts by specific tag
+ * Note: This function was renamed to avoid conflict with similar.ts
  */
-export const getPostsByTag = (tag: string) => {
+export const getPostsByTagName = (tag: string) => {
   return blogPosts.filter(post => 
     post.tags?.some(postTag => 
       postTag.toLowerCase() === tag.toLowerCase()
