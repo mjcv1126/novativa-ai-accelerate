@@ -233,6 +233,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   useEffect(() => {
     localStorage.setItem('language', language);
     document.documentElement.lang = language;
+    
+    // Force a re-render of components when language changes
+    // This helps ensure translations are applied immediately
+    window.dispatchEvent(new Event('language-changed'));
   }, [language]);
 
   // Function to change language
