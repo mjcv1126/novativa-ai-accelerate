@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -12,7 +13,6 @@ import IADevelopment from '@/pages/services/IADevelopment';
 import MobileAppDevelopment from '@/pages/services/MobileAppDevelopment';
 import AdminLayout from '@/pages/admin/AdminLayout';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
-import AdminCategories from '@/pages/admin/AdminCategories';
 import AdminLogin from '@/pages/admin/AdminLogin';
 import ScrollToTop from '@/components/layout/ScrollToTop';
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
