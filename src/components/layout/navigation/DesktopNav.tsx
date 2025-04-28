@@ -1,18 +1,23 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+import { useLanguage } from '@/contexts/LanguageContext';
+
 const DesktopNav = () => {
+  const { t } = useLanguage();
+
   return <div className="hidden md:flex items-center space-x-8">
       <Link to="/" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
-        Inicio
+        {t('navigation.home')}
       </Link>
       
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
-              Servicios
+              {t('navigation.services')}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4">
@@ -31,7 +36,7 @@ const DesktopNav = () => {
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/servicios/contact-center" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">Contact Center Humano</div>
+                      <div className="text-sm font-medium">{t('services.contactCenter')}</div>
                       <p className="text-sm leading-snug text-muted-foreground">
                         Servicio de atención al cliente profesional
                       </p>
@@ -41,7 +46,7 @@ const DesktopNav = () => {
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/servicios/agentes-ia" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">Agentes IA Web</div>
+                      <div className="text-sm font-medium">{t('services.aiAgents')}</div>
                       <p className="text-sm leading-snug text-muted-foreground">
                         Chatbots y asistentes virtuales inteligentes
                       </p>
@@ -51,7 +56,7 @@ const DesktopNav = () => {
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/servicios/contenido" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">Generación de Contenido</div>
+                      <div className="text-sm font-medium">{t('services.content')}</div>
                       <p className="text-sm leading-snug text-muted-foreground">
                         Creación automática de contenido con IA
                       </p>
@@ -61,7 +66,7 @@ const DesktopNav = () => {
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/iacoding" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">Desarrollo IA</div>
+                      <div className="text-sm font-medium">{t('services.development')}</div>
                       <p className="text-sm leading-snug text-muted-foreground">
                         Soluciones personalizadas con IA
                       </p>
@@ -75,14 +80,14 @@ const DesktopNav = () => {
       </NavigationMenu>
       
       <Link to="/precios" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
-        Precios
+        {t('navigation.pricing')}
       </Link>
       
       <Link to="/contacto" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
-        Contacto
+        {t('navigation.contact')}
       </Link>
       <ScheduleDialog className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity">
-        AGENDA UN DEMO GRATIS
+        {t('hero.cta').toUpperCase()}
       </ScheduleDialog>
     </div>;
 };
