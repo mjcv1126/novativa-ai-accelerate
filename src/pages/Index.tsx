@@ -1,5 +1,7 @@
+
 import { Helmet } from 'react-helmet-async';
 import Home from './Home';
+import WelcomeDialog from '@/components/shared/WelcomeDialog';
 
 const Index = () => {
   // Pre-connect to domain for faster resource loading
@@ -28,6 +30,7 @@ const Index = () => {
         <meta name="twitter:description" content="Soluciones de IA y automatización personalizadas para acelerar el crecimiento de tu negocio." />
         <link rel="canonical" href="https://novativa.ai" />
       </Helmet>
+      <WelcomeDialog />
       <Home />
     </>
   );
