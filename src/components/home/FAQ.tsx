@@ -10,28 +10,28 @@ import {
 const FAQ = () => {
   const faqs = [
     {
-      question: "¿Qué es la inteligencia artificial y cómo puede beneficiar a mi negocio?",
-      answer: "La inteligencia artificial es un conjunto de tecnologías que permite a las máquinas aprender de datos, razonar y tomar decisiones similares a las humanas. Para tu negocio, puede automatizar procesos, personalizar la experiencia del cliente, analizar grandes volúmenes de datos para obtener insights valiosos y optimizar operaciones, lo que resulta en mayor eficiencia y reducción de costos."
+      question: "¿Qué es la inteligencia artificial y cómo puede ayudar a mi empresa?",
+      answer: "La inteligencia artificial es un conjunto de tecnologías que permite a las máquinas aprender de datos, razonar y tomar decisiones similares a las humanas. Para tu empresa, puede automatizar procesos, personalizar la experiencia del cliente, analizar grandes cantidades de datos para obtener información valiosa y optimizar operaciones, lo que resulta en mayor eficiencia y reducción de costos."
     },
     {
-      question: "¿Cuánto tiempo toma implementar soluciones de IA en mi empresa?",
-      answer: "El tiempo de implementación varía según la complejidad del proyecto. Un chatbot básico puede estar listo en 1-2 semanas, mientras que soluciones más complejas como sistemas de recomendación personalizados pueden tomar 4-8 semanas. Durante nuestra consulta inicial, estableceremos un cronograma realista basado en tus necesidades específicas."
+      question: "¿Cuánto tiempo tarda implementar soluciones de IA en mi empresa?",
+      answer: "El tiempo de implementación varía según la complejidad del proyecto. Un chatbot básico puede estar listo en 1-2 semanas, mientras que soluciones más complejas como sistemas de recomendación personalizados pueden tomar de 4 a 8 semanas. Durante nuestra consulta inicial, estableceremos un cronograma realista basado en tus necesidades específicas."
     },
     {
-      question: "¿Necesito conocimientos técnicos para usar vuestras soluciones?",
-      answer: "No. Nuestras soluciones están diseñadas pensando en la facilidad de uso. Proporcionamos capacitación completa y soporte continuo para asegurar que tu equipo pueda utilizar eficazmente nuestras herramientas sin necesidad de experiencia técnica previa."
+      question: "¿Necesito conocimientos técnicos para usar sus soluciones?",
+      answer: "No. Nuestras soluciones están diseñadas pensando en la facilidad de uso. Te brindamos capacitación completa y soporte continuo para asegurar que tu equipo pueda utilizar efectivamente nuestras herramientas sin necesidad de experiencia técnica previa."
     },
     {
       question: "¿Qué tipo de datos necesitan para implementar soluciones de IA?",
-      answer: "El tipo de datos varía según el proyecto. Podemos trabajar con datos históricos de ventas, interacciones con clientes, registros de servicio, comportamiento en sitio web y más. Todos los datos son tratados con estricta confidencialidad y cumpliendo con normativas de protección de datos como GDPR."
+      answer: "El tipo de datos varía según el proyecto. Podemos trabajar con datos históricos de ventas, interacciones con clientes, registros de servicio, comportamiento en sitio web y más. Todos los datos son tratados con estricta confidencialidad y cumpliendo con las normativas de protección de datos como GDPR."
     },
     {
-      question: "¿Cómo se integrarán vuestras soluciones con nuestros sistemas existentes?",
-      answer: "Nuestras soluciones están diseñadas para integrarse de manera fluida con la mayoría de los sistemas empresariales comunes a través de APIs. Trabajamos con plataformas como Salesforce, HubSpot, Shopify, WordPress y muchas otras. Durante la fase de planificación, evaluamos tu infraestructura actual para asegurar una integración sin contratiempos."
+      question: "¿Cómo se integrarán sus soluciones con nuestros sistemas actuales?",
+      answer: "Nuestras soluciones están diseñadas para integrarse de manera fluida con la mayoría de los sistemas empresariales comunes a través de APIs. Trabajamos con plataformas como Salesforce, HubSpot, Shopify, WordPress y muchas otras. Durante la fase de planificación, evaluamos tu infraestructura actual para asegurar una integración sin problemas."
     },
     {
-      question: "¿Qué soporte ofrecéis después de la implementación?",
-      answer: "Ofrecemos varios niveles de soporte post-implementación, desde asistencia técnica básica hasta mantenimiento completo y optimización continua. Todos nuestros planes incluyen al menos 30 días de soporte posteriores al lanzamiento, y ofrecemos planes de mantenimiento mensual para asegurar que tu solución continúe evolucionando con tu negocio."
+      question: "¿Qué soporte ofrecen después de la implementación?",
+      answer: "Ofrecemos varios niveles de soporte post-implementación, desde asistencia técnica básica hasta mantenimiento completo y optimización continua. Todos nuestros planes incluyen al menos 30 días de soporte después del lanzamiento, y ofrecemos planes de mantenimiento mensual para asegurar que tu solución continúe evolucionando con tu empresa."
     }
   ];
 
@@ -65,3 +65,4 @@ const FAQ = () => {
 };
 
 export default FAQ;
+
