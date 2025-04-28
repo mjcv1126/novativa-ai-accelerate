@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, Share2, PenTool, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+
 const HomeTabs = () => {
   return <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -159,7 +160,11 @@ const HomeTabs = () => {
                   </Button>
                 </div>
                 <div className="bg-gray-100 rounded-lg p-6">
-                  <img src="/lovable-uploads/4c9113e1-f909-4bba-be7b-03a0406c55bd.png" alt="AI Development Interface" className="rounded-lg shadow-lg mx-auto" />
+                  <img 
+                    src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXd5MXUzZHJvZ2RvYnl3dTJ3ZXBlYmNmb2Q2eDhwYnR2NnJtNWZmbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qgQUggAC3Pfv687qPC/giphy.gif" 
+                    alt="Programming GIF" 
+                    className="rounded-lg shadow-lg mx-auto"
+                  />
                 </div>
               </div>
             </TabsContent>
@@ -168,4 +173,5 @@ const HomeTabs = () => {
       </div>
     </section>;
 };
+
 export default HomeTabs;
