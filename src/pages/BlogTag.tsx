@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
-import { blogPosts, getPostsByTag, getCategories, categoryToUrl } from '@/data/blogPosts';
+import { blogPosts, getPostsByTagName, categoryToUrl } from '@/data/blogPosts';
 import { useAdminData } from '@/contexts/AdminDataContext';
 
 const BlogTag = () => {

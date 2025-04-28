@@ -5,8 +5,23 @@ import { Star, MessageCircle, Check } from 'lucide-react';
 const ConfirmationHeader = () => {
   return (
     <div className="text-center mb-12 animate-fade-in">
-      <div className="inline-block mb-6 p-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full">
-        <Star className="h-12 w-12 text-white animate-pulse-subtle" />
+      <div className="flex flex-col items-center mb-6">
+        <div className="mb-4 w-48 h-auto relative">
+          <img 
+            src="/lovable-uploads/b9aa957e-08c9-4897-9b8d-153e6c596fd5.png" 
+            alt="Novativa Logo" 
+            className="w-full animate-pulse-subtle"
+          />
+          <div className="absolute -top-4 -right-4">
+            <Star className="h-8 w-8 text-purple-500 animate-bounce-slow" />
+          </div>
+          <div className="absolute -bottom-2 -left-2">
+            <Star className="h-6 w-6 text-indigo-400 animate-subtle-shake" />
+          </div>
+        </div>
+        <div className="inline-block p-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full">
+          <Star className="h-12 w-12 text-white animate-pulse-subtle" />
+        </div>
       </div>
       <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-indigo-500 to-blue-600 text-transparent bg-clip-text">
         ¡Nos vemos en la videollamada! 🚀

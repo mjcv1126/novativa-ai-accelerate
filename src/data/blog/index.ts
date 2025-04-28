@@ -2,5 +2,5 @@
 export * from './types';
 export * from './posts/data';
 export * from './utils/categories';
-export * from './utils/tags';
-export * from './utils/similar';
+export { getAllTags, getPostsByTagName, tagToUrl } from './utils/tags';
+export { getSimilarPosts, getPostsByCategory } from './utils/similar';

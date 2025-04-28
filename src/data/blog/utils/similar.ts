@@ -1,64 +1,54 @@
 
-import { BlogPost } from '../types';
 import { blogPosts } from '../posts/data';
+import { BlogPost } from '../types';
 
 /**
  * Get similar posts based on category and tags
  */
 export const getSimilarPosts = (post: BlogPost, limit: number = 3): BlogPost[] => {
-  if (!post) return [];
+  // Filter posts with the same category, excluding the current post
+  const sameCategoryPosts = blogPosts.filter(p => 
+    p.id !== post.id && p.category === post.category
+  );
   
-  // Get all available posts except the current one
-  const availablePosts = blogPosts.filter(p => p.id !== post.id);
-  
-  // If no posts available or no current post, return empty array
-  if (availablePosts.length === 0) {
-    return [];
+  // If we have enough posts with the same category, return them
+  if (sameCategoryPosts.length >= limit) {
+    return sameCategoryPosts.slice(0, limit);
   }
-
-  // Calculate similarity score based on matching category and tags
-  const scoredPosts = availablePosts.map(candidate => {
-    let score = 0;
-    
-    // Higher score for same category
-    if (candidate.category === post.category) {
-      score += 5;
-    }
-    
-    // Score for matching tags
-    if (post.tags && candidate.tags) {
-      const matchingTags = post.tags.filter(tag => 
-        candidate.tags?.includes(tag)
-      );
-      score += matchingTags.length * 2;
-    }
-    
-    return { post: candidate, score };
-  });
   
-  // Sort by score (highest first)
-  scoredPosts.sort((a, b) => b.score - a.score);
+  // If not enough posts with same category, look for posts with matching tags
+  let similarPosts = [...sameCategoryPosts];
   
-  // Return the top N posts
-  return scoredPosts
-    .slice(0, limit)
-    .map(item => item.post);
+  if (post.tags && post.tags.length > 0) {
+    const postsWithMatchingTags = blogPosts.filter(p => {
+      // Skip if it's the current post or already in similarPosts
+      if (p.id === post.id || similarPosts.some(sp => sp.id === p.id)) {
+        return false;
+      }
+      
+      // Check if it has any matching tag
+      return p.tags?.some(tag => post.tags?.includes(tag));
+    });
+    
+    // Add posts with matching tags
+    similarPosts = [...similarPosts, ...postsWithMatchingTags];
+  }
+  
+  // If still not enough, add random posts
+  if (similarPosts.length < limit) {
+    const remainingPosts = blogPosts.filter(p => 
+      p.id !== post.id && !similarPosts.some(sp => sp.id === p.id)
+    );
+    
+    similarPosts = [...similarPosts, ...remainingPosts];
+  }
+  
+  return similarPosts.slice(0, limit);
 };
 
 /**
- * Get posts by category
+ * Get posts by specific category
  */
 export const getPostsByCategory = (category: string): BlogPost[] => {
-  return blogPosts.filter(post => 
-    post.category.toLowerCase() === category.toLowerCase()
-  );
-};
-
-/**
- * Get posts by tag
- */
-export const getPostsByTag = (tag: string): BlogPost[] => {
-  return blogPosts.filter(post => 
-    post.tags?.some(t => t.toLowerCase() === tag.toLowerCase())
-  );
+  return blogPosts.filter(post => post.category === category);
 };
