@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
@@ -63,10 +62,10 @@ const Contact = () => {
       </Helmet>
       <LouisebotWidget />
       
-      <section className="py-8 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white sticky top-0 z-10">
-        <div className="container mx-auto px-4 text-center">
+      <header className="fixed w-full top-0 z-50 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] py-8">
+        <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <h3 className="text-xl font-bold">¿Necesitas una respuesta rápida?</h3>
+            <h3 className="text-xl font-bold text-white">¿Necesitas una respuesta rápida?</h3>
             <Button 
               onClick={openTidyCal}
               className="bg-white text-[#1A1F2C] hover:bg-gray-100 transition-colors px-6 py-2 rounded-md font-semibold flex items-center gap-2"
@@ -77,9 +76,9 @@ const Contact = () => {
             </Button>
           </div>
         </div>
-      </section>
+      </header>
       
-      <section className="pt-32 pb-16 bg-gray-50">
+      <section className="pt-40 pb-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
