@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSimilarPosts } from '@/data/blogPosts';
@@ -14,8 +15,6 @@ const BlogPost = () => {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [post, setPost] = useState<any>(null);
   
   // Get all available categories
   const availableCategories = [];
@@ -25,38 +24,18 @@ const BlogPost = () => {
     setupBlogPage();
     
     // Check if post exists, redirect to blog if not
-    if (slug) {
-      const postId = Number(slug);
-      if (isNaN(postId)) {
-        console.log(`Invalid post ID: ${slug}`);
-        navigate('/blog', { replace: true });
-        return;
-      }
-      
-      const foundPost = getPostById(postId);
-      if (!foundPost) {
-        console.log(`Post with ID ${slug} not found`);
-        navigate('/blog', { replace: true });
-        return;
-      }
-      
-      setPost(foundPost);
-      setIsLoading(false);
+    if (slug && !postExists(slug)) {
+      console.log(`Post with ID ${slug} not found, redirecting to blog`);
+      navigate('/blog', { replace: true });
+      return;
     }
   }, [slug, navigate]);
 
-  // Handle loading state
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-20">
-        <div className="bg-white shadow-md rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Cargando artículo...</h2>
-        </div>
-      </div>
-    );
-  }
+  // Find the post data
+  const postId = Number(slug);
+  const post = getPostById(postId);
   
-  // Handle not found state
+  // Handle loading or not found state
   if (!post) {
     return (
       <div className="container mx-auto px-4 py-20">
@@ -110,9 +89,12 @@ const BlogPost = () => {
           <div className="p-6 md:p-10">
             <div className="prose prose-lg max-w-none text-gray-800">
               <p className="text-lg font-medium mb-6">{post.excerpt}</p>
+              <p>Este es un artículo sobre {post.category}.</p>
+              
+              {/* Content would go here */}
               <div className="my-8">
                 <h2 className="text-2xl font-bold mb-4">Contenido del artículo</h2>
-                <div dangerouslySetInnerHTML={{ __html: post.content || 'El contenido de este artículo estará disponible pronto.' }} />
+                <p>El contenido detallado de este artículo estará disponible pronto.</p>
               </div>
             </div>
             

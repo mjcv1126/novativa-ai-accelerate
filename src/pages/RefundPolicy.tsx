@@ -64,7 +64,7 @@ const RefundPolicy = () => {
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">5. Modificaciones a la Política de Reembolsos</h2>
-          <p className="mb-4">Novativa se reserva el derecho de modificar en cualquier momento esta Política de Reembolsos. Cualquier cambio será efectivo inmediatamente después de su publicación en nuestro sitio web: www.novativa.org/politica-reembolso</p>
+          <p className="mb-4">Novativa se reserva el derecho de modificar en cualquier momento esta Política de Reembolsos. Cualquier cambio será efectivo inmediatamente después de su publicación en nuestro sitio web: www.novativa.org/refund-policy</p>
         </section>
 
         <section className="mb-8">

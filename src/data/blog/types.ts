@@ -1,3 +1,4 @@
+
 export interface BlogPost {
   id: number;
   title: string;
@@ -10,6 +11,4 @@ export interface BlogPost {
   image: string;
   seoDescription?: string;
   tags?: string[];
-  content?: string;
-  slug?: string;
 }
