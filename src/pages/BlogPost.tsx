@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSimilarPosts } from '@/data/blogPosts';
+import { getSimilarPosts } from '@/data/blog';
 import { setupBlogPage, postExists, formatBlogDate, getPostById } from '@/utils/blogUtils';
 import BlogHeader from '@/components/blog/BlogHeader';
 import CommentsSection from '@/components/blog/CommentsSection';

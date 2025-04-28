@@ -1,6 +1,7 @@
+
 import { setAntiCacheHeaders } from "./antiCacheHeaders";
 import { blogPosts } from "@/data/blog/posts/data";
-import { useAdminData } from "@/contexts/AdminDataContext";
+import { BlogPost } from "@/data/blog/types";
 
 /**
  * Apply anti-cache measures specifically for blog pages
@@ -33,25 +34,10 @@ export const setupBlogPage = () => {
 /**
  * Get all available posts, combining blog posts data with admin posts
  */
-export const getAllPosts = () => {
-  const allPosts = [...blogPosts];
-  
-  try {
-    // Get admin context using hook if available
-    const adminData = useAdminData();
-    if (adminData && adminData.posts) {
-      // Only add admin posts that aren't in blogPosts
-      adminData.posts.forEach(adminPost => {
-        if (!allPosts.some(post => post.id === adminPost.id)) {
-          allPosts.push(adminPost);
-        }
-      });
-    }
-  } catch (error) {
-    console.log('Admin context not available:', error);
-  }
-  
-  return allPosts;
+export const getAllPosts = (): BlogPost[] => {
+  // For now, just return the static blogPosts array
+  // Admin posts integration will be handled later
+  return [...blogPosts];
 };
 
 /**
@@ -96,7 +82,7 @@ export const getBlogPostUrl = (id: number): string => {
  * Get post by ID
  * @param id - Post ID
  */
-export const getPostById = (id: number) => {
+export const getPostById = (id: number): BlogPost | undefined => {
   const allPosts = getAllPosts();
   return allPosts.find(post => post.id === id);
 };

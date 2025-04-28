@@ -6,6 +6,11 @@ import { BlogPost } from '../types';
  * Get similar posts based on category and tags
  */
 export const getSimilarPosts = (post: BlogPost, limit: number = 3): BlogPost[] => {
+  // If there are no blog posts or post is undefined, return an empty array
+  if (!post || blogPosts.length === 0) {
+    return [];
+  }
+  
   // Filter posts with the same category, excluding the current post
   const sameCategoryPosts = blogPosts.filter(p => 
     p.id !== post.id && p.category === post.category
