@@ -2,28 +2,26 @@
 import { blogPosts } from '../posts/data';
 
 /**
- * Get all available categories from blog posts
+ * Get all unique categories from blog posts
  */
-export const getCategories = () => {
-  return [...new Set(blogPosts.map(post => post.category))];
+export const getCategories = (): string[] => {
+  const categories = blogPosts.map(post => post.category);
+  // Return unique categories
+  return Array.from(new Set(categories));
 };
 
 /**
- * Get posts by category
+ * Get all unique tags from blog posts
  */
-export const getPostsByCategory = (category: string) => {
-  return blogPosts.filter(post => 
-    post.category.toLowerCase() === category.toLowerCase()
-  );
-};
-
-/**
- * Format category for URL
- */
-export const categoryToUrl = (category: string): string => {
-  return category.toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '');
+export const getTags = (): string[] => {
+  const allTags: string[] = [];
+  
+  blogPosts.forEach(post => {
+    if (post.tags && post.tags.length > 0) {
+      allTags.push(...post.tags);
+    }
+  });
+  
+  // Return unique tags
+  return Array.from(new Set(allTags));
 };
