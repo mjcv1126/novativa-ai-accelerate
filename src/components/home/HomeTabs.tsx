@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bot, BarChart3, PenTool, MessageSquare } from 'lucide-react';
+import { Bot, Share2, PenTool, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -21,9 +20,9 @@ const HomeTabs = () => {
                 <span className="hidden md:inline">Asistentes</span>
                 <span className="md:hidden">IA</span>
               </TabsTrigger>
-              <TabsTrigger value="marketing" className="flex gap-2">
-                <BarChart3 className="h-4 w-4" />
-                <span>Marketing</span>
+              <TabsTrigger value="novachannel" className="flex gap-2">
+                <Share2 className="h-4 w-4" />
+                <span>NovaChannel</span>
               </TabsTrigger>
               <TabsTrigger value="content" className="flex gap-2">
                 <PenTool className="h-4 w-4" />
@@ -72,25 +71,25 @@ const HomeTabs = () => {
               </div>
             </TabsContent>
             
-            <TabsContent value="marketing" className="space-y-4">
+            <TabsContent value="novachannel" className="space-y-4">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h3 className="text-2xl font-bold mb-4">Marketing Potenciado por IA</h3>
+                  <h3 className="text-2xl font-bold mb-4">NovaChannel - Plataforma Omnicanal</h3>
                   <p className="text-gray-600 mb-4">
-                    Optimiza tus campañas de marketing con análisis predictivo y segmentación inteligente para llegar al público adecuado en el momento perfecto.
+                    Gestiona todas tus conversaciones y canales de comunicación desde una única plataforma potenciada por IA. Optimiza la atención al cliente y aumenta las ventas.
                   </p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Segmentación avanzada de audiencias</span>
+                      <span>Integración con WhatsApp, Messenger y más</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Recomendaciones personalizadas de productos</span>
+                      <span>Chatbot IA personalizado para tu negocio</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Optimización automática de campañas</span>
+                      <span>Panel unificado para gestión de conversaciones</span>
                     </li>
                   </ul>
                   <Button asChild>
@@ -102,7 +101,7 @@ const HomeTabs = () => {
                 <div className="bg-gray-100 rounded-lg p-6">
                   <img 
                     src="/lovable-uploads/0badf3e6-586c-4660-86d6-0e50a6ffb597.png" 
-                    alt="Marketing Analytics" 
+                    alt="NovaChannel Platform" 
                     className="rounded-lg shadow-lg mx-auto"
                   />
                 </div>
@@ -149,26 +148,26 @@ const HomeTabs = () => {
             <TabsContent value="contact" className="space-y-4">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h3 className="text-2xl font-bold mb-4">Contact Center Avanzado</h3>
+                  <h3 className="text-2xl font-bold mb-4">Desarrollo con IA</h3>
                   <p className="text-gray-600 mb-4">
-                    Combina la atención humana con la eficiencia de la IA para ofrecer un servicio al cliente excepcional.
+                    Revolucionamos el desarrollo de software con IA para crear soluciones web y móviles más rápido y con mejor calidad.
                   </p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Atención 24/7 con agentes capacitados</span>
+                      <span>Desarrollo acelerado con IA</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Gestión integral de canales de comunicación</span>
+                      <span>Aplicaciones web y móviles inteligentes</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-novativa-teal mr-2">✓</span>
-                      <span>Reportes detallados y análisis de conversaciones</span>
+                      <span>Integración con sistemas existentes</span>
                     </li>
                   </ul>
                   <Button asChild>
-                    <Link to="/servicios/contact-center">
+                    <Link to="/iacoding">
                       Conocer más
                     </Link>
                   </Button>
@@ -176,7 +175,7 @@ const HomeTabs = () => {
                 <div className="bg-gray-100 rounded-lg p-6">
                   <img 
                     src="/lovable-uploads/8d19e3cc-82b2-4101-9c68-c405323f6c52.png" 
-                    alt="Contact Center" 
+                    alt="AI Development" 
                     className="rounded-lg shadow-lg mx-auto"
                   />
                 </div>
