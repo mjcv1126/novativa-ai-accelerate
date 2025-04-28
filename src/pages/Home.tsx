@@ -5,7 +5,6 @@ import Features from '@/components/home/Features';
 import Services from '@/components/home/Services';
 import Testimonials from '@/components/home/Testimonials';
 import CallToAction from '@/components/home/CallToAction';
-import PartnerLogos from '@/components/home/PartnerLogos';
 import HowItWorks from '@/components/home/HowItWorks';
 import Benefits from '@/components/home/Benefits';
 import FAQ from '@/components/home/FAQ';
@@ -25,7 +24,6 @@ const Home: React.FC = () => {
       </Helmet>
       <LouisebotWidget />
       <Hero />
-      <PartnerLogos />
       <HomeTabs />
       <Features />
       <Services />
