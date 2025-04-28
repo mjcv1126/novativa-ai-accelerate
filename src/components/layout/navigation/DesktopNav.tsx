@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
-
 const DesktopNav = () => {
   return <div className="hidden md:flex items-center space-x-8">
       <Link to="/" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
@@ -61,10 +60,7 @@ const DesktopNav = () => {
                 </li>
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link 
-                      to="/iacoding" 
-                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground"
-                    >
+                    <Link to="/iacoding" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                       <div className="text-sm font-medium">Desarrollo IA</div>
                       <p className="text-sm leading-snug text-muted-foreground">
                         Soluciones personalizadas con IA
@@ -81,9 +77,7 @@ const DesktopNav = () => {
       <Link to="/precios" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         Precios
       </Link>
-      <Link to="/blog" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
-        Blog
-      </Link>
+      
       <Link to="/contacto" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         Contacto
       </Link>
@@ -92,5 +86,4 @@ const DesktopNav = () => {
       </ScheduleDialog>
     </div>;
 };
-
 export default DesktopNav;
