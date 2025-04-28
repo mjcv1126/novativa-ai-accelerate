@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -20,12 +20,14 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className }) => {
 
   const languages = [
     { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'en', name: 'English', flag: '🇺🇸' }
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' }
   ];
 
   const currentLanguage = languages.find(lang => lang.code === language);
 
-  const handleLanguageSelect = (langCode: 'es' | 'en') => {
+  const handleLanguageSelect = (langCode: Language) => {
     setLanguage(langCode);
     setIsOpen(false);
   };
@@ -50,7 +52,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className }) => {
             className={`flex items-center gap-2 cursor-pointer px-4 py-2 ${
               language === lang.code ? 'bg-gray-100' : ''
             }`}
-            onClick={() => handleLanguageSelect(lang.code as 'es' | 'en')}
+            onClick={() => handleLanguageSelect(lang.code as Language)}
           >
             <span>{lang.flag}</span>
             <span>{lang.name}</span>

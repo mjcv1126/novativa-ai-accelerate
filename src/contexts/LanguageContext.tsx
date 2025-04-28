@@ -2,7 +2,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
 // Define available languages
-export type Language = 'es' | 'en';
+export type Language = 'es' | 'en' | 'fr' | 'de';
 
 // Define the context shape
 type LanguageContextType = {
@@ -102,6 +102,90 @@ const translations = {
       contactUs: 'Contact us',
       freeDemo: 'Free Demo',
       languageSelector: 'Select language'
+    }
+  },
+  fr: {
+    navigation: {
+      home: 'Accueil',
+      services: 'Services',
+      pricing: 'Tarifs',
+      contact: 'Contact',
+      blog: 'Blog',
+      scheduleDemo: 'Prendre rendez-vous'
+    },
+    hero: {
+      title: 'Solutions d\'IA et d\'Automatisation pour Votre Entreprise',
+      subtitle: 'Transformez votre entreprise avec des solutions personnalisées d\'intelligence artificielle et d\'automatisation.',
+      cta: 'Planifier une Démo Gratuite'
+    },
+    services: {
+      title: 'Nos Services',
+      aiAgents: 'Agents Web IA',
+      content: 'Génération de Contenu',
+      development: 'Développement IA',
+      apps: 'Applications Mobiles',
+      contactCenter: 'Centre de Contact Humain'
+    },
+    cta: {
+      title: 'Prêt à transformer votre entreprise?',
+      subtitle: 'Boostez votre entreprise avec nos solutions d\'intelligence artificielle et d\'automatisation.',
+      scheduleDemo: 'Demandez une démonstration gratuite',
+      viewPricing: 'Voir les tarifs'
+    },
+    contact: {
+      title: 'Contacter Novativa',
+      subtitle: 'Planifiez une réunion avec nous et découvrez comment nous pouvons transformer votre entreprise avec des solutions d\'intelligence artificielle.',
+      quickResponse: 'Besoin d\'une réponse rapide?',
+      scheduleNow: 'Planifiez une réunion maintenant'
+    },
+    common: {
+      readMore: 'Lire plus',
+      learnMore: 'En savoir plus',
+      contactUs: 'Contactez-nous',
+      freeDemo: 'Démo Gratuite',
+      languageSelector: 'Sélectionner la langue'
+    }
+  },
+  de: {
+    navigation: {
+      home: 'Startseite',
+      services: 'Dienstleistungen',
+      pricing: 'Preise',
+      contact: 'Kontakt',
+      blog: 'Blog',
+      scheduleDemo: 'Demo vereinbaren'
+    },
+    hero: {
+      title: 'KI- und Automatisierungslösungen für Ihr Unternehmen',
+      subtitle: 'Transformieren Sie Ihr Unternehmen mit maßgeschneiderten Lösungen für künstliche Intelligenz und Automatisierung.',
+      cta: 'Kostenlose Demo planen'
+    },
+    services: {
+      title: 'Unsere Dienstleistungen',
+      aiAgents: 'KI-Web-Agenten',
+      content: 'Inhaltserstellung',
+      development: 'KI-Entwicklung',
+      apps: 'Mobile Anwendungen',
+      contactCenter: 'Menschliches Kontaktzentrum'
+    },
+    cta: {
+      title: 'Bereit, Ihr Unternehmen zu transformieren?',
+      subtitle: 'Stärken Sie Ihr Unternehmen mit unseren Lösungen für künstliche Intelligenz und Automatisierung.',
+      scheduleDemo: 'Fordern Sie eine kostenlose Demonstration an',
+      viewPricing: 'Pläne und Preise anzeigen'
+    },
+    contact: {
+      title: 'Kontaktieren Sie Novativa',
+      subtitle: 'Planen Sie ein Treffen mit uns und entdecken Sie, wie wir Ihr Unternehmen mit Lösungen für künstliche Intelligenz transformieren können.',
+      quickResponse: 'Benötigen Sie eine schnelle Antwort?',
+      scheduleNow: 'Vereinbaren Sie jetzt ein Treffen'
+    },
+    common: {
+      readMore: 'Mehr lesen',
+      learnMore: 'Mehr erfahren',
+      contactUs: 'Kontaktieren Sie uns',
+      freeDemo: 'Kostenlose Demo',
+      languageSelector: 'Sprache auswählen'
     }
   }
 };
