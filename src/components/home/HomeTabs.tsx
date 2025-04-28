@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, Share2, PenTool, MessageSquare } from 'lucide-react';
@@ -30,7 +31,7 @@ const HomeTabs = () => {
               </TabsTrigger>
               <TabsTrigger value="contact" className="flex gap-2">
                 <MessageSquare className="h-4 w-4" />
-                <span>Contact</span>
+                <span>Desarrollo IA</span>
               </TabsTrigger>
             </TabsList>
             
