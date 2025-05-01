@@ -61,8 +61,10 @@ const MarlonIASection = () => {
         <div className="h-6 w-1 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
         ¿Para qué esperar? Conversa un poco con Marlon IA ahorita:
       </h2>
-      <div id="marlon-ia-script" className="w-full flex justify-center rounded-lg">
-        {/* The Heygen embed will be injected here by the script */}
+      
+      {/* Rectangular container for Marlon IA script */}
+      <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 flex justify-center items-center h-[300px]">
+        <p className="text-gray-500 text-sm">El asistente virtual aparecerá como un círculo flotante en la esquina inferior izquierda. Haz clic para interactuar.</p>
       </div>
     </div>
   );
