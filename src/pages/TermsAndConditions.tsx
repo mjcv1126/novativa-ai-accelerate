@@ -7,7 +7,7 @@ const TermsAndConditions = () => {
     <div className="py-16 bg-white">
       <div className="container mx-auto px-4 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8">Términos y Condiciones de Novativa</h1>
-        <p className="text-gray-600 mb-6">Fecha de última actualización: 27 de abril de 2025</p>
+        <p className="text-gray-600 mb-6">Fecha de última actualización: 2 de mayo de 2025</p>
         <p className="mb-8">Este documento regula el acceso y uso de los servicios proporcionados por ADN Emprendedor LLC, operando comercialmente como Novativa ("Novativa", "nosotros", "nuestro"), con domicilio en 2 S Biscayne Boulevard Suite 3200 #4369, Miami, Florida, 33131, United States, y presencia en América Latina, el Caribe, Europa y Estados Unidos.</p>
 
         <section className="mb-8">
@@ -35,7 +35,7 @@ const TermsAndConditions = () => {
           <p className="mb-4">El Usuario declara y garantiza que cuenta con todos los permisos para solicitar clonaciones. Novativa no se hace responsable de reclamaciones de terceros.</p>
 
           <h3 className="text-xl font-medium mb-3">1.7 Reembolsos</h3>
-          <p className="mb-4">Las solicitudes de reembolso deben realizarse conforme a la política vigente publicada en: www.novativa.org/refund-policy</p>
+          <p className="mb-4">Las solicitudes de reembolso deben realizarse conforme a la política vigente publicada en: www.novativa.org/politica-reembolso</p>
 
           <h3 className="text-xl font-medium mb-3">1.8 Limitación de Responsabilidad</h3>
           <p className="mb-4">Novativa no será responsable por pérdidas indirectas, incidentales, especiales, punitivas o consecuenciales.</p>
