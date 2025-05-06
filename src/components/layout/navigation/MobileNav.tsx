@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 
 interface MobileNavProps {
   onClose: () => void;
+  isOpen?: boolean;
 }
 
 const MobileNav = ({ onClose }: MobileNavProps) => {

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Upload, Copy } from 'lucide-react';
+import { Upload, Copy, Video } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,7 @@ export const VideoTranscriber = () => {
   const [transcription, setTranscription] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -39,6 +40,15 @@ export const VideoTranscriber = () => {
       
       setFile(selectedFile);
       setTranscription('');
+      
+      // Generate video preview URL
+      const videoURL = URL.createObjectURL(selectedFile);
+      setVideoPreview(videoURL);
+      
+      toast({
+        title: "Video cargado",
+        description: "Ahora puedes transcribir el video.",
+      });
     }
   };
 
@@ -105,13 +115,52 @@ export const VideoTranscriber = () => {
     }
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile.type.startsWith('video/')) {
+        setFile(droppedFile);
+        setVideoPreview(URL.createObjectURL(droppedFile));
+        toast({
+          title: "Video cargado",
+          description: "Ahora puedes transcribir el video.",
+        });
+      } else {
+        toast({
+          title: "Archivo no válido",
+          description: "Por favor, sube un archivo de video.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="space-y-6">
       {/* File Upload Area */}
       <Card className="border-dashed border-2">
-        <CardContent className="flex flex-col items-center justify-center py-10">
+        <CardContent 
+          className="flex flex-col items-center justify-center py-10"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+        >
           <div className="mb-6">
-            <Upload size={48} className="text-gray-400" />
+            {videoPreview ? (
+              <div className="relative w-64 h-36 mx-auto mb-4">
+                <video 
+                  src={videoPreview} 
+                  className="w-full h-full object-cover rounded-lg" 
+                  controls
+                />
+              </div>
+            ) : (
+              <Upload size={48} className="text-gray-400" />
+            )}
           </div>
           
           <div className="text-center mb-4">
