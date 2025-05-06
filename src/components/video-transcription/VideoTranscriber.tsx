@@ -7,6 +7,7 @@ import { Upload, Copy, Video } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { supabase } from "@/integrations/supabase/client";
+import { Progress } from "@/components/ui/progress";
 
 export const VideoTranscriber = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -63,7 +64,14 @@ export const VideoTranscriber = () => {
   };
 
   const handleTranscribe = async () => {
-    if (!file) return;
+    if (!file) {
+      toast({
+        title: "Error",
+        description: "No hay video para transcribir",
+        variant: "destructive",
+      });
+      return;
+    }
     
     setIsLoading(true);
     setProgress(0);
@@ -84,34 +92,75 @@ export const VideoTranscriber = () => {
           return newProgress;
         });
       }, 500);
+
+      console.log("Enviando video para transcripción...");
       
-      // Send the file to the Supabase edge function
-      const { data, error } = await supabase.functions.invoke("video-to-text", {
-        body: formData,
-      });
+      // Convert file to base64 to send to the edge function
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
       
-      clearInterval(progressInterval);
+      reader.onload = async () => {
+        try {
+          const arrayBuffer = reader.result as ArrayBuffer;
+          const bytes = new Uint8Array(arrayBuffer);
+          const binaryString = Array.from(bytes).map(byte => String.fromCharCode(byte)).join('');
+          const base64 = btoa(binaryString);
+          
+          // Send the base64 encoded file to the Supabase edge function
+          const { data, error } = await supabase.functions.invoke("video-to-text", {
+            body: { videoBase64: base64, fileName: file.name },
+          });
+          
+          clearInterval(progressInterval);
+          
+          if (error) {
+            console.error("Error en la respuesta de la función:", error);
+            throw new Error(error.message || 'Error al transcribir el video');
+          }
+          
+          console.log("Respuesta de la función:", data);
+          
+          if (!data || !data.text) {
+            throw new Error('No se recibió transcripción del servidor');
+          }
+          
+          setTranscription(data.text);
+          setProgress(100);
+          
+          toast({
+            title: "Transcripción completada",
+            description: "Tu video ha sido transcrito exitosamente.",
+          });
+        } catch (innerError) {
+          console.error('Error procesando el video:', innerError);
+          toast({
+            title: "Error",
+            description: innerError instanceof Error ? innerError.message : "Ocurrió un error al procesar el video.",
+            variant: "destructive",
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      };
       
-      if (error) {
-        throw new Error(error.message || 'Error al transcribir el video');
-      }
-      
-      setTranscription(data.text);
-      setProgress(100);
-      
-      toast({
-        title: "Transcripción completada",
-        description: "Tu video ha sido transcrito exitosamente.",
-      });
+      reader.onerror = (event) => {
+        clearInterval(progressInterval);
+        console.error('Error leyendo el archivo:', event);
+        setIsLoading(false);
+        toast({
+          title: "Error",
+          description: "No se pudo leer el archivo de video.",
+          variant: "destructive",
+        });
+      };
     } catch (error) {
-      console.error('Error transcribing video:', error);
+      console.error('Error transcribiendo video:', error);
+      setIsLoading(false);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Ocurrió un error al transcribir el video.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
