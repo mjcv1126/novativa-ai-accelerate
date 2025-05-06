@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 import NovativaLogo from '@/components/shared/NovativaLogo';
 import { Button } from '@/components/ui/button';
 import { Calendar, Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageToggle from '@/components/shared/LanguageToggle';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
   
   return (
     <footer className="bg-gray-900 text-gray-300 pt-12 pb-8">
@@ -15,7 +18,7 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <NovativaLogo variant="light" />
             <p className="mt-4 mb-6 text-gray-400 max-w-md">
-              Soluciones de inteligencia artificial y automatización para potenciar tu negocio. Nos especializamos en transformar ideas en soluciones tecnológicas innovadoras.
+              {t('footer.solutions')}
             </p>
             <div className="flex space-x-4">
               <a href="https://twitter.com/novativa_ai" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
@@ -38,43 +41,43 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="text-white font-semibold mb-4">Servicios</h3>
+            <h3 className="text-white font-semibold mb-4">{t('footer.services')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/servicios/agentes-ia" className="hover:text-white transition-colors">Agentes de IA</Link>
+                <Link to="/servicios/agentes-ia" className="hover:text-white transition-colors">{t('services.aiAgents')}</Link>
               </li>
               <li>
-                <Link to="/servicios/contenido" className="hover:text-white transition-colors">Generación de Contenido</Link>
+                <Link to="/servicios/contenido" className="hover:text-white transition-colors">{t('services.contentGeneration')}</Link>
               </li>
               <li>
-                <Link to="/iacoding" className="hover:text-white transition-colors">Desarrollo de IA</Link>
+                <Link to="/iacoding" className="hover:text-white transition-colors">{t('services.iaDevelopment')}</Link>
               </li>
               <li>
-                <Link to="/servicios/apps" className="hover:text-white transition-colors">Aplicaciones Móviles</Link>
+                <Link to="/servicios/apps" className="hover:text-white transition-colors">{t('services.mobileApps')}</Link>
               </li>
               <li>
                 <Link to="/novachannel" className="hover:text-white transition-colors">NovaChannel</Link>
               </li>
               <li>
-                <Link to="/servicios/contact-center" className="hover:text-white transition-colors">Contact Center IA</Link>
+                <Link to="/servicios/contact-center" className="hover:text-white transition-colors">{t('services.contactCenter')}</Link>
               </li>
               <li>
-                <Link to="/transcripcion" className="hover:text-white transition-colors">Transcripción de Video</Link>
+                <Link to="/transcripcion" className="hover:text-white transition-colors">{t('services.videoTranscription')}</Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-white font-semibold mb-4">Empresa</h3>
+            <h3 className="text-white font-semibold mb-4">{t('footer.company')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/servicios" className="hover:text-white transition-colors">Servicios</Link>
+                <Link to="/servicios" className="hover:text-white transition-colors">{t('nav.services')}</Link>
               </li>
               <li>
-                <Link to="/precios" className="hover:text-white transition-colors">Precios</Link>
+                <Link to="/precios" className="hover:text-white transition-colors">{t('nav.pricing')}</Link>
               </li>
               <li>
-                <Link to="/contacto" className="hover:text-white transition-colors">Contacto</Link>
+                <Link to="/contacto" className="hover:text-white transition-colors">{t('nav.contact')}</Link>
               </li>
               <li>
                 <Link to="/knowledge" className="hover:text-white transition-colors">Knowledge Base</Link>
@@ -83,13 +86,16 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="text-white font-semibold mb-4">Legal</h3>
+            <h3 className="text-white font-semibold mb-4">{t('footer.legal')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/terminos-condiciones" className="hover:text-white transition-colors">Términos y Condiciones</Link>
+                <Link to="/terminos-condiciones" className="hover:text-white transition-colors">{t('footer.termsConditions')}</Link>
               </li>
               <li>
-                <Link to="/politica-reembolso" className="hover:text-white transition-colors">Política de Reembolso</Link>
+                <Link to="/politica-reembolso" className="hover:text-white transition-colors">{t('footer.refundPolicy')}</Link>
+              </li>
+              <li>
+                <LanguageToggle variant="subtle" className="hover:text-white transition-colors mt-2" />
               </li>
             </ul>
             
@@ -97,7 +103,7 @@ const Footer = () => {
               <Button className="w-full bg-novativa-teal hover:bg-novativa-lightTeal flex items-center gap-2" asChild>
                 <a href="https://tidycal.com/novativa/demo-gratis" target="_blank" rel="noopener noreferrer">
                   <Calendar className="h-4 w-4" />
-                  <span>Agendar Demo</span>
+                  <span>{t('footer.scheduleDemo')}</span>
                 </a>
               </Button>
             </div>
@@ -105,7 +111,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-800 mt-12 pt-6 text-sm text-center text-gray-400">
-          <p>&copy; {currentYear} Novativa. Todos los derechos reservados.</p>
+          <p>&copy; {currentYear} Novativa. {t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

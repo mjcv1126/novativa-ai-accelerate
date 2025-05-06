@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
+import { LanguageProvider } from './contexts/LanguageContext'
 
 // Clear cache before mounting app
 if ('caches' in window) {
@@ -30,7 +31,9 @@ addCacheBuster();
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
     <BrowserRouter>
-      <App />
+      <LanguageProvider>
+        <App />
+      </LanguageProvider>
     </BrowserRouter>
   </HelmetProvider>
 );
