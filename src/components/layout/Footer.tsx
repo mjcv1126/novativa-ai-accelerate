@@ -58,6 +58,9 @@ const Footer = () => {
               <li>
                 <Link to="/servicios/contact-center" className="hover:text-white transition-colors">Contact Center IA</Link>
               </li>
+              <li>
+                <Link to="/transcripcion" className="hover:text-white transition-colors">Transcripción de Video</Link>
+              </li>
             </ul>
           </div>
           
