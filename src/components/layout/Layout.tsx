@@ -16,11 +16,12 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const isContactPage = location.pathname === '/contacto';
   const isIACodingPage = location.pathname === '/iacoding';
+  const isTranscriptionPage = location.pathname === '/transcripcion';
 
+  // Include NavBar on transcription page
   return (
     <div className="flex flex-col min-h-screen w-full">
-      {!isContactPage && !isIACodingPage && <Navbar />}
-      {!isIACodingPage && isContactPage && <Navbar />}
+      {!isIACodingPage && <Navbar />}
       <AdminDataProvider>
         <CustomCSSProvider>
           <main className="flex-grow w-full">

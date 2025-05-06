@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import Home from '@/pages/Home';
@@ -29,13 +29,46 @@ import VideoTranscription from '@/pages/VideoTranscription';
 import './App.css';
 import ContactCenter from '@/pages/services/ContactCenter';
 
-const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => (
-  <div id={id}>
-    {children}
-  </div>
-);
+const PageWrapper = ({ id, children }: { id: string; children: React.ReactNode }) => {
+  // Force reload if session storage indicates a refresh is needed
+  useEffect(() => {
+    const needsRefresh = sessionStorage.getItem('purge-cache');
+    if (needsRefresh === 'true') {
+      sessionStorage.removeItem('purge-cache');
+      window.location.reload();
+    }
+  }, []);
+  
+  return (
+    <div id={id}>
+      {children}
+    </div>
+  );
+};
 
 function App() {
+  // Global cache purging mechanism
+  useEffect(() => {
+    // Clear application cache on initial load
+    if ('caches' in window) {
+      caches.keys().then((names) => {
+        names.forEach(name => {
+          caches.delete(name);
+        });
+      });
+    }
+    
+    // Set flag to handle hard reload when needed
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem('last-page', window.location.pathname);
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <AdminAuthProvider>
       <ScrollToTop />
@@ -105,11 +138,11 @@ function App() {
         
         <Route path="/transcripcion" element={
           <PageWrapper id="page-id-transcription">
-            <Layout><VideoTranscription /></Layout>
+            <VideoTranscription />
           </PageWrapper>
         } />
         
-        <Route path="*" element={<PageWrapper id="page-id-not-found"><Layout><NotFound /></Layout></PageWrapper>} />
+        <Route path="*" element={<PageWrapper id="page-id-not-found"><NotFound /></PageWrapper>} />
       </Routes>
     </AdminAuthProvider>
   );

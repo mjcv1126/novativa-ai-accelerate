@@ -1,15 +1,29 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { VideoTranscriber } from '@/components/video-transcription/VideoTranscriber';
 import { Helmet } from 'react-helmet-async';
+import { setAntiCacheHeaders } from '@/utils/antiCacheHeaders';
 
 const VideoTranscription = () => {
+  // Apply anti-cache measures when the component mounts
+  useEffect(() => {
+    setAntiCacheHeaders();
+    // Force reload if loaded from cache
+    const pageLoadTime = Date.now();
+    if (performance.navigation.type === 2) { // Back/forward navigation
+      window.location.reload();
+    }
+  }, []);
+
   return (
     <Layout>
       <Helmet>
         <title>Transcripción de Video - Novativa</title>
         <meta name="description" content="Transcribe tus videos a texto fácilmente usando IA" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="-1" />
       </Helmet>
       <div className="container mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-center mb-8">Transcripción de Video a Texto</h1>
