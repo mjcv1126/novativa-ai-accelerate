@@ -1,13 +1,13 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 interface MobileNavProps {
-  isOpen: boolean;
   onClose: () => void;
 }
 
-const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
+const MobileNav = ({ onClose }: MobileNavProps) => {
   // Function to handle navigation with refresh for specific routes
   const handleNavigation = (path: string) => {
     onClose();
@@ -20,8 +20,6 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
       return;
     }
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg animate-fade-in">
@@ -70,6 +68,13 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
               onClick={onClose}
             >
               Contact Center Humano
+            </Link>
+            <Link 
+              to="/transcripcion" 
+              className="block text-gray-600 hover:text-[#bc3e06]"
+              onClick={onClose}
+            >
+              Transcripción de Video
             </Link>
           </div>
         </div>
