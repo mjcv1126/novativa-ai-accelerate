@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Upload, Copy } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import { supabase } from "@/integrations/supabase/client";
 
 export const VideoTranscriber = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -75,19 +76,16 @@ export const VideoTranscriber = () => {
       }, 500);
       
       // Send the file to the Supabase edge function
-      const response = await fetch('https://yourprojectid.supabase.co/functions/v1/video-to-text', {
-        method: 'POST',
+      const { data, error } = await supabase.functions.invoke("video-to-text", {
         body: formData,
       });
       
       clearInterval(progressInterval);
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al transcribir el video');
+      if (error) {
+        throw new Error(error.message || 'Error al transcribir el video');
       }
       
-      const data = await response.json();
       setTranscription(data.text);
       setProgress(100);
       

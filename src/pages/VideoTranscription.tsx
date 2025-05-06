@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async';
 
 const VideoTranscription = () => {
   return (
-    <>
+    <Layout>
       <Helmet>
         <title>Transcripción de Video - Novativa</title>
         <meta name="description" content="Transcribe tus videos a texto fácilmente usando IA" />
@@ -21,7 +21,7 @@ const VideoTranscription = () => {
           <VideoTranscriber />
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 
