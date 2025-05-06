@@ -46,7 +46,7 @@ const AdminCacheControl = () => {
     });
     
     setTimeout(() => {
-      window.location.reload(true);
+      window.location.reload();
     }, 3000);
   };
 

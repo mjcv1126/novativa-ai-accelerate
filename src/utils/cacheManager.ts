@@ -64,7 +64,30 @@ export const purgeAllCache = async (): Promise<{ success: boolean; message: stri
  * Updates all HTTP cache control headers for the current page
  */
 export const setNoCacheHeaders = (): void => {
-  setAntiCacheHeaders();
+  // Import from antiCacheHeaders utility
+  const metaTags = [
+    { httpEquiv: 'Cache-Control', content: 'no-cache, no-store, must-revalidate, max-age=0' },
+    { httpEquiv: 'Pragma', content: 'no-cache' },
+    { httpEquiv: 'Expires', content: '-1' }
+  ];
+
+  metaTags.forEach(tag => {
+    let metaTag = document.querySelector(`meta[http-equiv="${tag.httpEquiv}"]`);
+    if (!metaTag) {
+      metaTag = document.createElement('meta');
+      metaTag.setAttribute('http-equiv', tag.httpEquiv);
+      document.head.appendChild(metaTag);
+    }
+    metaTag.setAttribute('content', tag.content);
+  });
+  
+  // Add cache-busting query parameter to all scripts
+  const scripts = document.getElementsByTagName('script');
+  Array.from(scripts).forEach(script => {
+    if (script.src && !script.src.includes('?')) {
+      script.src = `${script.src}?v=${new Date().getTime()}`;
+    }
+  });
 };
 
 /**
