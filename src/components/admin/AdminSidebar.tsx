@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Code, Palette } from 'lucide-react';
+import { LayoutDashboard, Code, Palette, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarItemProps {
@@ -54,6 +54,12 @@ const AdminSidebar = () => {
             icon={<Palette className="h-5 w-5" />}
             title="CSS Personalizado"
             active={pathname === '/admin/custom-css'}
+          />
+          <SidebarItem
+            href="/admin/cache"
+            icon={<RefreshCw className="h-5 w-5" />}
+            title="Control de Caché"
+            active={pathname === '/admin/cache'}
           />
         </div>
       </div>

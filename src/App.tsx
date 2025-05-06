@@ -19,6 +19,7 @@ import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 import NovaChannel from '@/pages/NovaChannel';
 import AdminScripts from '@/pages/admin/AdminScripts';
 import AdminCustomCSS from '@/pages/admin/AdminCustomCSS';
+import AdminCacheControl from '@/pages/admin/AdminCacheControl';
 import Welcome from '@/pages/Welcome';
 import ScheduleConfirmation from '@/pages/ScheduleConfirmation';
 import IACoding from '@/pages/IACoding';
@@ -104,6 +105,7 @@ function App() {
             </PageWrapper>
           } />
           <Route path="custom-css" element={<PageWrapper id="page-id-admin-custom-css"><AdminCustomCSS /></PageWrapper>} />
+          <Route path="cache" element={<PageWrapper id="page-id-admin-cache-control"><AdminCacheControl /></PageWrapper>} />
         </Route>
         
         <Route path="/iacoding" element={
