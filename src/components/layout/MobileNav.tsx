@@ -1,66 +1,90 @@
 
-import React from 'react';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Menu } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { X, Menu } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import NovativaLogo from '@/components/shared/NovativaLogo';
 
-const MobileNavLink: React.FC<{ to: string; children: React.ReactNode }> = ({ to, children }) => (
-  <SheetClose asChild>
-    <Link to={to} className="block py-3 text-lg">
-      {children}
-    </Link>
-  </SheetClose>
-);
-
-interface Props {
-  className?: string;
+interface MobileNavProps {
+  setOpen?: (open: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const MobileNav: React.FC<Props> = ({ className }) => {
+export function MobileNav({ setOpen, onOpenChange }: MobileNavProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  const handleToggle = () => {
+    const newState = !isOpen;
+    setIsOpen(newState);
+    setOpen?.(newState);
+    onOpenChange?.(newState);
+  };
+
+  const handleLinkClick = () => {
+    setIsOpen(false);
+    setOpen?.(false);
+    onOpenChange?.(false);
+  };
+
+  const menuItems = [
+    { href: '/', label: 'Inicio' },
+    { href: '/servicios', label: 'Servicios' },
+    { href: '/precios', label: 'Precios' },
+    { href: '/novachannel', label: 'NovaChannel' },
+    { href: '/iacoding', label: 'IA Coding' },
+    { href: '/transcripcion', label: 'Transcripción' },
+    { href: '/contacto', label: 'Contacto' },
+  ];
+
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className={cn("lg:hidden", className)}>
+    <div className="md:hidden">
+      <button
+        className="inline-flex items-center justify-center rounded-md p-2 text-gray-700"
+        onClick={handleToggle}
+        aria-label="Toggle menu"
+      >
+        {isOpen ? (
+          <X className="h-6 w-6" />
+        ) : (
           <Menu className="h-6 w-6" />
-          <span className="sr-only">Toggle menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right">
-        <SheetHeader className="mb-6">
-          <SheetTitle>Menú</SheetTitle>
-          <SheetDescription>
-            Explora nuestros servicios y soluciones de IA
-          </SheetDescription>
-        </SheetHeader>
-        <div className="flex flex-col divide-y">
-          <MobileNavLink to="/">Inicio</MobileNavLink>
-          <MobileNavLink to="/servicios">Servicios</MobileNavLink>
-          <MobileNavLink to="/precios">Precios</MobileNavLink>
-          <MobileNavLink to="/contacto">Contacto</MobileNavLink>
-        </div>
-        <SheetFooter className="mt-6 flex-col gap-2 sm:flex-row">
-          <SheetClose asChild>
-            <Button className="w-full" asChild>
-              <Link to="/contacto">
-                ¿Listo para empezar?
+        )}
+      </button>
+
+      {isOpen && (
+        <div className="fixed inset-0 z-50 bg-white">
+          <div className="flex h-16 items-center justify-between px-4">
+            <NovativaLogo />
+            <button
+              className="rounded-md p-2 text-gray-700"
+              onClick={handleToggle}
+              aria-label="Close menu"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+          <nav className="grid gap-2 px-4 pb-8 pt-4">
+            {menuItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={cn(
+                  "flex items-center rounded-md px-4 py-3 text-base font-medium transition-colors hover:bg-gray-100",
+                  pathname === item.href
+                    ? "bg-gray-100 text-novativa-orange"
+                    : "text-gray-700"
+                )}
+                onClick={handleLinkClick}
+              >
+                {item.label}
               </Link>
-            </Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+            ))}
+          </nav>
+        </div>
+      )}
+    </div>
   );
-};
+}
 
 export default MobileNav;

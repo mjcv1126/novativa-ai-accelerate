@@ -25,6 +25,7 @@ import IACoding from '@/pages/IACoding';
 import KnowledgeBase from '@/pages/KnowledgeBase';
 import RefundPolicy from '@/pages/RefundPolicy';
 import TermsAndConditions from '@/pages/TermsAndConditions';
+import VideoTranscription from '@/pages/VideoTranscription';
 import './App.css';
 import ContactCenter from '@/pages/services/ContactCenter';
 
@@ -99,6 +100,12 @@ function App() {
         <Route path="/terminos-condiciones" element={
           <PageWrapper id="page-id-terms">
             <Layout><TermsAndConditions /></Layout>
+          </PageWrapper>
+        } />
+        
+        <Route path="/transcripcion" element={
+          <PageWrapper id="page-id-transcription">
+            <Layout><VideoTranscription /></Layout>
           </PageWrapper>
         } />
         
