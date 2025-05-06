@@ -11,15 +11,26 @@ import FAQ from '@/components/home/FAQ';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
 import HomeTabs from '@/components/home/HomeTabs';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Home: React.FC = () => {
+  const { t, language } = useLanguage();
+  
+  const metaDescription = language === 'es' 
+    ? "Transforma tu negocio con soluciones de inteligencia artificial y automatización personalizadas. Aumenta tus ventas y mejora la experiencia del cliente."
+    : "Transform your business with custom artificial intelligence and automation solutions. Increase your sales and improve customer experience.";
+
+  const title = language === 'es'
+    ? "Novativa | Soluciones de IA y Automatización Para Tu Negocio"
+    : "Novativa | AI and Automation Solutions For Your Business";
+
   return (
     <>
       <Helmet>
-        <title>Novativa | Soluciones de IA y Automatización Para Tu Negocio</title>
+        <title>{title}</title>
         <meta 
           name="description" 
-          content="Transforma tu negocio con soluciones de inteligencia artificial y automatización personalizadas. Aumenta tus ventas y mejora la experiencia del cliente."
+          content={metaDescription}
         />
       </Helmet>
       <LouisebotWidget />

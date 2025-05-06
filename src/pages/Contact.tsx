@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
@@ -8,10 +9,12 @@ import { toast } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
 import ContactInfo from '@/components/contact/ContactInfo';
 import ContactMeetingCalendar from '@/components/contact/ContactMeetingCalendar';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Contact = () => {
   const [hasRefreshed, setHasRefreshed] = useState(false);
-
+  const { t } = useLanguage();
+  
   useEffect(() => {
     setAntiCacheHeaders();
     
@@ -65,14 +68,14 @@ const Contact = () => {
       <header className="fixed w-full top-0 z-50 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <h3 className="text-xl font-bold text-white">¿Necesitas una respuesta rápida?</h3>
+            <h3 className="text-xl font-bold text-white">{t('contact.header.title')}</h3>
             <Button 
               onClick={openTidyCal}
               className="bg-white text-[#1A1F2C] hover:bg-gray-100 transition-colors px-6 py-2 rounded-md font-semibold flex items-center gap-2"
               size="lg"
             >
               <Calendar className="w-5 h-5" /> 
-              Agenda una reunión ahora
+              {t('contact.header.button')}
             </Button>
           </div>
         </div>
@@ -82,10 +85,10 @@ const Contact = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Contacta con <span className="text-novativa-teal">Novativa</span>
+              {t('contact.title')} <span className="text-novativa-teal">Novativa</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Agenda una reunión con nosotros y descubre cómo podemos transformar tu negocio con soluciones de inteligencia artificial.
+              {t('contact.subtitle')}
             </p>
           </div>
         </div>
