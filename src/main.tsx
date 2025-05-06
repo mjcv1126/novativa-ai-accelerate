@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
 import { LanguageProvider } from './contexts/LanguageContext'
+import LanguageToggle from './components/shared/LanguageToggle'
 
 // Clear cache before mounting app
 if ('caches' in window) {
@@ -32,6 +33,7 @@ createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
     <BrowserRouter>
       <LanguageProvider>
+        <LanguageToggle variant="floating" />
         <App />
       </LanguageProvider>
     </BrowserRouter>

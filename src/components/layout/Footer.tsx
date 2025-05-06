@@ -9,7 +9,10 @@ import LanguageToggle from '@/components/shared/LanguageToggle';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  // Determine correct path based on language
+  const transcriptionPath = language === 'es' ? '/transcripcion' : '/transcription';
   
   return (
     <footer className="bg-gray-900 text-gray-300 pt-12 pb-8">
@@ -62,7 +65,7 @@ const Footer = () => {
                 <Link to="/servicios/contact-center" className="hover:text-white transition-colors">{t('services.contactCenter')}</Link>
               </li>
               <li>
-                <Link to="/transcripcion" className="hover:text-white transition-colors">{t('services.videoTranscription')}</Link>
+                <Link to={transcriptionPath} className="hover:text-white transition-colors">{t('services.videoTranscription')}</Link>
               </li>
             </ul>
           </div>

@@ -38,6 +38,7 @@ export const translations = {
     'footer.refundPolicy': 'Política de Reembolso',
     'footer.scheduleDemo': 'Agendar Demo',
     'footer.copyright': 'Todos los derechos reservados.',
+    'footer.videoTranscription': 'Transcripción de Video',
     
     // Schedule Confirmation
     'schedule.seeYou': '¡Nos vemos en la videollamada! 🚀',
@@ -78,6 +79,7 @@ export const translations = {
     'footer.refundPolicy': 'Refund Policy',
     'footer.scheduleDemo': 'Schedule Demo',
     'footer.copyright': 'All rights reserved.',
+    'footer.videoTranscription': 'Video Transcription',
     
     // Schedule Confirmation
     'schedule.seeYou': 'See you on the video call! 🚀',
@@ -108,6 +110,8 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   // Save language preference to localStorage
   useEffect(() => {
     localStorage.setItem('language', language);
+    // Add a data attribute to the body for CSS targeting if needed
+    document.documentElement.setAttribute('data-language', language);
   }, [language]);
 
   const t = (key: string): string => {
