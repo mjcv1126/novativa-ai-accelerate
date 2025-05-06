@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Layout } from '@/components/layout/Layout';
+import React from 'react';
+import Layout from '@/components/layout/Layout';
 import { VideoTranscriber } from '@/components/video-transcription/VideoTranscriber';
 import { Helmet } from 'react-helmet-async';
 
