@@ -1,14 +1,13 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
-
 const DesktopNav = () => {
-  const { t } = useLanguage();
-  
+  const {
+    t
+  } = useLanguage();
   return <div className="hidden md:flex items-center space-x-8">
       <Link to="/" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         {t('nav.home')}
@@ -29,9 +28,7 @@ const DesktopNav = () => {
                         NovaChannel
                       </div>
                       <p className="text-sm leading-tight text-white/90">
-                        {t('language') === 'es' ? 
-                          'Plataforma integral de comunicación multicanal potenciada por IA' : 
-                          'Comprehensive AI-powered multichannel communication platform'}
+                        {t('language') === 'es' ? 'Plataforma integral de comunicación multicanal potenciada por IA' : 'Comprehensive AI-powered multichannel communication platform'}
                       </p>
                     </Link>
                   </NavigationMenuLink>
@@ -41,9 +38,7 @@ const DesktopNav = () => {
                     <Link to="/servicios/contact-center" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                       <div className="text-sm font-medium">{t('services.contactCenter')}</div>
                       <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 
-                          'Servicio de atención al cliente profesional' : 
-                          'Professional customer service'}
+                        {t('language') === 'es' ? 'Servicio de atención al cliente profesional' : 'Professional customer service'}
                       </p>
                     </Link>
                   </NavigationMenuLink>
@@ -53,9 +48,7 @@ const DesktopNav = () => {
                     <Link to="/servicios/agentes-ia" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                       <div className="text-sm font-medium">{t('services.aiAgents')}</div>
                       <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 
-                          'Chatbots y asistentes virtuales inteligentes' : 
-                          'Chatbots and intelligent virtual assistants'}
+                        {t('language') === 'es' ? 'Chatbots y asistentes virtuales inteligentes' : 'Chatbots and intelligent virtual assistants'}
                       </p>
                     </Link>
                   </NavigationMenuLink>
@@ -65,9 +58,7 @@ const DesktopNav = () => {
                     <Link to="/servicios/contenido" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                       <div className="text-sm font-medium">{t('services.contentGeneration')}</div>
                       <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 
-                          'Creación automática de contenido con IA' : 
-                          'Automatic content creation with AI'}
+                        {t('language') === 'es' ? 'Creación automática de contenido con IA' : 'Automatic content creation with AI'}
                       </p>
                     </Link>
                   </NavigationMenuLink>
@@ -77,23 +68,14 @@ const DesktopNav = () => {
                     <Link to="/iacoding" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                       <div className="text-sm font-medium">{t('services.iaDevelopment')}</div>
                       <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 
-                          'Soluciones personalizadas con IA' : 
-                          'Custom AI solutions'}
+                        {t('language') === 'es' ? 'Soluciones personalizadas con IA' : 'Custom AI solutions'}
                       </p>
                     </Link>
                   </NavigationMenuLink>
                 </li>
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link to="/transcripcion" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">{t('services.videoTranscription')}</div>
-                      <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 
-                          'Convierte video a texto con IA' : 
-                          'Convert video to text with AI'}
-                      </p>
-                    </Link>
+                    
                   </NavigationMenuLink>
                 </li>
               </ul>
@@ -117,5 +99,4 @@ const DesktopNav = () => {
       </ScheduleDialog>
     </div>;
 };
-
 export default DesktopNav;
