@@ -6,7 +6,7 @@ import { Calendar } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const CallToAction = () => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   
   const handleScheduleDemo = () => {
     window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
@@ -17,12 +17,10 @@ const CallToAction = () => {
       <div className="container mx-auto px-4">
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {language === 'es' ? '¿Listo para transformar tu negocio?' : 'Ready to transform your business?'}
+            {t('home.cta.title')}
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            {language === 'es'
-              ? 'Impulsa tu empresa con nuestras soluciones de inteligencia artificial y automatización.'
-              : 'Boost your company with our artificial intelligence and automation solutions.'}
+            {t('home.cta.subtitle')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button 
@@ -31,7 +29,7 @@ const CallToAction = () => {
               className="bg-white text-novativa-teal hover:bg-gray-100"
             >
               <Calendar className="mr-2 h-5 w-5" />
-              {language === 'es' ? 'Agendar Una Demo Gratis' : 'Schedule A Free Demo'}
+              {t('home.cta.button')}
             </Button>
             <Button 
               variant="outline" 

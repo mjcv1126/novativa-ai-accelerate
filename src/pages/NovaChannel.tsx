@@ -10,7 +10,7 @@ import PricingTable from '@/components/pricing/PricingTable';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const NovaChannel = () => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   
   return (
     <>

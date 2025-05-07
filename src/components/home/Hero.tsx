@@ -4,14 +4,23 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import TypingAnimation from '@/components/shared/TypingAnimation';
 import HeroChat from '@/components/chat/HeroChat';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Hero = () => {
-  const typingPhrases = [
+  const { t, language } = useLanguage();
+  
+  const typingPhrases = language === 'es' ? [
     "Automatización de procesos.",
     "Chatbots inteligentes.",
     "Análisis de datos con IA.",
     "Desarrollo con inteligencia artificial.",
     "Generación de contenido automático."
+  ] : [
+    "Process automation.",
+    "Intelligent chatbots.",
+    "AI data analysis.",
+    "Development with artificial intelligence.",
+    "Automatic content generation."
   ];
 
   return (
@@ -25,7 +34,10 @@ const Hero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Acelera Tu Negocio Con <span className="text-novativa-teal">Inteligencia Artificial</span>
+              {language === 'es' 
+                ? <>Acelera Tu Negocio Con <span className="text-novativa-teal">Inteligencia Artificial</span></>
+                : <>Accelerate Your Business With <span className="text-novativa-teal">Artificial Intelligence</span></>
+              }
             </h1>
             <div className="text-xl md:text-2xl text-gray-600 mb-8 h-10">
               <TypingAnimation phrases={typingPhrases} className="inline-block" />
