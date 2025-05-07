@@ -38,7 +38,7 @@ const CallToAction = () => {
               asChild
             >
               <Link to={language === 'es' ? '/contacto' : '/contact'}>
-                {language === 'es' ? 'Contactar con Ventas' : 'Contact Sales'}
+                {t('pricing.cta.button')}
               </Link>
             </Button>
           </div>

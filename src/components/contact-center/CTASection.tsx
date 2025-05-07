@@ -7,7 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const CTASection = () => {
   const { ref, isInView } = useInView();
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <section className="py-16 bg-gradient-to-r from-[#1A1F2C] to-[#2C3E50] relative overflow-hidden">
