@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Calendar, Youtube } from 'lucide-react';
-import { TiktokIcon } from '@/components/shared/TiktokIcon';
+import { Calendar } from 'lucide-react';
 import LouisebotWidget from '@/components/shared/LouisebotWidget';
 import { Helmet } from 'react-helmet-async';
 import { setAntiCacheHeaders } from '@/utils/antiCacheHeaders';
@@ -13,7 +12,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const Contact = () => {
   const [hasRefreshed, setHasRefreshed] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   useEffect(() => {
     setAntiCacheHeaders();
@@ -43,14 +42,16 @@ const Contact = () => {
       };
       script.onerror = (error) => {
         console.error('Error loading TidyCal script:', error);
-        toast.error('Error al cargar el calendario. Por favor, recarga la página.');
+        toast.error(language === 'es' 
+          ? 'Error al cargar el calendario. Por favor, recarga la página.'
+          : 'Error loading the calendar. Please refresh the page.');
       };
       
       document.body.appendChild(script);
     };
     
     setTimeout(loadTidycalScript, 300);
-  }, [hasRefreshed]);
+  }, [hasRefreshed, language]);
 
   const openTidyCal = () => {
     window.open('https://tidycal.com/novativa/demo-gratis', '_blank');

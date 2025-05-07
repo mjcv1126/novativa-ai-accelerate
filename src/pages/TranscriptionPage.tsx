@@ -5,6 +5,8 @@ import VideoTranscription from './VideoTranscription';
 
 // Esta página sirve como un "router" para dirigir al componente correcto según el idioma
 const TranscriptionPage = () => {
+  const { language } = useLanguage();
+  
   // Simplemente devuelve el componente VideoTranscription, ya que internamente ya maneja el idioma
   return <VideoTranscription />;
 };

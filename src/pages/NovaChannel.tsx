@@ -7,8 +7,11 @@ import FeaturesSection from '@/components/NovaChannel/FeaturesSection';
 import BenefitsSection from '@/components/NovaChannel/BenefitsSection';
 import CTASection from '@/components/NovaChannel/CTASection';
 import PricingTable from '@/components/pricing/PricingTable';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const NovaChannel = () => {
+  const { language } = useLanguage();
+  
   return (
     <>
       <LouisebotWidget />
@@ -23,7 +26,7 @@ const NovaChannel = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-900">
-            Planes y Precios 💎
+            {language === 'es' ? 'Planes y Precios 💎' : 'Plans and Pricing 💎'}
           </h2>
           <PricingTable billingCycle="monthly" />
         </div>

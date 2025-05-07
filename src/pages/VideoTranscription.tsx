@@ -7,7 +7,7 @@ import { setAntiCacheHeaders } from '@/utils/antiCacheHeaders';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const VideoTranscription = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   // Apply anti-cache measures when the component mounts
   useEffect(() => {

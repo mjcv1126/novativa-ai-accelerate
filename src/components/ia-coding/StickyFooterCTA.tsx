@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
@@ -5,13 +6,19 @@ import { fbTrack } from '@/utils/fbPixel';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Link } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
+
 const StickyFooterCTA = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const { t, language } = useLanguage();
+  
   const handleScheduleClick = () => {
     if (!termsAccepted) {
       toast({
-        title: "Términos y Condiciones",
-        description: "Por favor, acepta nuestros términos y condiciones para continuar.",
+        title: language === 'es' ? "Términos y Condiciones" : "Terms and Conditions",
+        description: language === 'es' 
+          ? "Por favor, acepta nuestros términos y condiciones para continuar."
+          : "Please accept our terms and conditions to continue.",
         variant: "destructive"
       });
       return;
@@ -23,19 +30,22 @@ const StickyFooterCTA = () => {
     // Open TidyCal meeting link in a new tab
     window.open('https://tidycal.com/novativa/desarrollo-ia', '_blank');
   };
+  
   return <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-novativa-darkTeal to-novativa-teal py-4 shadow-lg z-50 px-4">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex flex-col md:flex-row md:items-center gap-2">
-          <h3 className="text-white text-base font-medium">¿Listo para empezar tu proyecto con IA?</h3>
-          <p className="text-white/80 text-xs md:text-sm">Agenda una videollamada y cuéntanos sobre tu idea</p>
+          <h3 className="text-white text-base font-medium">
+            {language === 'es' ? '¿Listo para empezar tu proyecto con IA?' : 'Ready to start your AI project?'}
+          </h3>
+          <p className="text-white/80 text-xs md:text-sm">
+            {language === 'es' ? 'Agenda una videollamada y cuéntanos sobre tu idea' : 'Schedule a video call and tell us about your idea'}
+          </p>
         </div>
         
         <div className="flex flex-col w-full md:w-auto">
-          
-          
           <Button onClick={handleScheduleClick} size="default" className="bg-novativa-orange hover:bg-novativa-orange/90 text-white px-4">
             <Calendar className="mr-2 h-4 w-4" />
-            Agendar Reunión
+            {language === 'es' ? 'Agendar Reunión' : 'Schedule Meeting'}
           </Button>
         </div>
       </div>

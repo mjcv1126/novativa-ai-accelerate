@@ -7,9 +7,11 @@ import FeaturesList from '@/components/ia-coding/FeaturesList';
 import Benefits from '@/components/ia-coding/Benefits';
 import ScheduleDemo from '@/components/ia-coding/ScheduleDemo';
 import StickyHeaderCTA from '@/components/ia-coding/StickyFooterCTA';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const IACoding = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { language } = useLanguage();
 
   useEffect(() => {
     setIsVisible(true);
