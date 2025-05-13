@@ -1,49 +1,43 @@
 
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { VideoTranscriber } from '@/components/video-transcription/VideoTranscriber';
+import { Helmet } from 'react-helmet-async';
+import { setAntiCacheHeaders } from '@/utils/antiCacheHeaders';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const VideoTranscription = () => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   
+  // Apply anti-cache measures when the component mounts
+  useEffect(() => {
+    setAntiCacheHeaders();
+    // Force reload if loaded from cache
+    const pageLoadTime = Date.now();
+    if (performance.navigation.type === 2) { // Back/forward navigation
+      window.location.reload();
+    }
+  }, []);
+
   return (
     <Layout>
       <Helmet>
-        <title>
-          {language === 'es' ? 'Transcripción de Video - Novativa' : 'Video Transcription - Novativa'}
-        </title>
-        <meta 
-          name="description" 
-          content={language === 'es' 
-            ? 'Convierte tus videos a texto con nuestra herramienta de transcripción de video potenciada por IA.'
-            : 'Convert your videos to text with our AI-powered video transcription tool.'}
-        />
+        <title>{t('services.videoTranscription')} - Novativa</title>
+        <meta name="description" content={t('transcription.subtitle')} />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="-1" />
       </Helmet>
-      
-      <section className="pt-32 pb-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-              {language === 'es' ? 'Transcripción de Video a Texto' : 'Video to Text Transcription'}
-            </h1>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              {language === 'es'
-                ? 'Sube tu archivo de video y nuestra IA lo convertirá en texto que podrás copiar y usar donde quieras.'
-                : 'Upload your video file and our AI will convert it to text that you can copy and use wherever you want.'}
-            </p>
-          </div>
+      <div className="container mx-auto px-4 py-12">
+        <h1 className="text-3xl font-bold text-center mb-8">{t('transcription.title')}</h1>
+        <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+          {t('transcription.subtitle')}
+        </p>
+        
+        <div className="max-w-3xl mx-auto">
+          <VideoTranscriber />
         </div>
-      </section>
-      
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <VideoTranscriber />
-          </div>
-        </div>
-      </section>
+      </div>
     </Layout>
   );
 };
