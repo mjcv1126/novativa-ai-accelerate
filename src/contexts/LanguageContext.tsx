@@ -10,9 +10,9 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [language, setLanguage] = useState<Language>(() => {
     // Check localStorage first
     const savedLanguage = localStorage.getItem('language') as Language;
-    // If no saved preference, use browser language
+    // Always default to Spanish if no saved preference
     if (!savedLanguage) {
-      return navigator.language.startsWith('es') ? 'es' : 'en';
+      return 'es';
     }
     return savedLanguage === 'en' ? 'en' : 'es';
   });
@@ -21,7 +21,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   useLanguageSwitcher(language);
 
   const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations[typeof language]] || key;
+    return translations[language][key] || key;
   };
 
   return (
