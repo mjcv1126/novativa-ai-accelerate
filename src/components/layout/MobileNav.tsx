@@ -1,90 +1,61 @@
 
-import { useState } from 'react';
-import { X, Menu } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import NovativaLogo from '@/components/shared/NovativaLogo';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MobileNavProps {
-  setOpen?: (open: boolean) => void;
-  onOpenChange?: (open: boolean) => void;
+  onClose: () => void;
 }
 
-export function MobileNav({ setOpen, onOpenChange }: MobileNavProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  const handleToggle = () => {
-    const newState = !isOpen;
-    setIsOpen(newState);
-    setOpen?.(newState);
-    onOpenChange?.(newState);
-  };
-
-  const handleLinkClick = () => {
-    setIsOpen(false);
-    setOpen?.(false);
-    onOpenChange?.(false);
-  };
-
-  const menuItems = [
-    { href: '/', label: 'Inicio' },
-    { href: '/servicios', label: 'Servicios' },
-    { href: '/precios', label: 'Precios' },
-    { href: '/novachannel', label: 'NovaChannel' },
-    { href: '/iacoding', label: 'IA Coding' },
-    { href: '/transcripcion', label: 'Transcripción' },
-    { href: '/contacto', label: 'Contacto' },
+const MobileNav: React.FC<MobileNavProps> = ({ onClose }) => {
+  const { language } = useLanguage();
+  
+  const navItems = [
+    {
+      title: language === 'es' ? 'Inicio' : 'Home',
+      href: '/',
+    },
+    {
+      title: language === 'es' ? 'Servicios' : 'Services',
+      href: language === 'es' ? '/servicios' : '/services',
+    },
+    {
+      title: language === 'es' ? 'Precios' : 'Pricing',
+      href: language === 'es' ? '/precios' : '/pricing',
+    },
+    {
+      title: 'NovaChannel',
+      href: '/novachannel',
+    },
+    {
+      title: language === 'es' ? 'Transcripción' : 'Transcription',
+      href: language === 'es' ? '/transcripcion' : '/transcription',
+    },
+    {
+      title: language === 'es' ? 'Contacto' : 'Contact',
+      href: language === 'es' ? '/contacto' : '/contact',
+    }
   ];
 
   return (
-    <div className="md:hidden">
-      <button
-        className="inline-flex items-center justify-center rounded-md p-2 text-gray-700"
-        onClick={handleToggle}
-        aria-label="Toggle menu"
-      >
-        {isOpen ? (
-          <X className="h-6 w-6" />
-        ) : (
-          <Menu className="h-6 w-6" />
-        )}
-      </button>
-
-      {isOpen && (
-        <div className="fixed inset-0 z-50 bg-white">
-          <div className="flex h-16 items-center justify-between px-4">
-            <NovativaLogo />
-            <button
-              className="rounded-md p-2 text-gray-700"
-              onClick={handleToggle}
-              aria-label="Close menu"
-            >
-              <X className="h-6 w-6" />
-            </button>
-          </div>
-          <nav className="grid gap-2 px-4 pb-8 pt-4">
-            {menuItems.map((item) => (
+    <div className="absolute top-full left-0 w-full bg-white shadow-lg py-4">
+      <div className="container mx-auto px-4">
+        <ul className="space-y-2">
+          {navItems.map((item, index) => (
+            <li key={index}>
               <Link
-                key={item.href}
                 to={item.href}
-                className={cn(
-                  "flex items-center rounded-md px-4 py-3 text-base font-medium transition-colors hover:bg-gray-100",
-                  pathname === item.href
-                    ? "bg-gray-100 text-novativa-orange"
-                    : "text-gray-700"
-                )}
-                onClick={handleLinkClick}
+                className="block py-2 hover:text-novativa-orange"
+                onClick={onClose}
               >
-                {item.label}
+                {item.title}
               </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
-}
+};
 
 export default MobileNav;

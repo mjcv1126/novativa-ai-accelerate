@@ -31,7 +31,8 @@ const StickyFooterCTA = () => {
     window.open('https://tidycal.com/novativa/desarrollo-ia', '_blank');
   };
   
-  return <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-novativa-darkTeal to-novativa-teal py-4 shadow-lg z-50 px-4">
+  return (
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-novativa-darkTeal to-novativa-teal py-4 shadow-lg z-50 px-4">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex flex-col md:flex-row md:items-center gap-2">
           <h3 className="text-white text-base font-medium">
@@ -43,12 +44,32 @@ const StickyFooterCTA = () => {
         </div>
         
         <div className="flex flex-col w-full md:w-auto">
+          <div className="flex items-center space-x-2 mb-2">
+            <Checkbox 
+              id="terms" 
+              checked={termsAccepted}
+              onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+            />
+            <label 
+              htmlFor="terms" 
+              className="text-xs text-white cursor-pointer"
+            >
+              {language === 'es' 
+                ? 'Acepto los ' 
+                : 'I accept the '}
+              <Link to="/terminos-condiciones" className="underline">
+                {language === 'es' ? 'términos y condiciones' : 'terms and conditions'}
+              </Link>
+            </label>
+          </div>
           <Button onClick={handleScheduleClick} size="default" className="bg-novativa-orange hover:bg-novativa-orange/90 text-white px-4">
             <Calendar className="mr-2 h-4 w-4" />
             {language === 'es' ? 'Agendar Reunión' : 'Schedule Meeting'}
           </Button>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default StickyFooterCTA;

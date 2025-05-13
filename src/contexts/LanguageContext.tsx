@@ -10,9 +10,9 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [language, setLanguage] = useState<Language>(() => {
     // Check localStorage first
     const savedLanguage = localStorage.getItem('language') as Language;
-    // If no saved preference, use browser language
+    // If no saved preference, use Spanish as default (instead of checking browser language)
     if (!savedLanguage) {
-      return navigator.language.startsWith('es') ? 'es' : 'en';
+      return 'es';
     }
     return savedLanguage === 'en' ? 'en' : 'es';
   });

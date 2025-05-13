@@ -100,6 +100,17 @@ export const translations: TranslationsData = {
     // Video Transcription
     'transcription.title': 'Transcripción de Video a Texto',
     'transcription.subtitle': 'Sube tu archivo de video y nuestra IA lo convertirá en texto que podrás copiar y usar donde quieras.',
+    'transcription.drag': 'Arrastra y suelta tu archivo aquí',
+    'transcription.or': 'o',
+    'transcription.browse': 'Explorar archivos',
+    'transcription.formats': 'Formatos soportados: MP4, MOV, AVI, WEBM. Tamaño máximo: 200MB',
+    'transcription.processing': 'Procesando archivo...',
+    'transcription.result': 'Texto transcrito',
+    'transcription.copy': 'Copiar',
+    'transcription.copied': '¡Copiado!',
+    'transcription.download': 'Descargar texto',
+    'transcription.startover': 'Comenzar de nuevo',
+    'transcription.error': 'Error al procesar el archivo. Por favor, intenta de nuevo con otro archivo.',
     
     // Footer
     'footer.solutions': 'Soluciones de inteligencia artificial y automatización para potenciar tu negocio. Nos especializamos en transformar ideas en soluciones tecnológicas innovadoras.',
@@ -114,7 +125,34 @@ export const translations: TranslationsData = {
 
     // Language Toggle
     'language.switch': 'English',
-    'language.current': 'ES'
+    'language.current': 'ES',
+    
+    // Welcome Dialog
+    'welcome.title': '¡Bienvenido a Novativa!',
+    'welcome.description': 'Somos una agencia especializada en Inteligencia Artificial y automatización para negocios.',
+    'welcome.details': 'Explora nuestros servicios y descubre cómo podemos ayudarte a potenciar tu negocio con la última tecnología en IA.',
+    'welcome.button': 'Comenzar',
+    
+    // PreFooter
+    'prefooter.title': '¿Listo para potenciar tu negocio con IA?',
+    'prefooter.subtitle': 'Agenda una demo gratuita y descubre cómo podemos automatizar tus procesos y aumentar tus ventas.',
+    'prefooter.button': 'Agendar Demo Gratis',
+    
+    // IACoding
+    'iacoding.ready': '¿Listo para empezar tu proyecto con IA?',
+    'iacoding.schedule': 'Agenda una videollamada y cuéntanos sobre tu idea',
+    'iacoding.terms': 'Acepto los ',
+    'iacoding.termsLink': 'términos y condiciones',
+    'iacoding.button': 'Agendar Reunión',
+    
+    // Shared
+    'shared.contactUs': 'Contáctanos',
+    'shared.learnMore': 'Saber más',
+    'shared.viewPlans': 'Ver planes y precios',
+    'shared.requestInfo': 'Solicitar Información',
+    'shared.start': 'Comenzar',
+    'toast.terms.title': 'Términos y Condiciones',
+    'toast.terms.description': 'Por favor, acepta nuestros términos y condiciones para continuar.'
   },
   en: {
     // Navigation
@@ -214,6 +252,17 @@ export const translations: TranslationsData = {
     // Video Transcription
     'transcription.title': 'Video to Text Transcription',
     'transcription.subtitle': 'Upload your video file and our AI will convert it to text that you can copy and use wherever you want.',
+    'transcription.drag': 'Drag and drop your file here',
+    'transcription.or': 'or',
+    'transcription.browse': 'Browse files',
+    'transcription.formats': 'Supported formats: MP4, MOV, AVI, WEBM. Maximum size: 200MB',
+    'transcription.processing': 'Processing file...',
+    'transcription.result': 'Transcribed text',
+    'transcription.copy': 'Copy',
+    'transcription.copied': 'Copied!',
+    'transcription.download': 'Download text',
+    'transcription.startover': 'Start over',
+    'transcription.error': 'Error processing the file. Please try again with another file.',
     
     // Footer
     'footer.solutions': 'Artificial intelligence and automation solutions to power your business. We specialize in transforming ideas into innovative technological solutions.',
@@ -228,6 +277,33 @@ export const translations: TranslationsData = {
 
     // Language Toggle
     'language.switch': 'Español',
-    'language.current': 'EN'
+    'language.current': 'EN',
+    
+    // Welcome Dialog
+    'welcome.title': 'Welcome to Novativa!',
+    'welcome.description': 'We are an agency specialized in Artificial Intelligence and business automation.',
+    'welcome.details': 'Explore our services and discover how we can help you enhance your business with the latest AI technology.',
+    'welcome.button': 'Get Started',
+    
+    // PreFooter
+    'prefooter.title': 'Ready to power your business with AI?',
+    'prefooter.subtitle': 'Schedule a free demo and discover how we can automate your processes and increase your sales.',
+    'prefooter.button': 'Schedule Free Demo',
+    
+    // IACoding
+    'iacoding.ready': 'Ready to start your AI project?',
+    'iacoding.schedule': 'Schedule a video call and tell us about your idea',
+    'iacoding.terms': 'I accept the ',
+    'iacoding.termsLink': 'terms and conditions',
+    'iacoding.button': 'Schedule Meeting',
+    
+    // Shared
+    'shared.contactUs': 'Contact Us',
+    'shared.learnMore': 'Learn more',
+    'shared.viewPlans': 'View plans and pricing',
+    'shared.requestInfo': 'Request Information',
+    'shared.start': 'Get Started',
+    'toast.terms.title': 'Terms and Conditions',
+    'toast.terms.description': 'Please accept our terms and conditions to continue.'
   }
 };

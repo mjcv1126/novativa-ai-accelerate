@@ -1,119 +1,58 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import LanguageToggle from '@/components/shared/LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MobileNavProps {
   onClose: () => void;
-  isOpen?: boolean;
 }
 
-const MobileNav = ({ onClose }: MobileNavProps) => {
-  const { t } = useLanguage();
+const MobileNav: React.FC<MobileNavProps> = ({ onClose }) => {
+  const { language } = useLanguage();
   
-  // Function to handle navigation with refresh for specific routes
-  const handleNavigation = (path: string) => {
-    onClose();
-    if (path === '/contacto') {
-      // For these routes, force a page refresh
-      window.location.href = path;
-    } else if (path === '/agenda') {
-      // Redirect to TidyCal
-      window.location.href = 'https://tidycal.com/novativa/demo-gratis';
-      return;
+  const navItems = [
+    {
+      title: language === 'es' ? 'Inicio' : 'Home',
+      href: '/',
+    },
+    {
+      title: language === 'es' ? 'Servicios' : 'Services',
+      href: language === 'es' ? '/servicios' : '/services',
+    },
+    {
+      title: language === 'es' ? 'Precios' : 'Pricing',
+      href: language === 'es' ? '/precios' : '/pricing',
+    },
+    {
+      title: 'NovaChannel',
+      href: '/novachannel',
+    },
+    {
+      title: language === 'es' ? 'Transcripción' : 'Transcription',
+      href: language === 'es' ? '/transcripcion' : '/transcription',
+    },
+    {
+      title: language === 'es' ? 'Contacto' : 'Contact',
+      href: language === 'es' ? '/contacto' : '/contact',
     }
-  };
+  ];
 
   return (
-    <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg animate-fade-in">
-      <div className="container mx-auto py-4 flex flex-col space-y-4">
-        <div className="flex justify-end px-4">
-          <LanguageToggle />
-        </div>
-        
-        <Link 
-          to="/" 
-          className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
-          onClick={onClose}
-        >
-          {t('nav.home')}
-        </Link>
-        <div className="px-4 py-2">
-          <div className="font-medium text-gray-800 mb-2">{t('nav.services')}</div>
-          <div className="ml-4 space-y-2">
-            <Link 
-              to="/novachannel" 
-              className="block text-gray-600 hover:text-[#bc3e06]"
-              onClick={onClose}
-            >
-              NovaChannel
-            </Link>
-            <Link 
-              to="/servicios/agentes-ia" 
-              className="block text-gray-600 hover:text-[#bc3e06]"
-              onClick={onClose}
-            >
-              {t('services.aiAgents')}
-            </Link>
-            <Link 
-              to="/servicios/contenido" 
-              className="block text-gray-600 hover:text-[#bc3e06]"
-              onClick={onClose}
-            >
-              {t('services.contentGeneration')}
-            </Link>
-            <Link 
-              to="/iacoding" 
-              className="block text-gray-600 hover:text-[#bc3e06]"
-              onClick={onClose}
-            >
-              {t('services.iaDevelopment')}
-            </Link>
-            <Link 
-              to="/servicios/contact-center" 
-              className="block text-gray-600 hover:text-[#bc3e06]"
-              onClick={onClose}
-            >
-              {t('services.contactCenter')}
-            </Link>
-            <Link 
-              to="/transcripcion" 
-              className="block text-gray-600 hover:text-[#bc3e06]"
-              onClick={onClose}
-            >
-              {t('services.videoTranscription')}
-            </Link>
-          </div>
-        </div>
-        <Link 
-          to="/precios" 
-          className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
-          onClick={onClose}
-        >
-          {t('nav.pricing')}
-        </Link>
-        <Link 
-          to="/blog" 
-          className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
-          onClick={onClose}
-        >
-          Blog
-        </Link>
-        <a 
-          href="/contacto" 
-          className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
-          onClick={() => handleNavigation('/contacto')}
-        >
-          {t('nav.contact')}
-        </a>
-        <Button
-          className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity"
-          onClick={() => handleNavigation('/agenda')}
-        >
-          {t('nav.schedule')}
-        </Button>
+    <div className="absolute top-full left-0 w-full bg-white shadow-lg py-4">
+      <div className="container mx-auto px-4">
+        <ul className="space-y-2">
+          {navItems.map((item, index) => (
+            <li key={index}>
+              <Link
+                to={item.href}
+                className="block py-2 hover:text-novativa-orange"
+                onClick={onClose}
+              >
+                {item.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
