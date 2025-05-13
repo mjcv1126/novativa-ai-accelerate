@@ -2,7 +2,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/layout/Layout';
-import VideoTranscriber from '@/components/video-transcription/VideoTranscriber';
+import { VideoTranscriber } from '@/components/video-transcription/VideoTranscriber';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const VideoTranscription = () => {
