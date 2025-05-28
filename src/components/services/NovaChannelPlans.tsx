@@ -9,7 +9,7 @@ const NovaChannelPlans = () => {
   const { t } = useLanguage();
   
   const handleNovaChannelClick = () => {
-    window.open('https://chat.novativa.org', '_blank');
+    window.open('https://chat.novativa.org/register', '_blank');
   };
   
   return (
