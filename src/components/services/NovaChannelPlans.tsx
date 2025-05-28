@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Users, Bot, MessageSquare, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +7,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const NovaChannelPlans = () => {
   const { t } = useLanguage();
+  
+  const handleNovaChannelClick = () => {
+    window.open('https://chat.novativa.org', '_blank');
+  };
   
   return (
     <section className="py-16 bg-gray-50" id="agentes-ia-novachannel">
@@ -51,10 +54,11 @@ const NovaChannelPlans = () => {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button asChild className="w-full bg-novativa-teal hover:bg-novativa-lightTeal">
-                <Link to="/contacto?plan=diamante">
-                  Seleccionar plan
-                </Link>
+              <Button 
+                className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
+                onClick={handleNovaChannelClick}
+              >
+                Seleccionar plan
               </Button>
             </CardFooter>
           </Card>
@@ -90,10 +94,11 @@ const NovaChannelPlans = () => {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button asChild className="w-full bg-novativa-teal hover:bg-novativa-lightTeal">
-                <Link to="/contacto?plan=elite">
-                  Seleccionar plan
-                </Link>
+              <Button 
+                className="w-full bg-novativa-teal hover:bg-novativa-lightTeal"
+                onClick={handleNovaChannelClick}
+              >
+                Seleccionar plan
               </Button>
             </CardFooter>
           </Card>
@@ -129,10 +134,11 @@ const NovaChannelPlans = () => {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button asChild className="w-full bg-novativa-orange hover:bg-novativa-lightOrange">
-                <Link to="/contacto?plan=starter">
-                  Seleccionar plan
-                </Link>
+              <Button 
+                className="w-full bg-novativa-orange hover:bg-novativa-lightOrange"
+                onClick={handleNovaChannelClick}
+              >
+                Seleccionar plan
               </Button>
             </CardFooter>
           </Card>
@@ -168,8 +174,12 @@ const NovaChannelPlans = () => {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button asChild variant="outline" className="w-full border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10">
-                <Link to="/contacto?plan=demo">Probar Gratis</Link>
+              <Button 
+                variant="outline" 
+                className="w-full border-novativa-teal text-novativa-teal hover:bg-novativa-teal/10"
+                onClick={handleNovaChannelClick}
+              >
+                Probar Gratis
               </Button>
             </CardFooter>
           </Card>

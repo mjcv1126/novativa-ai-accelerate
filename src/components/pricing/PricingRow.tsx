@@ -22,6 +22,10 @@ type PricingRowProps = {
 };
 
 export const PricingRow: React.FC<PricingRowProps> = ({ billingCycle, plans }) => {
+  const handleNovaChannelClick = () => {
+    window.open('https://chat.novativa.org', '_blank');
+  };
+
   return (
     <TableRow>
       <TableCell className="font-medium">Precio Mensual</TableCell>
@@ -34,7 +38,6 @@ export const PricingRow: React.FC<PricingRowProps> = ({ billingCycle, plans }) =
             <span className="block text-sm text-gray-500">/mes</span>
           )}
           <Button 
-            asChild
             variant={pricing.buttonVariant || 'default'}
             className={
               pricing.buttonVariant === 'outline' 
@@ -43,10 +46,9 @@ export const PricingRow: React.FC<PricingRowProps> = ({ billingCycle, plans }) =
                 ? "bg-novativa-orange hover:bg-novativa-lightOrange w-full mt-2"
                 : "bg-novativa-teal hover:bg-novativa-lightTeal w-full mt-2"
             }
+            onClick={handleNovaChannelClick}
           >
-            <Link to="/agenda">
-              {pricing.buttonText}
-            </Link>
+            {pricing.buttonText}
           </Button>
         </TableCell>
       ))}
