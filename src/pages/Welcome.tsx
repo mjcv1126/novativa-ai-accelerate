@@ -31,7 +31,7 @@ const Welcome = () => {
             <span className="text-novativa-teal">Has tomado la mejor decisión</span>
           </p>
 
-          <div className="space-y-4 mb-12">
+          <div className="space-y-4">
             <Button
               onClick={openTidyCal}
               size="lg"
@@ -40,16 +40,6 @@ const Welcome = () => {
               <Calendar className="w-6 h-6 mr-2" />
               ¡Agenda una demo gratis ahora!
             </Button>
-          </div>
-
-          <div className="mt-12">
-            <iframe 
-              src="https://chat.novativa.org/" 
-              width="100%" 
-              height="600" 
-              style={{border: 'none'}}
-              title="NovaChannel Chat"
-            />
           </div>
         </div>
       </div>
