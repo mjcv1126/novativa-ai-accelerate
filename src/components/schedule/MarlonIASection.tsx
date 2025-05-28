@@ -1,45 +1,51 @@
 
 import React, { useEffect, useRef } from 'react';
 
-const MARLON_IA_SCRIPT = `!function(window){const host="https://labs.heygen.com",url=host+"/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiI3NDkyMTE0NTVlYTk0MjFmYTM2OTFmY2Mw%0D%0AZGZkYWU4MCIsInByZXZpZXdJbWciOiJodHRwczovL2ZpbGVzMi5oZXlnZW4uYWkvYXZhdGFyL3Yz%0D%0ALzc0OTIxMTQ1NWVhOTQyMWZhMzY5MWZjYzBkZmRhZTgwL2Z1bGwvMi4yL3ByZXZpZXdfdGFyZ2V0%0D%0ALndlYnAiLCJuZWVkUmVtb3ZlQmFja2dyb3VuZCI6ZmFsc2UsImtub3dsZWRnZUJhc2VJZCI6IjUx%0D%0ANmZjY2YxNmU2NDQ5NmViMTgxYTdkOGQ4MmU5MjQzIiwidXNlcm5hbWUiOiI5ZGQ1MTFjYzAyMzY0%0D%0AYzRmOTRhNmZlNDAyZTBjZjgwOSJ9&inIFrame=1",clientWidth=document.body.clientWidth,wrapDiv=document.createElement("div");wrapDiv.id="heygen-streaming-embed";const container=document.createElement("div");container.id="heygen-streaming-container";const stylesheet=document.createElement("style");stylesheet.innerHTML=\`
-  #heygen-streaming-embed {
-    z-index: 1;
-    position: relative;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 400px;
-    border-radius: 12px;
-    border: 2px solid #e5e7eb;
-    box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.1);
-    transition: all ease 0.3s;
-    overflow: hidden;
-    background: #f9fafb;
-    opacity: 1;
-    visibility: visible;
-  }
-  #heygen-streaming-embed.show {
-    opacity: 1;
-    visibility: visible;
-  }
-  #heygen-streaming-embed.expand {
-    height: 450px;
-    border: 2px solid #3b82f6;
-    box-shadow: 0px 8px 24px 0px rgba(59, 130, 246, 0.15);
-  }
-  #heygen-streaming-container {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  #heygen-streaming-container iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    border-radius: 10px;
-  }
-  \`;const iframe=document.createElement("iframe");iframe.allowFullscreen=!1,iframe.title="Streaming Embed",iframe.role="dialog",iframe.allow="microphone",iframe.src=url;let visible=!1,initial=!1;window.addEventListener("message",(e=>{e.origin===host&&e.data&&e.data.type&&"streaming-embed"===e.data.type&&("init"===e.data.action?(initial=!0,wrapDiv.classList.toggle("show",initial)):"show"===e.data.action?(visible=!0,wrapDiv.classList.toggle("expand",visible)):"hide"===e.data.action&&(visible=!1,wrapDiv.classList.toggle("expand",visible)))})),container.appendChild(iframe),wrapDiv.appendChild(stylesheet),wrapDiv.appendChild(container);arguments[0].appendChild(wrapDiv)};`;
+const MARLON_IA_SCRIPT = `!function(window){
+  const host="https://labs.heygen.com",
+    url=host+"/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiI3NDkyMTE0NTVlYTk0MjFmYTM2OTFmY2MwZGZkYWU4MCIsInByZXZpZXdJbWciOiJodHRwczovL2ZpbGVzMi5oZXlnZW4uYWkvYXZhdGFyL3YzLzc0OTIxMTQ1NWVhOTQyMWZhMzY5MWZjYzBkZmRhZTgwL2Z1bGwvMi4yL3ByZXZpZXdfdGFyZ2V0LndlYnAiLCJuZWVkUmVtb3ZlQmFja2dyb3VuZCI6ZmFsc2UsImtub3dsZWRnZUJhc2VJZCI6IjUxNmZjY2YxNmU2NDQ5NmViMTgxYTdkOGQ4MmU5MjQzIiwidXNlcm5hbWUiOiI5ZGQ1MTFjYzAyMzY0YzRmOTRhNmZlNDAyZTBjZjgwOSJ9&inIFrame=1";
+  const parentDiv = document.getElementById("mi-espacio-embed");
+  if (!parentDiv) { console.error("No existe el contenedor #mi-espacio-embed"); return; }
+
+  // Limpia el contenedor antes de insertar
+  parentDiv.innerHTML = "";
+
+  // Crea el contenedor para el iframe
+  const container = document.createElement("div");
+  container.id = "heygen-streaming-container";
+  container.style.width = "100%";
+  container.style.height = "100%";
+
+  // Aplica CSS al iframe
+  const stylesheet = document.createElement("style");
+  stylesheet.innerHTML = \`
+    #heygen-streaming-container {
+      width: 100%;
+      height: 100%;
+    }
+    #heygen-streaming-container iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+    }
+  \`;
+
+  // Crea el iframe
+  const iframe = document.createElement("iframe");
+  iframe.allowFullscreen = false;
+  iframe.title = "Streaming Embed";
+  iframe.role = "dialog";
+  iframe.allow = "microphone";
+  iframe.src = url;
+
+  // Inserta
+  container.appendChild(iframe);
+  parentDiv.appendChild(stylesheet);
+  parentDiv.appendChild(container);
+
+  // Eventos de show/hide no son relevantes aquí, pero puedes agregarlos si tu embed los requiere
+}(globalThis);`;
 
 const MarlonIASection = () => {
   const scriptContainerRef = useRef<HTMLDivElement>(null);
@@ -47,37 +53,35 @@ const MarlonIASection = () => {
 
   useEffect(() => {
     if (scriptContainerRef.current && !scriptExecutedRef.current) {
-      console.log('Iniciando carga del script de HeyGen...');
+      console.log('Iniciando carga del nuevo script de HeyGen...');
       
-      // Limpia primero cualquier contenido anterior
-      scriptContainerRef.current.innerHTML = "";
+      // Asigna el ID requerido por el script
+      scriptContainerRef.current.id = "mi-espacio-embed";
       
-      // Ejecuta el script después de un pequeño delay para asegurar que el DOM esté listo
+      // Ejecuta el script después de un pequeño delay
       setTimeout(() => {
         try {
-          console.log('Ejecutando script de HeyGen...');
+          console.log('Ejecutando nuevo script de HeyGen...');
           
-          // Crea una función a partir del string del script
-          const scriptFunction = new Function('target', MARLON_IA_SCRIPT + '(target);');
+          // Ejecuta el script directamente
+          const scriptFunction = new Function(MARLON_IA_SCRIPT);
+          scriptFunction();
           
-          // Ejecuta la función pasando el contenedor como parámetro
-          scriptFunction(scriptContainerRef.current);
-          
-          console.log('Script de HeyGen ejecutado exitosamente');
+          console.log('Nuevo script de HeyGen ejecutado exitosamente');
           scriptExecutedRef.current = true;
           
           // Verifica si el embed se creó correctamente
           setTimeout(() => {
-            const embed = scriptContainerRef.current?.querySelector('#heygen-streaming-embed');
-            if (embed) {
-              console.log('Embed de HeyGen encontrado y visible');
+            const container = document.getElementById('heygen-streaming-container');
+            if (container) {
+              console.log('Contenedor de HeyGen encontrado y visible');
             } else {
-              console.error('No se pudo encontrar el embed de HeyGen');
+              console.error('No se pudo encontrar el contenedor de HeyGen');
             }
           }, 1000);
           
         } catch (error) {
-          console.error('Error ejecutando el script de HeyGen:', error);
+          console.error('Error ejecutando el nuevo script de HeyGen:', error);
         }
       }, 500);
     }
@@ -85,10 +89,7 @@ const MarlonIASection = () => {
     // Limpieza al desmontar
     return () => {
       if (scriptContainerRef.current) {
-        const embed = scriptContainerRef.current.querySelector("#heygen-streaming-embed");
-        if (embed) {
-          embed.remove();
-        }
+        scriptContainerRef.current.innerHTML = "";
       }
       scriptExecutedRef.current = false;
     };
@@ -102,8 +103,16 @@ const MarlonIASection = () => {
       </h2>
       <div
         ref={scriptContainerRef}
-        className="w-full mx-auto mb-6 bg-gray-50 border border-blue-100 rounded-lg flex justify-center items-center min-h-[400px]"
-        style={{ minHeight: 400 }}
+        className="w-full mx-auto mb-6 rounded-xl overflow-hidden"
+        style={{ 
+          width: '100%', 
+          height: '400px', 
+          maxWidth: '600px', 
+          margin: 'auto', 
+          borderRadius: '12px', 
+          overflow: 'hidden', 
+          boxShadow: '0 2px 12px rgba(0,0,0,0.12)'
+        }}
       />
       <p className="text-center text-sm text-gray-500 mt-4">
         Haz clic en Marlon y comienza a hablarle. Te responderá con su voz.
