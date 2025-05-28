@@ -43,31 +43,54 @@ const MARLON_IA_SCRIPT = `!function(window){const host="https://labs.heygen.com"
 
 const MarlonIASection = () => {
   const scriptContainerRef = useRef<HTMLDivElement>(null);
+  const scriptExecutedRef = useRef(false);
 
   useEffect(() => {
-    if (scriptContainerRef.current) {
+    if (scriptContainerRef.current && !scriptExecutedRef.current) {
+      console.log('Iniciando carga del script de HeyGen...');
+      
       // Limpia primero cualquier contenido anterior
       scriptContainerRef.current.innerHTML = "";
-      // Crea e inserta el script
-      const script = document.createElement("script");
-      script.type = "text/javascript";
-      script.text = MARLON_IA_SCRIPT + "(arguments[0])";
       
-      // Ejecuta el script pasando el contenedor como argumento
-      try {
-        const func = new Function('arguments', script.text);
-        func([scriptContainerRef.current]);
-      } catch (error) {
-        console.error('Error executing HeyGen script:', error);
-      }
+      // Ejecuta el script después de un pequeño delay para asegurar que el DOM esté listo
+      setTimeout(() => {
+        try {
+          console.log('Ejecutando script de HeyGen...');
+          
+          // Crea una función a partir del string del script
+          const scriptFunction = new Function('target', MARLON_IA_SCRIPT + '(target);');
+          
+          // Ejecuta la función pasando el contenedor como parámetro
+          scriptFunction(scriptContainerRef.current);
+          
+          console.log('Script de HeyGen ejecutado exitosamente');
+          scriptExecutedRef.current = true;
+          
+          // Verifica si el embed se creó correctamente
+          setTimeout(() => {
+            const embed = scriptContainerRef.current?.querySelector('#heygen-streaming-embed');
+            if (embed) {
+              console.log('Embed de HeyGen encontrado y visible');
+            } else {
+              console.error('No se pudo encontrar el embed de HeyGen');
+            }
+          }, 1000);
+          
+        } catch (error) {
+          console.error('Error ejecutando el script de HeyGen:', error);
+        }
+      }, 500);
     }
 
     // Limpieza al desmontar
     return () => {
       if (scriptContainerRef.current) {
         const embed = scriptContainerRef.current.querySelector("#heygen-streaming-embed");
-        if (embed) embed.remove();
+        if (embed) {
+          embed.remove();
+        }
       }
+      scriptExecutedRef.current = false;
     };
   }, []);
 
@@ -79,8 +102,8 @@ const MarlonIASection = () => {
       </h2>
       <div
         ref={scriptContainerRef}
-        className="w-full mx-auto mb-6 bg-gray-50 border border-blue-100 rounded-lg flex justify-center items-center min-h-[240px]"
-        style={{ minHeight: 240 }}
+        className="w-full mx-auto mb-6 bg-gray-50 border border-blue-100 rounded-lg flex justify-center items-center min-h-[400px]"
+        style={{ minHeight: 400 }}
       />
       <p className="text-center text-sm text-gray-500 mt-4">
         Haz clic en Marlon y comienza a hablarle. Te responderá con su voz.
