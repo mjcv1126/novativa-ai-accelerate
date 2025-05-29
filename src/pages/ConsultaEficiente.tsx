@@ -38,15 +38,12 @@ const ConsultaEficiente = () => {
         {/* Contenido superpuesto */}
         <div className="relative z-20 text-center text-white px-4 max-w-5xl mx-auto">
           <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="relative inline-block mb-8">
-              <div className="absolute -inset-1 bg-gradient-to-r from-novativa-teal to-novativa-orange blur"></div>
-              <div className="relative bg-black px-4 py-2">
-                <img 
-                  src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" 
-                  alt="NovaMedic Logo" 
-                  className="h-16 md:h-24 w-auto mx-auto"
-                />
-              </div>
+            <div className="mb-8 flex justify-center">
+              <img 
+                src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" 
+                alt="NovaMedic Logo" 
+                className="h-12 md:h-16 w-auto"
+              />
             </div>
             
             <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
