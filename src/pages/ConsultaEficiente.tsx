@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield, Play, Star, ArrowRight, Zap, Target, TrendingUp, Activity, UserCheck, Timer } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-
 const ConsultaEficiente = () => {
   const [showCTA, setShowCTA] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     setIsVisible(true);
     // Activar CTA después de 2 minutos
@@ -16,25 +14,19 @@ const ConsultaEficiente = () => {
 
     return () => clearTimeout(timer);
   }, []);
-
   const openTidyCal = () => {
     window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
   };
-
-  return (
-    <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
+  return <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
       {/* Sección 1: Hero con Video */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* GIF de fondo */}
-        <div 
-          className="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-96 z-0"
-          style={{
-            backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
-            backgroundSize: 'contain',
-            backgroundPosition: 'center top',
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-96 z-0" style={{
+        backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center top',
+        backgroundRepeat: 'no-repeat'
+      }} />
         
         {/* Overlay blanco */}
         <div className="absolute inset-0 z-10 bg-white/85" />
@@ -120,9 +112,7 @@ const ConsultaEficiente = () => {
             </div>
           </div>
           
-          <p className="text-lg mb-8 text-gray-600">
-            🎥 Mirá el contenido. El botón para agendar tu llamada se activará en unos minutos.
-          </p>
+          
           
           {showCTA && <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-6 text-xl animate-bounce-slow shadow-lg">
               <Calendar className="w-6 h-6 mr-2" />
@@ -389,8 +379,6 @@ const ConsultaEficiente = () => {
       {showCTA && <div className="fixed bottom-6 right-6 z-50">
           {/* This area can be used for a floating CTA if needed */}
         </div>}
-    </div>
-  );
+    </div>;
 };
-
 export default ConsultaEficiente;
