@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield, Play, Star, ArrowRight, Zap, Target, TrendingUp } from 'lucide-react';
+import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield, Play, Star, ArrowRight, Zap, Target, TrendingUp, Activity, UserCheck, Timer } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const ConsultaEficiente = () => {
@@ -41,7 +40,7 @@ const ConsultaEficiente = () => {
               <img 
                 src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" 
                 alt="NovaMedic Logo" 
-                className="h-16 md:h-20 w-auto"
+                className="h-12 md:h-16 w-auto"
               />
             </div>
             
@@ -58,19 +57,48 @@ const ConsultaEficiente = () => {
               Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
             </p>
             
-            {/* Stats section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-3xl mx-auto">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-novativa-teal mb-2">95%</div>
-                <div className="text-gray-400">Satisfacción del paciente</div>
+            {/* Stats section mejorada */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-4xl mx-auto">
+              <div className="group relative">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:border-novativa-teal/50 transition-all duration-500 hover:scale-105 hover:bg-white/15">
+                  <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative z-10">
+                    <div className="bg-novativa-teal/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-teal/30 transition-colors duration-300">
+                      <UserCheck className="w-8 h-8 text-novativa-teal mx-auto" />
+                    </div>
+                    <div className="text-4xl font-bold text-novativa-teal mb-2 group-hover:scale-110 transition-transform duration-300">95%</div>
+                    <div className="text-white/80 font-medium">Satisfacción del paciente</div>
+                    <div className="text-sm text-gray-400 mt-2">Pacientes más felices y confiados</div>
+                  </div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-novativa-orange mb-2">60%</div>
-                <div className="text-gray-400">Menos tiempo administrativo</div>
+              
+              <div className="group relative">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:border-novativa-orange/50 transition-all duration-500 hover:scale-105 hover:bg-white/15">
+                  <div className="absolute inset-0 bg-gradient-to-br from-novativa-orange/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative z-10">
+                    <div className="bg-novativa-orange/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-orange/30 transition-colors duration-300">
+                      <Timer className="w-8 h-8 text-novativa-orange mx-auto" />
+                    </div>
+                    <div className="text-4xl font-bold text-novativa-orange mb-2 group-hover:scale-110 transition-transform duration-300">60%</div>
+                    <div className="text-white/80 font-medium">Menos tiempo administrativo</div>
+                    <div className="text-sm text-gray-400 mt-2">Más tiempo para tus pacientes</div>
+                  </div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-novativa-teal mb-2">24/7</div>
-                <div className="text-gray-400">Atención automatizada</div>
+              
+              <div className="group relative">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:border-novativa-teal/50 transition-all duration-500 hover:scale-105 hover:bg-white/15">
+                  <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative z-10">
+                    <div className="bg-novativa-teal/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-teal/30 transition-colors duration-300">
+                      <Activity className="w-8 h-8 text-novativa-teal mx-auto" />
+                    </div>
+                    <div className="text-4xl font-bold text-novativa-teal mb-2 group-hover:scale-110 transition-transform duration-300">24/7</div>
+                    <div className="text-white/80 font-medium">Atención automatizada</div>
+                    <div className="text-sm text-gray-400 mt-2">Disponible cuando te necesitan</div>
+                  </div>
+                </div>
               </div>
             </div>
             
