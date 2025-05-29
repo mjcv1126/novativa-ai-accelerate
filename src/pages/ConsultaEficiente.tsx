@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+
 const ConsultaEficiente = () => {
   const [showCTA, setShowCTA] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
   useEffect(() => {
     setIsVisible(true);
     // Activar CTA después de 2 minutos
@@ -14,15 +16,22 @@ const ConsultaEficiente = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
   const openTidyCal = () => {
     window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
   };
-  return <div className="min-h-screen bg-black text-white overflow-hidden">
+
+  return (
+    <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Sección 1: Video + Impacto */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Video de fondo */}
         <div className="absolute inset-0 opacity-30">
-          <img src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=1920&h=1080" alt="Medical Professional" className="w-full h-full object-cover" />
+          <img 
+            src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=1920&h=1080" 
+            alt="Medical Professional" 
+            className="w-full h-full object-cover" 
+          />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/50 to-black" />
         
@@ -31,9 +40,13 @@ const ConsultaEficiente = () => {
           <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <div className="relative inline-block mb-8">
               <div className="absolute -inset-1 bg-gradient-to-r from-novativa-teal to-novativa-orange blur"></div>
-              <h1 className="relative bg-black text-5xl md:text-7xl font-bold px-4 py-2 bg-gradient-to-r from-novativa-teal via-blue-500 to-novativa-orange bg-clip-text text-transparent">
-                NovaMedic
-              </h1>
+              <div className="relative bg-black px-4 py-2">
+                <img 
+                  src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" 
+                  alt="NovaMedic Logo" 
+                  className="h-16 md:h-24 w-auto mx-auto"
+                />
+              </div>
             </div>
             
             <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
@@ -251,6 +264,8 @@ const ConsultaEficiente = () => {
       {showCTA && <div className="fixed bottom-6 right-6 z-50 animate-bounce-slow">
           
         </div>}
-    </div>;
+    </div>
+  );
 };
+
 export default ConsultaEficiente;
