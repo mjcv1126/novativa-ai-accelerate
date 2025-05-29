@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield, Play, Star, ArrowRight, Zap, Target, TrendingUp, Activity, UserCheck, Timer } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+
 const ConsultaEficiente = () => {
   const [showCTA, setShowCTA] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
   useEffect(() => {
     setIsVisible(true);
     // Activar CTA después de 2 minutos
@@ -14,18 +16,35 @@ const ConsultaEficiente = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
   const openTidyCal = () => {
     window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
   };
-  return <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
+
+  return (
+    <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
       {/* Sección 1: Hero con Video */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 via-white to-novativa-teal/5">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* GIF de fondo */}
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        
+        {/* Overlay blanco */}
+        <div className="absolute inset-0 z-10 bg-white/85" />
+        
         {/* Elementos decorativos */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-novativa-teal/5 rounded-full blur-xl animate-pulse" />
-        <div className="absolute bottom-32 right-32 w-48 h-48 bg-novativa-orange/5 rounded-full blur-2xl animate-pulse" />
+        <div className="absolute top-20 left-20 w-32 h-32 bg-novativa-teal/5 rounded-full blur-xl animate-pulse z-20" />
+        <div className="absolute bottom-32 right-32 w-48 h-48 bg-novativa-orange/5 rounded-full blur-2xl animate-pulse z-20" />
         
         {/* Contenido principal */}
-        <div className="relative z-20 text-center px-4 max-w-6xl mx-auto">
+        <div className="relative z-30 text-center px-4 max-w-6xl mx-auto">
           <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             {/* Logo */}
             <div className="mb-8 flex justify-center">
@@ -372,6 +391,8 @@ const ConsultaEficiente = () => {
       {showCTA && <div className="fixed bottom-6 right-6 z-50">
           {/* This area can be used for a floating CTA if needed */}
         </div>}
-    </div>;
+    </div>
+  );
 };
+
 export default ConsultaEficiente;
