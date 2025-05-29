@@ -27,11 +27,11 @@ const ConsultaEficiente = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* GIF de fondo */}
         <div 
-          className="absolute inset-0 z-0"
+          className="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-96 z-0"
           style={{
             backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundSize: 'contain',
+            backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat'
           }}
         />
@@ -45,91 +45,89 @@ const ConsultaEficiente = () => {
         
         {/* Contenido principal */}
         <div className="relative z-30 text-center px-4 max-w-6xl mx-auto">
-          <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            {/* Logo */}
-            <div className="mb-8 flex justify-center">
-              <img src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" alt="NovaMedic Logo" className="h-8 md:h-10 w-auto" />
-            </div>
-            
-            {/* Título principal */}
-            <h1 className="text-4xl md:text-7xl font-bold mb-8 leading-tight text-gray-900">
-              Transformando la <br />
-              <span className="bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-                Experiencia Médica
-              </span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-gray-600">
-              La plataforma de IA que revoluciona la atención médica. <br />
-              Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
-            </p>
-            
-            {/* Video demo */}
-            <div className="relative bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-2xl p-8 mb-12 shadow-lg">
-              <div className="bg-white/80 rounded-xl p-8 backdrop-blur-sm border border-gray-200">
-                <div className="flex items-center justify-center h-64 bg-gradient-to-br from-novativa-teal/10 to-novativa-orange/10 rounded-lg">
-                  <div className="text-center">
-                    <Play className="w-16 h-16 text-novativa-teal mx-auto mb-4" />
-                    <p className="text-lg text-gray-700">Demo: NovaMedic en Acción</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Stats section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-4xl mx-auto">
-              <div className="group relative">
-                <div className="bg-white rounded-2xl p-8 border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="relative z-10">
-                    <div className="bg-novativa-teal/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-teal/20 transition-colors duration-300">
-                      <UserCheck className="w-8 h-8 text-novativa-teal mx-auto" />
-                    </div>
-                    <div className="text-4xl font-bold text-novativa-teal mb-2 group-hover:scale-110 transition-transform duration-300">95%</div>
-                    <div className="text-gray-800 font-medium">Satisfacción del paciente</div>
-                    <div className="text-sm text-gray-500 mt-2">Pacientes más felices y confiados</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="group relative">
-                <div className="bg-white rounded-2xl p-8 border-2 border-gray-100 hover:border-novativa-orange/30 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-novativa-orange/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="relative z-10">
-                    <div className="bg-novativa-orange/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-orange/20 transition-colors duration-300">
-                      <Timer className="w-8 h-8 text-novativa-orange mx-auto" />
-                    </div>
-                    <div className="text-4xl font-bold text-novativa-orange mb-2 group-hover:scale-110 transition-transform duration-300">60%</div>
-                    <div className="text-gray-800 font-medium">Menos tiempo administrativo</div>
-                    <div className="text-sm text-gray-500 mt-2">Más tiempo para tus pacientes</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="group relative">
-                <div className="bg-white rounded-2xl p-8 border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="relative z-10">
-                    <div className="bg-novativa-teal/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-teal/20 transition-colors duration-300">
-                      <Activity className="w-8 h-8 text-novativa-teal mx-auto" />
-                    </div>
-                    <div className="text-4xl font-bold text-novativa-teal mb-2 group-hover:scale-110 transition-transform duration-300">24/7</div>
-                    <div className="text-gray-800 font-medium">Atención automatizada</div>
-                    <div className="text-sm text-gray-500 mt-2">Disponible cuando te necesitan</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <p className="text-lg mb-8 text-gray-600">
-              🎥 Mirá el contenido. El botón para agendar tu llamada se activará en unos minutos.
-            </p>
-            
-            {showCTA && <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-6 text-xl animate-bounce-slow shadow-lg">
-                <Calendar className="w-6 h-6 mr-2" />
-                Agendá tu Demo Personalizada
-              </Button>}
+          {/* Logo */}
+          <div className="mb-8 flex justify-center">
+            <img src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" alt="NovaMedic Logo" className="h-8 md:h-10 w-auto" />
           </div>
+          
+          {/* Título principal */}
+          <h1 className="text-4xl md:text-7xl font-bold mb-8 leading-tight text-gray-900">
+            Transformando la <br />
+            <span className="bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
+              Experiencia Médica
+            </span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-gray-600">
+            La plataforma de IA que revoluciona la atención médica. <br />
+            Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
+          </p>
+          
+          {/* Video demo */}
+          <div className="relative bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-2xl p-8 mb-12 shadow-lg">
+            <div className="bg-white/80 rounded-xl p-8 backdrop-blur-sm border border-gray-200">
+              <div className="flex items-center justify-center h-64 bg-gradient-to-br from-novativa-teal/10 to-novativa-orange/10 rounded-lg">
+                <div className="text-center">
+                  <Play className="w-16 h-16 text-novativa-teal mx-auto mb-4" />
+                  <p className="text-lg text-gray-700">Demo: NovaMedic en Acción</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Stats section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-4xl mx-auto">
+            <div className="group relative">
+              <div className="bg-white rounded-2xl p-8 border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative z-10">
+                  <div className="bg-novativa-teal/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-teal/20 transition-colors duration-300">
+                    <UserCheck className="w-8 h-8 text-novativa-teal mx-auto" />
+                  </div>
+                  <div className="text-4xl font-bold text-novativa-teal mb-2 group-hover:scale-110 transition-transform duration-300">95%</div>
+                  <div className="text-gray-800 font-medium">Satisfacción del paciente</div>
+                  <div className="text-sm text-gray-500 mt-2">Pacientes más felices y confiados</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="group relative">
+              <div className="bg-white rounded-2xl p-8 border-2 border-gray-100 hover:border-novativa-orange/30 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-novativa-orange/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative z-10">
+                  <div className="bg-novativa-orange/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-orange/20 transition-colors duration-300">
+                    <Timer className="w-8 h-8 text-novativa-orange mx-auto" />
+                  </div>
+                  <div className="text-4xl font-bold text-novativa-orange mb-2 group-hover:scale-110 transition-transform duration-300">60%</div>
+                  <div className="text-gray-800 font-medium">Menos tiempo administrativo</div>
+                  <div className="text-sm text-gray-500 mt-2">Más tiempo para tus pacientes</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="group relative">
+              <div className="bg-white rounded-2xl p-8 border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-novativa-teal/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative z-10">
+                  <div className="bg-novativa-teal/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 group-hover:bg-novativa-teal/20 transition-colors duration-300">
+                    <Activity className="w-8 h-8 text-novativa-teal mx-auto" />
+                  </div>
+                  <div className="text-4xl font-bold text-novativa-teal mb-2 group-hover:scale-110 transition-transform duration-300">24/7</div>
+                  <div className="text-gray-800 font-medium">Atención automatizada</div>
+                  <div className="text-sm text-gray-500 mt-2">Disponible cuando te necesitan</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <p className="text-lg mb-8 text-gray-600">
+            🎥 Mirá el contenido. El botón para agendar tu llamada se activará en unos minutos.
+          </p>
+          
+          {showCTA && <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-6 text-xl animate-bounce-slow shadow-lg">
+              <Calendar className="w-6 h-6 mr-2" />
+              Agendá tu Demo Personalizada
+            </Button>}
         </div>
       </section>
 
