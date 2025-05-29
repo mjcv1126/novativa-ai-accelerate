@@ -1,14 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle } from 'lucide-react';
+import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const ConsultaEficiente = () => {
   const [showCTA, setShowCTA] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    setIsVisible(true);
     // Activar CTA después de 2 minutos
     const timer = setTimeout(() => {
       setShowCTA(true);
@@ -22,283 +23,213 @@ const ConsultaEficiente = () => {
   };
 
   return (
-    <Layout>
+    <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Sección 1: Video + Impacto */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Video de fondo */}
-        <video
-          autoPlay
-          muted
-          loop
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          style={{ filter: 'brightness(0.4)' }}
-        >
-          <source src="https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761" type="video/mp4" />
-        </video>
-        
-        {/* Overlay oscuro */}
-        <div className="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
+        <div className="absolute inset-0 opacity-30">
+          <img 
+            src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=1920&h=1080" 
+            alt="Medical Professional"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/50 to-black" />
         
         {/* Contenido superpuesto */}
-        <div className="relative z-20 text-center text-white px-4 max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            ¿Y si tu consulta funcionara mejor… <br />
-            <span className="text-novativa-orange">sin que tengas que hacer más?</span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Descubrí cómo transformar la experiencia de tus pacientes, optimizar tu tiempo y mejorar tu imagen profesional sin cambiar tu práctica habitual.
-          </p>
-          
-          <p className="text-lg mb-8">
-            🎥 Mirá el video. El botón para agendar tu llamada se activará en unos minutos.
-          </p>
-          
-          {showCTA && (
-            <Button
-              onClick={openTidyCal}
-              size="lg"
-              className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-4 text-lg animate-fade-in"
-            >
-              <Calendar className="w-6 h-6 mr-2" />
-              Agendá tu llamada personalizada
-            </Button>
-          )}
+        <div className="relative z-20 text-center text-white px-4 max-w-5xl mx-auto">
+          <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <div className="relative inline-block mb-8">
+              <div className="absolute -inset-1 bg-gradient-to-r from-novativa-teal to-novativa-orange blur"></div>
+              <h1 className="relative bg-black text-5xl md:text-7xl font-bold px-4 py-2 bg-gradient-to-r from-novativa-teal via-blue-500 to-novativa-orange bg-clip-text text-transparent">
+                NovaMedic
+              </h1>
+            </div>
+            
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              ¿Y si tu consulta funcionara mejor… <br />
+              <span className="text-novativa-orange">sin que tengas que hacer más?</span>
+            </h2>
+            
+            <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed">
+              Descubrí cómo transformar la experiencia de tus pacientes, optimizar tu tiempo y mejorar tu imagen profesional sin cambiar tu práctica habitual.
+            </p>
+            
+            <p className="text-lg mb-8 text-gray-300">
+              🎥 Mirá el contenido. El botón para agendar tu llamada se activará en unos minutos.
+            </p>
+            
+            {showCTA && (
+              <Button
+                onClick={openTidyCal}
+                size="lg"
+                className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-10 py-8 text-xl animate-bounce-slow"
+              >
+                <Calendar className="w-6 h-6 mr-2" />
+                Agendá tu llamada personalizada
+              </Button>
+            )}
+          </div>
         </div>
       </section>
 
       {/* Sección 2: El Problema */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Estás perdiendo pacientes por cosas que nadie te cuenta.
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-red-500 to-red-300 bg-clip-text text-transparent">
+              Estás perdiendo pacientes por lo invisible
             </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-4xl mx-auto">
               Podés ser un excelente profesional y aun así perder pacientes por fallas fuera de tu consulta.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <Card className="p-6 border-l-4 border-l-red-500">
-              <CardContent className="p-0">
-                <h3 className="font-semibold text-lg mb-3">Pacientes que no vuelven</h3>
-                <p className="text-gray-600">aunque los atendiste bien.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 border-l-4 border-l-red-500">
-              <CardContent className="p-0">
-                <h3 className="font-semibold text-lg mb-3">Primeras impresiones</h3>
-                <p className="text-gray-600">que no controlás.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 border-l-4 border-l-red-500">
-              <CardContent className="p-0">
-                <h3 className="font-semibold text-lg mb-3">Falta de seguimiento</h3>
-                <p className="text-gray-600">después de la consulta.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 border-l-4 border-l-red-500">
-              <CardContent className="p-0">
-                <h3 className="font-semibold text-lg mb-3">Detalles logísticos</h3>
-                <p className="text-gray-600">que espantan pacientes.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 border-l-4 border-l-red-500">
-              <CardContent className="p-0">
-                <h3 className="font-semibold text-lg mb-3">Comunicación informal</h3>
-                <p className="text-gray-600">que no refleja tu calidad.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 border-l-4 border-l-red-500">
-              <CardContent className="p-0">
-                <h3 className="font-semibold text-lg mb-3">Falta de herramientas</h3>
-                <p className="text-gray-600">y tiempo para gestionarlo.</p>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              { title: "Pacientes que no vuelven", desc: "aunque los atendiste bien." },
+              { title: "Primeras impresiones", desc: "que no controlás." },
+              { title: "Falta de seguimiento", desc: "después de la consulta." },
+              { title: "Detalles logísticos", desc: "que espantan pacientes." },
+              { title: "Comunicación informal", desc: "que no refleja tu calidad." },
+              { title: "Falta de herramientas", desc: "y tiempo para gestionarlo." }
+            ].map((item, index) => (
+              <Card key={index} className="group relative p-8 bg-gradient-to-br from-gray-800/30 to-gray-900/30 border border-red-500/20 hover:border-red-500/50 transition-all duration-300 hover:scale-105">
+                <CardContent className="p-0">
+                  <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative z-10">
+                    <h3 className="font-semibold text-lg mb-3 text-red-400">{item.title}</h3>
+                    <p className="text-gray-300">{item.desc}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Sección 3: La Solución */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Tu consulta, organizada. Tu atención, profesional. <br />
-              <span className="text-novativa-teal">Tu tiempo, intacto.</span>
+              <span className="bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">Tu tiempo, intacto.</span>
             </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-4xl mx-auto">
               Desarrollamos una plataforma exclusiva para vos. No tenés que adaptarte a un software. El sistema se adapta a vos.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <Calendar className="w-12 h-12 text-novativa-orange mb-4" />
-                <h3 className="font-semibold text-lg mb-3">🗓️ Agenda Inteligente</h3>
-                <p className="text-gray-600">confirmaciones y recordatorios automáticos.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <MessageSquare className="w-12 h-12 text-novativa-orange mb-4" />
-                <h3 className="font-semibold text-lg mb-3">💬 Centro de Mensajes Unificado</h3>
-                <p className="text-gray-600">WhatsApp, Instagram y más en un solo lugar.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <Clock className="w-12 h-12 text-novativa-orange mb-4" />
-                <h3 className="font-semibold text-lg mb-3">🔁 Seguimiento Automático</h3>
-                <p className="text-gray-600">retención sin esfuerzo.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <Users className="w-12 h-12 text-novativa-orange mb-4" />
-                <h3 className="font-semibold text-lg mb-3">🧠 Flujos Personalizados</h3>
-                <p className="text-gray-600">atención diferenciada según tipo de paciente.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <BarChart className="w-12 h-12 text-novativa-orange mb-4" />
-                <h3 className="font-semibold text-lg mb-3">📊 Reportes Ejecutivos</h3>
-                <p className="text-gray-600">entendé lo que está pasando con tu consulta.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <User className="w-12 h-12 text-novativa-orange mb-4" />
-                <h3 className="font-semibold text-lg mb-3">👩‍💻 Atención Digital Externa</h3>
-                <p className="text-gray-600">tu asistente virtual humana.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6 hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-3">
-              <CardContent className="p-0 text-center">
-                <Bot className="w-12 h-12 text-novativa-orange mb-4 mx-auto" />
-                <h3 className="font-semibold text-lg mb-3">🤖 Asistente con IA</h3>
-                <p className="text-gray-600">respuestas 24/7 que educan y filtran pacientes reales.</p>
-              </CardContent>
-            </Card>
+            {[
+              { icon: Calendar, title: "🗓️ Agenda Inteligente", desc: "confirmaciones y recordatorios automáticos." },
+              { icon: MessageSquare, title: "💬 Centro de Mensajes Unificado", desc: "WhatsApp, Instagram y más en un solo lugar." },
+              { icon: Clock, title: "🔁 Seguimiento Automático", desc: "retención sin esfuerzo." },
+              { icon: Users, title: "🧠 Flujos Personalizados", desc: "atención diferenciada según tipo de paciente." },
+              { icon: BarChart, title: "📊 Reportes Ejecutivos", desc: "entendé lo que está pasando con tu consulta." },
+              { icon: User, title: "👩‍💻 Atención Digital Externa", desc: "tu asistente virtual humana." },
+              { icon: Bot, title: "🤖 Asistente con IA", desc: "respuestas 24/7 que educan y filtran pacientes reales.", span: "md:col-span-2 lg:col-span-3" }
+            ].map((item, index) => (
+              <Card key={index} className={`group relative p-8 bg-gradient-to-br from-gray-800/30 to-gray-900/30 border border-gray-800 hover:border-novativa-orange/50 transition-all duration-300 hover:scale-105 ${item.span || ''}`}>
+                <CardContent className="p-0">
+                  <div className="absolute inset-0 bg-novativa-teal/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative z-10 text-center">
+                    <div className="bg-black/30 p-4 rounded-full w-fit mb-6 mx-auto">
+                      <item.icon className="w-8 h-8 text-novativa-orange" />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-3 text-novativa-teal">{item.title}</h3>
+                    <p className="text-gray-300">{item.desc}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Sección 4: Nuestra Diferencia */}
-      <section className="py-16 bg-gradient-to-r from-novativa-teal to-novativa-darkTeal text-white">
+      <section className="py-20 bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            No es una app. Es tu solución.
-          </h2>
-          <p className="text-xl max-w-4xl mx-auto leading-relaxed">
-            No implementamos sistemas genéricos. Evaluamos tu práctica actual y desarrollamos una solución 100% personalizada, sin que tengas que aprender herramientas nuevas.
-          </p>
-          <p className="text-lg mt-6 max-w-3xl mx-auto">
-            Tecnología desarrollada por expertos en automatización, diseñada con criterio médico y humano.
-          </p>
+          <div className="max-w-4xl mx-auto">
+            <Stethoscope className="w-16 h-16 text-novativa-orange mx-auto mb-8" />
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              No es una app. Es tu solución.
+            </h2>
+            <p className="text-xl leading-relaxed mb-8">
+              No implementamos sistemas genéricos. Evaluamos tu práctica actual y desarrollamos una solución 100% personalizada, sin que tengas que aprender herramientas nuevas.
+            </p>
+            <p className="text-lg text-gray-300">
+              Tecnología desarrollada por expertos en automatización, diseñada con criterio médico y humano.
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Sección 5: Beneficios */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="text-center mb-16">
+            <Heart className="w-16 h-16 text-novativa-orange mx-auto mb-8" />
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Lo que vas a notar desde el primer mes.
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
-              <span className="text-lg">Más pacientes regresan</span>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
-              <span className="text-lg">Imagen más profesional</span>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
-              <span className="text-lg">Menos tiempo en tareas repetitivas</span>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
-              <span className="text-lg">Control total de la experiencia</span>
-            </div>
-            
-            <div className="flex items-center space-x-3 md:col-span-2 lg:col-span-2 justify-center">
-              <CheckCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
-              <span className="text-lg">Tranquilidad en cada paso del proceso</span>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {[
+              "Más pacientes regresan",
+              "Imagen más profesional", 
+              "Menos tiempo en tareas repetitivas",
+              "Control total de la experiencia",
+              "Tranquilidad en cada paso del proceso"
+            ].map((benefit, index) => (
+              <div key={index} className="flex items-center space-x-4 p-6 rounded-xl bg-gradient-to-br from-gray-800/30 to-gray-900/30 border border-green-500/20 hover:border-green-500/50 transition-all duration-300">
+                <CheckCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
+                <span className="text-lg">{benefit}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Sección 6: Validación Social */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="text-center mb-16">
+            <Shield className="w-16 h-16 text-novativa-teal mx-auto mb-8" />
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Ya estamos ayudando a profesionales como vos.
             </h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="p-6">
-              <CardContent className="p-0">
-                <div className="text-4xl mb-4">👨‍⚕️</div>
-                <blockquote className="text-lg italic text-gray-700">
-                  "Nunca supe que perdía tantos pacientes hasta que automatizamos el seguimiento."
-                </blockquote>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6">
-              <CardContent className="p-0">
-                <div className="text-4xl mb-4">👩‍⚕️</div>
-                <blockquote className="text-lg italic text-gray-700">
-                  "El asistente con IA me filtra consultas y me deja tiempo para lo importante."
-                </blockquote>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-6">
-              <CardContent className="p-0">
-                <div className="text-4xl mb-4">🏥</div>
-                <blockquote className="text-lg italic text-gray-700">
-                  "La gente cree que tengo un equipo enorme… es Novativa."
-                </blockquote>
-              </CardContent>
-            </Card>
+            {[
+              { emoji: "👨‍⚕️", quote: "Nunca supe que perdía tantos pacientes hasta que automatizamos el seguimiento." },
+              { emoji: "👩‍⚕️", quote: "El asistente con IA me filtra consultas y me deja tiempo para lo importante." },
+              { emoji: "🏥", quote: "La gente cree que tengo un equipo enorme… es NovaMedic." }
+            ].map((testimonial, index) => (
+              <Card key={index} className="p-8 bg-gradient-to-br from-gray-800/30 to-gray-900/30 border border-gray-800 hover:border-novativa-teal/50 transition-all duration-300">
+                <CardContent className="p-0 text-center">
+                  <div className="text-6xl mb-6">{testimonial.emoji}</div>
+                  <blockquote className="text-lg italic text-gray-300 leading-relaxed">
+                    "{testimonial.quote}"
+                  </blockquote>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Sección 7: Llamado Final */}
-      <section className="py-16 bg-gradient-to-r from-novativa-orange to-novativa-lightOrange text-white">
+      <section className="py-20 bg-gradient-to-r from-novativa-orange/20 to-novativa-teal/20">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Querés dar mejor atención sin complicarte. <br />
-            Nosotros te mostramos cómo.
+            <span className="text-novativa-orange">Nosotros te mostramos cómo.</span>
           </h2>
-          <p className="text-xl mb-8">
+          <p className="text-xl mb-12 text-gray-300">
             🎯 Agendá tu llamada personalizada y descubrí cómo funcionaría para vos.
           </p>
           
@@ -306,7 +237,7 @@ const ConsultaEficiente = () => {
             <Button
               onClick={openTidyCal}
               size="lg"
-              className="bg-white text-novativa-orange hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
+              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-10 py-8 text-xl font-semibold"
             >
               <Calendar className="w-6 h-6 mr-2" />
               📅 Agendá tu llamada personalizada
@@ -321,14 +252,14 @@ const ConsultaEficiente = () => {
           <Button
             onClick={openTidyCal}
             size="lg"
-            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-6 py-3 rounded-full shadow-lg"
+            className="bg-gradient-to-r from-novativa-orange to-novativa-teal hover:opacity-90 text-white px-6 py-3 rounded-full shadow-xl border border-white/20"
           >
             <Calendar className="w-5 h-5 mr-2" />
             Agendar llamada
           </Button>
         </div>
       )}
-    </Layout>
+    </div>
   );
 };
 
