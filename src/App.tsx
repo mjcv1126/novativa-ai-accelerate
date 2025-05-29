@@ -20,6 +20,7 @@ import ContentGeneration from './pages/services/ContentGeneration';
 import IADevelopment from './pages/services/IADevelopment';
 import ContactCenter from './pages/services/ContactCenter';
 import Welcome from './pages/Welcome';
+import ConsultaEficiente from './pages/ConsultaEficiente';
 import { useLanguage } from './contexts/LanguageContext';
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
       <Route path="/knowledge" element={<Layout><KnowledgeBase /></Layout>} />
       <Route path="/iacoding" element={<Layout><IACoding /></Layout>} />
       <Route path="/welcome" element={<Welcome />} />
+      <Route path="/consulta-eficiente" element={<ConsultaEficiente />} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
