@@ -24,7 +24,7 @@ const ConsultaEficiente = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
-      <style jsx>{`
+      <style>{`
         @keyframes heartBeat {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.1); }
@@ -204,9 +204,15 @@ const ConsultaEficiente = () => {
                     </div>
                     <h3 className="font-semibold text-xl mb-3 text-red-500">{problem.title}</h3>
                     <p className="text-gray-600 mb-4">{problem.desc}</p>
-                    <div className="bg-red-100 px-3 py-1 rounded-full text-red-600 text-sm border border-red-200">
-                      {problem.impact}
-                    </div>
+                    <Button 
+                      onClick={openTidyCal}
+                      variant="outline"
+                      size="sm"
+                      className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300 transition-all duration-200 hover:scale-105"
+                    >
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Solucionar Ahora
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
