@@ -40,7 +40,7 @@ const ConsultaEficiente = () => {
               <img 
                 src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" 
                 alt="NovaMedic Logo" 
-                className="h-12 md:h-16 w-auto"
+                className="h-8 md:h-10 w-auto"
               />
             </div>
             
@@ -56,6 +56,18 @@ const ConsultaEficiente = () => {
               La plataforma de IA que revoluciona la atención médica. <br />
               Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
             </p>
+            
+            {/* Video demo - moved here */}
+            <div className="relative bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20 rounded-2xl p-8 mb-12">
+              <div className="bg-black/50 rounded-xl p-8 backdrop-blur-sm">
+                <div className="flex items-center justify-center h-64 bg-gradient-to-br from-novativa-teal/30 to-novativa-orange/30 rounded-lg">
+                  <div className="text-center">
+                    <Play className="w-16 h-16 text-white mx-auto mb-4" />
+                    <p className="text-lg text-gray-300">Demo: NovaMedic en Acción</p>
+                  </div>
+                </div>
+              </div>
+            </div>
             
             {/* Stats section mejorada */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-4xl mx-auto">
@@ -97,20 +109,6 @@ const ConsultaEficiente = () => {
                     <div className="text-4xl font-bold text-novativa-teal mb-2 group-hover:scale-110 transition-transform duration-300">24/7</div>
                     <div className="text-white/80 font-medium">Atención automatizada</div>
                     <div className="text-sm text-gray-400 mt-2">Disponible cuando te necesitan</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Video demo */}
-            <div className="relative max-w-4xl mx-auto mb-12">
-              <div className="relative bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20 rounded-2xl p-8">
-                <div className="bg-black/50 rounded-xl p-8 backdrop-blur-sm">
-                  <div className="flex items-center justify-center h-64 bg-gradient-to-br from-novativa-teal/30 to-novativa-orange/30 rounded-lg">
-                    <div className="text-center">
-                      <Play className="w-16 h-16 text-white mx-auto mb-4" />
-                      <p className="text-lg text-gray-300">Demo: NovaMedic en Acción</p>
-                    </div>
                   </div>
                 </div>
               </div>
