@@ -67,7 +67,7 @@ function App() {
       <Route path="/knowledge" element={<Layout><KnowledgeBase /></Layout>} />
       <Route path="/iacoding" element={<Layout><IACoding /></Layout>} />
       <Route path="/welcome" element={<Welcome />} />
-      <Route path="/consulta-eficiente" element={<ConsultaEficiente />} />
+      <Route path="/novamedic" element={<ConsultaEficiente />} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
