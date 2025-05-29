@@ -1,13 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield, Play, Star, ArrowRight, Zap, Target, TrendingUp, Activity, UserCheck, Timer } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-
 const ConsultaEficiente = () => {
   const [showCTA, setShowCTA] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     setIsVisible(true);
     // Activar CTA después de 2 minutos
@@ -17,13 +14,10 @@ const ConsultaEficiente = () => {
 
     return () => clearTimeout(timer);
   }, []);
-
   const openTidyCal = () => {
     window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
   };
-
-  return (
-    <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
+  return <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
       {/* Sección 1: Hero con Video */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 via-white to-novativa-teal/5">
         {/* Elementos decorativos */}
@@ -112,16 +106,10 @@ const ConsultaEficiente = () => {
               🎥 Mirá el contenido. El botón para agendar tu llamada se activará en unos minutos.
             </p>
             
-            {showCTA && (
-              <Button 
-                onClick={openTidyCal} 
-                size="lg" 
-                className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-6 text-xl animate-bounce-slow shadow-lg"
-              >
+            {showCTA && <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-6 text-xl animate-bounce-slow shadow-lg">
                 <Calendar className="w-6 h-6 mr-2" />
                 Agendá tu Demo Personalizada
-              </Button>
-            )}
+              </Button>}
           </div>
         </div>
       </section>
@@ -143,48 +131,37 @@ const ConsultaEficiente = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                icon: Users,
-                title: "Pacientes Perdidos",
-                desc: "Falta de seguimiento post-consulta",
-                impact: "30% no regresa"
-              },
-              {
-                icon: Clock,
-                title: "Tiempo Desperdiciado",
-                desc: "Tareas administrativas repetitivas",
-                impact: "2-3 horas diarias"
-              },
-              {
-                icon: MessageSquare,
-                title: "Comunicación Fragmentada",
-                desc: "WhatsApp, llamadas, sin centralizar",
-                impact: "Mensajes perdidos"
-              },
-              {
-                icon: BarChart,
-                title: "Sin Métricas Claras",
-                desc: "No sabés qué está funcionando",
-                impact: "Decisiones a ciegas"
-              },
-              {
-                icon: Shield,
-                title: "Imagen Desprofesionalizada",
-                desc: "Comunicación informal",
-                impact: "Menos confianza"
-              },
-              {
-                icon: Bot,
-                title: "Disponibilidad Limitada",
-                desc: "Solo en horarios de consulta",
-                impact: "Oportunidades perdidas"
-              }
-            ].map((problem, index) => (
-              <Card 
-                key={index} 
-                className="group relative p-8 bg-white border-2 border-red-100 hover:border-red-200 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
-              >
+            {[{
+            icon: Users,
+            title: "Pacientes Perdidos",
+            desc: "Falta de seguimiento post-consulta",
+            impact: "30% no regresa"
+          }, {
+            icon: Clock,
+            title: "Tiempo Desperdiciado",
+            desc: "Tareas administrativas repetitivas",
+            impact: "2-3 horas diarias"
+          }, {
+            icon: MessageSquare,
+            title: "Comunicación Fragmentada",
+            desc: "WhatsApp, llamadas, sin centralizar",
+            impact: "Mensajes perdidos"
+          }, {
+            icon: BarChart,
+            title: "Sin Métricas Claras",
+            desc: "No sabés qué está funcionando",
+            impact: "Decisiones a ciegas"
+          }, {
+            icon: Shield,
+            title: "Imagen Desprofesionalizada",
+            desc: "Comunicación informal",
+            impact: "Menos confianza"
+          }, {
+            icon: Bot,
+            title: "Disponibilidad Limitada",
+            desc: "Solo en horarios de consulta",
+            impact: "Oportunidades perdidas"
+          }].map((problem, index) => <Card key={index} className="group relative p-8 bg-white border-2 border-red-100 hover:border-red-200 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                 <CardContent className="p-0">
                   <div className="absolute inset-0 bg-red-50/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
                   <div className="relative z-10 text-center">
@@ -198,8 +175,7 @@ const ConsultaEficiente = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -248,59 +224,44 @@ const ConsultaEficiente = () => {
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-novativa-teal/10 to-novativa-orange/10 rounded-2xl p-8 border border-gray-200 shadow-lg">
-                <img 
-                  src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&h=600" 
-                  alt="Doctor using AI technology" 
-                  className="w-full h-80 object-cover rounded-xl" 
-                />
+                <img alt="Doctor using AI technology" className="w-full h-80 object-cover rounded-xl" src="https://media4.giphy.com/media/k8GoZ9AxmxR6isQt9V/giphy.gif" />
               </div>
             </div>
           </div>
 
           {/* Grid de características */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                icon: Calendar,
-                title: "🗓️ Agenda Inteligente",
-                desc: "Confirmaciones y recordatorios automáticos que reducen el ausentismo",
-                color: "novativa-teal"
-              },
-              {
-                icon: MessageSquare,
-                title: "💬 Centro de Comunicación",
-                desc: "WhatsApp, Instagram y más plataformas unificadas en un solo lugar",
-                color: "novativa-orange"
-              },
-              {
-                icon: TrendingUp,
-                title: "📈 Seguimiento Post-Consulta",
-                desc: "Retención automática de pacientes con flujos personalizados",
-                color: "novativa-teal"
-              },
-              {
-                icon: Users,
-                title: "👥 Flujos Personalizados",
-                desc: "Atención diferenciada según el tipo de paciente y especialidad",
-                color: "novativa-orange"
-              },
-              {
-                icon: BarChart,
-                title: "📊 Analytics Médicos",
-                desc: "Reportes ejecutivos para entender tu práctica como nunca antes",
-                color: "novativa-teal"
-              },
-              {
-                icon: Zap,
-                title: "⚡ Automatización Total",
-                desc: "Liberate de tareas repetitivas y enfócate en lo que importa",
-                color: "novativa-orange"
-              }
-            ].map((feature, index) => (
-              <Card 
-                key={index} 
-                className="group relative p-8 bg-white border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
-              >
+            {[{
+            icon: Calendar,
+            title: "🗓️ Agenda Inteligente",
+            desc: "Confirmaciones y recordatorios automáticos que reducen el ausentismo",
+            color: "novativa-teal"
+          }, {
+            icon: MessageSquare,
+            title: "💬 Centro de Comunicación",
+            desc: "WhatsApp, Instagram y más plataformas unificadas en un solo lugar",
+            color: "novativa-orange"
+          }, {
+            icon: TrendingUp,
+            title: "📈 Seguimiento Post-Consulta",
+            desc: "Retención automática de pacientes con flujos personalizados",
+            color: "novativa-teal"
+          }, {
+            icon: Users,
+            title: "👥 Flujos Personalizados",
+            desc: "Atención diferenciada según el tipo de paciente y especialidad",
+            color: "novativa-orange"
+          }, {
+            icon: BarChart,
+            title: "📊 Analytics Médicos",
+            desc: "Reportes ejecutivos para entender tu práctica como nunca antes",
+            color: "novativa-teal"
+          }, {
+            icon: Zap,
+            title: "⚡ Automatización Total",
+            desc: "Liberate de tareas repetitivas y enfócate en lo que importa",
+            color: "novativa-orange"
+          }].map((feature, index) => <Card key={index} className="group relative p-8 bg-white border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                 <CardContent className="p-0">
                   <div className="absolute inset-0 bg-novativa-teal/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
                   <div className="relative z-10 text-center">
@@ -311,8 +272,7 @@ const ConsultaEficiente = () => {
                     <p className="text-gray-600">{feature.desc}</p>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -333,39 +293,27 @@ const ConsultaEficiente = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=150&h=150",
-                name: "Dr. María González",
-                specialty: "Cardióloga",
-                quote: "Recuperé 3 horas diarias que ahora dedico a mis pacientes. El seguimiento automático aumentó mi retención un 40%.",
-                result: "+40% retención"
-              },
-              {
-                avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=150&h=150",
-                name: "Dr. Carlos Rodríguez",
-                specialty: "Gastroenterólogo",
-                quote: "La IA filtra perfectamente las consultas urgentes. Mis pacientes se sienten mejor atendidos las 24 horas.",
-                result: "24/7 disponible"
-              },
-              {
-                avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=150&h=150",
-                name: "Dra. Ana Martínez",
-                specialty: "Pediatra",
-                quote: "NovaMedic transformó completamente mi consulta. Los padres están más tranquilos y yo más organizada.",
-                result: "+60% satisfacción"
-              }
-            ].map((testimonial, index) => (
-              <Card 
-                key={index} 
-                className="p-8 bg-white border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
+            {[{
+            avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=150&h=150",
+            name: "Dr. María González",
+            specialty: "Cardióloga",
+            quote: "Recuperé 3 horas diarias que ahora dedico a mis pacientes. El seguimiento automático aumentó mi retención un 40%.",
+            result: "+40% retención"
+          }, {
+            avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=150&h=150",
+            name: "Dr. Carlos Rodríguez",
+            specialty: "Gastroenterólogo",
+            quote: "La IA filtra perfectamente las consultas urgentes. Mis pacientes se sienten mejor atendidos las 24 horas.",
+            result: "24/7 disponible"
+          }, {
+            avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=150&h=150",
+            name: "Dra. Ana Martínez",
+            specialty: "Pediatra",
+            quote: "NovaMedic transformó completamente mi consulta. Los padres están más tranquilos y yo más organizada.",
+            result: "+60% satisfacción"
+          }].map((testimonial, index) => <Card key={index} className="p-8 bg-white border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-300 shadow-lg hover:shadow-xl">
                 <CardContent className="p-0 text-center">
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.name} 
-                    className="w-20 h-20 rounded-full mx-auto mb-6 border-4 border-novativa-teal/20" 
-                  />
+                  <img src={testimonial.avatar} alt={testimonial.name} className="w-20 h-20 rounded-full mx-auto mb-6 border-4 border-novativa-teal/20" />
                   <blockquote className="text-lg italic text-gray-600 leading-relaxed mb-6">
                     "{testimonial.quote}"
                   </blockquote>
@@ -377,8 +325,7 @@ const ConsultaEficiente = () => {
                     {testimonial.result}
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -412,29 +359,19 @@ const ConsultaEficiente = () => {
               </div>
             </div>
             
-            {showCTA && (
-              <Button 
-                onClick={openTidyCal} 
-                size="lg" 
-                className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-8 text-xl font-semibold group shadow-lg"
-              >
+            {showCTA && <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-8 text-xl font-semibold group shadow-lg">
                 <Calendar className="w-6 h-6 mr-2" />
                 Agenda tu Demo Gratuita
                 <ArrowRight className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            )}
+              </Button>}
           </div>
         </div>
       </section>
 
       {/* Sticky CTA flotante */}
-      {showCTA && (
-        <div className="fixed bottom-6 right-6 z-50">
+      {showCTA && <div className="fixed bottom-6 right-6 z-50">
           {/* This area can be used for a floating CTA if needed */}
-        </div>
-      )}
-    </div>
-  );
+        </div>}
+    </div>;
 };
-
 export default ConsultaEficiente;
