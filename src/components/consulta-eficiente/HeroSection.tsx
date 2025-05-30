@@ -1,25 +1,22 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
-
 interface HeroSectionProps {
   openTidyCal: () => void;
   showCTA: boolean;
 }
-
 const HeroSection: React.FC<HeroSectionProps> = ({
   openTidyCal,
   showCTA
 }) => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
       {/* GIF de fondo */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-96 z-0" style={{
-        backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
-        backgroundSize: 'contain',
-        backgroundPosition: 'center top',
-        backgroundRepeat: 'no-repeat'
-      }} />
+      backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
+      backgroundSize: 'contain',
+      backgroundPosition: 'center top',
+      backgroundRepeat: 'no-repeat'
+    }} />
       
       {/* Overlay blanco */}
       <div className="absolute inset-0 z-10 bg-white/90" />
@@ -60,32 +57,35 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="mb-8">
           {/* Descuento profesional */}
           <div className="relative mb-8">
-            {/* Descuento principal */}
-            <div className="relative mb-4">
-              <div className="text-5xl sm:text-7xl md:text-8xl font-black text-transparent bg-gradient-to-r from-novativa-teal via-blue-600 to-novativa-orange bg-clip-text leading-tight">
-                50% DE DESCUENTO
+            <div className="bg-gradient-to-r from-white via-gray-50 to-white rounded-3xl p-8 border-2 border-novativa-teal/10 shadow-xl max-w-4xl mx-auto">
+              {/* Descuento principal */}
+              <div className="relative mb-4">
+                <div className="text-5xl sm:text-7xl md:text-8xl font-black text-transparent bg-gradient-to-r from-novativa-teal via-blue-600 to-novativa-orange bg-clip-text leading-tight">
+                  50% DE DESCUENTO
+                </div>
+                
+                {/* Elementos médicos profesionales */}
+                <div className="absolute -top-2 -left-2 text-novativa-teal text-2xl opacity-60">🏥</div>
+                <div className="absolute -top-2 -right-2 text-novativa-orange text-2xl opacity-60">⚕️</div>
+                <div className="absolute -bottom-2 -left-2 text-blue-600 text-2xl opacity-60">🩺</div>
+                <div className="absolute -bottom-2 -right-2 text-novativa-teal text-2xl opacity-60">💊</div>
               </div>
               
-              {/* Elementos médicos profesionales */}
-              <div className="absolute -top-2 -left-2 text-novativa-teal text-2xl opacity-60">🏥</div>
-              <div className="absolute -top-2 -right-2 text-novativa-orange text-2xl opacity-60">⚕️</div>
-              <div className="absolute -bottom-2 -left-2 text-blue-600 text-2xl opacity-60">🩺</div>
-              <div className="absolute -bottom-2 -right-2 text-novativa-teal text-2xl opacity-60">💊</div>
-            </div>
-            
-            {/* Subtítulo profesional */}
-            <div className="bg-novativa-teal/5 rounded-xl px-6 py-3 border border-novativa-teal/20 max-w-4xl mx-auto">
-              <div className="text-novativa-teal font-semibold text-lg sm:text-xl">
-                Para profesionales médicos que califiquen en nuestro programa Early Adopters
+              {/* Subtítulo profesional */}
+              <div className="bg-novativa-teal/5 rounded-xl px-6 py-3 border border-novativa-teal/20">
+                <div className="text-novativa-teal font-semibold text-lg sm:text-xl">
+                  Para profesionales médicos que califiquen en nuestro programa Early Adopters
+                </div>
               </div>
             </div>
           </div>
           
           {/* Título principal */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 px-2 mb-6">
-            <span className="block mb-2 sm:mb-4 text-gray-700">TRANSFORME SU</span>
-            <span className="block bg-gradient-to-r from-novativa-teal via-novativa-lightTeal to-novativa-orange bg-clip-text text-transparent">PRÁCTICA MÉDICA</span>
-            <span className="block text-2xl sm:text-3xl md:text-4xl text-gray-600 mt-2 font-medium">con Tecnología de Vanguardia</span>
+            
+            
+            <span className="block text-2xl sm:text-3xl text-gray-600 mt-2 font-medium md:text-base">La plataforma de IA que revoluciona la atención médica.
+Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.</span>
           </h1>
         </div>
         
@@ -173,8 +173,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </Button>
         </div>}
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
