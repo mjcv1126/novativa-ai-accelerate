@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -84,8 +85,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
         
         {/* Descripción de la plataforma */}
-        <div className="mb-8">
-          <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl mx-auto text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
+        <div className="mb-8 flex justify-center">
+          <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
         </div>
         
         {/* Video demo profesional */}
@@ -171,3 +172,4 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     </section>;
 };
 export default HeroSection;
+
