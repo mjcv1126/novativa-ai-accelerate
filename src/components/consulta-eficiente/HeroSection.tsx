@@ -33,13 +33,28 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <img src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" alt="NovaMedic Logo" className="h-6 sm:h-8 md:h-10 w-auto" />
         </div>
         
-        {/* Título principal */}
-        <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold mb-6 leading-tight text-gray-900 px-2">
-          Lanzamiento exclusivo: transformá tu consulta <br />
-          <span className="bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-            con 50% OFF (si calificás)
-          </span>
-        </h1>
+        {/* Título principal mejorado */}
+        <div className="mb-8">
+          <div className="inline-block bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-full px-6 py-3 mb-6 border border-novativa-teal/20 animate-pulse-subtle">
+            <span className="text-novativa-teal font-semibold text-sm sm:text-base tracking-wide uppercase">🚀 Lanzamiento Exclusivo</span>
+          </div>
+          
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-gray-900 px-2 mb-4">
+            <span className="block mb-2 sm:mb-4">Transformá tu</span>
+            <span className="block bg-gradient-to-r from-novativa-teal via-novativa-lightTeal to-novativa-orange bg-clip-text text-transparent animate-pulse-subtle">
+              consulta médica
+            </span>
+          </h1>
+          
+          <div className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange bg-clip-text text-transparent">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight animate-bounce-slow">
+              con 50% OFF
+            </h2>
+            <p className="text-lg sm:text-xl md:text-2xl font-semibold mt-2 text-gray-700">
+              (si calificás para nuestro programa)
+            </p>
+          </div>
+        </div>
         
         {/* Nuevo subtítulo */}
         <p className="sm:text-2xl md:text-3xl mb-8 text-gray-700 px-2 font-bold text-lg">
