@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -80,11 +81,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           
           {/* Título principal */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 px-2 mb-6">
-            
-            
-            <span className="block text-2xl sm:text-3xl text-gray-600 mt-2 font-medium md:text-base">La plataforma de IA que revoluciona la atención médica.
-Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.</span>
+            NovaMedic
           </h1>
+        </div>
+        
+        {/* Descripción de la plataforma */}
+        <div className="mb-8">
+          <p className="text-xl sm:text-2xl md:text-3xl text-gray-700 font-medium leading-relaxed max-w-4xl mx-auto px-2">
+            La plataforma de IA que revoluciona la atención médica. 
+            Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
+          </p>
         </div>
         
         {/* Video demo profesional */}
