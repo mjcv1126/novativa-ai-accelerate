@@ -115,11 +115,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         
         {/* CTA profesional */}
         <div className="mb-12 px-2">
-          <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg font-semibold group shadow-xl w-full sm:w-auto">
-            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            Evaluar Elegibilidad para el Programa
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          
         </div>
         
         {/* Stats section profesional */}
