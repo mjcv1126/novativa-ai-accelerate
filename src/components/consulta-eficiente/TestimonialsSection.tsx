@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,7 +16,7 @@ const TestimonialsSection: React.FC = () => {
       avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=150&h=150",
       name: "Dr. Carlos Rodríguez",
       specialty: "Gastroenterólogo",
-      quote: "La IA filtra perfectamente las consultas urgentes. Mis pacientes se sienten mejor atendidos las 24 horas.",
+      quote: "Los padres se sienten mejor acompañados y yo no tengo que estar encima de cada mensaje.",
       result: "24/7 disponible"
     },
     {
