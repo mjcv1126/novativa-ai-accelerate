@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield, Play, Star, ArrowRight, Zap, Target, TrendingUp, Activity, UserCheck, Timer } from 'lucide-react';
@@ -104,7 +105,7 @@ const ConsultaEficiente = () => {
           </p>
           
           {/* Video demo */}
-          <div className="relative bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-2xl p-8 mb-12 shadow-lg">
+          <div className="relative bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-2xl p-8 mb-8 shadow-lg">
             <div className="bg-white/80 rounded-xl p-8 backdrop-blur-sm border border-gray-200">
               <div className="flex items-center justify-center h-64 bg-gradient-to-br from-novativa-teal/10 to-novativa-orange/10 rounded-lg">
                 <div className="text-center">
@@ -113,6 +114,15 @@ const ConsultaEficiente = () => {
                 </div>
               </div>
             </div>
+          </div>
+          
+          {/* CTA debajo del video */}
+          <div className="mb-12">
+            <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-8 py-4 text-lg font-semibold group shadow-xl">
+              <Calendar className="w-5 h-5 mr-2 animate-swing" />
+              Ve NovaMedic en Tu Consulta
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
           </div>
           
           {/* Stats section */}
