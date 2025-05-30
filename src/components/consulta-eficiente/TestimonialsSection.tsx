@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,7 +8,7 @@ const TestimonialsSection: React.FC = () => {
       avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=150&h=150",
       name: "Dr. María González",
       specialty: "Cardióloga",
-      quote: "Recuperé 3 horas diarias que ahora dedico a mis pacientes. El seguimiento automático aumentó mi retención un 40%.",
+      quote: "Ahora mis pacientes no faltan a los controles y yo no pierdo tiempo confirmando citas.",
       result: "+40% retención"
     },
     {
