@@ -45,11 +45,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           Tu plataforma de atenciones médicas al alcance de un click.
         </p>
         
-        <p className="text-lg sm:text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-gray-600 px-2">
-          La plataforma de IA que revoluciona la atención médica. <br className="hidden sm:block" />
-          Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
-        </p>
-        
         {/* Video demo */}
         <div className="relative bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-2xl p-4 sm:p-8 mb-8 shadow-lg mx-2 sm:mx-4">
           <div className="bg-white/80 rounded-xl p-4 sm:p-8 backdrop-blur-sm border border-gray-200">
@@ -62,7 +57,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
         
-        {/* CTA debajo del video */}
+        {/* Párrafo movido aquí, debajo del video */}
+        <p className="text-lg sm:text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-gray-600 px-2">
+          La plataforma de IA que revoluciona la atención médica. <br className="hidden sm:block" />
+          Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
+        </p>
+        
+        {/* CTA debajo del párrafo */}
         <div className="mb-12 px-2">
           <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold group shadow-xl w-full sm:w-auto">
             <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-swing" />
