@@ -80,7 +80,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         
         {/* Descripción de la plataforma */}
         <div className="mb-8">
-          <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl md:text-xl text-center px-0 mx-0">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
+          <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl md:text-xl px-0 mx-0 text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
         </div>
         
         {/* Video demo profesional */}
