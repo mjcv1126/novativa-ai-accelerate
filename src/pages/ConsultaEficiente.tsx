@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield, Play, Star, ArrowRight, Zap, Target, TrendingUp, Activity, UserCheck, Timer } from 'lucide-react';
@@ -160,8 +159,6 @@ const ConsultaEficiente = () => {
               </div>
             </div>
           </div>
-          
-          
           
           {showCTA && <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-6 text-xl animate-bounce-slow shadow-lg">
               <Calendar className="w-6 h-6 mr-2 animate-swing" />
@@ -379,11 +376,27 @@ const ConsultaEficiente = () => {
               </div>
             </div>
             
-            {showCTA && <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-8 text-xl font-semibold group shadow-lg">
+            <div className="space-y-6">
+              <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-12 py-8 text-xl font-semibold group shadow-lg">
                 <Calendar className="w-6 h-6 mr-2 animate-swing" />
                 Agenda tu Demo Gratuita
                 <ArrowRight className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform animate-bounce-custom" />
-              </Button>}
+              </Button>
+              
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200 shadow-lg max-w-2xl mx-auto">
+                <div className="flex items-center justify-center mb-4">
+                  <Timer className="w-8 h-8 text-novativa-teal mr-3 animate-pulse-custom" />
+                  <span className="text-lg font-semibold text-gray-800">¡Solo toma 15 minutos!</span>
+                </div>
+                <p className="text-gray-600 mb-6">
+                  En nuestra demo verás exactamente cómo NovaMedic se adapta a tu especialidad y práctica médica.
+                </p>
+                <Button onClick={openTidyCal} variant="outline" className="w-full border-2 border-novativa-teal text-novativa-teal hover:bg-novativa-teal hover:text-white transition-all duration-300">
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Reservar Mi Lugar Ahora
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
