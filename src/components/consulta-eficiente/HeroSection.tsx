@@ -71,11 +71,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
             
             {/* Subtítulo profesional */}
-            <div className="bg-novativa-teal/5 rounded-xl px-6 py-3 border border-novativa-teal/20 max-w-4xl mx-auto">
-              <div className="text-novativa-teal font-semibold text-lg sm:text-xl">
-                Para profesionales médicos que califiquen en nuestro programa Early Adopters
-              </div>
-            </div>
+            
           </div>
           
           {/* Título principal */}
@@ -84,10 +80,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         
         {/* Descripción de la plataforma */}
         <div className="mb-8">
-          <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl md:text-xl text-center px-0 mx-0">
-            La plataforma de IA que revoluciona la atención médica. 
-            Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
-          </p>
+          <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl md:text-xl text-center px-0 mx-0">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
         </div>
         
         {/* Video demo profesional */}
