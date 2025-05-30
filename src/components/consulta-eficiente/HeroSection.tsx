@@ -1,22 +1,22 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play } from 'lucide-react';
-
 interface HeroSectionProps {
   openTidyCal: () => void;
   showCTA: boolean;
 }
-
-const HeroSection: React.FC<HeroSectionProps> = ({ openTidyCal, showCTA }) => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
+const HeroSection: React.FC<HeroSectionProps> = ({
+  openTidyCal,
+  showCTA
+}) => {
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
       {/* GIF de fondo */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-96 z-0" style={{
-        backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
-        backgroundSize: 'contain',
-        backgroundPosition: 'center top',
-        backgroundRepeat: 'no-repeat'
-      }} />
+      backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
+      backgroundSize: 'contain',
+      backgroundPosition: 'center top',
+      backgroundRepeat: 'no-repeat'
+    }} />
       
       {/* Overlay blanco */}
       <div className="absolute inset-0 z-10 bg-white/85" />
@@ -41,7 +41,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ openTidyCal, showCTA }) => {
         </h1>
         
         {/* Nuevo subtítulo */}
-        <p className="text-xl sm:text-2xl md:text-3xl mb-8 text-gray-700 font-medium px-2">
+        <p className="sm:text-2xl md:text-3xl mb-8 text-gray-700 px-2 font-bold text-lg">
           Tu plataforma de atenciones médicas al alcance de un click.
         </p>
         
@@ -123,8 +123,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ openTidyCal, showCTA }) => {
           </Button>
         </div>}
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
