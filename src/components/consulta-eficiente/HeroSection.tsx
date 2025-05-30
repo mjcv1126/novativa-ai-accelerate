@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play } from 'lucide-react';
@@ -40,26 +39,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-gray-900 px-2 mb-4">
-            <span className="block mb-2 sm:mb-4">Transformá tu</span>
-            <span className="block bg-gradient-to-r from-novativa-teal via-novativa-lightTeal to-novativa-orange bg-clip-text text-transparent animate-pulse-subtle">
-              consulta médica
-            </span>
+            <span className="block mb-2 sm:mb-4">TRANSFORMA LA</span>
+            <span className="block bg-gradient-to-r from-novativa-teal via-novativa-lightTeal to-novativa-orange bg-clip-text text-transparent animate-pulse-subtle">EXPERIENCIA MÉDICA</span>
           </h1>
           
           <div className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange bg-clip-text text-transparent">
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight animate-bounce-slow">
-              con 50% OFF
-            </h2>
-            <p className="text-lg sm:text-xl md:text-2xl font-semibold mt-2 text-gray-700">
-              (si calificás para nuestro programa)
-            </p>
+            
+            <p className="text-lg sm:text-xl md:text-2xl font-semibold mt-2 text-gray-700"></p>
           </div>
         </div>
         
         {/* Nuevo subtítulo */}
-        <p className="sm:text-2xl md:text-3xl mb-8 text-gray-700 px-2 font-bold text-lg">
-          Estamos lanzando una solución personalizada para consultas médicas.
-        </p>
+        <p className="sm:text-2xl md:text-3xl mb-8 text-gray-700 px-2 font-bold text-lg">50% de Descuento para médicos seleccionados que accedan a esta versión privada antes del lanzamiento oficial.</p>
         
         {/* Video demo */}
         <div className="relative bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-2xl p-4 sm:p-8 mb-8 shadow-lg mx-2 sm:mx-4">
