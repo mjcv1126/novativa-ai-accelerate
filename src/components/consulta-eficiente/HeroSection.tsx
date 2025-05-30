@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play } from 'lucide-react';
+import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Percent } from 'lucide-react';
 interface HeroSectionProps {
   openTidyCal: () => void;
   showCTA: boolean;
@@ -32,25 +32,76 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <img src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" alt="NovaMedic Logo" className="h-6 sm:h-8 md:h-10 w-auto" />
         </div>
         
-        {/* Título principal mejorado */}
+        {/* Badge de lanzamiento con descuento destacado */}
         <div className="mb-8">
-          <div className="inline-block bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-full px-6 py-3 mb-6 border border-novativa-teal/20 animate-pulse-subtle">
-            <span className="text-novativa-teal font-semibold text-sm sm:text-base tracking-wide uppercase">🚀 Lanzamiento Exclusivo</span>
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-gray-900 px-2 mb-4">
-            <span className="block mb-2 sm:mb-4">TRANSFORMA LA</span>
-            <span className="block bg-gradient-to-r from-novativa-teal via-novativa-lightTeal to-novativa-orange bg-clip-text text-transparent animate-pulse-subtle">EXPERIENCIA MÉDICA</span>
-          </h1>
-          
-          <div className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange bg-clip-text text-transparent">
+          <div className="relative inline-block mb-6">
+            {/* Resplandor de fondo para el badge */}
+            <div className="absolute inset-0 bg-gradient-to-r from-novativa-orange via-yellow-400 to-novativa-orange rounded-full blur-lg animate-pulse scale-110 opacity-75"></div>
             
-            <p className="text-lg sm:text-xl md:text-2xl font-semibold mt-2 text-gray-700"></p>
+            <div className="relative bg-gradient-to-r from-novativa-orange via-yellow-400 to-novativa-orange rounded-full px-8 py-4 border-4 border-white shadow-2xl animate-bounce-slow">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Percent className="w-8 h-8 text-white animate-spin" />
+                  <div className="absolute inset-0 bg-white/20 rounded-full animate-ping"></div>
+                </div>
+                <div className="text-center">
+                  <div className="text-white font-black text-2xl sm:text-3xl tracking-wider drop-shadow-lg">
+                    🔥 LANZAMIENTO EXCLUSIVO 🔥
+                  </div>
+                  <div className="text-white/90 font-bold text-sm sm:text-base tracking-wide uppercase">
+                    Transformá tu consulta con
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
-        {/* Nuevo subtítulo */}
-        <p className="sm:text-2xl md:text-3xl mb-8 text-gray-700 px-2 font-bold text-lg">50% de Descuento para médicos seleccionados que accedan a esta versión privada antes del lanzamiento oficial.</p>
+        {/* Título principal con descuento súper destacado */}
+        <div className="mb-8">
+          {/* Descuento mega destacado */}
+          <div className="relative mb-6">
+            {/* Efectos de resplandor múltiples */}
+            <div className="absolute inset-0 blur-3xl">
+              <div className="bg-gradient-to-r from-red-500 via-yellow-400 to-orange-500 text-transparent bg-clip-text text-6xl sm:text-8xl md:text-9xl font-black animate-pulse">
+                50% OFF
+              </div>
+            </div>
+            <div className="absolute inset-0 blur-xl">
+              <div className="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-600 text-transparent bg-clip-text text-6xl sm:text-8xl md:text-9xl font-black animate-pulse">
+                50% OFF
+              </div>
+            </div>
+            
+            {/* Texto principal del descuento */}
+            <div className="relative">
+              <div className="bg-gradient-to-r from-red-600 via-yellow-400 to-orange-500 text-transparent bg-clip-text text-6xl sm:text-8xl md:text-9xl font-black animate-pulse-subtle drop-shadow-2xl">
+                50% OFF
+              </div>
+              
+              {/* Elementos decorativos alrededor */}
+              <div className="absolute -top-4 -left-4 text-yellow-400 text-4xl animate-bounce">⚡</div>
+              <div className="absolute -top-4 -right-4 text-red-500 text-4xl animate-bounce" style={{animationDelay: '0.5s'}}>🔥</div>
+              <div className="absolute -bottom-4 -left-4 text-orange-500 text-4xl animate-bounce" style={{animationDelay: '1s'}}>💥</div>
+              <div className="absolute -bottom-4 -right-4 text-yellow-400 text-4xl animate-bounce" style={{animationDelay: '1.5s'}}>⭐</div>
+            </div>
+          </div>
+          
+          {/* Subtítulo del descuento */}
+          <div className="relative inline-block mb-6">
+            <div className="bg-gradient-to-r from-red-100 to-orange-100 rounded-2xl px-6 py-3 border-2 border-red-200 shadow-xl">
+              <div className="text-red-700 font-bold text-lg sm:text-xl md:text-2xl">
+                (si calificás para este lanzamiento exclusivo)
+              </div>
+            </div>
+          </div>
+          
+          {/* Título principal */}
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-gray-900 px-2 mb-4">
+            <span className="block mb-2 sm:mb-4">TRANSFORMÁ TU</span>
+            <span className="block bg-gradient-to-r from-novativa-teal via-novativa-lightTeal to-novativa-orange bg-clip-text text-transparent">CONSULTA MÉDICA</span>
+          </h1>
+        </div>
         
         {/* Video demo */}
         <div className="relative bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10 rounded-2xl p-4 sm:p-8 mb-8 shadow-lg mx-2 sm:mx-4">
@@ -64,10 +115,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
         
-        {/* Párrafo movido aquí, debajo del video */}
+        {/* Párrafo explicativo */}
         <p className="text-lg sm:text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-gray-600 px-2">
-          Para este lanzamiento, ofrecemos un <span className="font-bold text-novativa-orange">50% de descuento</span> <br className="hidden sm:block" />
-          SOLO para doctores que cumplan ciertos criterios.
+          Estamos lanzando una solución personalizada para consultas médicas que quieren mejorar su atención sin complicarse. <br className="hidden sm:block" />
+          <span className="inline-block bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-lg font-bold text-xl shadow-lg animate-pulse-subtle mt-2">
+            SOLO para doctores que cumplan ciertos criterios
+          </span>
         </p>
         
         {/* CTA debajo del párrafo */}
