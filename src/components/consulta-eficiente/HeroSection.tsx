@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -78,9 +76,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           
           {/* Título principal */}
           <div className="mb-8">
-            <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl mx-auto text-center">
-              La plataforma de IA que revoluciona la atención médica. Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
-            </p>
+            
           </div>
         </div>
         
@@ -172,4 +168,3 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     </section>;
 };
 export default HeroSection;
-
