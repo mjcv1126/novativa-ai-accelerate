@@ -35,15 +35,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         
         {/* Título principal */}
         <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold mb-6 leading-tight text-gray-900 px-2">
-          Transformando la <br />
+          Mejorá tu consulta <br />
           <span className="bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-            Experiencia Médica
+            sin complicarte
           </span>
         </h1>
         
         {/* Nuevo subtítulo */}
         <p className="sm:text-2xl md:text-3xl mb-8 text-gray-700 px-2 font-bold text-lg">
-          Tu plataforma de atenciones médicas al alcance de un click.
+          Estamos lanzando una solución personalizada para consultas médicas.
         </p>
         
         {/* Video demo */}
@@ -60,15 +60,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         
         {/* Párrafo movido aquí, debajo del video */}
         <p className="text-lg sm:text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-gray-600 px-2">
-          La plataforma de IA que revoluciona la atención médica. <br className="hidden sm:block" />
-          Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
+          Para este lanzamiento, ofrecemos un <span className="font-bold text-novativa-orange">50% de descuento</span> <br className="hidden sm:block" />
+          SOLO para doctores que cumplan ciertos criterios.
         </p>
         
         {/* CTA debajo del párrafo */}
         <div className="mb-12 px-2">
           <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold group shadow-xl w-full sm:w-auto">
             <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-swing" />
-            Agendar una demostración gratuita
+            Verificar si califico para el descuento
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
@@ -121,7 +121,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         {showCTA && <div className="px-2">
           <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl animate-bounce-slow shadow-lg w-full sm:w-auto">
             <Calendar className="w-5 h-5 sm:w-6 sm:h-6 mr-2 animate-swing" />
-            ¡Agendá tu Demo Hoy!
+            ¡Verificá si calificas hoy!
           </Button>
         </div>}
       </div>
