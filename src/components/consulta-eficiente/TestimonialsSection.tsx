@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const TestimonialsSection: React.FC = () => {
   const testimonials = [
@@ -27,6 +27,10 @@ const TestimonialsSection: React.FC = () => {
       result: "+60% satisfacción"
     }
   ];
+
+  const handleScheduleCall = () => {
+    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  };
 
   return (
     <section className="py-16 sm:py-20 bg-gradient-to-b from-novativa-teal/5 to-white">
@@ -55,9 +59,13 @@ const TestimonialsSection: React.FC = () => {
                   <div className="font-semibold text-gray-900 text-sm sm:text-base">{testimonial.name}</div>
                   <div className="text-novativa-teal text-sm sm:text-base">{testimonial.specialty}</div>
                 </div>
-                <div className="bg-novativa-orange/10 px-3 sm:px-4 py-2 rounded-full text-novativa-orange font-semibold border border-novativa-orange/20 text-sm sm:text-base">
+                <Button
+                  onClick={handleScheduleCall}
+                  className="bg-novativa-orange/10 hover:bg-novativa-orange/20 px-3 sm:px-4 py-2 rounded-full text-novativa-orange font-semibold border border-novativa-orange/20 text-sm sm:text-base transition-all duration-300 hover:scale-105"
+                  variant="ghost"
+                >
                   {testimonial.result}
-                </div>
+                </Button>
               </CardContent>
             </Card>
           ))}
