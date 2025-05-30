@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, MessageSquare, Users, Bot, Clock, BarChart, User, CheckCircle, Stethoscope, Heart, Shield, Play, Star, ArrowRight, Zap, Target, TrendingUp, Activity, UserCheck, Timer } from 'lucide-react';
@@ -91,12 +92,17 @@ const ConsultaEficiente = () => {
           </div>
           
           {/* Título principal */}
-          <h1 className="text-4xl md:text-7xl font-bold mb-8 leading-tight text-gray-900">
+          <h1 className="text-4xl md:text-7xl font-bold mb-6 leading-tight text-gray-900">
             Transformando la <br />
             <span className="bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
               Experiencia Médica
             </span>
           </h1>
+          
+          {/* Nuevo subtítulo */}
+          <p className="text-2xl md:text-3xl mb-8 text-gray-700 font-medium">
+            Tu plataforma de atenciones médicas al alcance de un click.
+          </p>
           
           <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-gray-600">
             La plataforma de IA que revoluciona la atención médica. <br />
