@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -75,12 +76,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
           
           {/* Título principal */}
-          
+          <div className="mb-8">
+            <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl mx-auto text-center">
+              La plataforma de IA que revoluciona la atención médica. Optimiza tu consulta, mejora la experiencia del paciente y potencia tu práctica profesional.
+            </p>
+          </div>
         </div>
         
         {/* Descripción de la plataforma */}
         <div className="mb-8">
-          <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl md:text-xl px-0 mx-0 text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
+          <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl mx-auto text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
         </div>
         
         {/* Video demo profesional */}
