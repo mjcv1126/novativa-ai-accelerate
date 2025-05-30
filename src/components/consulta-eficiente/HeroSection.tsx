@@ -35,9 +35,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         
         {/* Título principal */}
         <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold mb-6 leading-tight text-gray-900 px-2">
-          Mejorá tu consulta <br />
+          Lanzamiento exclusivo: transformá tu consulta <br />
           <span className="bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-            sin complicarte
+            con 50% OFF (si calificás)
           </span>
         </h1>
         
