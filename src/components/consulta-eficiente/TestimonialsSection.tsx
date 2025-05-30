@@ -29,33 +29,33 @@ const TestimonialsSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-novativa-teal/5 to-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <div className="inline-block p-4 bg-novativa-orange/10 rounded-full mb-6 border border-novativa-orange/20">
-            <Star className="w-12 h-12 text-novativa-orange animate-pulse-custom" />
+    <section className="py-16 sm:py-20 bg-gradient-to-b from-novativa-teal/5 to-white">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12 sm:mb-16">
+          <div className="inline-block p-3 sm:p-4 bg-novativa-orange/10 rounded-full mb-6 border border-novativa-orange/20">
+            <Star className="w-8 h-8 sm:w-12 sm:h-12 text-novativa-orange animate-pulse-custom" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-gray-900 px-2">
             Resultados que Hablan por Sí Solos
           </h2>
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto px-2">
             Profesionales que ya transformaron su práctica con NovaMedic
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="p-8 bg-white border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <Card key={index} className="p-6 sm:p-8 bg-white border-2 border-gray-100 hover:border-novativa-teal/30 transition-all duration-300 shadow-lg hover:shadow-xl">
               <CardContent className="p-0 text-center">
-                <img src={testimonial.avatar} alt={testimonial.name} className="w-20 h-20 rounded-full mx-auto mb-6 border-4 border-novativa-teal/20" />
-                <blockquote className="text-lg italic text-gray-600 leading-relaxed mb-6">
+                <img src={testimonial.avatar} alt={testimonial.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-4 sm:mb-6 border-4 border-novativa-teal/20" />
+                <blockquote className="text-base sm:text-lg italic text-gray-600 leading-relaxed mb-4 sm:mb-6">
                   "{testimonial.quote}"
                 </blockquote>
                 <div className="mb-4">
-                  <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                  <div className="text-novativa-teal">{testimonial.specialty}</div>
+                  <div className="font-semibold text-gray-900 text-sm sm:text-base">{testimonial.name}</div>
+                  <div className="text-novativa-teal text-sm sm:text-base">{testimonial.specialty}</div>
                 </div>
-                <div className="bg-novativa-orange/10 px-4 py-2 rounded-full text-novativa-orange font-semibold border border-novativa-orange/20">
+                <div className="bg-novativa-orange/10 px-3 sm:px-4 py-2 rounded-full text-novativa-orange font-semibold border border-novativa-orange/20 text-sm sm:text-base">
                   {testimonial.result}
                 </div>
               </CardContent>

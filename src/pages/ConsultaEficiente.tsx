@@ -25,7 +25,7 @@ const ConsultaEficiente = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
+    <div className="min-h-screen bg-white text-gray-900 overflow-hidden w-full px-4 sm:px-6 lg:px-8">
       <style>{`
         @keyframes heartBeat {
           0%, 100% { transform: scale(1); }
@@ -69,11 +69,13 @@ const ConsultaEficiente = () => {
         .animate-swing { animation: swing 2s ease-in-out infinite; }
       `}</style>
 
-      <HeroSection openTidyCal={openTidyCal} showCTA={showCTA} />
-      <ProblemsSection openTidyCal={openTidyCal} />
-      <SolutionSection />
-      <TestimonialsSection />
-      <FinalCTASection openTidyCal={openTidyCal} />
+      <div className="max-w-7xl mx-auto">
+        <HeroSection openTidyCal={openTidyCal} showCTA={showCTA} />
+        <ProblemsSection openTidyCal={openTidyCal} />
+        <SolutionSection />
+        <TestimonialsSection />
+        <FinalCTASection openTidyCal={openTidyCal} />
+      </div>
 
       {/* Sticky CTA flotante */}
       {showCTA && <div className="fixed bottom-6 right-6 z-50">
