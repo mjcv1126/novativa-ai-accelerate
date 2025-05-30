@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play } from 'lucide-react';
@@ -120,7 +121,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         {showCTA && <div className="px-2">
           <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl animate-bounce-slow shadow-lg w-full sm:w-auto">
             <Calendar className="w-5 h-5 sm:w-6 sm:h-6 mr-2 animate-swing" />
-            Agendá tu Demo Personalizada
+            ¡Agendá tu Demo Hoy!
           </Button>
         </div>}
       </div>
