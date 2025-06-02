@@ -12,7 +12,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ isVisible }) => {
     <section className="min-h-screen relative flex items-center justify-center pt-10 pb-20">
       <div className="absolute inset-0 opacity-20">
         <img 
-          src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=1920&h=1080&fit=crop&crop=center" 
+          src="https://miro.medium.com/v2/resize:fit:1400/1*USIGKYJR69-M8p19GT_SkA.gif" 
           alt="Social Media Analytics"
           className="w-full h-full object-cover"
         />
