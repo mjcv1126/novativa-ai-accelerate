@@ -51,6 +51,13 @@ const MobileNav = ({ onClose }: MobileNavProps) => {
               NovaChannel
             </Link>
             <Link 
+              to="/novamedic" 
+              className="block text-gray-600 hover:text-[#bc3e06]"
+              onClick={onClose}
+            >
+              NovaMedic
+            </Link>
+            <Link 
               to="/servicios/agentes-ia" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
