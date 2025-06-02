@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { MessageCircle, Bot, Share2, FileText, Code, Video, Phone, Stethoscope, Megaphone } from 'lucide-react';
 
 const DesktopNav = () => {
   const { t } = useLanguage();
@@ -21,97 +23,113 @@ const DesktopNav = () => {
               {t('nav.services')}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-[400px] gap-3 p-4">
-                <li className="row-span-3">
-                  <NavigationMenuLink asChild>
-                    <Link to="/novachannel" className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-[#bc3e06] to-novativa-orange p-6 no-underline outline-none focus:shadow-md">
-                      <div className="mb-2 mt-4 text-lg font-medium text-white">
-                        NovaChannel
-                      </div>
-                      <p className="text-sm leading-tight text-white/90">
-                        {t('language') === 'es' ? 'Plataforma integral de comunicación multicanal potenciada por IA' : 'Comprehensive AI-powered multichannel communication platform'}
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link to="/novamedic" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">NovaMedic</div>
-                      <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 'Plataforma de IA para atención médica' : 'AI platform for medical care'}
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link to="/servicios/redes-sociales-ia" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">Gestión de Redes Sociales con IA</div>
-                      <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 'Automatiza tu contenido y optimiza resultados' : 'Automate your content and optimize results'}
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link to="/servicios/contact-center" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">{t('services.contactCenter')}</div>
-                      <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 'Servicio de atención al cliente profesional' : 'Professional customer service'}
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link to="/servicios/agentes-ia" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">{t('services.aiAgents')}</div>
-                      <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 'Chatbots y asistentes virtuales inteligentes' : 'Chatbots and intelligent virtual assistants'}
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link to="/servicios/contenido" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">{t('services.contentGeneration')}</div>
-                      <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 'Creación automática de contenido con IA' : 'Automatic content creation with AI'}
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link to="/iacoding" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">{t('services.iaDevelopment')}</div>
-                      <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 'Soluciones personalizadas con IA' : 'Custom AI solutions'}
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link to="/transcripcion" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                      <div className="text-sm font-medium">{t('services.videoTranscription')}</div>
-                      <p className="text-sm leading-snug text-muted-foreground">
-                        {t('language') === 'es' ? 'Transcripción automática de videos' : 'Automatic video transcription'}
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-              </ul>
+              <div className="w-[600px] p-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Primera columna */}
+                  <div className="space-y-1">
+                    <NavigationMenuLink asChild>
+                      <Link to="/novachannel" className="flex items-center space-x-3 select-none rounded-md bg-gradient-to-b from-[#bc3e06] to-novativa-orange p-4 no-underline outline-none focus:shadow-md text-white">
+                        <MessageCircle className="h-6 w-6" />
+                        <div>
+                          <div className="text-lg font-medium">
+                            NovaChannel
+                          </div>
+                          <p className="text-sm leading-tight text-white/90">
+                            {t('language') === 'es' ? 'Plataforma integral de comunicación multicanal' : 'Comprehensive multichannel communication platform'}
+                          </p>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                    
+                    <NavigationMenuLink asChild>
+                      <Link to="/novamedic" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <Stethoscope className="h-5 w-5" />
+                        <div>
+                          <div className="text-sm font-medium">NovaMedic</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {t('language') === 'es' ? 'Plataforma de IA para atención médica' : 'AI platform for medical care'}
+                          </p>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                    
+                    <NavigationMenuLink asChild>
+                      <Link to="/servicios/redes-sociales-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <Share2 className="h-5 w-5" />
+                        <div>
+                          <div className="text-sm font-medium">Gestión de Redes Sociales con IA</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {t('language') === 'es' ? 'Automatiza tu contenido y optimiza resultados' : 'Automate your content and optimize results'}
+                          </p>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                    
+                    <NavigationMenuLink asChild>
+                      <Link to="/servicios/contact-center" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <Phone className="h-5 w-5" />
+                        <div>
+                          <div className="text-sm font-medium">{t('services.contactCenter')}</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {t('language') === 'es' ? 'Servicio de atención al cliente profesional' : 'Professional customer service'}
+                          </p>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                  
+                  {/* Segunda columna */}
+                  <div className="space-y-1">
+                    <NavigationMenuLink asChild>
+                      <Link to="/servicios/agentes-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <Bot className="h-5 w-5" />
+                        <div>
+                          <div className="text-sm font-medium">{t('services.aiAgents')}</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {t('language') === 'es' ? 'Chatbots y asistentes virtuales inteligentes' : 'Chatbots and intelligent virtual assistants'}
+                          </p>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                    
+                    <NavigationMenuLink asChild>
+                      <Link to="/servicios/contenido" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <FileText className="h-5 w-5" />
+                        <div>
+                          <div className="text-sm font-medium">{t('services.contentGeneration')}</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {t('language') === 'es' ? 'Creación automática de contenido con IA' : 'Automatic content creation with AI'}
+                          </p>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                    
+                    <NavigationMenuLink asChild>
+                      <Link to="/iacoding" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <Code className="h-5 w-5" />
+                        <div>
+                          <div className="text-sm font-medium">{t('services.iaDevelopment')}</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {t('language') === 'es' ? 'Soluciones personalizadas con IA' : 'Custom AI solutions'}
+                          </p>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                    
+                    <NavigationMenuLink asChild>
+                      <Link to="/transcripcion" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <Video className="h-5 w-5" />
+                        <div>
+                          <div className="text-sm font-medium">{t('services.videoTranscription')}</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {t('language') === 'es' ? 'Transcripción automática de videos' : 'Automatic video transcription'}
+                          </p>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                </div>
+              </div>
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
