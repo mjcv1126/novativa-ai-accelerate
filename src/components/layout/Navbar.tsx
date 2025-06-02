@@ -1,15 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import DesktopNav from './navigation/DesktopNav';
 import MobileNav from './navigation/MobileNav';
-
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -18,33 +15,38 @@ const Navbar = () => {
         setIsScrolled(false);
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
-  return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white shadow-lg' : 'bg-white/95 backdrop-blur-sm'
-    }`}>
+  return <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`}>
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex-shrink-0">
-            <img 
-              src="/lovable-uploads/4c9113e1-f909-4bba-be7b-03a0406c55bd.png" 
-              alt="Novativa" 
-              className="h-8 w-auto"
-            />
-          </Link>
-          
-          <DesktopNav />
-          <MobileNav setOpen={setIsMenuOpen} onOpenChange={setIsMenuOpen} />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <Link to="/" className="mr-6">
+              <img alt="Novativa" className="h-10" src="/lovable-uploads/876bbab1-6c0b-4434-ba8d-c6e774f6d16d.png" />
+            </Link>
+            <DesktopNav />
+          </div>
+
+          <div className="hidden md:flex items-center space-x-4">
+            <Link to="/contacto">
+              <Button className="bg-novativa-orange hover:bg-novativa-darkOrange">
+                Contáctanos
+              </Button>
+            </Link>
+          </div>
+
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle Menu">
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
       </div>
-    </nav>
-  );
-};
 
+      {isMenuOpen && <MobileNav onClose={() => setIsMenuOpen(false)} />}
+    </header>;
+};
 export default Navbar;
