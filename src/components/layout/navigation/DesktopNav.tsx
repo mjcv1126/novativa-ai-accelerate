@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
@@ -35,6 +34,7 @@ const DesktopNav = () => {
                     </Link>
                   </NavigationMenuLink>
                 </li>
+                
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/novamedic" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
@@ -45,6 +45,18 @@ const DesktopNav = () => {
                     </Link>
                   </NavigationMenuLink>
                 </li>
+                
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link to="/servicios/redes-sociales-ia" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                      <div className="text-sm font-medium">Gestión de Redes Sociales con IA</div>
+                      <p className="text-sm leading-snug text-muted-foreground">
+                        {t('language') === 'es' ? 'Automatiza tu contenido y optimiza resultados' : 'Automate your content and optimize results'}
+                      </p>
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
+                
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/servicios/contact-center" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
@@ -55,6 +67,7 @@ const DesktopNav = () => {
                     </Link>
                   </NavigationMenuLink>
                 </li>
+                
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/servicios/agentes-ia" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
@@ -65,6 +78,7 @@ const DesktopNav = () => {
                     </Link>
                   </NavigationMenuLink>
                 </li>
+                
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/servicios/contenido" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
@@ -75,6 +89,7 @@ const DesktopNav = () => {
                     </Link>
                   </NavigationMenuLink>
                 </li>
+                
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/iacoding" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
@@ -85,6 +100,7 @@ const DesktopNav = () => {
                     </Link>
                   </NavigationMenuLink>
                 </li>
+                
                 <li>
                   <NavigationMenuLink asChild>
                     <Link to="/transcripcion" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">

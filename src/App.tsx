@@ -16,6 +16,7 @@ import NovaChannel from './pages/NovaChannel';
 import Index from './pages/Index';
 import KnowledgeBase from './pages/KnowledgeBase';
 import IACoding from './pages/IACoding';
+import SocialMediaAI from './pages/SocialMediaAI';
 import ContentGeneration from './pages/services/ContentGeneration';
 import IADevelopment from './pages/services/IADevelopment';
 import ContactCenter from './pages/services/ContactCenter';
@@ -41,6 +42,9 @@ function App() {
       
       <Route path="/servicios/contact-center" element={<Layout><ContactCenter /></Layout>} />
       <Route path="/services/contact-center" element={<Layout><ContactCenter /></Layout>} />
+      
+      <Route path="/servicios/redes-sociales-ia" element={<Layout><SocialMediaAI /></Layout>} />
+      <Route path="/services/social-media-ai" element={<Layout><SocialMediaAI /></Layout>} />
       
       <Route path="/precios" element={<Layout><Pricing /></Layout>} />
       <Route path="/pricing" element={<Layout><Pricing /></Layout>} />

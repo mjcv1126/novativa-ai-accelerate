@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -91,6 +90,13 @@ const MobileNav = ({ onClose }: MobileNavProps) => {
               onClick={onClose}
             >
               {t('services.videoTranscription')}
+            </Link>
+            <Link 
+              to="/servicios/redes-sociales-ia" 
+              className="block text-gray-600 hover:text-[#bc3e06]"
+              onClick={onClose}
+            >
+              Redes Sociales IA
             </Link>
           </div>
         </div>
