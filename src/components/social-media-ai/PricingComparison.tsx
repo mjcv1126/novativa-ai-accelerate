@@ -1,12 +1,11 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Rocket, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-
 const PricingComparison = () => {
-  const { language } = useLanguage();
-  
+  const {
+    language
+  } = useLanguage();
   const content = {
     es: {
       title: "Ahorra hasta un ",
@@ -15,22 +14,12 @@ const PricingComparison = () => {
       traditional: {
         title: "Gestión Tradicional",
         price: "$3,000 - $8,000/mes",
-        features: [
-          "😰 Community manager tiempo completo",
-          "💸 Diseñador gráfico adicional",
-          "🐌 Planificación manual y lenta",
-          "📊 Análisis básico de métricas"
-        ]
+        features: ["😰 Community manager tiempo completo", "💸 Diseñador gráfico adicional", "🐌 Planificación manual y lenta", "📊 Análisis básico de métricas"]
       },
       ai: {
         title: "Gestión con IA",
         price: "$500 - $2,000/mes",
-        features: [
-          "Automatización completa",
-          "Contenido generado por IA",
-          "Estrategia basada en datos",
-          "Monitoreo y ajustes constantes"
-        ]
+        features: ["Automatización completa", "Contenido generado por IA", "Estrategia basada en datos", "Monitoreo y ajustes constantes"]
       },
       cta: "¡Transforma tus Redes Sociales Ahora!"
     },
@@ -41,31 +30,18 @@ const PricingComparison = () => {
       traditional: {
         title: "Traditional Management",
         price: "$3,000 - $8,000/month",
-        features: [
-          "😰 Full-time community manager",
-          "💸 Additional graphic designer",
-          "🐌 Manual and slow planning",
-          "📊 Basic metrics analysis"
-        ]
+        features: ["😰 Full-time community manager", "💸 Additional graphic designer", "🐌 Manual and slow planning", "📊 Basic metrics analysis"]
       },
       ai: {
         title: "AI Management",
         price: "$500 - $2,000/month",
-        features: [
-          "Complete automation",
-          "AI-generated content",
-          "Data-driven strategy",
-          "Constant monitoring and adjustments"
-        ]
+        features: ["Complete automation", "AI-generated content", "Data-driven strategy", "Constant monitoring and adjustments"]
       },
       cta: "Transform Your Social Media Now!"
     }
   };
-  
   const currentContent = language === 'es' ? content.es : content.en;
-  
-  return (
-    <section className="py-20 bg-black relative overflow-hidden">
+  return <section className="py-20 bg-black relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-purple-600/10 opacity-30" />
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
@@ -79,12 +55,10 @@ const PricingComparison = () => {
             <h3 className="text-xl font-semibold mb-4 text-gray-400">{currentContent.traditional.title}</h3>
             <p className="text-4xl font-bold mb-6 text-gray-200">{currentContent.traditional.price}</p>
             <ul className="space-y-4 text-gray-300">
-              {currentContent.traditional.features.map((feature, index) => (
-                <li key={index} className="flex items-center">
+              {currentContent.traditional.features.map((feature, index) => <li key={index} className="flex items-center">
                   <X className="w-4 h-4 text-red-500 mr-3 flex-shrink-0" />
                   {feature}
-                </li>
-              ))}
+                </li>)}
             </ul>
           </div>
           
@@ -93,29 +67,23 @@ const PricingComparison = () => {
             <h3 className="text-xl font-semibold mb-4">{currentContent.ai.title}</h3>
             <p className="text-4xl font-bold mb-6">{currentContent.ai.price}</p>
             <ul className="space-y-4">
-              {currentContent.ai.features.map((feature, index) => (
-                <li key={index} className="flex items-center">
+              {currentContent.ai.features.map((feature, index) => <li key={index} className="flex items-center">
                   <span className="w-2 h-2 bg-green-400 rounded-full mr-3"></span>
                   {feature}
-                </li>
-              ))}
+                </li>)}
             </ul>
           </div>
         </div>
 
         <div className="text-center mt-12">
-          <Button 
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg px-8 py-6"
-            onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
-          >
+          <Button size="lg" onClick={() => document.getElementById('schedule')?.scrollIntoView({
+          behavior: 'smooth'
+        })} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-6 text-sm">
             <Rocket className="mr-2 h-5 w-5" />
             {currentContent.cta}
           </Button>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default PricingComparison;
