@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Rocket } from 'lucide-react';
+import { Rocket, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const PricingComparison = () => {
@@ -16,10 +16,10 @@ const PricingComparison = () => {
         title: "Gestión Tradicional",
         price: "$3,000 - $8,000/mes",
         features: [
-          "Community manager tiempo completo",
-          "Diseñador gráfico adicional",
-          "Planificación manual y lenta",
-          "Análisis básico de métricas"
+          "😰 Community manager tiempo completo",
+          "💸 Diseñador gráfico adicional",
+          "🐌 Planificación manual y lenta",
+          "📊 Análisis básico de métricas"
         ]
       },
       ai: {
@@ -42,10 +42,10 @@ const PricingComparison = () => {
         title: "Traditional Management",
         price: "$3,000 - $8,000/month",
         features: [
-          "Full-time community manager",
-          "Additional graphic designer",
-          "Manual and slow planning",
-          "Basic metrics analysis"
+          "😰 Full-time community manager",
+          "💸 Additional graphic designer",
+          "🐌 Manual and slow planning",
+          "📊 Basic metrics analysis"
         ]
       },
       ai: {
@@ -81,7 +81,7 @@ const PricingComparison = () => {
             <ul className="space-y-4 text-gray-300">
               {currentContent.traditional.features.map((feature, index) => (
                 <li key={index} className="flex items-center">
-                  <span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                  <X className="w-4 h-4 text-red-500 mr-3 flex-shrink-0" />
                   {feature}
                 </li>
               ))}
