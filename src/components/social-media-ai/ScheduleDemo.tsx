@@ -56,12 +56,12 @@ const ScheduleDemo = () => {
           
           <Button 
             size="lg"
-            className="bg-white text-blue-600 hover:bg-gray-100 text-xl px-12 py-8 font-bold shadow-2xl"
+            className="bg-white text-blue-600 hover:bg-gray-100 text-sm md:text-xl px-8 md:px-12 py-6 md:py-8 font-bold shadow-2xl"
             onClick={() => {
               window.location.href = language === 'es' ? '/agenda' : '/schedule';
             }}
           >
-            <Calendar className="mr-3 h-6 w-6" />
+            <Calendar className="mr-2 md:mr-3 h-4 w-4 md:h-6 md:w-6" />
             {currentContent.cta}
           </Button>
         </div>

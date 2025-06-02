@@ -33,10 +33,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ isVisible }) => {
             </div>
             <Button 
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-xl px-10 py-8 animate-bounce-slow"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm md:text-xl px-6 md:px-10 py-6 md:py-8 animate-bounce-slow"
               onClick={() => document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <TrendingUp className="mr-2 h-6 w-6" />
+              <TrendingUp className="mr-2 h-4 w-4 md:h-6 md:w-6" />
               Agenda una Consultoría Gratuita
             </Button>
           </div>

@@ -34,9 +34,9 @@ const StickyHeaderCTA = () => {
       <div className="container mx-auto flex justify-center">
         <Button 
           onClick={handleScheduleClick}
-          className="bg-white text-blue-600 hover:bg-gray-100 font-semibold"
+          className="bg-white text-blue-600 hover:bg-gray-100 font-semibold text-xs md:text-base px-4 md:px-6"
         >
-          <Calendar className="mr-2 h-4 w-4" />
+          <Calendar className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
           {language === 'es' ? content.es : content.en}
         </Button>
       </div>
