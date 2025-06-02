@@ -54,7 +54,7 @@ const DesktopNav = () => {
                     </NavigationMenuLink>
                     
                     <NavigationMenuLink asChild>
-                      <Link to="/redes-sociales-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                      <Link to="/servicios/redes-sociales-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                         <Megaphone className="h-5 w-5" />
                         <div>
                           <div className="text-sm font-medium">Redes Sociales IA</div>
