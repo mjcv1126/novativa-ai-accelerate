@@ -5,7 +5,7 @@ import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { MessageCircle, Bot, Share2, FileText, Code, Video, Phone, Stethoscope, Megaphone } from 'lucide-react';
+import { MessageCircle, Bot, Share2, FileText, Code, Phone, Stethoscope, Megaphone } from 'lucide-react';
 
 const DesktopNav = () => {
   const { t } = useLanguage();
@@ -54,12 +54,12 @@ const DesktopNav = () => {
                     </NavigationMenuLink>
                     
                     <NavigationMenuLink asChild>
-                      <Link to="/servicios/redes-sociales-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                        <Share2 className="h-5 w-5" />
+                      <Link to="/redes-sociales-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <Megaphone className="h-5 w-5" />
                         <div>
-                          <div className="text-sm font-medium">Gestión de Redes Sociales con IA</div>
+                          <div className="text-sm font-medium">Redes Sociales IA</div>
                           <p className="text-sm leading-snug text-muted-foreground">
-                            {t('language') === 'es' ? 'Automatiza tu contenido y optimiza resultados' : 'Automate your content and optimize results'}
+                            {t('language') === 'es' ? 'Gestión inteligente de contenido social' : 'Intelligent social content management'}
                           </p>
                         </div>
                       </Link>
@@ -111,18 +111,6 @@ const DesktopNav = () => {
                           <div className="text-sm font-medium">{t('services.iaDevelopment')}</div>
                           <p className="text-sm leading-snug text-muted-foreground">
                             {t('language') === 'es' ? 'Soluciones personalizadas con IA' : 'Custom AI solutions'}
-                          </p>
-                        </div>
-                      </Link>
-                    </NavigationMenuLink>
-                    
-                    <NavigationMenuLink asChild>
-                      <Link to="/transcripcion" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                        <Video className="h-5 w-5" />
-                        <div>
-                          <div className="text-sm font-medium">{t('services.videoTranscription')}</div>
-                          <p className="text-sm leading-snug text-muted-foreground">
-                            {t('language') === 'es' ? 'Transcripción automática de videos' : 'Automatic video transcription'}
                           </p>
                         </div>
                       </Link>
