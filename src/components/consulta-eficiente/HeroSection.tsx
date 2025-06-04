@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -113,12 +114,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
         
-        {/* Párrafo explicativo profesional - Oculto en móvil para ahorrar espacio */}
-        <div className="hidden sm:block bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 mb-12 max-w-4xl mx-auto border border-gray-200 shadow-sm">
-          <p className="text-lg sm:text-xl md:text-2xl mb-6 leading-relaxed text-gray-700 px-2">
+        {/* Párrafo explicativo profesional - Ahora visible en móvil también */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-12 max-w-4xl mx-auto border border-gray-200 shadow-sm">
+          <p className="text-sm sm:text-lg md:text-xl lg:text-2xl mb-3 sm:mb-6 leading-relaxed text-gray-700 px-1 sm:px-2">
             Estamos lanzando una solución tecnológica avanzada diseñada específicamente para profesionales médicos que buscan optimizar su práctica clínica sin comprometer la calidad de atención.
           </p>
-          <div className="inline-block bg-gradient-to-r from-novativa-teal to-novativa-orange text-white px-6 py-3 rounded-xl font-semibold text-lg shadow-lg">
+          <div className="inline-block bg-gradient-to-r from-novativa-teal to-novativa-orange text-white px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-lg shadow-lg">
             Programa exclusivo para médicos especialistas
           </div>
         </div>
