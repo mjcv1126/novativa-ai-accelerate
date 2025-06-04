@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import HeroSection from '@/components/consulta-eficiente/HeroSection';
 import ProblemsSection from '@/components/consulta-eficiente/ProblemsSection';
 import SolutionSection from '@/components/consulta-eficiente/SolutionSection';
 import TestimonialsSection from '@/components/consulta-eficiente/TestimonialsSection';
 import FinalCTASection from '@/components/consulta-eficiente/FinalCTASection';
+import StickyFooterCTA from '@/components/consulta-eficiente/StickyFooterCTA';
 
 const ConsultaEficiente = () => {
   const [showCTA, setShowCTA] = useState(false);
@@ -81,6 +81,9 @@ const ConsultaEficiente = () => {
       {showCTA && <div className="fixed bottom-6 right-6 z-50">
           {/* This area can be used for a floating CTA if needed */}
         </div>}
+
+      {/* Sticky Footer CTA */}
+      <StickyFooterCTA />
     </div>
   );
 };
