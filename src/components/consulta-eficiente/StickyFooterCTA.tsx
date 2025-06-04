@@ -38,7 +38,7 @@ const StickyFooterCTA: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-novativa-teal to-novativa-orange text-white shadow-2xl border-t-4 border-white/20">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-novativa-teal to-novativa-orange text-white shadow-2xl border-b-4 border-white/20">
       <div className="container mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1">
