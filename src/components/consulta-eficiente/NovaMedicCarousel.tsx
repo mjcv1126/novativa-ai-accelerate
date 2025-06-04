@@ -9,6 +9,8 @@ import {
 import { useInterval } from "@/hooks/useInterval";
 import { CarouselImage } from '@/components/NovaChannel/carousel/CarouselImage';
 import { ImageDialog } from '@/components/NovaChannel/carousel/ImageDialog';
+import { Button } from '@/components/ui/button';
+import { Calendar } from 'lucide-react';
 
 const novamedicScreenshots = [
   "/lovable-uploads/11ed757e-fba1-459c-b7c2-b00756c96542.png",
@@ -36,9 +38,20 @@ const NovaMedicCarousel = () => {
     }
   }, 4000);
 
+  const handleCTAClick = () => {
+    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto">
-      <Carousel className="relative w-full" setApi={setApi}>
+      <Carousel 
+        className="relative w-full" 
+        setApi={setApi}
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+      >
         <CarouselContent>
           {novamedicScreenshots.map((src, index) => (
             <CarouselImage
@@ -57,6 +70,20 @@ const NovaMedicCarousel = () => {
       <div className="mt-6 text-center">
         <p className="text-gray-600 text-sm italic max-w-2xl mx-auto">
           {screenDescriptions[api?.selectedScrollSnap?.() || 0]}
+        </p>
+      </div>
+
+      {/* CTA pequeño */}
+      <div className="mt-8 text-center">
+        <Button 
+          onClick={handleCTAClick}
+          className="bg-novativa-teal hover:bg-novativa-teal/90 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        >
+          <Calendar className="w-4 h-4 mr-2" />
+          Agenda tu Demo de NovaMedic
+        </Button>
+        <p className="text-gray-500 text-sm mt-2">
+          Descubre cómo NovaMedic puede transformar tu práctica médica
         </p>
       </div>
 
