@@ -1,17 +1,18 @@
-
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
+
 interface HeroSectionProps {
   openTidyCal: () => void;
   showCTA: boolean;
 }
+
 const HeroSection: React.FC<HeroSectionProps> = ({
   openTidyCal,
   showCTA
 }) => {
-  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
+  return (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
       {/* GIF de fondo */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-96 z-0" style={{
       backgroundImage: 'url(https://media.lordicon.com/icons/wired/gradient/1249-heart-beat.gif)',
@@ -90,9 +91,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Video demo profesional */}
         <div className="relative bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 sm:p-8 mb-8 shadow-lg mx-2 sm:mx-4 border border-gray-200">
           <div className="bg-white rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-gray-100">
-            <div className="flex items-center justify-center h-64 sm:h-80 md:h-96 bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-100 overflow-hidden">
+            <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-100 overflow-hidden" style={{ aspectRatio: '16/9' }}>
               <iframe 
-                className="w-full h-full rounded-lg"
+                className="absolute inset-0 w-full h-full rounded-lg"
                 src="https://www.youtube.com/embed/h4UJmRrA9uk?autoplay=1&mute=1&loop=1&playlist=h4UJmRrA9uk"
                 title="NovaMedic Demostración Clínica"
                 frameBorder="0"
@@ -170,7 +171,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </Button>
         </div>}
       </div>
-    </section>;
+    </section>
+  );
 };
-export default HeroSection;
 
+export default HeroSection;
