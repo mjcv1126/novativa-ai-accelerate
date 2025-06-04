@@ -2,6 +2,7 @@
 import React from 'react';
 import { CheckCircle, Stethoscope, Calendar, MessageSquare, TrendingUp, Users, BarChart, Zap } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import NovaMedicCarousel from './NovaMedicCarousel';
 
 const SolutionSection: React.FC = () => {
   const features = [
@@ -29,6 +30,19 @@ const SolutionSection: React.FC = () => {
           <p className="text-xl text-gray-600 max-w-4xl mx-auto">
             Una plataforma completa que se adapta a tu forma de trabajar, no al revés
           </p>
+        </div>
+
+        {/* Carrusel de pantallas de NovaMedic */}
+        <div className="mb-20">
+          <div className="text-center mb-8">
+            <h3 className="text-3xl font-bold mb-4 text-novativa-teal">
+              🖥️ Módulos y Funcionalidades
+            </h3>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Descubre todas las herramientas que NovaMedic pone a tu disposición para revolucionar tu práctica médica
+            </p>
+          </div>
+          <NovaMedicCarousel />
         </div>
         
         {/* Feature con imagen */}
