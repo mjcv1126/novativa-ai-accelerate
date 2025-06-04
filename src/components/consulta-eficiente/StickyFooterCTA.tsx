@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, X } from 'lucide-react';
+
 const StickyFooterCTA: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -41,7 +42,7 @@ const StickyFooterCTA: React.FC = () => {
                 <div className="font-bold text-sm sm:text-lg leading-tight">
                   ¡50% DE DESCUENTO!
                 </div>
-                <div className="text-xs sm:text-sm opacity-90 leading-tight">Programa Fundador para Médicos Especialistas</div>
+                <div className="text-xs sm:text-sm opacity-90 leading-tight">Programa Early Bird para Médicos Especialistas</div>
               </div>
             </div>
           </div>
@@ -59,4 +60,5 @@ const StickyFooterCTA: React.FC = () => {
       </div>
     </div>;
 };
+
 export default StickyFooterCTA;
