@@ -97,7 +97,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-100 overflow-hidden" style={{ aspectRatio: '16/9' }}>
                 <iframe 
                   className="absolute inset-0 w-full h-full rounded-lg"
-                  src="https://www.youtube.com/embed/h4UJmRrA9uk?autoplay=1&mute=1&loop=1&playlist=h4UJmRrA9uk"
+                  src="https://www.youtube.com/embed/h4UJmRrA9uk?loop=1&playlist=h4UJmRrA9uk"
                   title="NovaMedic Demostración Clínica"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -112,7 +112,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 overflow-hidden shadow-xl" style={{ aspectRatio: '16/9' }}>
               <iframe 
                 className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/h4UJmRrA9uk?autoplay=1&mute=1&loop=1&playlist=h4UJmRrA9uk"
+                src="https://www.youtube.com/embed/h4UJmRrA9uk?loop=1&playlist=h4UJmRrA9uk"
                 title="NovaMedic Demostración Clínica"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
