@@ -47,39 +47,73 @@ const LouisebotWidget = () => {
     // Add custom styles to position the widget in the middle of the screen on mobile
     const addWidgetStyles = () => {
       const existingStyle = document.getElementById('louisebot-widget-styles');
-      if (!existingStyle) {
-        const style = document.createElement('style');
-        style.id = 'louisebot-widget-styles';
-        style.textContent = `
-          /* Position widget on desktop - above footer */
-          #ps_widget {
-            bottom: 150px !important;
-            z-index: 40 !important;
-          }
-          
-          /* Position widget in middle of mobile screen */
-          @media (max-width: 768px) {
-            #ps_widget {
-              bottom: 50vh !important;
-              right: 16px !important;
-              transform: translateY(50%) !important;
-            }
-          }
-          
-          /* Ensure the widget iframe has proper positioning */
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+      
+      const style = document.createElement('style');
+      style.id = 'louisebot-widget-styles';
+      style.textContent = `
+        /* Position widget on desktop - above footer */
+        #ps_widget,
+        #ps_widget div,
+        #ps_widget iframe {
+          bottom: 150px !important;
+          z-index: 40 !important;
+        }
+        
+        /* Position widget in middle of mobile screen */
+        @media (max-width: 768px) {
+          #ps_widget,
+          #ps_widget div,
           #ps_widget iframe {
+            bottom: 50vh !important;
+            top: auto !important;
+            right: 16px !important;
+            left: auto !important;
+            transform: translateY(50%) !important;
             position: fixed !important;
           }
-        `;
-        document.head.appendChild(style);
-      }
+        }
+        
+        /* Ensure the widget iframe has proper positioning */
+        #ps_widget iframe {
+          position: fixed !important;
+        }
+      `;
+      document.head.appendChild(style);
     };
 
-    // Apply styles immediately and after a delay to ensure they take effect
+    // Apply styles immediately and repeatedly to ensure they stick
     addWidgetStyles();
     setTimeout(addWidgetStyles, 2000);
+    setTimeout(addWidgetStyles, 5000);
+    setTimeout(addWidgetStyles, 10000);
 
-    return () => clearTimeout(timer);
+    // Also apply styles when the widget element appears
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.addedNodes) {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && (node as Element).id === 'ps_widget') {
+              setTimeout(addWidgetStyles, 100);
+              setTimeout(addWidgetStyles, 500);
+              setTimeout(addWidgetStyles, 1000);
+            }
+          });
+        }
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
   }, []);
 
   return null;
