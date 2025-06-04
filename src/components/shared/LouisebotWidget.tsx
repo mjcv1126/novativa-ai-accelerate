@@ -44,6 +44,39 @@ const LouisebotWidget = () => {
       loadWidget();
     }, 1000);
 
+    // Add custom styles to position the widget above the sticky footer
+    const addWidgetStyles = () => {
+      const existingStyle = document.getElementById('louisebot-widget-styles');
+      if (!existingStyle) {
+        const style = document.createElement('style');
+        style.id = 'louisebot-widget-styles';
+        style.textContent = `
+          /* Adjust Louisebot widget position to avoid overlap with sticky footer */
+          #ps_widget {
+            bottom: 100px !important;
+            z-index: 40 !important;
+          }
+          
+          @media (max-width: 768px) {
+            #ps_widget {
+              bottom: 120px !important;
+              right: 16px !important;
+            }
+          }
+          
+          /* Ensure the widget iframe has proper positioning */
+          #ps_widget iframe {
+            position: fixed !important;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    };
+
+    // Apply styles immediately and after a delay to ensure they take effect
+    addWidgetStyles();
+    setTimeout(addWidgetStyles, 2000);
+
     return () => clearTimeout(timer);
   }, []);
 
