@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -89,7 +88,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <p className="text-xl sm:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
         </div>
         
-        {/* Video demo profesional - Sin marco en móvil, con marco en desktop */}
+        {/* Video demo profesional - Sin marco en móvil full width, con marco en desktop */}
         <div className="relative mb-8">
           {/* Desktop: Con marco decorativo */}
           <div className="hidden sm:block bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 sm:p-8 shadow-lg mx-2 sm:mx-4 border border-gray-200">
@@ -107,11 +106,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
           </div>
 
-          {/* Mobile: Sin marco, más grande y visual */}
-          <div className="block sm:hidden mx-2">
-            <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg overflow-hidden shadow-xl" style={{ aspectRatio: '16/9' }}>
+          {/* Mobile: Sin marco, full width spread */}
+          <div className="block sm:hidden -mx-4">
+            <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 overflow-hidden shadow-xl" style={{ aspectRatio: '16/9' }}>
               <iframe 
-                className="absolute inset-0 w-full h-full rounded-lg"
+                className="absolute inset-0 w-full h-full"
                 src="https://www.youtube.com/embed/h4UJmRrA9uk?autoplay=1&mute=1&loop=1&playlist=h4UJmRrA9uk"
                 title="NovaMedic Demostración Clínica"
                 frameBorder="0"
