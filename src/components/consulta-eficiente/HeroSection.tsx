@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -89,7 +90,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Video demo profesional */}
         <div className="relative bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 sm:p-8 mb-8 shadow-lg mx-2 sm:mx-4 border border-gray-200">
           <div className="bg-white rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-gray-100">
-            <div className="flex items-center justify-center h-48 sm:h-64 bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-100 overflow-hidden">
+            <div className="flex items-center justify-center h-64 sm:h-80 md:h-96 bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-100 overflow-hidden">
               <iframe 
                 className="w-full h-full rounded-lg"
                 src="https://www.youtube.com/embed/h4UJmRrA9uk?autoplay=1&mute=1&loop=1&playlist=h4UJmRrA9uk"
@@ -172,3 +173,4 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     </section>;
 };
 export default HeroSection;
+
