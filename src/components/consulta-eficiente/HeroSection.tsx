@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -32,20 +31,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Contenido principal */}
       <div className="relative z-30 text-center w-full max-w-6xl mx-auto">
         {/* Logo - Más pequeño en móvil */}
-        <div className="mb-2 sm:mb-8 flex justify-center">
-          <img src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" alt="NovaMedic Logo" className="h-3 sm:h-8 md:h-10 w-auto" />
+        <div className="mb-4 sm:mb-8 flex justify-center">
+          <img src="/lovable-uploads/53b63427-314f-4c41-bbd8-fb0d8225d268.png" alt="NovaMedic Logo" className="h-4 sm:h-8 md:h-10 w-auto" />
         </div>
         
         {/* Badge de lanzamiento profesional - Compacto en móvil */}
-        <div className="mb-2 sm:mb-8">
-          <div className="relative inline-block mb-2 sm:mb-6">
-            <div className="bg-gradient-to-r from-blue-50 to-teal-50 rounded-lg sm:rounded-2xl px-3 sm:px-8 py-1 sm:py-4 border-2 border-novativa-teal/20 shadow-lg">
-              <div className="flex items-center gap-1 sm:gap-3">
+        <div className="mb-4 sm:mb-8">
+          <div className="relative inline-block mb-3 sm:mb-6">
+            <div className="bg-gradient-to-r from-blue-50 to-teal-50 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-2 sm:py-4 border-2 border-novativa-teal/20 shadow-lg">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="relative">
-                  <Award className="w-3 sm:w-6 h-3 sm:h-6 text-novativa-teal" />
+                  <Award className="w-4 sm:w-6 h-4 sm:h-6 text-novativa-teal" />
                 </div>
                 <div className="text-center">
-                  <div className="text-novativa-teal font-bold text-xs sm:text-lg md:text-xl tracking-wide">
+                  <div className="text-novativa-teal font-bold text-sm sm:text-lg md:text-xl tracking-wide">
                     LANZAMIENTO EXCLUSIVO
                   </div>
                   <div className="text-gray-600 font-medium text-xs sm:text-sm tracking-wide">
@@ -58,12 +57,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
         
         {/* Título principal con descuento - Más compacto en móvil */}
-        <div className="mb-2 sm:mb-8">
+        <div className="mb-4 sm:mb-8">
           {/* Descuento profesional */}
-          <div className="relative mb-2 sm:mb-8">
+          <div className="relative mb-4 sm:mb-8">
             {/* Descuento principal */}
-            <div className="relative mb-2 sm:mb-6">
-              <div className="text-xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-gradient-to-r from-novativa-teal via-blue-600 to-novativa-orange bg-clip-text leading-tight animate-pulse">
+            <div className="relative mb-3 sm:mb-6">
+              <div className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-gradient-to-r from-novativa-teal via-blue-600 to-novativa-orange bg-clip-text leading-tight animate-pulse">
                 50% DE DESCUENTO
               </div>
               
@@ -77,12 +76,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
         
         {/* Descripción de la plataforma - Más compacta en móvil */}
-        <div className="mb-2 sm:mb-8 flex justify-center">
-          <p className="text-xs sm:text-xl md:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
+        <div className="mb-4 sm:mb-8 flex justify-center">
+          <p className="text-sm sm:text-xl md:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
         </div>
         
         {/* Video demo profesional - Más pequeño en móvil */}
-        <div className="relative mb-2 sm:mb-8">
+        <div className="relative mb-4 sm:mb-8">
           {/* Desktop: Con marco decorativo */}
           <div className="hidden sm:block bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 sm:p-8 shadow-lg mx-2 sm:mx-4 border border-gray-200">
             <div className="bg-white rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-gray-100">
@@ -114,16 +113,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
         
-        {/* CTA móvil - Aparece justo debajo del video */}
-        {showCTA && (
-          <div className="block sm:hidden mb-2 px-2">
-            <Button onClick={openTidyCal} size="sm" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-4 py-2 text-sm shadow-lg w-full">
-              <Calendar className="w-4 h-4 mr-2" />
-              Solicitar Evaluación Profesional
-            </Button>
-          </div>
-        )}
-        
         {/* Párrafo explicativo profesional - Oculto en móvil para ahorrar espacio */}
         <div className="hidden sm:block bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 mb-12 max-w-4xl mx-auto border border-gray-200 shadow-sm">
           <p className="text-lg sm:text-xl md:text-2xl mb-6 leading-relaxed text-gray-700 px-2">
@@ -134,9 +123,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
         
-        {/* CTA profesional - Solo desktop */}
+        {/* CTA profesional - Compacto en móvil */}
         {showCTA && (
-          <div className="hidden sm:block mb-12 px-2">
+          <div className="mb-4 sm:mb-12 px-2">
             <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 text-base sm:text-lg md:text-xl shadow-lg w-full sm:w-auto">
               <Calendar className="w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6 mr-2" />
               Solicitar Evaluación Profesional
