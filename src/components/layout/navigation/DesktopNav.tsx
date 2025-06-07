@@ -5,7 +5,7 @@ import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { MessageCircle, Bot, Share2, FileText, Code, Phone, Stethoscope, Megaphone } from 'lucide-react';
+import { MessageCircle, Bot, Share2, FileText, Code, Phone, Stethoscope, Megaphone, Dumbbell } from 'lucide-react';
 
 const DesktopNav = () => {
   const { t } = useLanguage();
@@ -54,6 +54,18 @@ const DesktopNav = () => {
                     </NavigationMenuLink>
                     
                     <NavigationMenuLink asChild>
+                      <a href="https://fit.novativa.org/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
+                        <Dumbbell className="h-5 w-5" />
+                        <div>
+                          <div className="text-sm font-medium">NovaFitness</div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {t('language') === 'es' ? 'App para coaches y gimnasios' : 'App for coaches and gyms'}
+                          </p>
+                        </div>
+                      </a>
+                    </NavigationMenuLink>
+                    
+                    <NavigationMenuLink asChild>
                       <Link to="/servicios/redes-sociales-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                         <Megaphone className="h-5 w-5" />
                         <div>
@@ -64,7 +76,10 @@ const DesktopNav = () => {
                         </div>
                       </Link>
                     </NavigationMenuLink>
-                    
+                  </div>
+                  
+                  {/* Segunda columna */}
+                  <div className="space-y-1">
                     <NavigationMenuLink asChild>
                       <Link to="/servicios/contact-center" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                         <Phone className="h-5 w-5" />
@@ -76,10 +91,7 @@ const DesktopNav = () => {
                         </div>
                       </Link>
                     </NavigationMenuLink>
-                  </div>
-                  
-                  {/* Segunda columna */}
-                  <div className="space-y-1">
+                    
                     <NavigationMenuLink asChild>
                       <Link to="/servicios/agentes-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                         <Bot className="h-5 w-5" />

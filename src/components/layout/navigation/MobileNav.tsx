@@ -57,6 +57,15 @@ const MobileNav = ({ onClose }: MobileNavProps) => {
             >
               NovaMedic
             </Link>
+            <a 
+              href="https://fit.novativa.org/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block text-gray-600 hover:text-[#bc3e06]"
+              onClick={onClose}
+            >
+              NovaFitness
+            </a>
             <Link 
               to="/servicios/agentes-ia" 
               className="block text-gray-600 hover:text-[#bc3e06]"
