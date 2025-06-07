@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -252,7 +251,7 @@ const FileUpload = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 pt-24">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Gestión de Archivos</h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
