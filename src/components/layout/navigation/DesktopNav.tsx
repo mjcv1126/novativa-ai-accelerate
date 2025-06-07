@@ -5,7 +5,7 @@ import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { MessageCircle, Bot, Share2, FileText, Code, Phone, Stethoscope, Megaphone, Dumbbell } from 'lucide-react';
+import { MessageCircle, Bot, Share2, FileText, Code, Phone, Stethoscope, Megaphone, Dumbbell, Upload } from 'lucide-react';
 
 const DesktopNav = () => {
   const { t } = useLanguage();
@@ -137,6 +137,11 @@ const DesktopNav = () => {
       
       <Link to="/precios" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         {t('nav.pricing')}
+      </Link>
+      
+      <Link to="/subir-archivos" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
+        <Upload className="h-4 w-4 mr-1 inline" />
+        Archivos
       </Link>
       
       <Link to="/contacto" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">

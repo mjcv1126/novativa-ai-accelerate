@@ -117,6 +117,13 @@ const MobileNav = ({ onClose }: MobileNavProps) => {
         >
           Blog
         </Link>
+        <Link 
+          to="/subir-archivos" 
+          className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
+          onClick={onClose}
+        >
+          📤 Subir Archivos
+        </Link>
         <a 
           href="/contacto" 
           className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"

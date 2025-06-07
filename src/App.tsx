@@ -22,6 +22,7 @@ import IADevelopment from './pages/services/IADevelopment';
 import ContactCenter from './pages/services/ContactCenter';
 import Welcome from './pages/Welcome';
 import ConsultaEficiente from './pages/ConsultaEficiente';
+import FileUpload from './pages/FileUpload';
 import { useLanguage } from './contexts/LanguageContext';
 
 function App() {
@@ -60,6 +61,9 @@ function App() {
       
       <Route path="/transcripcion" element={<TranscriptionPage />} />
       <Route path="/transcription" element={<TranscriptionPage />} />
+      
+      <Route path="/subir-archivos" element={<Layout><FileUpload /></Layout>} />
+      <Route path="/upload-files" element={<Layout><FileUpload /></Layout>} />
       
       <Route path="/terminos-condiciones" element={<Layout><TermsAndConditions /></Layout>} />
       <Route path="/terms-conditions" element={<Layout><TermsAndConditions /></Layout>} />
