@@ -194,13 +194,25 @@ const FileUpload = () => {
     }
   };
 
-  const shareFile = (file: UploadedFile) => {
-    const publicURL = `${supabase.supabaseUrl}/storage/v1/object/public/user-uploads/${file.file_path}`;
-    navigator.clipboard.writeText(publicURL);
-    toast({
-      title: "Enlace copiado",
-      description: "El enlace del archivo se ha copiado al portapapeles",
-    });
+  const shareFile = async (file: UploadedFile) => {
+    try {
+      const { data } = await supabase.storage
+        .from('user-uploads')
+        .getPublicUrl(file.file_path);
+
+      navigator.clipboard.writeText(data.publicUrl);
+      toast({
+        title: "Enlace copiado",
+        description: "El enlace del archivo se ha copiado al portapapeles",
+      });
+    } catch (error) {
+      console.error('Error getting public URL:', error);
+      toast({
+        title: "Error",
+        description: "Error al obtener el enlace del archivo",
+        variant: "destructive",
+      });
+    }
   };
 
   const formatFileSize = (bytes: number) => {
