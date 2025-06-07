@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Video, BrainCircuit, Mic, Share2, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,6 @@ const ContentGeneration = () => {
               <video 
                 autoPlay 
                 loop 
-                muted 
                 playsInline 
                 controls
                 className="rounded-xl shadow-2xl w-full"
@@ -127,8 +125,6 @@ const ContentGeneration = () => {
           </div>
         </div>
       </section>
-
-      
     </>;
 };
 
