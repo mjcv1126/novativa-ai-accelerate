@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Video, BrainCircuit, Mic, Share2, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,8 +15,8 @@ const ContentGeneration = () => {
               Crea flujos autónomos de contenido con tu clon digital y IA avanzada
             </p>
             <div className="relative max-w-4xl mx-auto">
-              <video autoPlay loop muted playsInline className="rounded-xl shadow-2xl w-full" poster="https://cdn-site-assets.veed.io/cdn-cgi/image/width=1536,quality=75,format=auto/AI_Avatar_6a9e429709/AI_Avatar_6a9e429709.png">
-                <source src="https://cdn.heygen.ai/video/homepage/avatar_4.mp4" type="video/mp4" />
+              <video autoPlay loop muted playsInline className="rounded-xl shadow-2xl w-full">
+                <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749325088429.mp4" type="video/mp4" />
               </video>
             </div>
           </div>
