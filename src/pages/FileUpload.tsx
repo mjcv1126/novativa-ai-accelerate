@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Progress } from '@/components/ui/progress';
 import { useForm } from 'react-hook-form';
-import { Upload, Edit, Share2, Trash2, File, Video, Image, Music, AlertCircle } from 'lucide-react';
+import { Upload, Edit, Share2, Trash2, File, Video, Image, Music } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -45,10 +46,6 @@ const FileUpload = () => {
     },
   });
 
-  // Límite de tamaño de archivo en bytes (50MB)
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
-  const MAX_FILE_SIZE_MB = 50;
-
   useEffect(() => {
     fetchFiles();
   }, []);
@@ -75,29 +72,11 @@ const FileUpload = () => {
     }
   };
 
-  const validateFile = (file: File): string | null => {
-    if (file.size > MAX_FILE_SIZE) {
-      return `El archivo es demasiado grande. Tamaño máximo permitido: ${MAX_FILE_SIZE_MB}MB. Tu archivo: ${(file.size / 1024 / 1024).toFixed(1)}MB`;
-    }
-    return null;
-  };
-
   const uploadFile = async (data: FileFormData) => {
     if (!data.file) {
       toast({
         title: "Error",
         description: "Por favor selecciona un archivo",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validar tamaño del archivo
-    const validationError = validateFile(data.file);
-    if (validationError) {
-      toast({
-        title: "Error",
-        description: validationError,
         variant: "destructive",
       });
       return;
@@ -134,11 +113,6 @@ const FileUpload = () => {
 
       if (uploadError) {
         console.error('Error uploading to storage:', uploadError);
-        
-        if (uploadError.message?.includes('Payload too large') || uploadError.message?.includes('413')) {
-          throw new Error(`Archivo demasiado grande. El límite actual del servidor es menor a ${MAX_FILE_SIZE_MB}MB. Intenta comprimir el archivo o usar uno más pequeño.`);
-        }
-        
         throw uploadError;
       }
 
@@ -321,22 +295,6 @@ const FileUpload = () => {
               </DialogTitle>
             </DialogHeader>
 
-            {!editingFile && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
-                  <div className="text-sm text-blue-800">
-                    <p className="font-medium mb-1">Límites de archivo:</p>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>Tamaño máximo: {MAX_FILE_SIZE_MB}MB</li>
-                      <li>Para videos grandes, considera comprimirlos primero</li>
-                      <li>Formatos soportados: imágenes, videos, audio, documentos</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
@@ -383,15 +341,6 @@ const FileUpload = () => {
                             onChange={(e) => {
                               const file = e.target.files?.[0] || null;
                               onChange(file);
-                              
-                              // Mostrar advertencia si el archivo es muy grande
-                              if (file && file.size > MAX_FILE_SIZE) {
-                                toast({
-                                  title: "Archivo muy grande",
-                                  description: `El archivo seleccionado (${(file.size / 1024 / 1024).toFixed(1)}MB) excede el límite de ${MAX_FILE_SIZE_MB}MB`,
-                                  variant: "destructive",
-                                });
-                              }
                             }}
                             {...field}
                           />
