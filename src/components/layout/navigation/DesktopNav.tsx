@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
@@ -6,12 +5,11 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageCircle, Bot, Share2, FileText, Code, Phone, Stethoscope, Megaphone, Dumbbell, Upload } from 'lucide-react';
-
 const DesktopNav = () => {
-  const { t } = useLanguage();
-  
-  return (
-    <div className="hidden md:flex items-center space-x-8">
+  const {
+    t
+  } = useLanguage();
+  return <div className="hidden md:flex items-center space-x-8">
       <Link to="/" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         {t('nav.home')}
       </Link>
@@ -139,10 +137,7 @@ const DesktopNav = () => {
         {t('nav.pricing')}
       </Link>
       
-      <Link to="/subir-archivos" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
-        <Upload className="h-4 w-4 mr-1 inline" />
-        Archivos
-      </Link>
+      
       
       <Link to="/contacto" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         {t('nav.contact')}
@@ -153,8 +148,6 @@ const DesktopNav = () => {
       <ScheduleDialog className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity">
         {t('nav.schedule')}
       </ScheduleDialog>
-    </div>
-  );
+    </div>;
 };
-
 export default DesktopNav;
