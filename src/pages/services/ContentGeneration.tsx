@@ -21,6 +21,7 @@ const ContentGeneration = () => {
                 loop 
                 muted 
                 playsInline 
+                controls
                 className="rounded-xl shadow-2xl w-full"
                 onError={(e) => {
                   console.error('Error loading video:', e);
