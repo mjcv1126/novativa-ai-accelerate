@@ -3,6 +3,7 @@ import React from 'react';
 import { Video, BrainCircuit, Mic, Share2, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+
 const ContentGeneration = () => {
   return <>
       <section className="pt-32 pb-16 bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] overflow-hidden">
@@ -15,8 +16,24 @@ const ContentGeneration = () => {
               Crea flujos autónomos de contenido con tu clon digital y IA avanzada
             </p>
             <div className="relative max-w-4xl mx-auto">
-              <video autoPlay loop muted playsInline className="rounded-xl shadow-2xl w-full">
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                className="rounded-xl shadow-2xl w-full"
+                onError={(e) => {
+                  console.error('Error loading video:', e);
+                }}
+                onLoadStart={() => {
+                  console.log('Video started loading');
+                }}
+                onCanPlay={() => {
+                  console.log('Video can play');
+                }}
+              >
                 <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749325088429.mp4" type="video/mp4" />
+                Tu navegador no soporta el elemento video.
               </video>
             </div>
           </div>
@@ -113,4 +130,5 @@ const ContentGeneration = () => {
       
     </>;
 };
+
 export default ContentGeneration;
