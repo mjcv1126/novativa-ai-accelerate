@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Video, BrainCircuit, Mic, Share2, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -36,7 +37,7 @@ const ContentGeneration = () => {
                   console.log('Video data loaded');
                 }}
               >
-                <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749347965073.mp4" type="video/mp4" />
+                <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749325088429.mp4" type="video/mp4" />
                 Tu navegador no soporta el elemento video.
               </video>
             </div>
