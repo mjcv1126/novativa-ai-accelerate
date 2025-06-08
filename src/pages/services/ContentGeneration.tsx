@@ -18,8 +18,10 @@ const ContentGeneration = () => {
               <video 
                 autoPlay 
                 loop 
+                muted={false}
                 playsInline 
                 controls
+                preload="auto"
                 className="rounded-xl shadow-2xl w-full"
                 onError={(e) => {
                   console.error('Error loading video:', e);
@@ -30,8 +32,11 @@ const ContentGeneration = () => {
                 onCanPlay={() => {
                   console.log('Video can play');
                 }}
+                onLoadedData={() => {
+                  console.log('Video data loaded');
+                }}
               >
-                <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749325088429.mp4" type="video/mp4" />
+                <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749347965073.mp4" type="video/mp4" />
                 Tu navegador no soporta el elemento video.
               </video>
             </div>
