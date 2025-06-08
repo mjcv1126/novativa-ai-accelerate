@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import { Video, BrainCircuit, Mic, Share2, Bot, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -47,16 +46,45 @@ const ContentGeneration = () => {
               </video>
             </div>
             
-            {/* CTA Button below video */}
-            <div className="mt-8">
-              <Button 
-                onClick={openTidyCal}
-                size="lg"
-                className="bg-white text-[#6366f1] hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-lg"
-              >
-                <Calendar className="w-5 h-5 mr-2" />
-                Agenda una Demo Gratuita
-              </Button>
+            {/* Enhanced CTA Button with animations */}
+            <div className="mt-8 relative">
+              {/* Animated background glow */}
+              <div className="absolute inset-0 -m-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 rounded-full blur-lg opacity-75 animate-pulse"></div>
+              
+              {/* Main CTA Button */}
+              <div className="relative">
+                <Button 
+                  onClick={openTidyCal}
+                  size="lg"
+                  className="group relative bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 text-white px-10 py-6 text-xl font-bold shadow-2xl transform transition-all duration-300 hover:scale-110 hover:shadow-3xl animate-bounce-slow border-2 border-white/20"
+                >
+                  {/* Sparkle effect */}
+                  <div className="absolute inset-0 rounded-md bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-pulse"></div>
+                  
+                  <Calendar className="w-6 h-6 mr-3 animate-pulse-subtle" />
+                  <span className="relative z-10">¡Agenda tu Demo GRATIS!</span>
+                  
+                  {/* Arrow animation */}
+                  <div className="ml-3 transform transition-transform group-hover:translate-x-2">
+                    <span className="text-2xl animate-bounce-slow">→</span>
+                  </div>
+                </Button>
+                
+                {/* Floating elements around button */}
+                <div className="absolute -top-2 -left-2 w-4 h-4 bg-yellow-300 rounded-full animate-ping opacity-75"></div>
+                <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-orange-400 rounded-full animate-ping opacity-75" style={{ animationDelay: '0.5s' }}></div>
+                <div className="absolute top-1/2 -right-6 w-2 h-2 bg-red-400 rounded-full animate-ping opacity-75" style={{ animationDelay: '1s' }}></div>
+              </div>
+              
+              {/* Urgency text */}
+              <div className="mt-4">
+                <p className="text-white/90 font-semibold animate-pulse">
+                  🔥 ¡Oferta por tiempo limitado! 🔥
+                </p>
+                <p className="text-white/80 text-sm mt-1">
+                  Solo quedan pocas plazas disponibles
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -152,4 +180,3 @@ const ContentGeneration = () => {
 };
 
 export default ContentGeneration;
-
