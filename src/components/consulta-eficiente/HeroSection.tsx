@@ -87,14 +87,30 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="hidden sm:block bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 sm:p-8 shadow-lg mx-2 sm:mx-4 border border-gray-200">
             <div className="bg-white rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-gray-100">
               <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-100 overflow-hidden" style={{ aspectRatio: '16/9' }}>
-                <iframe 
-                  className="absolute inset-0 w-full h-full rounded-lg"
-                  src="https://www.youtube.com/embed/h4UJmRrA9uk?loop=1&playlist=h4UJmRrA9uk"
-                  title="NovaMedic Demostración Clínica"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
+                <video 
+                  autoPlay 
+                  loop 
+                  muted={false}
+                  playsInline 
+                  controls
+                  preload="auto"
+                  className="absolute inset-0 w-full h-full rounded-lg object-cover"
+                  onError={(e) => {
+                    console.error('Error loading video:', e);
+                  }}
+                  onLoadStart={() => {
+                    console.log('Video started loading');
+                  }}
+                  onCanPlay={() => {
+                    console.log('Video can play');
+                  }}
+                  onLoadedData={() => {
+                    console.log('Video data loaded');
+                  }}
+                >
+                  <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749347965073.mp4" type="video/mp4" />
+                  Tu navegador no soporta el elemento video.
+                </video>
               </div>
             </div>
           </div>
@@ -102,14 +118,30 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Mobile: Video más compacto con aspecto 4:3 para ahorrar altura */}
           <div className="block sm:hidden -mx-2">
             <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 overflow-hidden shadow-xl rounded-lg" style={{ aspectRatio: '4/3' }}>
-              <iframe 
-                className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/h4UJmRrA9uk?loop=1&playlist=h4UJmRrA9uk"
-                title="NovaMedic Demostración Clínica"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
+              <video 
+                autoPlay 
+                loop 
+                muted={false}
+                playsInline 
+                controls
+                preload="auto"
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={(e) => {
+                  console.error('Error loading video:', e);
+                }}
+                onLoadStart={() => {
+                  console.log('Video started loading');
+                }}
+                onCanPlay={() => {
+                  console.log('Video can play');
+                }}
+                onLoadedData={() => {
+                  console.log('Video data loaded');
+                }}
+              >
+                <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749347965073.mp4" type="video/mp4" />
+                Tu navegador no soporta el elemento video.
+              </video>
             </div>
           </div>
         </div>
