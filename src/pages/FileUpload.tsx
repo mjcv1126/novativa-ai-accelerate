@@ -8,6 +8,7 @@ import { UploadedFile, FileFormData } from '@/types/fileUpload';
 const FileUpload = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingFile, setEditingFile] = useState<UploadedFile | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
   
   const {
     files,
@@ -21,19 +22,36 @@ const FileUpload = () => {
     shareFile,
   } = useFileUpload();
 
+  // Solo cargar archivos una vez al montar el componente
   useEffect(() => {
-    fetchFiles();
-  }, [fetchFiles]);
+    if (!hasInitialized) {
+      console.log('Initializing FileUpload component...');
+      fetchFiles();
+      setHasInitialized(true);
+    }
+  }, [hasInitialized, fetchFiles]);
 
   const handleSubmit = async (data: FileFormData): Promise<boolean> => {
+    console.log('Submitting form:', { editing: !!editingFile, data });
+    
+    let success = false;
     if (editingFile) {
-      return await updateFile(editingFile.id, data);
+      success = await updateFile(editingFile.id, data);
     } else {
-      return await uploadFile(data);
+      success = await uploadFile(data);
     }
+
+    // Solo cerrar el dialog si la operación fue exitosa
+    if (success) {
+      setIsDialogOpen(false);
+      setEditingFile(null);
+    }
+    
+    return success;
   };
 
   const openEditDialog = (file: UploadedFile) => {
+    console.log('Opening edit dialog for file:', file.id);
     setEditingFile(file);
     setIsDialogOpen(true);
   };

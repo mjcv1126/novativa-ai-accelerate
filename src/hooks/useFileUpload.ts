@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { UploadedFile, FileFormData } from '@/types/fileUpload';
@@ -11,36 +11,45 @@ export const useFileUpload = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const { toast } = useToast();
 
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
+    if (loading) return; // Evitar múltiples llamadas simultáneas
+    
     setLoading(true);
     try {
+      console.log('Fetching files from Supabase...');
       const { data, error } = await supabase
         .from('uploaded_files')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching files:', error);
+        throw error;
+      }
+      
+      console.log('Files fetched successfully:', data?.length || 0);
       setFiles(data || []);
     } catch (error) {
-      console.error('Error fetching files:', error);
+      console.error('Error in fetchFiles:', error);
       toast({
         title: "Error",
-        description: "No se pudieron cargar los archivos",
+        description: "No se pudieron cargar los archivos. Verifica tu conexión.",
         variant: "destructive",
       });
+      setFiles([]); // Establecer array vacío para evitar errores de renderizado
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading, toast]);
 
-  const uploadFile = async (data: FileFormData) => {
+  const uploadFile = async (data: FileFormData): Promise<boolean> => {
     if (!data.file) {
       toast({
         title: "Error",
         description: "Por favor selecciona un archivo",
         variant: "destructive",
       });
-      return;
+      return false;
     }
 
     setUploading(true);
@@ -89,7 +98,10 @@ export const useFileUpload = () => {
           file_size: data.file.size,
         });
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Error saving to database:', dbError);
+        throw dbError;
+      }
 
       setUploadProgress(100);
 
@@ -98,7 +110,8 @@ export const useFileUpload = () => {
         description: "Archivo subido correctamente",
       });
 
-      fetchFiles();
+      // Recargar archivos después de subir exitosamente
+      await fetchFiles();
       return true;
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -114,8 +127,9 @@ export const useFileUpload = () => {
     }
   };
 
-  const updateFile = async (fileId: string, data: FileFormData) => {
+  const updateFile = async (fileId: string, data: FileFormData): Promise<boolean> => {
     try {
+      console.log('Updating file:', fileId);
       const { error } = await supabase
         .from('uploaded_files')
         .update({
@@ -125,14 +139,18 @@ export const useFileUpload = () => {
         })
         .eq('id', fileId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating file:', error);
+        throw error;
+      }
 
       toast({
         title: "Éxito",
         description: "Archivo actualizado correctamente",
       });
 
-      fetchFiles();
+      // Recargar archivos después de actualizar
+      await fetchFiles();
       return true;
     } catch (error) {
       console.error('Error updating file:', error);
@@ -147,12 +165,17 @@ export const useFileUpload = () => {
 
   const deleteFile = async (file: UploadedFile) => {
     try {
+      console.log('Deleting file:', file.id);
+      
       // Eliminar archivo del storage
       const { error: storageError } = await supabase.storage
         .from('user-uploads')
         .remove([file.file_path]);
 
-      if (storageError) throw storageError;
+      if (storageError) {
+        console.error('Error deleting from storage:', storageError);
+        throw storageError;
+      }
 
       // Eliminar metadatos de la tabla
       const { error: dbError } = await supabase
@@ -160,14 +183,18 @@ export const useFileUpload = () => {
         .delete()
         .eq('id', file.id);
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Error deleting from database:', dbError);
+        throw dbError;
+      }
 
       toast({
         title: "Éxito",
         description: "Archivo eliminado correctamente",
       });
 
-      fetchFiles();
+      // Recargar archivos después de eliminar
+      await fetchFiles();
     } catch (error) {
       console.error('Error deleting file:', error);
       toast({
@@ -180,11 +207,12 @@ export const useFileUpload = () => {
 
   const shareFile = async (file: UploadedFile) => {
     try {
+      console.log('Getting public URL for:', file.file_path);
       const { data } = await supabase.storage
         .from('user-uploads')
         .getPublicUrl(file.file_path);
 
-      navigator.clipboard.writeText(data.publicUrl);
+      await navigator.clipboard.writeText(data.publicUrl);
       toast({
         title: "Enlace copiado",
         description: "El enlace del archivo se ha copiado al portapapeles",
