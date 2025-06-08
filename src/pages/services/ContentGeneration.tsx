@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Video, BrainCircuit, Mic, Share2, Bot, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -8,6 +7,22 @@ const ContentGeneration = () => {
   const openTidyCal = () => {
     window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
   };
+
+  // Load TikTok embed script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://www.tiktok.com/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script on unmount
+      const existingScript = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, []);
 
   return <>
       <section className="pt-32 pb-16 bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] overflow-hidden">
@@ -85,6 +100,53 @@ const ContentGeneration = () => {
                   Solo quedan pocas plazas disponibles
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TikTok Personal Brand Section */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Content Column */}
+            <div className="space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                Conoce mi Marca Personal hecha con videos IA
+              </h2>
+              <div className="space-y-4 text-lg text-gray-700">
+                <p>
+                  He creado una marca personal exitosa en TikTok utilizando exclusivamente videos generados con inteligencia artificial. Sin aparecer físicamente, sin grabar contenido tradicional.
+                </p>
+                <p>
+                  Usando las mismas tecnologías que ofrecemos en Novativa, he construido una audiencia de miles de seguidores con contenido automatizado y mi avatar digital como protagonista.
+                </p>
+                <p className="font-semibold text-indigo-600">
+                  ¿El resultado? Una marca personal auténtica y escalable que genera engagement constante las 24/7.
+                </p>
+              </div>
+              
+              {/* CTA Button */}
+              <div className="pt-4">
+                <Button 
+                  onClick={openTidyCal}
+                  size="lg"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg transform transition-all duration-300 hover:scale-105"
+                >
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Quiero crear mi marca con IA
+                </Button>
+              </div>
+            </div>
+
+            {/* TikTok Embed Column */}
+            <div className="flex justify-center">
+              <div 
+                className="w-full max-w-md"
+                dangerouslySetInnerHTML={{
+                  __html: `<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hackmillonario" data-unique-id="hackmillonario" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@hackmillonario?refer=creator_embed">@hackmillonario</a> </section> </blockquote>`
+                }}
+              />
             </div>
           </div>
         </div>
