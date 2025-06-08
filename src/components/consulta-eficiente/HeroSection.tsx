@@ -81,11 +81,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <p className="text-sm sm:text-xl md:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
         </div>
         
-        {/* Video demo profesional - Más pequeño en móvil */}
+        {/* Video demo profesional - Un solo video responsivo */}
         <div className="relative mb-4 sm:mb-8">
-          {/* Desktop: Con marco decorativo */}
-          <div className="hidden sm:block bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 sm:p-8 shadow-lg mx-2 sm:mx-4 border border-gray-200">
-            <div className="bg-white rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-gray-100">
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg mx-2 sm:mx-4 border border-gray-200">
+            <div className="bg-white rounded-xl p-4 sm:p-6 md:p-8 backdrop-blur-sm border border-gray-100">
               <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-100 overflow-hidden" style={{ aspectRatio: '16/9' }}>
                 <video 
                   autoPlay 
@@ -112,36 +111,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                   Tu navegador no soporta el elemento video.
                 </video>
               </div>
-            </div>
-          </div>
-
-          {/* Mobile: Video más compacto con aspecto 4:3 para ahorrar altura */}
-          <div className="block sm:hidden -mx-2">
-            <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 overflow-hidden shadow-xl rounded-lg" style={{ aspectRatio: '4/3' }}>
-              <video 
-                autoPlay 
-                loop 
-                muted={false}
-                playsInline 
-                controls
-                preload="auto"
-                className="absolute inset-0 w-full h-full object-cover"
-                onError={(e) => {
-                  console.error('Error loading video:', e);
-                }}
-                onLoadStart={() => {
-                  console.log('Video started loading');
-                }}
-                onCanPlay={() => {
-                  console.log('Video can play');
-                }}
-                onLoadedData={() => {
-                  console.log('Video data loaded');
-                }}
-              >
-                <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749347965073.mp4" type="video/mp4" />
-                Tu navegador no soporta el elemento video.
-              </video>
             </div>
           </div>
         </div>
