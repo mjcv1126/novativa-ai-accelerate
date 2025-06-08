@@ -1,10 +1,15 @@
 
+
 import React from 'react';
-import { Video, BrainCircuit, Mic, Share2, Bot } from 'lucide-react';
+import { Video, BrainCircuit, Mic, Share2, Bot, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 const ContentGeneration = () => {
+  const openTidyCal = () => {
+    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  };
+
   return <>
       <section className="pt-32 pb-16 bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] overflow-hidden">
         <div className="container mx-auto px-4">
@@ -40,6 +45,18 @@ const ContentGeneration = () => {
                 <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749325088429.mp4" type="video/mp4" />
                 Tu navegador no soporta el elemento video.
               </video>
+            </div>
+            
+            {/* CTA Button below video */}
+            <div className="mt-8">
+              <Button 
+                onClick={openTidyCal}
+                size="lg"
+                className="bg-white text-[#6366f1] hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-lg"
+              >
+                <Calendar className="w-5 h-5 mr-2" />
+                Agenda una Demo Gratuita
+              </Button>
             </div>
           </div>
         </div>
@@ -135,3 +152,4 @@ const ContentGeneration = () => {
 };
 
 export default ContentGeneration;
+
