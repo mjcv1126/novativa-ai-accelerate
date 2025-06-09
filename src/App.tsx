@@ -23,6 +23,7 @@ import ContactCenter from './pages/services/ContactCenter';
 import Welcome from './pages/Welcome';
 import ConsultaEficiente from './pages/ConsultaEficiente';
 import FileUpload from './pages/FileUpload';
+import AgentsAICourse from './pages/AgentsAICourse';
 import { useLanguage } from './contexts/LanguageContext';
 
 function App() {
@@ -76,6 +77,7 @@ function App() {
       <Route path="/iacoding" element={<Layout><IACoding /></Layout>} />
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/novamedic" element={<ConsultaEficiente />} />
+      <Route path="/curso-agentes-ia" element={<AgentsAICourse />} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
