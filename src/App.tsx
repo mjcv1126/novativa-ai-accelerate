@@ -24,6 +24,7 @@ import Welcome from './pages/Welcome';
 import ConsultaEficiente from './pages/ConsultaEficiente';
 import FileUpload from './pages/FileUpload';
 import AgentsAICourse from './pages/AgentsAICourse';
+import AgentsAIThankYou from './pages/AgentsAIThankYou';
 import { useLanguage } from './contexts/LanguageContext';
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/novamedic" element={<ConsultaEficiente />} />
       <Route path="/curso-agentes-ia" element={<AgentsAICourse />} />
+      <Route path="/curso-agentes-ia-gracias" element={<AgentsAIThankYou />} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>

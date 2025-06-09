@@ -103,6 +103,22 @@
   .animation-delay-600 {
     animation-delay: 600ms;
   }
+
+  .animate-scroll-testimonials {
+    animation: scroll-testimonials 60s linear infinite;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  .animate-subtle-shake {
+    animation: subtle-shake 2s ease-in-out infinite;
+  }
 }
 
 @keyframes ai-pulse {
@@ -122,6 +138,45 @@
   }
   to {
     box-shadow: 0 0 30px rgba(191, 78, 15, 0.4);
+  }
+}
+
+@keyframes scroll-testimonials {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes subtle-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
   }
 }
 

@@ -8,6 +8,87 @@ import ContactForm from '@/components/agents-ai-course/ContactForm';
 const AgentsAICourse = () => {
   const { toast } = useToast();
 
+  const testimonials = [
+    {
+      name: "María González",
+      role: "Consultora Digital",
+      content: "En 2 meses ya tengo 15 clientes pagando $150 mensuales. El curso es súper práctico y fácil de seguir.",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b04c?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Carlos Ruiz",
+      role: "Emprendedor Digital",
+      content: "Increíble cómo algo tan sencillo puede generar tanto dinero. Ya voy por $8,000 mensuales y creciendo.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Ana López",
+      role: "Fundadora, AI Solutions",
+      content: "Sin conocimientos técnicos, logré crear mi primera agencia de IA. El potencial es infinito.",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Roberto Martínez",
+      role: "Freelancer Digital",
+      content: "Después de 3 meses tengo 25 clientes. Es impresionante cómo puedes escalar sin límites.",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Sofia Herrera",
+      role: "Agencia de Marketing",
+      content: "Implementamos esto para nuestros clientes y ahora cobramos $300 por agente. ¡Rentabilidad increíble!",
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Diego Fernández",
+      role: "Community Manager",
+      content: "Lo que más me gusta es que una vez configurado, trabaja solo. Ingresos 100% pasivos.",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Lucia Morales",
+      role: "Consultora IA",
+      content: "En mi primer mes recuperé la inversión. Ahora genero más de $5,000 mensuales sin esfuerzo.",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b04c?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Andrés Castillo",
+      role: "Desarrollador NoCode",
+      content: "La curva de aprendizaje es súper rápida. En una semana ya tenía mi primer cliente pagando.",
+      image: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Valentina Silva",
+      role: "Especialista en Automatización",
+      content: "Nunca pensé que sería tan fácil monetizar la IA. Mis clientes están encantados con los resultados.",
+      image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Fernando Torres",
+      role: "Emprendedor Tech",
+      content: "El ROI es impresionante. Con 30 clientes ya supero los $6,000 mensuales en piloto automático.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Gabriela Vega",
+      role: "Consultora Digital",
+      content: "Mi negocio cambió completamente. Ahora ofrezco servicios de alto valor sin conocimientos técnicos.",
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Javier Mendoza",
+      role: "Agencia de Publicidad",
+      content: "Agregamos esto a nuestros servicios y incrementamos facturación en 300%. Clientes súper satisfechos.",
+      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face"
+    },
+    {
+      name: "Camila Rodriguez",
+      role: "Freelancer IA",
+      content: "La demanda es altísima. Tengo lista de espera de clientes que quieren agentes de IA.",
+      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Logo Header */}
@@ -39,6 +120,33 @@ const AgentsAICourse = () => {
                   <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed">
                     Crea tu Agente de IA para WhatsApp, Redes Sociales y teléfono <span className="text-novativa-teal font-semibold">Sin Programación</span>
                   </p>
+                  
+                  {/* Mobile Order: Video and Form visible only on mobile */}
+                  <div className="lg:hidden space-y-6">
+                    <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
+                      <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                        <video 
+                          autoPlay 
+                          loop 
+                          muted={false}
+                          playsInline 
+                          controls
+                          preload="auto"
+                          className="absolute inset-0 w-full h-full rounded-lg object-cover"
+                          onError={(e) => {
+                            console.error('Error loading video:', e);
+                          }}
+                        >
+                          <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749503799696.mp4" type="video/mp4" />
+                          Tu navegador no soporta el elemento video.
+                        </video>
+                      </div>
+                    </div>
+
+                    {/* Contact Form */}
+                    <ContactForm />
+                  </div>
+
                   <p className="text-base md:text-lg text-gray-400">
                     <span className="text-novativa-orange font-bold">Genera hasta $10,000 mensuales de forma pasiva</span> creando y vendiendo agentes de IA a empresas. Con solo 50 clientes, estarías superando los $10,000 al mes. Todo automatizado, sin necesidad de que estés presente.
                   </p>
@@ -70,8 +178,8 @@ const AgentsAICourse = () => {
                 </div>
               </div>
 
-              {/* Video and Form Column - Mobile First */}
-              <div className="space-y-6 order-1 lg:order-2">
+              {/* Video and Form Column - Desktop Only */}
+              <div className="space-y-6 order-1 lg:order-2 hidden lg:block">
                 <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
                   <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
                     <video 
@@ -155,7 +263,7 @@ const AgentsAICourse = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Testimonials Section with Carousel */}
       <section className="py-20 bg-gradient-to-b from-black to-gray-900">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
@@ -163,65 +271,31 @@ const AgentsAICourse = () => {
               🌟 Lo que dicen nuestros estudiantes
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-novativa-orange" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-300 mb-4">"En 2 meses ya tengo 15 clientes pagando $150 mensuales. El curso es súper práctico y fácil de seguir."</p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-r from-novativa-teal to-novativa-orange rounded-full flex items-center justify-center text-white font-bold mr-3">
-                    M
+            <div className="relative overflow-hidden">
+              <div className="testimonials-slider flex gap-8 animate-scroll-testimonials">
+                {[...testimonials, ...testimonials].map((testimonial, index) => (
+                  <div key={index} className="min-w-[350px] bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-novativa-orange" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-300 mb-4">"{testimonial.content}"</p>
+                    <div className="flex items-center">
+                      <img 
+                        src={testimonial.image} 
+                        alt={testimonial.name}
+                        className="w-12 h-12 rounded-full object-cover mr-3"
+                      />
+                      <div>
+                        <h4 className="font-bold text-white">{testimonial.name}</h4>
+                        <p className="text-sm text-gray-400">{testimonial.role}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-white">María González</h4>
-                    <p className="text-sm text-gray-400">Consultora Digital</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-orange/50 transition-colors">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-novativa-orange" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-300 mb-4">"Increíble cómo algo tan sencillo puede generar tanto dinero. Ya voy por $8,000 mensuales y creciendo."</p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-r from-novativa-teal to-novativa-orange rounded-full flex items-center justify-center text-white font-bold mr-3">
-                    C
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white">Carlos Ruiz</h4>
-                    <p className="text-sm text-gray-400">Emprendedor Digital</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-novativa-orange" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-300 mb-4">"Sin conocimientos técnicos, logré crear mi primera agencia de IA. El potencial es infinito."</p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-r from-novativa-teal to-novativa-orange rounded-full flex items-center justify-center text-white font-bold mr-3">
-                    A
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white">Ana López</h4>
-                    <p className="text-sm text-gray-400">Fundadora, AI Solutions</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

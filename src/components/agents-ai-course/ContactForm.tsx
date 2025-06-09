@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { User, UserRound, Phone, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
+import { useNavigate } from 'react-router-dom';
 
 const ContactForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -14,6 +15,7 @@ const ContactForm = () => {
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const selectedCountry = countries.find(c => c.code === countryCode);
 
@@ -54,16 +56,8 @@ const ContactForm = () => {
         throw new Error('Error al enviar el formulario');
       }
 
-      toast({
-        title: "¡Formulario enviado! 🎉",
-        description: "Te contactaremos pronto con la información del curso.",
-      });
-      
-      // Reset form
-      setFirstName('');
-      setLastName('');
-      setPhone('');
-      setCountryCode('506');
+      // Redirect to thank you page
+      navigate('/curso-agentes-ia-gracias');
       
     } catch (error) {
       console.error("Error sending form:", error);
