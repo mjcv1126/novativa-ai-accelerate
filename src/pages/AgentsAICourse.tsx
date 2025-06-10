@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Bot, MessageSquare, Users, Zap, CheckCircle, DollarSign, TrendingUp, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ContactForm from '@/components/agents-ai-course/ContactForm';
+import PromotionCountdown from '@/components/agents-ai-course/PromotionCountdown';
 import {
   Carousel,
   CarouselContent,
@@ -134,6 +135,9 @@ const AgentsAICourse = () => {
                     Crea tu Agente de IA para WhatsApp, Redes Sociales y teléfono <span className="text-novativa-teal font-semibold">Sin Programación</span>
                   </p>
                   
+                  {/* Promotion Countdown */}
+                  <PromotionCountdown />
+                  
                   {/* Mobile Order: Video and Form visible only on mobile */}
                   <div className="lg:hidden space-y-6">
                     <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
@@ -181,12 +185,15 @@ const AgentsAICourse = () => {
                   </div>
                 </div>
 
-                {/* Price */}
+                {/* Price - Updated to show urgency */}
                 <div className="bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20 rounded-lg p-6 border border-novativa-teal/30 animate-subtle-shake">
                   <div className="text-center">
                     <div className="text-4xl font-bold text-white mb-2">$4.99 USD</div>
                     <div className="text-lg text-gray-300">Inversión única - Acceso completo</div>
-                    <div className="text-sm text-novativa-orange mt-2">ROI potencial: +200,000%</div>
+                    <div className="text-sm text-red-400 mt-2 font-bold animate-pulse">
+                      ⚡ PRECIO PROMOCIONAL - Tiempo limitado
+                    </div>
+                    <div className="text-sm text-novativa-orange mt-1">ROI potencial: +200,000%</div>
                   </div>
                 </div>
               </div>
@@ -464,3 +471,5 @@ const AgentsAICourse = () => {
 };
 
 export default AgentsAICourse;
+
+</edits_to_apply>
