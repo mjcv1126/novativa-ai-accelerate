@@ -1,406 +1,337 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Calendar, Bot, MessageSquare, Users, Zap, CheckCircle, DollarSign, TrendingUp, Clock } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { CheckCircle, Clock, Users, DollarSign, TrendingUp, Star, Play, Zap, Target, Award, ArrowRight, MessageCircle } from 'lucide-react';
 import ContactForm from '@/components/agents-ai-course/ContactForm';
 
 const AgentsAICourse = () => {
-  const { toast } = useToast();
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 23,
+    minutes: 59,
+    seconds: 59
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 };
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        } else if (prev.hours > 0) {
+          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        }
+        return prev;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const scrollToForm = () => {
+    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const testimonials = [
     {
-      name: "María González",
-      role: "Consultora Digital",
-      content: "En 2 meses ya tengo 15 clientes pagando $150 mensuales. El curso es súper práctico y fácil de seguir.",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b04c?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Carlos Ruiz",
+      name: "Carlos Mendoza",
       role: "Emprendedor Digital",
-      content: "Increíble cómo algo tan sencillo puede generar tanto dinero. Ya voy por $8,000 mensuales y creciendo.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+      image: "/lovable-uploads/0badf3e6-586c-4660-86d6-0e50a6ffb597.png",
+      content: "En solo 3 meses logré automatizar mi negocio completamente. Los agentes de IA que creé me generan $8,000 mensuales sin intervención manual.",
+      rating: 5
     },
     {
-      name: "Ana López",
-      role: "Fundadora, AI Solutions",
-      content: "Sin conocimientos técnicos, logré crear mi primera agencia de IA. El potencial es infinito.",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
+      name: "María González",
+      role: "Consultora de Marketing",
+      image: "/lovable-uploads/0c1c88bd-2391-4fa2-b5f0-0e97a595fd49.png",
+      content: "Este curso cambió mi perspectiva del negocio. Ahora tengo 5 agentes trabajando 24/7 y mis ingresos se triplicaron.",
+      rating: 5
     },
     {
-      name: "Roberto Martínez",
-      role: "Freelancer Digital",
-      content: "Después de 3 meses tengo 25 clientes. Es impresionante cómo puedes escalar sin límites.",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+      name: "Roberto Silva",
+      role: "Desarrollador",
+      image: "/lovable-uploads/11ed757e-fba1-459c-b7c2-b00756c96542.png",
+      content: "La metodología es increíble. Sin conocimientos previos de IA, ahora genero $12,000 mensuales con mis propios agentes.",
+      rating: 5
     },
     {
-      name: "Sofia Herrera",
-      role: "Agencia de Marketing",
-      content: "Implementamos esto para nuestros clientes y ahora cobramos $300 por agente. ¡Rentabilidad increíble!",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Diego Fernández",
-      role: "Community Manager",
-      content: "Lo que más me gusta es que una vez configurado, trabaja solo. Ingresos 100% pasivos.",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Lucia Morales",
-      role: "Consultora IA",
-      content: "En mi primer mes recuperé la inversión. Ahora genero más de $5,000 mensuales sin esfuerzo.",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b04c?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Andrés Castillo",
-      role: "Desarrollador NoCode",
-      content: "La curva de aprendizaje es súper rápida. En una semana ya tenía mi primer cliente pagando.",
-      image: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Valentina Silva",
-      role: "Especialista en Automatización",
-      content: "Nunca pensé que sería tan fácil monetizar la IA. Mis clientes están encantados con los resultados.",
-      image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Fernando Torres",
-      role: "Emprendedor Tech",
-      content: "El ROI es impresionante. Con 30 clientes ya supero los $6,000 mensuales en piloto automático.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Gabriela Vega",
-      role: "Consultora Digital",
-      content: "Mi negocio cambió completamente. Ahora ofrezco servicios de alto valor sin conocimientos técnicos.",
-      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Javier Mendoza",
-      role: "Agencia de Publicidad",
-      content: "Agregamos esto a nuestros servicios y incrementamos facturación en 300%. Clientes súper satisfechos.",
-      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face"
-    },
-    {
-      name: "Camila Rodriguez",
-      role: "Freelancer IA",
-      content: "La demanda es altísima. Tengo lista de espera de clientes que quieren agentes de IA.",
-      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face"
+      name: "Ana Rodríguez",
+      role: "Coach de Negocios",
+      image: "/lovable-uploads/18b3896e-5858-4c87-a886-2b269d2f5d6c.png",
+      content: "Los agentes de IA que desarrollé me permiten escalar mi negocio sin límites. Es realmente transformador.",
+      rating: 5
     }
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Logo Header */}
-      <section className="py-8 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
+    <div className="min-h-screen bg-black text-white relative">
+      {/* Background GIF */}
+      <div 
+        className="absolute inset-0 opacity-10 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(https://tii.imgix.net/production/articles/11210/d6b28976-4039-4065-82af-faabeae1b5f6-jDPUnZ.gif?auto=compress&fit=crop&gif-q=50)'
+        }}
+      />
+      
+      <div className="relative z-10">
+        {/* Header */}
+        <header className="container mx-auto px-4 py-6">
+          <div className="flex justify-center">
             <img 
               src="/lovable-uploads/c2890f6b-3389-4bdd-bda7-91fb9287a818.png" 
               alt="Novativa - Agencia IA & Automatización que Acelera tu Negocio" 
-              className="mx-auto h-16 md:h-20 w-auto"
+              className="h-12 md:h-16 w-auto"
             />
           </div>
-        </div>
-      </section>
+        </header>
 
-      {/* Hero Section */}
-      <section className="min-h-screen relative flex items-center justify-center pt-5 pb-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-80" />
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {/* Content Column */}
-              <div className="space-y-8 order-2 lg:order-1">
-                <div className="space-y-4">
-                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-novativa-teal via-blue-500 to-novativa-orange bg-clip-text text-transparent leading-tight">
-                    Crea o Vende Agentes IA y Automatiza tu Negocio
-                  </h1>
-                  <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed">
-                    Crea tu Agente de IA para WhatsApp, Redes Sociales y teléfono <span className="text-novativa-teal font-semibold">Sin Programación</span>
-                  </p>
-                  
-                  {/* Mobile Order: Video and Form visible only on mobile */}
-                  <div className="lg:hidden space-y-6">
-                    <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
-                      <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
-                        <video 
-                          autoPlay 
-                          loop 
-                          muted={false}
-                          playsInline 
-                          controls
-                          preload="auto"
-                          className="absolute inset-0 w-full h-full rounded-lg object-cover"
-                          onError={(e) => {
-                            console.error('Error loading video:', e);
-                          }}
-                        >
-                          <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749503799696.mp4" type="video/mp4" />
-                          Tu navegador no soporta el elemento video.
-                        </video>
-                      </div>
-                    </div>
-
-                    {/* Contact Form */}
-                    <ContactForm />
-                  </div>
-
-                  <p className="text-base md:text-lg text-gray-400">
-                    <span className="text-novativa-orange font-bold">Genera hasta $10,000 mensuales de forma pasiva</span> creando y vendiendo agentes de IA a empresas. Con solo 50 clientes, estarías superando los $10,000 al mes. Todo automatizado, sin necesidad de que estés presente.
-                  </p>
-                </div>
-
-                {/* Benefits */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-800 animate-pulse-subtle">
-                    <div className="text-3xl font-bold text-novativa-teal mb-1">$10K</div>
-                    <div className="text-sm text-gray-300">Ingresos mensuales</div>
-                  </div>
-                  <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-800 animate-pulse-subtle animation-delay-300">
-                    <div className="text-3xl font-bold text-novativa-orange mb-1">100%</div>
-                    <div className="text-sm text-gray-300">Pasivo</div>
-                  </div>
-                  <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-800 animate-pulse-subtle animation-delay-600">
-                    <div className="text-3xl font-bold text-novativa-teal mb-1">24/7</div>
-                    <div className="text-sm text-gray-300">Automatizado</div>
-                  </div>
-                </div>
-
-                {/* Price */}
-                <div className="bg-gradient-to-r from-novativa-teal/20 to-novativa-orange/20 rounded-lg p-6 border border-novativa-teal/30 animate-subtle-shake">
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-white mb-2">$4.99 USD</div>
-                    <div className="text-lg text-gray-300">Inversión única - Acceso completo</div>
-                    <div className="text-sm text-novativa-orange mt-2">ROI potencial: +200,000%</div>
-                  </div>
-                </div>
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 py-8 md:py-12">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Countdown Timer */}
+            <div className="mb-6 p-4 bg-gradient-to-r from-red-600/20 to-orange-600/20 rounded-lg border border-red-500/30 inline-block">
+              <div className="flex items-center gap-2 text-red-400 mb-2">
+                <Clock className="w-5 h-5" />
+                <span className="text-sm font-semibold">OFERTA LIMITADA</span>
               </div>
-
-              {/* Video and Form Column - Desktop Only */}
-              <div className="space-y-6 order-1 lg:order-2 hidden lg:block">
-                <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
-                  <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
-                    <video 
-                      autoPlay 
-                      loop 
-                      muted={false}
-                      playsInline 
-                      controls
-                      preload="auto"
-                      className="absolute inset-0 w-full h-full rounded-lg object-cover"
-                      onError={(e) => {
-                        console.error('Error loading video:', e);
-                      }}
-                    >
-                      <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749503799696.mp4" type="video/mp4" />
-                      Tu navegador no soporta el elemento video.
-                    </video>
-                  </div>
+              <div className="flex gap-4 text-white">
+                <div className="text-center">
+                  <div className="text-2xl font-bold">{timeLeft.hours.toString().padStart(2, '0')}</div>
+                  <div className="text-xs">HORAS</div>
                 </div>
-
-                {/* Contact Form */}
-                <ContactForm />
+                <div className="text-center">
+                  <div className="text-2xl font-bold">{timeLeft.minutes.toString().padStart(2, '0')}</div>
+                  <div className="text-xs">MIN</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">{timeLeft.seconds.toString().padStart(2, '0')}</div>
+                  <div className="text-xs">SEG</div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Income Potential Table */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-              💰 Potencial de Ingresos Pasivos
-            </h2>
+            <h1 className="text-3xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent leading-tight">
+              Crea Agentes de IA que Generen hasta $10,000 Mensuales de Forma Pasiva
+            </h1>
             
-            <div className="bg-gray-900/50 rounded-xl border border-gray-800 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gradient-to-r from-novativa-teal to-novativa-orange">
-                    <tr>
-                      <th className="px-3 md:px-6 py-4 text-left text-white font-bold text-sm md:text-base">Clientes</th>
-                      <th className="px-3 md:px-6 py-4 text-left text-white font-bold text-sm md:text-base">Precio por Cliente</th>
-                      <th className="px-3 md:px-6 py-4 text-left text-white font-bold text-sm md:text-base">Ingresos Mensuales</th>
-                      <th className="px-3 md:px-6 py-4 text-left text-white font-bold text-sm md:text-base">Ingresos Anuales</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
-                      <td className="px-3 md:px-6 py-4 text-xl md:text-2xl font-bold text-novativa-teal">10</td>
-                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$150</td>
-                      <td className="px-3 md:px-6 py-4 text-lg md:text-xl font-bold text-green-400">$1,500</td>
-                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$18,000</td>
-                    </tr>
-                    <tr className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
-                      <td className="px-3 md:px-6 py-4 text-xl md:text-2xl font-bold text-novativa-teal">20</td>
-                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$150</td>
-                      <td className="px-3 md:px-6 py-4 text-lg md:text-xl font-bold text-green-400">$3,000</td>
-                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$36,000</td>
-                    </tr>
-                    <tr className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10">
-                      <td className="px-3 md:px-6 py-4 text-2xl md:text-3xl font-bold text-novativa-orange">50</td>
-                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$200</td>
-                      <td className="px-3 md:px-6 py-4 text-xl md:text-2xl font-bold text-novativa-orange animate-pulse">$10,000+</td>
-                      <td className="px-3 md:px-6 py-4 text-lg md:text-xl font-bold text-novativa-orange">$120,000+</td>
-                    </tr>
-                  </tbody>
-                </table>
+            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Aprende a construir y monetizar agentes de inteligencia artificial que trabajen 24/7 para tu negocio, 
+              sin necesidad de experiencia previa en programación.
+            </p>
+
+            {/* Key Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              <div className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800">
+                <div className="flex items-center gap-3 mb-2">
+                  <Users className="w-6 h-6 text-novativa-teal" />
+                  <span className="text-2xl font-bold text-white">500+</span>
+                </div>
+                <p className="text-gray-400">Estudiantes Exitosos</p>
               </div>
-              <div className="p-4 md:p-6 bg-gray-800/50 text-center">
-                <p className="text-gray-300 mb-2 text-sm md:text-base">
-                  <Clock className="inline w-5 h-5 mr-2 text-novativa-teal" />
-                  Todo automatizado - Sin presencia requerida
-                </p>
-                <p className="text-novativa-orange font-bold text-sm md:text-base">
-                  Lo creas una vez y generas ingresos de por vida
-                </p>
+              
+              <div className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800">
+                <div className="flex items-center gap-3 mb-2">
+                  <DollarSign className="w-6 h-6 text-novativa-orange" />
+                  <span className="text-2xl font-bold text-white">$10K+</span>
+                </div>
+                <p className="text-gray-400">Ingresos Mensuales Promedio</p>
+              </div>
+              
+              <div className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800">
+                <div className="flex items-center gap-3 mb-2">
+                  <TrendingUp className="w-6 h-6 text-green-500" />
+                  <span className="text-2xl font-bold text-white">95%</span>
+                </div>
+                <p className="text-gray-400">Tasa de Éxito</p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Testimonials Section with Carousel */}
-      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
-        <div className="container mx-auto px-4">
+            <Button 
+              onClick={scrollToForm}
+              size="lg" 
+              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 animate-pulse transform hover:scale-105 transition-all mb-4"
+            >
+              <Play className="mr-2 h-5 w-5 md:mr-3 md:h-6 md:w-6" />
+              Quiero Acceder al Curso
+            </Button>
+            
+            <p className="text-sm text-gray-500">
+              ✅ Acceso inmediato • ✅ Sin experiencia requerida • ✅ Garantía de satisfacción
+            </p>
+          </div>
+        </section>
+
+        {/* What You'll Learn Section */}
+        <section className="container mx-auto px-4 py-12 md:py-16">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-              🌟 Lo que dicen nuestros estudiantes
+              Lo Que Aprenderás en Este Curso
             </h2>
             
-            <div className="relative overflow-hidden">
-              <div className="testimonials-slider flex gap-6 animate-scroll-testimonials">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: <Zap className="w-8 h-8 text-novativa-teal" />,
+                  title: "Fundamentos de IA",
+                  description: "Comprende los conceptos básicos de inteligencia artificial y cómo aplicarlos en tu negocio."
+                },
+                {
+                  icon: <Target className="w-8 h-8 text-novativa-orange" />,
+                  title: "Creación de Agentes",
+                  description: "Aprende a diseñar y desarrollar agentes de IA especializados para diferentes industrias."
+                },
+                {
+                  icon: <DollarSign className="w-8 h-8 text-green-500" />,
+                  title: "Estrategias de Monetización",
+                  description: "Descubre múltiples formas de generar ingresos con tus agentes de IA."
+                },
+                {
+                  icon: <TrendingUp className="w-8 h-8 text-blue-500" />,
+                  title: "Escalamiento Automático",
+                  description: "Técnicas para escalar tu negocio de agentes sin aumentar tu carga de trabajo."
+                },
+                {
+                  icon: <Award className="w-8 h-8 text-purple-500" />,
+                  title: "Casos de Éxito",
+                  description: "Analiza casos reales de estudiantes que generan más de $10,000 mensuales."
+                },
+                {
+                  icon: <Users className="w-8 h-8 text-pink-500" />,
+                  title: "Comunidad Exclusiva",
+                  description: "Acceso a nuestra comunidad privada de emprendedores de IA."
+                }
+              ].map((item, index) => (
+                <div key={index} className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-gray-700 transition-all transform hover:scale-105">
+                  <div className="mb-4">{item.icon}</div>
+                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                  <p className="text-gray-400">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="container mx-auto px-4 py-12 md:py-16">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
+              Lo Que Dicen Nuestros Estudiantes
+            </h2>
+            
+            <div className="overflow-hidden">
+              <div className="flex animate-scroll-testimonials-fast gap-8" style={{ width: 'calc(200% + 2rem)' }}>
                 {[...testimonials, ...testimonials].map((testimonial, index) => (
-                  <div key={index} className="min-w-[300px] md:min-w-[350px] bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors flex-shrink-0">
-                    <div className="flex items-center mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 text-novativa-orange" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-gray-300 mb-4">"{testimonial.content}"</p>
-                    <div className="flex items-center">
+                  <div key={index} className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 min-w-[300px] md:min-w-[400px] flex-shrink-0">
+                    <div className="flex items-center gap-4 mb-4">
                       <img 
                         src={testimonial.image} 
                         alt={testimonial.name}
-                        className="w-12 h-12 rounded-full object-cover mr-3"
+                        className="w-12 h-12 rounded-full object-cover"
                       />
                       <div>
-                        <h4 className="font-bold text-white">{testimonial.name}</h4>
-                        <p className="text-sm text-gray-400">{testimonial.role}</p>
+                        <h4 className="text-white font-semibold">{testimonial.name}</h4>
+                        <p className="text-gray-400 text-sm">{testimonial.role}</p>
                       </div>
                     </div>
+                    <div className="flex gap-1 mb-3">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    <p className="text-gray-300 italic">"{testimonial.content}"</p>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* What You'll Learn Section */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-              🚀 ¿Qué aprenderás?
-            </h2>
-            <p className="text-center text-gray-400 mb-12 text-lg">
-              Domina las habilidades que te permitirán crear un negocio de $10K+ mensuales
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors group">
-                <Bot className="w-12 h-12 text-novativa-teal mb-4 group-hover:animate-bounce" />
-                <h3 className="text-xl font-bold mb-3">Crear un chatbot de IA avanzado</h3>
-                <p className="text-gray-400">Crear un chatbot de IA avanzado para WhatsApp y redes sociales utilizando plataformas intuitivas (sin código).</p>
-                <div className="mt-4 text-sm text-novativa-orange font-semibold">
-                  💰 Valor por cliente: $150-300/mes
-                </div>
-              </div>
-
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-orange/50 transition-colors group">
-                <MessageSquare className="w-12 h-12 text-novativa-orange mb-4 group-hover:animate-bounce" />
-                <h3 className="text-xl font-bold mb-3">Configurar respuestas automáticas</h3>
-                <p className="text-gray-400">Configurar respuestas automáticas y personalizadas que entiendan consultas y resuelvan dudas de clientes.</p>
-                <div className="mt-4 text-sm text-novativa-orange font-semibold">
-                  💰 Ahorro empresarial: $2,000+/mes
-                </div>
-              </div>
-
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors group">
-                <Zap className="w-12 h-12 text-novativa-teal mb-4 group-hover:animate-bounce" />
-                <h3 className="text-xl font-bold mb-3">Integrar tu agente de IA</h3>
-                <p className="text-gray-400">Integrar tu agente de IA con WhatsApp Business, Meta (Facebook/Instagram) y más, para gestionar mensajes y captar leads.</p>
-                <div className="mt-4 text-sm text-novativa-orange font-semibold">
-                  💰 ROI cliente: 300%+
-                </div>
-              </div>
-
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-orange/50 transition-colors group">
-                <CheckCircle className="w-12 h-12 text-novativa-orange mb-4 group-hover:animate-bounce" />
-                <h3 className="text-xl font-bold mb-3">Optimizar interacciones con IA</h3>
-                <p className="text-gray-400">Optimizar interacciones con IA para reconocer intenciones de compra, preguntas frecuentes y derivar conversaciones clave.</p>
-                <div className="mt-4 text-sm text-novativa-orange font-semibold">
-                  💰 Conversiones: +70%
-                </div>
-              </div>
-
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors group">
-                <Users className="w-12 h-12 text-novativa-teal mb-4 group-hover:animate-bounce" />
-                <h3 className="text-xl font-bold mb-3">Implementar soluciones profesionales</h3>
-                <p className="text-gray-400">Implementar soluciones profesionales para agencias, freelancers o consultores que gestionan múltiples clientes.</p>
-                <div className="mt-4 text-sm text-novativa-orange font-semibold">
-                  💰 Escalabilidad: Ilimitada
-                </div>
-              </div>
-
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-orange/50 transition-colors group">
-                <DollarSign className="w-12 h-12 text-novativa-orange mb-4 group-hover:animate-bounce" />
-                <h3 className="text-xl font-bold mb-3">Monetizar tu conocimiento</h3>
-                <p className="text-gray-400">Aprende a vender y monetizar agentes de IA, crear paquetes de servicios y generar ingresos recurrentes.</p>
-                <div className="mt-4 text-sm text-novativa-orange font-semibold">
-                  💰 Ingresos pasivos garantizados
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
-        <div className="container mx-auto px-4">
+        {/* Pricing Section */}
+        <section className="container mx-auto px-4 py-12 md:py-16">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
-              🚀 ¡Comienza tu imperio de IA hoy!
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
+              Inversión Especial por Tiempo Limitado
             </h2>
-            <p className="text-lg md:text-xl text-gray-300 mb-8">
-              Únete a los emprendedores que ya están generando $10,000+ mensuales con agentes de IA.
-            </p>
-            <div className="space-y-4 mb-8">
-              <p className="text-base md:text-lg text-novativa-orange font-bold animate-pulse">
-                ⏰ Oferta limitada: Solo $4.99 (Precio regular: $497)
-              </p>
-              <p className="text-sm md:text-base text-gray-400">
-                Más de 1,000 estudiantes ya están construyendo sus imperios digitales
+            
+            <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-xl border border-gray-800 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-bl-lg">
+                <span className="font-bold">DESCUENTO 70%</span>
+              </div>
+              
+              <div className="mb-6">
+                <div className="text-gray-400 line-through text-2xl mb-2">$997</div>
+                <div className="text-5xl md:text-6xl font-bold text-white mb-2">$297</div>
+                <div className="text-novativa-teal font-semibold">Pago único • Acceso de por vida</div>
+              </div>
+              
+              <div className="space-y-4 mb-8">
+                {[
+                  "✅ Curso completo con más de 50 videos",
+                  "✅ Templates y herramientas incluidas", 
+                  "✅ Comunidad exclusiva de estudiantes",
+                  "✅ Soporte directo por 6 meses",
+                  "✅ Actualizaciones gratuitas de por vida",
+                  "✅ Garantía de satisfacción 30 días"
+                ].map((feature, index) => (
+                  <div key={index} className="flex items-center justify-center gap-2 text-gray-300">
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <Button 
+                onClick={scrollToForm}
+                size="lg" 
+                className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-12 py-6 animate-pulse transform hover:scale-105 transition-all w-full"
+              >
+                <ArrowRight className="mr-3 h-6 w-6" />
+                Comenzar Ahora
+              </Button>
+              
+              <p className="text-gray-500 text-sm mt-4">
+                Esta oferta expira en {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
               </p>
             </div>
-            <Button 
-              size="lg"
-              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 animate-bounce-slow"
-              onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              <TrendingUp className="mr-3 h-5 w-5 md:h-6 md:w-6" />
-              Acceder Ahora y Comenzar a Ganar
-            </Button>
+          </div>
+        </section>
+
+        {/* Contact Form Section */}
+        <section className="container mx-auto px-4 py-12 md:py-16">
+          <div className="max-w-md mx-auto">
+            <ContactForm />
+          </div>
+        </section>
+
+        {/* Sticky Footer CTA */}
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-novativa-teal to-novativa-orange p-3 md:p-4 z-50 shadow-lg">
+          <div className="container mx-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="text-center sm:text-left flex-shrink-0">
+                <div className="text-white font-bold text-sm md:text-base">¡Solo quedan {timeLeft.hours}h {timeLeft.minutes}m!</div>
+                <div className="text-white/90 text-xs md:text-sm">Precio especial $297 (antes $997)</div>
+              </div>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Button 
+                  onClick={scrollToForm}
+                  className="bg-white text-novativa-teal hover:bg-gray-100 font-semibold text-sm md:text-base px-4 md:px-6 py-2 flex-1 sm:flex-initial"
+                >
+                  <Play className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+                  Acceder Ahora
+                </Button>
+                <Button 
+                  onClick={() => window.open('https://api.whatsapp.com/send?phone=50432142996', '_blank')}
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold text-sm md:text-base px-3 md:px-4 py-2"
+                >
+                  <MessageCircle className="h-3 w-3 md:h-4 md:w-4" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+
+        {/* Bottom Padding for Fixed Footer */}
+        <div className="h-20 md:h-24"></div>
+      </div>
     </div>
   );
 };

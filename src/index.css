@@ -108,6 +108,10 @@
     animation: scroll-testimonials 25s linear infinite;
   }
 
+  .animate-scroll-testimonials-fast {
+    animation: scroll-testimonials 12s linear infinite;
+  }
+
   .animate-bounce-slow {
     animation: bounce-slow 3s ease-in-out infinite;
   }
