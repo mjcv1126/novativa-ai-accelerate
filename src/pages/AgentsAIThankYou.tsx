@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, MessageCircle, ExternalLink } from 'lucide-react';
@@ -74,8 +75,8 @@ const AgentsAIThankYou = () => {
               Regístrate Aquí
             </Button>
 
-            <Button onClick={handleWhatsAppRedirect} size="lg" className="bg-green-600 hover:bg-green-700 text-white px-12 py-6 transform hover:scale-105 transition-all text-xl">
-              <MessageCircle className="mr-3 h-6 w-6" />
+            <Button onClick={handleWhatsAppRedirect} size="sm" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 transform hover:scale-105 transition-all text-sm">
+              <MessageCircle className="mr-2 h-4 w-4" />
               Escríbenos al WhatsApp
             </Button>
 
