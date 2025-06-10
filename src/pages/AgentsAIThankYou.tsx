@@ -8,6 +8,10 @@ const AgentsAIThankYou = () => {
     window.open('https://edu.novativa.org/cursos/novachannel/', '_blank');
   };
 
+  const handleWhatsAppRedirect = () => {
+    window.open('https://api.whatsapp.com/send?phone=50432142996', '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="container mx-auto px-4">
@@ -88,6 +92,15 @@ const AgentsAIThankYou = () => {
             >
               <ExternalLink className="mr-3 h-6 w-6" />
               Regístrate Aquí
+            </Button>
+
+            <Button 
+              onClick={handleWhatsAppRedirect}
+              size="lg"
+              className="bg-green-600 hover:bg-green-700 text-white text-xl px-12 py-6 transform hover:scale-105 transition-all"
+            >
+              <MessageCircle className="mr-3 h-6 w-6" />
+              Escríbenos al WhatsApp
             </Button>
 
             <p className="text-sm text-gray-500">
