@@ -483,4 +483,4 @@ const AgentsAICourse = () => {
 
 export default AgentsAICourse;
 
-</initial_code>
+</edits_to_apply>
