@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, Bot, MessageSquare, Users, Zap, CheckCircle, DollarSign, TrendingUp, Clock } from 'lucide-react';
@@ -140,8 +141,9 @@ const AgentsAICourse = () => {
                   
                   {/* Mobile Order: Video and Form visible only on mobile */}
                   <div className="lg:hidden space-y-6">
-                    <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
-                      <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                    {/* Mobile Video - Full width without padding/margins */}
+                    <div className="-mx-4 bg-gradient-to-br from-gray-900 to-black">
+                      <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 overflow-hidden" style={{ aspectRatio: '16/9' }}>
                         <video 
                           autoPlay 
                           loop 
@@ -149,7 +151,7 @@ const AgentsAICourse = () => {
                           playsInline 
                           controls
                           preload="auto"
-                          className="absolute inset-0 w-full h-full rounded-lg object-cover"
+                          className="absolute inset-0 w-full h-full object-cover"
                           onError={(e) => {
                             console.error('Error loading video:', e);
                           }}
