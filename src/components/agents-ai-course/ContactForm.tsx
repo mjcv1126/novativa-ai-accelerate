@@ -72,9 +72,9 @@ const ContactForm = () => {
   };
 
   return (
-    <div id="contact-form" className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
+    <div id="contact-form" className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-4 md:p-6 border border-gray-800">
       <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-white mb-2">
+        <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
           Completa el Formulario
         </h3>
         <p className="text-gray-400">
@@ -86,43 +86,43 @@ const ContactForm = () => {
         {/* Name Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center gap-2 px-3 py-2 border border-gray-700 rounded-md bg-gray-800/50 focus-within:ring-2 focus-within:ring-novativa-teal focus-within:border-transparent">
-            <User className="h-4 w-4 text-gray-400" />
+            <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
             <input
               type="text"
               placeholder="Nombre"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="flex-1 outline-none bg-transparent text-white placeholder:text-gray-400"
+              className="flex-1 outline-none bg-transparent text-white placeholder:text-gray-400 min-w-0"
               required
             />
           </div>
           
           <div className="flex items-center gap-2 px-3 py-2 border border-gray-700 rounded-md bg-gray-800/50 focus-within:ring-2 focus-within:ring-novativa-teal focus-within:border-transparent">
-            <UserRound className="h-4 w-4 text-gray-400" />
+            <UserRound className="h-4 w-4 text-gray-400 flex-shrink-0" />
             <input
               type="text"
               placeholder="Apellido"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="flex-1 outline-none bg-transparent text-white placeholder:text-gray-400"
+              className="flex-1 outline-none bg-transparent text-white placeholder:text-gray-400 min-w-0"
               required
             />
           </div>
         </div>
         
         {/* Phone Field */}
-        <div className="flex gap-3">
-          <div className="w-[140px]">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="w-full sm:w-[120px] lg:w-[140px] flex-shrink-0">
             <Select value={countryCode} onValueChange={setCountryCode}>
-              <SelectTrigger className="bg-gray-800/50 border-gray-700 text-white">
+              <SelectTrigger className="bg-gray-800/50 border-gray-700 text-white h-10">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 border-gray-700">
                 {countries.map((country) => (
                   <SelectItem key={`${country.code}-${country.name}`} value={country.code} className="text-white hover:bg-gray-700">
                     <span className="flex items-center gap-2">
-                      <span>{country.flag}</span>
-                      <span>+{country.code}</span>
+                      <span className="text-sm">{country.flag}</span>
+                      <span className="text-sm">+{country.code}</span>
                     </span>
                   </SelectItem>
                 ))}
@@ -130,15 +130,15 @@ const ContactForm = () => {
             </Select>
           </div>
           
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 px-3 py-2 border border-gray-700 rounded-md bg-gray-800/50 focus-within:ring-2 focus-within:ring-novativa-teal focus-within:border-transparent">
-              <Phone className="h-4 w-4 text-gray-400" />
+              <Phone className="h-4 w-4 text-gray-400 flex-shrink-0" />
               <input
                 type="tel"
                 placeholder={`WhatsApp (${selectedCountry?.minLength} dígitos)`}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="flex-1 outline-none bg-transparent text-white placeholder:text-gray-400"
+                className="flex-1 outline-none bg-transparent text-white placeholder:text-gray-400 text-sm sm:text-base min-w-0"
                 required
               />
             </div>
@@ -147,7 +147,7 @@ const ContactForm = () => {
         
         <Button 
           type="submit" 
-          className="w-full bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white py-3 text-lg font-semibold transition-all transform hover:scale-105"
+          className="w-full bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white py-3 text-base md:text-lg font-semibold transition-all transform hover:scale-105"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Enviando..." : (

@@ -221,40 +221,40 @@ const AgentsAICourse = () => {
                 <table className="w-full">
                   <thead className="bg-gradient-to-r from-novativa-teal to-novativa-orange">
                     <tr>
-                      <th className="px-6 py-4 text-left text-white font-bold">Clientes</th>
-                      <th className="px-6 py-4 text-left text-white font-bold">Precio por Cliente</th>
-                      <th className="px-6 py-4 text-left text-white font-bold">Ingresos Mensuales</th>
-                      <th className="px-6 py-4 text-left text-white font-bold">Ingresos Anuales</th>
+                      <th className="px-3 md:px-6 py-4 text-left text-white font-bold text-sm md:text-base">Clientes</th>
+                      <th className="px-3 md:px-6 py-4 text-left text-white font-bold text-sm md:text-base">Precio por Cliente</th>
+                      <th className="px-3 md:px-6 py-4 text-left text-white font-bold text-sm md:text-base">Ingresos Mensuales</th>
+                      <th className="px-3 md:px-6 py-4 text-left text-white font-bold text-sm md:text-base">Ingresos Anuales</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
-                      <td className="px-6 py-4 text-2xl font-bold text-novativa-teal">10</td>
-                      <td className="px-6 py-4 text-gray-300">$150</td>
-                      <td className="px-6 py-4 text-xl font-bold text-green-400">$1,500</td>
-                      <td className="px-6 py-4 text-gray-300">$18,000</td>
+                      <td className="px-3 md:px-6 py-4 text-xl md:text-2xl font-bold text-novativa-teal">10</td>
+                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$150</td>
+                      <td className="px-3 md:px-6 py-4 text-lg md:text-xl font-bold text-green-400">$1,500</td>
+                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$18,000</td>
                     </tr>
                     <tr className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
-                      <td className="px-6 py-4 text-2xl font-bold text-novativa-teal">20</td>
-                      <td className="px-6 py-4 text-gray-300">$150</td>
-                      <td className="px-6 py-4 text-xl font-bold text-green-400">$3,000</td>
-                      <td className="px-6 py-4 text-gray-300">$36,000</td>
+                      <td className="px-3 md:px-6 py-4 text-xl md:text-2xl font-bold text-novativa-teal">20</td>
+                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$150</td>
+                      <td className="px-3 md:px-6 py-4 text-lg md:text-xl font-bold text-green-400">$3,000</td>
+                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$36,000</td>
                     </tr>
                     <tr className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10">
-                      <td className="px-6 py-4 text-3xl font-bold text-novativa-orange">50</td>
-                      <td className="px-6 py-4 text-gray-300">$200</td>
-                      <td className="px-6 py-4 text-2xl font-bold text-novativa-orange animate-pulse">$10,000+</td>
-                      <td className="px-6 py-4 text-xl font-bold text-novativa-orange">$120,000+</td>
+                      <td className="px-3 md:px-6 py-4 text-2xl md:text-3xl font-bold text-novativa-orange">50</td>
+                      <td className="px-3 md:px-6 py-4 text-gray-300 text-sm md:text-base">$200</td>
+                      <td className="px-3 md:px-6 py-4 text-xl md:text-2xl font-bold text-novativa-orange animate-pulse">$10,000+</td>
+                      <td className="px-3 md:px-6 py-4 text-lg md:text-xl font-bold text-novativa-orange">$120,000+</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div className="p-6 bg-gray-800/50 text-center">
-                <p className="text-gray-300 mb-2">
+              <div className="p-4 md:p-6 bg-gray-800/50 text-center">
+                <p className="text-gray-300 mb-2 text-sm md:text-base">
                   <Clock className="inline w-5 h-5 mr-2 text-novativa-teal" />
                   Todo automatizado - Sin presencia requerida
                 </p>
-                <p className="text-novativa-orange font-bold">
+                <p className="text-novativa-orange font-bold text-sm md:text-base">
                   Lo creas una vez y generas ingresos de por vida
                 </p>
               </div>
@@ -272,9 +272,9 @@ const AgentsAICourse = () => {
             </h2>
             
             <div className="relative overflow-hidden">
-              <div className="testimonials-slider flex gap-8 animate-scroll-testimonials">
+              <div className="testimonials-slider flex gap-6 animate-scroll-testimonials">
                 {[...testimonials, ...testimonials].map((testimonial, index) => (
-                  <div key={index} className="min-w-[350px] bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors">
+                  <div key={index} className="min-w-[300px] md:min-w-[350px] bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors flex-shrink-0">
                     <div className="flex items-center mb-4">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-5 h-5 text-novativa-orange" fill="currentColor" viewBox="0 0 20 20">
@@ -376,26 +376,26 @@ const AgentsAICourse = () => {
       <section className="py-20 bg-gradient-to-b from-black to-gray-900">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 bg-gradient-to-r from-novativa-teal to-novativa-orange bg-clip-text text-transparent">
               🚀 ¡Comienza tu imperio de IA hoy!
             </h2>
-            <p className="text-xl text-gray-300 mb-8">
+            <p className="text-lg md:text-xl text-gray-300 mb-8">
               Únete a los emprendedores que ya están generando $10,000+ mensuales con agentes de IA.
             </p>
             <div className="space-y-4 mb-8">
-              <p className="text-lg text-novativa-orange font-bold animate-pulse">
+              <p className="text-base md:text-lg text-novativa-orange font-bold animate-pulse">
                 ⏰ Oferta limitada: Solo $4.99 (Precio regular: $497)
               </p>
-              <p className="text-gray-400">
+              <p className="text-sm md:text-base text-gray-400">
                 Más de 1,000 estudiantes ya están construyendo sus imperios digitales
               </p>
             </div>
             <Button 
               size="lg"
-              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-12 py-6 animate-bounce-slow"
+              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 animate-bounce-slow"
               onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <TrendingUp className="mr-3 h-6 w-6" />
+              <TrendingUp className="mr-3 h-5 w-5 md:h-6 md:w-6" />
               Acceder Ahora y Comenzar a Ganar
             </Button>
           </div>

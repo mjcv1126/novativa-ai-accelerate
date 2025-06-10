@@ -33,6 +33,29 @@ const AgentsAIThankYou = () => {
             ¡Te hemos enviado información vía WhatsApp!
           </h1>
 
+          {/* Video Section */}
+          <div className="mb-8">
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
+              <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                <video 
+                  autoPlay 
+                  loop 
+                  muted={false}
+                  playsInline 
+                  controls
+                  preload="auto"
+                  className="absolute inset-0 w-full h-full rounded-lg object-cover"
+                  onError={(e) => {
+                    console.error('Error loading video:', e);
+                  }}
+                >
+                  <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749574034002.mp4" type="video/mp4" />
+                  Tu navegador no soporta el elemento video.
+                </video>
+              </div>
+            </div>
+          </div>
+
           <p className="text-xl text-gray-300 mb-8 leading-relaxed">
             Deberías estar recibiendo todos los detalles y podrás realizar la compra del mismo directamente en WhatsApp.
           </p>

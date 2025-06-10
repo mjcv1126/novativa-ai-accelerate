@@ -105,7 +105,7 @@
   }
 
   .animate-scroll-testimonials {
-    animation: scroll-testimonials 60s linear infinite;
+    animation: scroll-testimonials 25s linear infinite;
   }
 
   .animate-bounce-slow {
