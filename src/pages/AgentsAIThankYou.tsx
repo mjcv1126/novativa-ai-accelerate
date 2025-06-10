@@ -1,28 +1,19 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, MessageCircle, ExternalLink } from 'lucide-react';
-
 const AgentsAIThankYou = () => {
   const handleRedirect = () => {
     window.open('https://edu.novativa.org/cursos/novachannel/', '_blank');
   };
-
   const handleWhatsAppRedirect = () => {
     window.open('https://api.whatsapp.com/send?phone=50432142996', '_blank');
   };
-
-  return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+  return <div className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center">
           {/* Logo */}
           <div className="mb-8">
-            <img 
-              src="/lovable-uploads/c2890f6b-3389-4bdd-bda7-91fb9287a818.png" 
-              alt="Novativa - Agencia IA & Automatización que Acelera tu Negocio" 
-              className="mx-auto h-16 md:h-20 w-auto"
-            />
+            <img src="/lovable-uploads/c2890f6b-3389-4bdd-bda7-91fb9287a818.png" alt="Novativa - Agencia IA & Automatización que Acelera tu Negocio" className="mx-auto h-16 md:h-20 w-auto" />
           </div>
 
           {/* Success Icon */}
@@ -40,19 +31,12 @@ const AgentsAIThankYou = () => {
           {/* Video Section */}
           <div className="mb-8">
             <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
-              <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
-                <video 
-                  autoPlay 
-                  loop 
-                  muted={false}
-                  playsInline 
-                  controls
-                  preload="auto"
-                  className="absolute inset-0 w-full h-full rounded-lg object-cover"
-                  onError={(e) => {
-                    console.error('Error loading video:', e);
-                  }}
-                >
+              <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{
+              aspectRatio: '16/9'
+            }}>
+                <video autoPlay loop muted={false} playsInline controls preload="auto" className="absolute inset-0 w-full h-full rounded-lg object-cover" onError={e => {
+                console.error('Error loading video:', e);
+              }}>
                   <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749574034002.mp4" type="video/mp4" />
                   Tu navegador no soporta el elemento video.
                 </video>
@@ -85,20 +69,12 @@ const AgentsAIThankYou = () => {
               No te preocupes, también puedes acceder directamente desde aquí:
             </p>
 
-            <Button 
-              onClick={handleRedirect}
-              size="lg"
-              className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-12 py-6 animate-pulse transform hover:scale-105 transition-all"
-            >
+            <Button onClick={handleRedirect} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-12 py-6 animate-pulse transform hover:scale-105 transition-all">
               <ExternalLink className="mr-3 h-6 w-6" />
               Regístrate Aquí
             </Button>
 
-            <Button 
-              onClick={handleWhatsAppRedirect}
-              size="lg"
-              className="bg-green-600 hover:bg-green-700 text-white text-xl px-12 py-6 transform hover:scale-105 transition-all"
-            >
+            <Button onClick={handleWhatsAppRedirect} size="lg" className="bg-green-600 hover:bg-green-700 text-white px-12 py-6 transform hover:scale-105 transition-all text-xl">
               <MessageCircle className="mr-3 h-6 w-6" />
               Escríbenos al WhatsApp
             </Button>
@@ -119,8 +95,6 @@ const AgentsAIThankYou = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AgentsAIThankYou;
