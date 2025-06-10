@@ -17,8 +17,8 @@ const EnrollmentNotification: React.FC<EnrollmentNotificationProps> = ({
   if (!student || !isVisible) return null;
 
   return (
-    <div className={`fixed top-4 right-4 z-50 transform transition-all duration-500 ${
-      isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+    <div className={`fixed bottom-4 left-4 z-50 transform transition-all duration-500 ${
+      isVisible ? 'translate-x-0 opacity-100' : 'translate-x-[-120%] opacity-0'
     }`}>
       <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg shadow-lg max-w-sm border border-green-400">
         <div className="flex items-center justify-between mb-2">

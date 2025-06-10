@@ -132,8 +132,8 @@ export const useEnrollmentNotifications = () => {
     // Show first notification after 3 seconds
     const initialTimeout = setTimeout(showRandomNotification, 3000);
     
-    // Then show every 10 seconds
-    const interval = setInterval(showRandomNotification, 10000);
+    // Then show every 15 seconds instead of 10
+    const interval = setInterval(showRandomNotification, 15000);
 
     return () => {
       clearTimeout(initialTimeout);
