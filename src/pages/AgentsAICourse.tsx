@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, Bot, MessageSquare, Users, Zap, CheckCircle, DollarSign, TrendingUp, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ContactForm from '@/components/agents-ai-course/ContactForm';
 import PromotionCountdown from '@/components/agents-ai-course/PromotionCountdown';
+import EnrollmentNotification from '@/components/agents-ai-course/EnrollmentNotification';
 import {
   Carousel,
   CarouselContent,
@@ -13,10 +13,12 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useInterval } from '@/hooks/useInterval';
+import { useEnrollmentNotifications } from '@/hooks/useEnrollmentNotifications';
 
 const AgentsAICourse = () => {
   const { toast } = useToast();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const { currentNotification, isVisible } = useEnrollmentNotifications();
 
   const testimonials = [
     {
@@ -106,6 +108,13 @@ const AgentsAICourse = () => {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* Enrollment Notifications */}
+      <EnrollmentNotification 
+        student={currentNotification}
+        isVisible={isVisible}
+        onClose={() => {}}
+      />
+
       {/* Logo Header */}
       <section className="py-8 bg-black">
         <div className="container mx-auto px-4">
@@ -473,3 +482,5 @@ const AgentsAICourse = () => {
 };
 
 export default AgentsAICourse;
+
+</initial_code>
