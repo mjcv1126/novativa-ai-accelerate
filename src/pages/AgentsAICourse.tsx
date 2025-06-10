@@ -1,12 +1,20 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, Bot, MessageSquare, Users, Zap, CheckCircle, DollarSign, TrendingUp, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ContactForm from '@/components/agents-ai-course/ContactForm';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { useInterval } from '@/hooks/useInterval';
 
 const AgentsAICourse = () => {
   const { toast } = useToast();
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const testimonials = [
     {
@@ -88,6 +96,11 @@ const AgentsAICourse = () => {
       image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face"
     }
   ];
+
+  // Auto-rotate testimonials every 5 seconds
+  useInterval(() => {
+    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+  }, 5000);
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
@@ -271,7 +284,52 @@ const AgentsAICourse = () => {
               🌟 Lo que dicen nuestros estudiantes
             </h2>
             
-            <div className="relative overflow-hidden">
+            {/* Mobile: Single testimonial with auto-rotation */}
+            <div className="md:hidden">
+              <div className="w-full max-w-sm mx-auto">
+                <div className="aspect-square bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors">
+                  <div className="flex flex-col h-full justify-between">
+                    <div className="flex justify-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-novativa-orange" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-300 mb-6 text-center flex-1 flex items-center justify-center text-sm">
+                      "{testimonials[currentTestimonial].content}"
+                    </p>
+                    <div className="flex items-center justify-center">
+                      <img 
+                        src={testimonials[currentTestimonial].image} 
+                        alt={testimonials[currentTestimonial].name}
+                        className="w-12 h-12 rounded-full object-cover mr-3"
+                      />
+                      <div className="text-center">
+                        <h4 className="font-bold text-white text-sm">{testimonials[currentTestimonial].name}</h4>
+                        <p className="text-xs text-gray-400">{testimonials[currentTestimonial].role}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Pagination dots */}
+                <div className="flex justify-center mt-6 space-x-2">
+                  {testimonials.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentTestimonial(index)}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentTestimonial ? 'bg-novativa-teal' : 'bg-gray-600'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop: Scrolling carousel (keep existing) */}
+            <div className="hidden md:block relative overflow-hidden">
               <div className="testimonials-slider flex gap-6 animate-scroll-testimonials">
                 {[...testimonials, ...testimonials].map((testimonial, index) => (
                   <div key={index} className="min-w-[300px] md:min-w-[350px] bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors flex-shrink-0">
@@ -406,3 +464,5 @@ const AgentsAICourse = () => {
 };
 
 export default AgentsAICourse;
+
+</initial_code>
