@@ -471,5 +471,3 @@ const AgentsAICourse = () => {
 };
 
 export default AgentsAICourse;
-
-</edits_to_apply>
