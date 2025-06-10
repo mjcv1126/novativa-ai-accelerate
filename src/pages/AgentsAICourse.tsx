@@ -399,7 +399,7 @@ const AgentsAICourse = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-orange/50 transition-colors group">
+              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-novativa-teal/50 transition-colors group">
                 <CheckCircle className="w-12 h-12 text-novativa-orange mb-4 group-hover:animate-bounce" />
                 <h3 className="text-xl font-bold mb-3">Optimizar interacciones con IA</h3>
                 <p className="text-gray-400">Optimizar interacciones con IA para reconocer intenciones de compra, preguntas frecuentes y derivar conversaciones clave.</p>
@@ -465,4 +465,4 @@ const AgentsAICourse = () => {
 
 export default AgentsAICourse;
 
-</initial_code>
+</edits_to_apply>
