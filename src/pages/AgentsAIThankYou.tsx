@@ -9,16 +9,8 @@ const AgentsAIThankYou = () => {
   const handleWhatsAppRedirect = () => {
     window.open('https://api.whatsapp.com/send?phone=50432142996', '_blank');
   };
-  return <div className="min-h-screen bg-black text-white flex items-center justify-center relative">
-      {/* Background GIF */}
-      <div 
-        className="absolute inset-0 opacity-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(https://tii.imgix.net/production/articles/11210/d6b28976-4039-4065-82af-faabeae1b5f6-jDPUnZ.gif?auto=compress&fit=crop&gif-q=50)'
-        }}
-      />
-      
-      <div className="container mx-auto px-4 relative z-10">
+  return <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center">
           {/* Logo */}
           <div className="mb-8">
@@ -78,19 +70,15 @@ const AgentsAIThankYou = () => {
               No te preocupes, también puedes acceder directamente desde aquí:
             </p>
 
-            <div className="space-y-4">
-              <Button onClick={handleRedirect} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-12 py-6 animate-pulse transform hover:scale-105 transition-all">
-                <ExternalLink className="mr-3 h-6 w-6" />
-                Regístrate Aquí
-              </Button>
+            <Button onClick={handleRedirect} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white text-xl px-12 py-6 animate-pulse transform hover:scale-105 transition-all">
+              <ExternalLink className="mr-3 h-6 w-6" />
+              Regístrate Aquí
+            </Button>
 
-              <div>
-                <Button onClick={handleWhatsAppRedirect} size="sm" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 transform hover:scale-105 transition-all text-sm">
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  Escríbenos al WhatsApp
-                </Button>
-              </div>
-            </div>
+            <Button onClick={handleWhatsAppRedirect} size="sm" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 transform hover:scale-105 transition-all text-sm">
+              <MessageCircle className="mr-2 h-4 w-4" />
+              Escríbenos al WhatsApp
+            </Button>
 
             <p className="text-sm text-gray-500">
               Se abrirá en una nueva pestaña
