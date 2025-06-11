@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Calendar, Bot, MessageSquare, Users, Zap, CheckCircle, DollarSign, TrendingUp, Clock } from 'lucide-react';
+import { Calendar, Bot, MessageSquare, Users, Zap, CheckCircle, DollarSign, TrendingUp, Clock, Play } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ContactForm from '@/components/agents-ai-course/ContactForm';
 import PromotionCountdown from '@/components/agents-ai-course/PromotionCountdown';
@@ -18,6 +19,8 @@ import { useEnrollmentNotifications } from '@/hooks/useEnrollmentNotifications';
 const AgentsAICourse = () => {
   const { toast } = useToast();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isDesktopVideoPlaying, setIsDesktopVideoPlaying] = useState(false);
   const { currentNotification, isVisible } = useEnrollmentNotifications();
 
   const testimonials = [
@@ -106,6 +109,14 @@ const AgentsAICourse = () => {
     setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
   }, 5000);
 
+  const handleVideoPlay = (isMobile = false) => {
+    if (isMobile) {
+      setIsVideoPlaying(true);
+    } else {
+      setIsDesktopVideoPlaying(true);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Enrollment Notifications */}
@@ -161,6 +172,7 @@ const AgentsAICourse = () => {
                           controls
                           preload="auto"
                           className="absolute inset-0 w-full h-full object-cover"
+                          onPlay={() => handleVideoPlay(true)}
                           onError={(e) => {
                             console.error('Error loading video:', e);
                           }}
@@ -168,6 +180,15 @@ const AgentsAICourse = () => {
                           <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749503799696.mp4" type="video/mp4" />
                           Tu navegador no soporta el elemento video.
                         </video>
+                        
+                        {/* Mobile Play Button Overlay */}
+                        {!isVideoPlaying && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer" onClick={() => handleVideoPlay(true)}>
+                            <div className="bg-novativa-teal/90 hover:bg-novativa-teal rounded-full p-6 transition-all duration-300 transform hover:scale-110">
+                              <Play className="w-12 h-12 text-white ml-1" fill="white" />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -221,6 +242,7 @@ const AgentsAICourse = () => {
                       controls
                       preload="auto"
                       className="absolute inset-0 w-full h-full rounded-lg object-cover"
+                      onPlay={() => handleVideoPlay(false)}
                       onError={(e) => {
                         console.error('Error loading video:', e);
                       }}
@@ -228,6 +250,15 @@ const AgentsAICourse = () => {
                       <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749503799696.mp4" type="video/mp4" />
                       Tu navegador no soporta el elemento video.
                     </video>
+                    
+                    {/* Desktop Play Button Overlay */}
+                    {!isDesktopVideoPlaying && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer rounded-lg" onClick={() => handleVideoPlay(false)}>
+                        <div className="bg-novativa-teal/90 hover:bg-novativa-teal rounded-full p-8 transition-all duration-300 transform hover:scale-110">
+                          <Play className="w-16 h-16 text-white ml-1" fill="white" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
