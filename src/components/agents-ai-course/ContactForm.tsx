@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, UserRound, Phone, Send } from 'lucide-react';
+import { User, UserRound, Phone, Send, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 const ContactForm = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [countryCode, setCountryCode] = useState('506');
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,10 +23,21 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!firstName.trim() || !lastName.trim() || !phone.trim()) {
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim()) {
       toast({
         title: "Campos requeridos",
         description: "Por favor completa todos los campos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Email inválido",
+        description: "Por favor ingresa un email válido",
         variant: "destructive",
       });
       return;
@@ -46,6 +58,7 @@ const ContactForm = () => {
         body: JSON.stringify({
           firstName: firstName.trim(),
           lastName: lastName.trim(),
+          email: email.trim(),
           phone: formattedPhone,
           countryCode: countryCode,
           countryName: selectedCountry?.name || ''
@@ -108,6 +121,19 @@ const ContactForm = () => {
               required
             />
           </div>
+        </div>
+
+        {/* Email Field */}
+        <div className="flex items-center gap-2 px-3 py-2 border border-gray-700 rounded-md bg-gray-800/50 focus-within:ring-2 focus-within:ring-novativa-teal focus-within:border-transparent">
+          <Mail className="h-4 w-4 text-gray-400 flex-shrink-0" />
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="flex-1 outline-none bg-transparent text-white placeholder:text-gray-400 min-w-0"
+            required
+          />
         </div>
         
         {/* Phone Field */}
