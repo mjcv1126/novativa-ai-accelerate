@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, Bot, MessageSquare, Users, Zap, CheckCircle, DollarSign, TrendingUp, Clock, Play } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -21,6 +21,8 @@ const AgentsAICourse = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isDesktopVideoPlaying, setIsDesktopVideoPlaying] = useState(false);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement>(null);
   const { currentNotification, isVisible } = useEnrollmentNotifications();
 
   const testimonials = [
@@ -112,8 +114,14 @@ const AgentsAICourse = () => {
   const handleVideoPlay = (isMobile = false) => {
     if (isMobile) {
       setIsVideoPlaying(true);
+      if (mobileVideoRef.current) {
+        mobileVideoRef.current.play();
+      }
     } else {
       setIsDesktopVideoPlaying(true);
+      if (desktopVideoRef.current) {
+        desktopVideoRef.current.play();
+      }
     }
   };
 
@@ -165,6 +173,7 @@ const AgentsAICourse = () => {
                     <div className="-mx-4 bg-gradient-to-br from-gray-900 to-black">
                       <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 overflow-hidden" style={{ aspectRatio: '16/9' }}>
                         <video 
+                          ref={mobileVideoRef}
                           autoPlay 
                           loop 
                           muted={false}
@@ -172,7 +181,7 @@ const AgentsAICourse = () => {
                           controls
                           preload="auto"
                           className="absolute inset-0 w-full h-full object-cover"
-                          onPlay={() => handleVideoPlay(true)}
+                          onPlay={() => setIsVideoPlaying(true)}
                           onError={(e) => {
                             console.error('Error loading video:', e);
                           }}
@@ -235,6 +244,7 @@ const AgentsAICourse = () => {
                 <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
                   <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
                     <video 
+                      ref={desktopVideoRef}
                       autoPlay 
                       loop 
                       muted={false}
@@ -242,7 +252,7 @@ const AgentsAICourse = () => {
                       controls
                       preload="auto"
                       className="absolute inset-0 w-full h-full rounded-lg object-cover"
-                      onPlay={() => handleVideoPlay(false)}
+                      onPlay={() => setIsDesktopVideoPlaying(true)}
                       onError={(e) => {
                         console.error('Error loading video:', e);
                       }}
