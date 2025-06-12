@@ -67,13 +67,6 @@ const MobileNav = ({ onClose }: MobileNavProps) => {
               NovaFitness
             </a>
             <Link 
-              to="/servicios/agentes-ia" 
-              className="block text-gray-600 hover:text-[#bc3e06]"
-              onClick={onClose}
-            >
-              {t('services.aiAgents')}
-            </Link>
-            <Link 
               to="/servicios/contenido" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}

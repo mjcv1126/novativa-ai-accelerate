@@ -1,15 +1,17 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScheduleDialog from '@/components/shared/ScheduleDialog';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { MessageCircle, Bot, Share2, FileText, Code, Phone, Stethoscope, Megaphone, Dumbbell, Upload } from 'lucide-react';
+import { MessageCircle, Share2, FileText, Code, Phone, Stethoscope, Megaphone, Dumbbell } from 'lucide-react';
+
 const DesktopNav = () => {
-  const {
-    t
-  } = useLanguage();
-  return <div className="hidden md:flex items-center space-x-8">
+  const { t } = useLanguage();
+  
+  return (
+    <div className="hidden md:flex items-center space-x-8">
       <Link to="/" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         {t('nav.home')}
       </Link>
@@ -91,18 +93,6 @@ const DesktopNav = () => {
                     </NavigationMenuLink>
                     
                     <NavigationMenuLink asChild>
-                      <Link to="/servicios/agentes-ia" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
-                        <Bot className="h-5 w-5" />
-                        <div>
-                          <div className="text-sm font-medium">{t('services.aiAgents')}</div>
-                          <p className="text-sm leading-snug text-muted-foreground">
-                            {t('language') === 'es' ? 'Chatbots y asistentes virtuales inteligentes' : 'Chatbots and intelligent virtual assistants'}
-                          </p>
-                        </div>
-                      </Link>
-                    </NavigationMenuLink>
-                    
-                    <NavigationMenuLink asChild>
                       <Link to="/servicios/contenido" className="flex items-center space-x-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#bc3e06]/10 hover:text-[#bc3e06] focus:bg-accent focus:text-accent-foreground">
                         <FileText className="h-5 w-5" />
                         <div>
@@ -137,8 +127,6 @@ const DesktopNav = () => {
         {t('nav.pricing')}
       </Link>
       
-      
-      
       <Link to="/contacto" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
         {t('nav.contact')}
       </Link>
@@ -148,6 +136,8 @@ const DesktopNav = () => {
       <ScheduleDialog className="bg-gradient-to-r from-novativa-orange to-novativa-lightOrange hover:opacity-90 transition-opacity">
         {t('nav.schedule')}
       </ScheduleDialog>
-    </div>;
+    </div>
+  );
 };
+
 export default DesktopNav;
