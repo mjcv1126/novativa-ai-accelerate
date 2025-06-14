@@ -23,8 +23,6 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('Form submitted with data:', { firstName, lastName, email, phone, countryCode });
-    
     if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim()) {
       toast({
         title: "Campos requeridos",
@@ -51,58 +49,36 @@ const ContactForm = () => {
     const digitsOnly = phone.replace(/\D/g, '');
     const formattedPhone = `${countryCode}${digitsOnly}`;
     
-    const formData = {
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      email: email.trim(),
-      phone: formattedPhone,
-      countryCode: countryCode,
-      countryName: selectedCountry?.name || ''
-    };
-
-    console.log('Sending data to webhook:', formData);
-    
     try {
-      const response = await fetch('https://agencianovativa.app.n8n.cloud/webhook-test/17355330-85d4-42f2-93f3-dbc1b0c8afe9', {
+      const response = await fetch('https://hook.us2.make.com/ymsbbblf4mxb6sj4somln8ry6j3sb5u8', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        mode: 'no-cors',
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
+          phone: formattedPhone,
+          countryCode: countryCode,
+          countryName: selectedCountry?.name || ''
+        }),
       });
 
-      console.log('Webhook request sent (no-cors mode)');
+      if (!response.ok) {
+        throw new Error('Error al enviar el formulario');
+      }
 
-      // Since we're using no-cors mode, we can't check response.ok
-      // We'll assume success and proceed with redirect
-      console.log('Form submitted successfully, redirecting to thank you page');
-      
-      // Show success message before redirect
-      toast({
-        title: "¡Enviado exitosamente!",
-        description: "Te estamos redirigiendo...",
-      });
-
-      // Small delay before redirect to show the toast
-      setTimeout(() => {
-        navigate('/curso-agentes-ia-gracias');
-      }, 1000);
+      // Redirect to thank you page
+      navigate('/curso-agentes-ia-gracias');
       
     } catch (error) {
       console.error("Error sending form:", error);
-      
-      // Even if there's an error, we'll proceed with redirect since the webhook might have received the data
-      console.log('Proceeding with redirect despite error (webhook might have received data)');
-      
       toast({
-        title: "Datos enviados",
-        description: "Te estamos redirigiendo...",
+        title: "Error",
+        description: "No pudimos procesar tu solicitud. Por favor, intenta de nuevo.",
+        variant: "destructive",
       });
-
-      setTimeout(() => {
-        navigate('/curso-agentes-ia-gracias');
-      }, 1000);
     } finally {
       setIsSubmitting(false);
     }
@@ -168,12 +144,8 @@ const ContactForm = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 border-gray-700">
-                {countries.map((country, index) => (
-                  <SelectItem 
-                    key={`country-${country.code}-${index}`} 
-                    value={country.code} 
-                    className="text-white hover:bg-gray-700"
-                  >
+                {countries.map((country) => (
+                  <SelectItem key={`${country.code}-${country.name}`} value={country.code} className="text-white hover:bg-gray-700">
                     <span className="flex items-center gap-2">
                       <span className="text-sm">{country.flag}</span>
                       <span className="text-sm">+{country.code}</span>
