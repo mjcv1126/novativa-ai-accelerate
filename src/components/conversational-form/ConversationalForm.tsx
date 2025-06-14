@@ -234,27 +234,29 @@ const ConversationalForm = () => {
   // Success section after form submission
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl">
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <NovativaLogo size="large" />
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="flex items-center justify-center p-4 pb-8">
+          <div className="w-full max-w-4xl">
+            {/* Logo */}
+            <div className="flex justify-center mb-8">
+              <NovativaLogo size="large" />
+            </div>
 
-          {/* Success message */}
-          <div className="text-center mb-12">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              ¡Tu información ha sido enviada exitosamente!
-            </h1>
-            <p className="text-lg text-gray-600 max-w-xl mx-auto">
-              Ahora solo debes agendar tu videollamada en la fecha y hora de tu preferencia.
-            </p>
+            {/* Success message */}
+            <div className="text-center mb-12">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                ¡Tu información ha sido enviada exitosamente!
+              </h1>
+              <p className="text-lg text-gray-600 max-w-xl mx-auto">
+                Ahora solo debes agendar tu videollamada en la fecha y hora de tu preferencia.
+              </p>
+            </div>
           </div>
+        </div>
 
-          {/* Calendar embed */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-            <TidyCalEmbed path="demo-gratis" className="min-h-[600px]" />
-          </div>
+        {/* Calendar embed - full width with no padding */}
+        <div className="w-full">
+          <TidyCalEmbed path="demo-gratis" className="min-h-[600px] w-full" />
         </div>
       </div>
     );
