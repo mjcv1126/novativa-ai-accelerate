@@ -7,6 +7,7 @@ import { User, UserRound, Phone, Send, Mail, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
 import NovativaLogo from '@/components/shared/NovativaLogo';
+import TidyCalEmbed from '@/components/schedule/TidyCalEmbed';
 
 const ConversationalForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -16,6 +17,7 @@ const ConversationalForm = () => {
   const [countryCode, setCountryCode] = useState('506');
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
 
   const selectedCountry = countries.find(c => c.code === countryCode);
@@ -136,8 +138,9 @@ const ConversationalForm = () => {
         throw new Error('Error al enviar el formulario');
       }
 
-      // Redirect to TidyCal
-      window.location.href = 'https://tidycal.com/novativa/demo-gratis';
+      // Show success section instead of redirecting
+      setIsSubmitted(true);
+      setIsSubmitting(false);
       
     } catch (error) {
       console.error("Error sending form:", error);
@@ -156,13 +159,42 @@ const ConversationalForm = () => {
     }
   };
 
+  // Success section after form submission
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-4xl">
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <NovativaLogo size="large" />
+          </div>
+
+          {/* Success message */}
+          <div className="text-center mb-12">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              ¡Listo! Ahora solo debes agendar tu llamada en la fecha y horario que más te convenga.
+            </h1>
+            <p className="text-lg text-gray-600 max-w-xl mx-auto">
+              Selecciona el horario que mejor se adapte a tu agenda para tu consulta gratuita con nuestros expertos.
+            </p>
+          </div>
+
+          {/* Calendar embed */}
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <TidyCalEmbed path="demo-gratis" className="min-h-[600px]" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const IconComponent = currentStepData.icon;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="flex justify-center mb-8">
           <NovativaLogo size="large" />
         </div>
 
