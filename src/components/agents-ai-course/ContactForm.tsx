@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +22,8 @@ const ContactForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    console.log('Form submitted with data:', { firstName, lastName, email, phone, countryCode });
     
     if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim()) {
       toast({
@@ -48,25 +51,39 @@ const ContactForm = () => {
     const digitsOnly = phone.replace(/\D/g, '');
     const formattedPhone = `${countryCode}${digitsOnly}`;
     
+    const formData = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      phone: formattedPhone,
+      countryCode: countryCode,
+      countryName: selectedCountry?.name || ''
+    };
+
+    console.log('Sending data to webhook:', formData);
+    
     try {
       const response = await fetch('https://agencianovativa.app.n8n.cloud/webhook/17355330-85d4-42f2-93f3-dbc1b0c8afe9', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          email: email.trim(),
-          phone: formattedPhone,
-          countryCode: countryCode,
-          countryName: selectedCountry?.name || ''
-        }),
+        body: JSON.stringify(formData),
       });
 
+      console.log('Webhook response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Error al enviar el formulario');
+        throw new Error(`Error al enviar el formulario: ${response.status}`);
       }
+
+      console.log('Form submitted successfully, redirecting to thank you page');
+      
+      // Show success message before redirect
+      toast({
+        title: "¡Enviado exitosamente!",
+        description: "Te estamos redirigiendo...",
+      });
 
       // Redirect to thank you page
       navigate('/curso-agentes-ia-gracias');
@@ -143,8 +160,12 @@ const ContactForm = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 border-gray-700">
-                {countries.map((country) => (
-                  <SelectItem key={`${country.code}-${country.name}`} value={country.code} className="text-white hover:bg-gray-700">
+                {countries.map((country, index) => (
+                  <SelectItem 
+                    key={`country-${country.code}-${index}`} 
+                    value={country.code} 
+                    className="text-white hover:bg-gray-700"
+                  >
                     <span className="flex items-center gap-2">
                       <span className="text-sm">{country.flag}</span>
                       <span className="text-sm">+{country.code}</span>
