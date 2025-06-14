@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,7 +49,7 @@ const ContactForm = () => {
     const formattedPhone = `${countryCode}${digitsOnly}`;
     
     try {
-      const response = await fetch('https://hook.us2.make.com/ymsbbblf4mxb6sj4somln8ry6j3sb5u8', {
+      const response = await fetch('https://agencianovativa.app.n8n.cloud/webhook/17355330-85d4-42f2-93f3-dbc1b0c8afe9', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
