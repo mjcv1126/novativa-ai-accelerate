@@ -118,9 +118,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Párrafo explicativo profesional - Ahora visible en móvil también */}
         <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-12 max-w-4xl mx-auto border border-gray-200 shadow-sm">
           <div className="mb-3 sm:mb-6 flex justify-center">
-            <div className="inline-block bg-gradient-to-r from-novativa-teal to-novativa-orange text-white px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-lg shadow-lg">
+            <Button 
+              onClick={() => window.open('https://tidycal.com/novativa/demo-gratis', '_blank')}
+              className="bg-gradient-to-r from-novativa-teal to-novativa-orange text-white px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-lg shadow-lg hover:opacity-90 transition-all transform hover:scale-105"
+            >
               Programa exclusivo para médicos especialistas
-            </div>
+            </Button>
           </div>
           <p className="text-sm sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-gray-700 px-1 sm:px-2">
             Estamos lanzando una solución tecnológica avanzada diseñada específicamente para profesionales médicos que buscan optimizar su práctica clínica sin comprometer la calidad de atención.
