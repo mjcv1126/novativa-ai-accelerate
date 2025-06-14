@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import NovativaLogo from '@/components/shared/NovativaLogo';
 import { useInterval } from '@/hooks/useInterval';
 
 const FormularioConfirmacion = () => {
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(9);
 
   // Hide Botsify widget on this page
   useEffect(() => {
