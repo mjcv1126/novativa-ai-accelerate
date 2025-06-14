@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -20,6 +21,37 @@ const ConversationalForm = () => {
   const { toast } = useToast();
 
   const selectedCountry = countries.find(c => c.code === countryCode);
+
+  // Hide Botsify widget on this page
+  useEffect(() => {
+    const hideBotsifyWidget = () => {
+      const style = document.createElement('style');
+      style.id = 'hide-botsify-widget';
+      style.textContent = `
+        #webbot-container,
+        #webbot-iframe,
+        .webbot-container,
+        .webbot-iframe,
+        [id*="webbot"],
+        [class*="webbot"] {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          z-index: -9999 !important;
+        }
+      `;
+      document.head.appendChild(style);
+    };
+
+    hideBotsifyWidget();
+
+    return () => {
+      const existingStyle = document.getElementById('hide-botsify-widget');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    };
+  }, []);
 
   const steps = [
     {
@@ -137,7 +169,7 @@ const ConversationalForm = () => {
         throw new Error('Error al enviar el formulario');
       }
 
-      // Show success section instead of redirecting
+      console.log('Form submitted successfully');
       setIsSubmitted(true);
       setIsSubmitting(false);
       
@@ -171,10 +203,10 @@ const ConversationalForm = () => {
           {/* Success message */}
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              ¡Listo! Ahora solo debes agendar tu llamada en la fecha y horario que más te convenga.
+              ¡Tu información ha sido enviada exitosamente!
             </h1>
             <p className="text-lg text-gray-600 max-w-xl mx-auto">
-              Selecciona el horario que mejor se adapte a tu agenda para tu consulta gratuita con nuestros expertos.
+              Ahora solo debes agendar tu videollamada en la fecha y hora de tu preferencia.
             </p>
           </div>
 
