@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +23,7 @@ const ConversationalForm = () => {
 
   const steps = [
     {
-      question: "¡Hola! 👋 Para comenzar, ¿cuál es tu nombre?",
+      question: "¿Cuál es tu primer nombre?",
       field: "firstName",
       type: "text",
       placeholder: "Escribe tu nombre aquí",
