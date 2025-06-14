@@ -1,11 +1,19 @@
 
 import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const LouisebotWidget = () => {
   const scriptRef = useRef<HTMLScriptElement | null>(null);
   const hasLoaded = useRef(false);
+  const location = useLocation();
 
   useEffect(() => {
+    // Don't load widget on formulario page
+    if (location.pathname === '/formulario') {
+      console.log('LOUISEBOT-WIDGET: Skipping widget load on formulario page');
+      return;
+    }
+
     if (hasLoaded.current) {
       console.log('LOUISEBOT-WIDGET: Widget already loaded, skipping...');
       return;
@@ -114,7 +122,7 @@ const LouisebotWidget = () => {
       clearTimeout(timer);
       observer.disconnect();
     };
-  }, []);
+  }, [location.pathname]);
 
   return null;
 };

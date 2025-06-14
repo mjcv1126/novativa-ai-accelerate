@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { User, UserRound, Phone, Send, Mail, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
+import NovativaLogo from '@/components/shared/NovativaLogo';
 
 const ConversationalForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -160,6 +161,21 @@ const ConversationalForm = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <NovativaLogo size="large" />
+        </div>
+
+        {/* Description */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            ¡Felicidades por dar el primer paso hacia la automatización!
+          </h1>
+          <p className="text-lg text-gray-600 max-w-xl mx-auto">
+            Agenda una videollamada con nuestros expertos en una videollamada 1:1 completando este formulario.
+          </p>
+        </div>
+
         {/* Progress bar */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
