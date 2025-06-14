@@ -8,8 +8,8 @@ export const navigateWithRefresh = (path: string): void => {
     // Open contact page in new tab with forced refresh
     window.open(path, '_blank');
   } else if (path === '/agenda') {
-    // Redirect /agenda to TidyCal in new tab
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+    // Redirect /agenda to formulario page instead of TidyCal
+    window.location.href = '/formulario';
   } else {
     // For other routes, use normal navigation
     window.history.pushState({}, '', path);

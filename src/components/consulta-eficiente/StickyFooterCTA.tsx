@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, X } from 'lucide-react';
@@ -21,7 +22,7 @@ const StickyFooterCTA: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isDismissed]);
   const handleCTAClick = () => {
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+    window.location.href = '/formulario';
   };
   const handleDismiss = () => {
     setIsDismissed(true);

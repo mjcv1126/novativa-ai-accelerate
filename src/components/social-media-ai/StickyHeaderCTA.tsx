@@ -19,7 +19,7 @@ const StickyHeaderCTA = () => {
   }, []);
 
   const handleScheduleClick = () => {
-    document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' });
+    window.location.href = '/formulario';
   };
 
   const content = {

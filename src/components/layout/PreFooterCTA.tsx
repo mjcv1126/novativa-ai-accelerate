@@ -7,8 +7,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const PreFooterCTA = () => {
   const { language } = useLanguage();
   
-  const openTidyCal = () => {
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  const openFormulario = () => {
+    window.location.href = '/formulario';
   };
 
   return (
@@ -29,7 +29,7 @@ const PreFooterCTA = () => {
             </p>
           </div>
           <Button 
-            onClick={openTidyCal} 
+            onClick={openFormulario} 
             size="lg" 
             className="bg-novativa-teal hover:bg-novativa-darkTeal text-white px-6 py-3 text-lg"
           >

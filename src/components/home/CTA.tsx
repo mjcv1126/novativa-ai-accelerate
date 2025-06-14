@@ -5,8 +5,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const CTA = () => {
   const { t, language } = useLanguage();
   
-  const openTidyCal = () => {
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  const openFormulario = () => {
+    window.location.href = '/formulario';
   };
 
   return (
@@ -21,7 +21,7 @@ const CTA = () => {
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <button
-              onClick={openTidyCal}
+              onClick={openFormulario}
               className="inline-flex items-center justify-center gap-2 bg-novativa-orange hover:bg-novativa-lightOrange px-6 py-6 rounded-md text-white font-medium transition-colors text-lg"
             >
               {t('home.cta.button')}

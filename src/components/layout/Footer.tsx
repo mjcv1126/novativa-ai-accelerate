@@ -104,7 +104,7 @@ const Footer = () => {
             
             <div className="mt-8">
               <Button className="w-full bg-novativa-teal hover:bg-novativa-lightTeal flex items-center gap-2" asChild>
-                <a href="https://tidycal.com/novativa/demo-gratis" target="_blank" rel="noopener noreferrer">
+                <a href="/formulario" rel="noopener noreferrer">
                   <Calendar className="h-4 w-4" />
                   <span>{t('footer.scheduleDemo')}</span>
                 </a>

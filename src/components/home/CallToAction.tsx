@@ -9,7 +9,7 @@ const CallToAction = () => {
   const { t, language } = useLanguage();
   
   const handleScheduleDemo = () => {
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+    window.location.href = '/formulario';
   };
 
   return (

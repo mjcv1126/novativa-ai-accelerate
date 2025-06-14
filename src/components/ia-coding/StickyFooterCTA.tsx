@@ -27,8 +27,8 @@ const StickyFooterCTA = () => {
     // Track the click event with Facebook Pixel
     fbTrack('IADevelopmentScheduleClick');
 
-    // Open TidyCal meeting link in a new tab
-    window.open('https://tidycal.com/novativa/desarrollo-ia', '_blank');
+    // Navigate to formulario instead of TidyCal
+    window.location.href = '/formulario';
   };
   
   return <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-novativa-darkTeal to-novativa-teal py-4 shadow-lg z-50 px-4">

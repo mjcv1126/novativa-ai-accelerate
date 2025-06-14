@@ -8,6 +8,10 @@ interface FinalCTASectionProps {
 }
 
 const FinalCTASection: React.FC<FinalCTASectionProps> = ({ openTidyCal }) => {
+  const handleFormularioClick = () => {
+    window.location.href = '/formulario';
+  };
+
   return (
     <section className="py-16 sm:py-20 bg-gradient-to-r from-novativa-teal/10 to-novativa-orange/10">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -38,7 +42,7 @@ const FinalCTASection: React.FC<FinalCTASectionProps> = ({ openTidyCal }) => {
           </div>
           
           <div className="space-y-6 px-2">
-            <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-8 sm:px-12 py-6 sm:py-8 text-lg sm:text-xl font-semibold group shadow-lg w-full sm:w-auto">
+            <Button onClick={handleFormularioClick} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-8 sm:px-12 py-6 sm:py-8 text-lg sm:text-xl font-semibold group shadow-lg w-full sm:w-auto">
               <Calendar className="w-5 h-5 sm:w-6 sm:h-6 mr-2 animate-swing" />
               Agenda tu Demo Gratuita
               <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 ml-2 group-hover:translate-x-1 transition-transform animate-bounce-custom" />
@@ -52,7 +56,7 @@ const FinalCTASection: React.FC<FinalCTASectionProps> = ({ openTidyCal }) => {
               <p className="text-gray-600 mb-6 text-sm sm:text-base">
                 En nuestra demo verás exactamente cómo NovaMedic se adapta a tu especialidad y práctica médica.
               </p>
-              <Button onClick={openTidyCal} variant="outline" className="w-full border-2 border-novativa-teal text-novativa-teal hover:bg-novativa-teal hover:text-white transition-all duration-300">
+              <Button onClick={handleFormularioClick} variant="outline" className="w-full border-2 border-novativa-teal text-novativa-teal hover:bg-novativa-teal hover:text-white transition-all duration-300">
                 <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Reservar Mi Lugar Ahora
               </Button>

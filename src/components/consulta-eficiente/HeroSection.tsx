@@ -12,6 +12,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   openTidyCal,
   showCTA
 }) => {
+  const handleFormularioClick = () => {
+    window.location.href = '/formulario';
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
       {/* GIF de fondo */}
@@ -119,7 +123,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-12 max-w-4xl mx-auto border border-gray-200 shadow-sm">
           <div className="mb-3 sm:mb-6 flex justify-center">
             <Button 
-              onClick={() => window.open('https://tidycal.com/novativa/demo-gratis', '_blank')}
+              onClick={handleFormularioClick}
               className="bg-gradient-to-r from-novativa-teal to-novativa-orange text-white px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-lg shadow-lg hover:opacity-90 transition-all transform hover:scale-105"
             >
               Programa exclusivo para médicos especialistas
@@ -133,7 +137,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         {/* CTA profesional - Compacto en móvil */}
         {showCTA && (
           <div className="mb-4 sm:mb-12 px-2">
-            <Button onClick={openTidyCal} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 text-base sm:text-lg md:text-xl shadow-lg w-full sm:w-auto">
+            <Button onClick={handleFormularioClick} size="lg" className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 text-base sm:text-lg md:text-xl shadow-lg w-full sm:w-auto">
               <Calendar className="w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6 mr-2" />
               Solicitar Evaluación Profesional
             </Button>
