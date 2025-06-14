@@ -18,6 +18,10 @@ const ProblemsSection: React.FC<ProblemsSectionProps> = ({ openTidyCal }) => {
     { icon: Bot, title: "Disponibilidad Limitada", desc: "Solo en horarios de consulta", impact: "Oportunidades perdidas", animation: "animate-heart" }
   ];
 
+  const handleFormularioClick = () => {
+    window.location.href = '/formulario';
+  };
+
   return (
     <section className="py-16 sm:py-20 bg-gradient-to-b from-white to-red-50">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,7 +50,7 @@ const ProblemsSection: React.FC<ProblemsSectionProps> = ({ openTidyCal }) => {
                   <h3 className="font-semibold text-lg sm:text-xl mb-3 text-red-500">{problem.title}</h3>
                   <p className="text-gray-600 mb-4 text-sm sm:text-base">{problem.desc}</p>
                   <Button 
-                    onClick={openTidyCal}
+                    onClick={handleFormularioClick}
                     variant="outline"
                     size="sm"
                     className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300 transition-all duration-200 hover:scale-105 w-full sm:w-auto"

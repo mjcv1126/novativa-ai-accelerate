@@ -39,7 +39,7 @@ const NovaMedicCarousel = () => {
   }, 4000);
 
   const handleCTAClick = () => {
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+    window.location.href = '/formulario';
   };
 
   return (

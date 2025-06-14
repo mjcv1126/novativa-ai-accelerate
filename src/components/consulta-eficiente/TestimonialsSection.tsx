@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,7 +30,7 @@ const TestimonialsSection: React.FC = () => {
   ];
 
   const handleScheduleCall = () => {
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+    window.location.href = '/formulario';
   };
 
   return (
