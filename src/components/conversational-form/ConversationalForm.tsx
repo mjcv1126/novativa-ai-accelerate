@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -269,7 +270,7 @@ const ConversationalForm = () => {
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-gray-100">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4">
-              <IconComponent className="w-8 h-8 text-white" />
+              <currentStepData.icon className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 leading-tight">
               {currentStepData.question}
@@ -341,7 +342,7 @@ const ConversationalForm = () => {
               </div>
             ) : (
               <div className="flex items-center gap-3 px-4 py-3 border border-gray-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
-                <IconComponent className="h-6 w-6 text-gray-400 flex-shrink-0" />
+                <currentStepData.icon className="h-6 w-6 text-gray-400 flex-shrink-0" />
                 <input
                   type={currentStepData.type}
                   placeholder={currentStepData.placeholder}
