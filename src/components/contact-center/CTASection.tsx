@@ -1,13 +1,16 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 import { useInView } from '@/hooks/useInView';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const CTASection = () => {
   const { ref, isInView } = useInView();
   const { t, language } = useLanguage();
+
+  const handleClick = () => {
+    window.location.href = '/formulario';
+  };
 
   return (
     <section className="py-16 bg-gradient-to-r from-[#1A1F2C] to-[#2C3E50] relative overflow-hidden">
@@ -28,10 +31,8 @@ const CTASection = () => {
             ? 'Contáctanos hoy mismo para una consulta personalizada y descubre cómo podemos ayudarte.'
             : 'Contact us today for a personalized consultation and discover how we can help you.'}
         </p>
-        <Button asChild size="lg" className="bg-white text-[#1A1F2C] hover:bg-gray-100">
-          <Link to={language === 'es' ? '/contacto' : '/contact'}>
-            {language === 'es' ? 'Solicitar Información' : 'Request Information'}
-          </Link>
+        <Button onClick={handleClick} size="lg" className="bg-white text-[#1A1F2C] hover:bg-gray-100">
+          {language === 'es' ? 'Solicitar Información' : 'Request Information'}
         </Button>
       </div>
     </section>

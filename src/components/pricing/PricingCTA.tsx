@@ -1,9 +1,16 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const PricingCTA = () => {
+  const handleContactClick = () => {
+    window.location.href = '/formulario';
+  };
+
+  const handleServicesClick = () => {
+    window.location.href = '/servicios';
+  };
+
   return (
     <section className="py-16 bg-gradient-to-r from-novativa-orange to-novativa-lightOrange text-white">
       <div className="container mx-auto px-4 text-center">
@@ -13,23 +20,19 @@ const PricingCTA = () => {
         </p>
         <div className="flex justify-center gap-4 flex-wrap">
           <Button
-            asChild
+            onClick={handleContactClick}
             className="bg-white text-novativa-orange hover:bg-gray-100"
             size="lg"
           >
-            <Link to="/contacto">
-              Contáctanos Ahora
-            </Link>
+            Contáctanos Ahora
           </Button>
           <Button
-            asChild
+            onClick={handleServicesClick}
             variant="outline"
             className="border-white text-white hover:bg-white/10"
             size="lg"
           >
-            <Link to="/servicios">
-              Explorar Servicios
-            </Link>
+            Explorar Servicios
           </Button>
         </div>
       </div>
