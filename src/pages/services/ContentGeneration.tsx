@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 const ContentGeneration = () => {
-  const openTidyCal = () => {
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  const openFormulario = () => {
+    window.location.href = '/formulario';
   };
 
   // Load TikTok embed script
@@ -69,7 +69,7 @@ const ContentGeneration = () => {
               {/* Main CTA Button */}
               <div className="relative">
                 <Button 
-                  onClick={openTidyCal}
+                  onClick={openFormulario}
                   size="lg"
                   className="group relative bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 text-white px-10 py-6 text-xl font-bold shadow-2xl transform transition-all duration-300 hover:scale-110 hover:shadow-3xl animate-bounce-slow border-2 border-white/20"
                 >
@@ -129,7 +129,7 @@ const ContentGeneration = () => {
               {/* CTA Button */}
               <div className="pt-4">
                 <Button 
-                  onClick={openTidyCal}
+                  onClick={openFormulario}
                   size="lg"
                   className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg transform transition-all duration-300 hover:scale-105"
                 >
