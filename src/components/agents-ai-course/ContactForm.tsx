@@ -23,9 +23,6 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Form submission started");
-    console.log("Form data:", { firstName, lastName, email, countryCode, phone });
-    
     if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim()) {
       toast({
         title: "Campos requeridos",
@@ -52,10 +49,8 @@ const ContactForm = () => {
     const digitsOnly = phone.replace(/\D/g, '');
     const formattedPhone = `${countryCode}${digitsOnly}`;
     
-    console.log("Sending to webhook:", formattedPhone);
-    
     try {
-      const response = await fetch('https://agencianovativa.app.n8n.cloud/webhook/17355330-85d4-42f2-93f3-dbc1b0c8afe9', {
+      const response = await fetch('https://hook.us2.make.com/ymsbbblf4mxb6sj4somln8ry6j3sb5u8', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,24 +65,12 @@ const ContactForm = () => {
         }),
       });
 
-      console.log("Response status:", response.status);
-
       if (!response.ok) {
         throw new Error('Error al enviar el formulario');
       }
 
-      console.log("Form submitted successfully");
-      
-      // Show success toast before redirecting
-      toast({
-        title: "¡Enviado exitosamente!",
-        description: "Recibirás la información del curso pronto.",
-      });
-
-      // Small delay before redirect to ensure toast is visible
-      setTimeout(() => {
-        navigate('/curso-agentes-ia-gracias');
-      }, 1000);
+      // Redirect to thank you page
+      navigate('/curso-agentes-ia-gracias');
       
     } catch (error) {
       console.error("Error sending form:", error);
@@ -161,8 +144,8 @@ const ContactForm = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 border-gray-700">
-                {countries.map((country, index) => (
-                  <SelectItem key={`country-${index}-${country.code}`} value={country.code} className="text-white hover:bg-gray-700">
+                {countries.map((country) => (
+                  <SelectItem key={`${country.code}-${country.name}`} value={country.code} className="text-white hover:bg-gray-700">
                     <span className="flex items-center gap-2">
                       <span className="text-sm">{country.flag}</span>
                       <span className="text-sm">+{country.code}</span>
