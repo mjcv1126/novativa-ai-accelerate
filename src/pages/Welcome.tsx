@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
 
 const Welcome = () => {
-  const openTidyCal = () => {
-    window.open('https://tidycal.com/novativa/demo-gratis', '_blank');
+  const handleScheduleClick = () => {
+    window.location.href = '/formulario';
   };
 
   return (
@@ -33,7 +33,7 @@ const Welcome = () => {
 
           <div className="space-y-4">
             <Button
-              onClick={openTidyCal}
+              onClick={handleScheduleClick}
               size="lg"
               className="bg-gradient-to-r from-novativa-teal to-novativa-orange hover:opacity-90 text-white px-8 py-6 text-lg animate-bounce-slow"
             >

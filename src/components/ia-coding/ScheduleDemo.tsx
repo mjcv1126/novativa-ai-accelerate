@@ -1,8 +1,13 @@
 
 import React from 'react';
-import TidyCalEmbed from '@/components/schedule/TidyCalEmbed';
+import { Button } from '@/components/ui/button';
+import { Calendar } from 'lucide-react';
 
 const ScheduleDemo = () => {
+  const handleScheduleClick = () => {
+    window.location.href = '/formulario';
+  };
+
   return (
     <section id="schedule" className="py-20 bg-black relative">
       <div className="absolute inset-0 bg-gradient-to-t from-novativa-teal/10 to-transparent" />
@@ -16,8 +21,15 @@ const ScheduleDemo = () => {
           </p>
         </div>
         
-        <div className="max-w-3xl mx-auto bg-gray-900/50 p-6 rounded-xl backdrop-blur">
-          <TidyCalEmbed path="desarrollo-ia" className="rounded-xl" />
+        <div className="max-w-3xl mx-auto bg-gray-900/50 p-6 rounded-xl backdrop-blur text-center">
+          <Button 
+            onClick={handleScheduleClick}
+            size="lg"
+            className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6 text-lg"
+          >
+            <Calendar className="mr-2 h-6 w-6" />
+            Agendar Reunión
+          </Button>
         </div>
       </div>
     </section>

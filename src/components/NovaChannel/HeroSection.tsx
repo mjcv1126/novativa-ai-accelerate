@@ -4,6 +4,10 @@ import { Button } from '@/components/ui/button';
 import { platforms } from '@/config/platformsConfig';
 
 const HeroSection = () => {
+  const handleClick = () => {
+    window.location.href = '/formulario';
+  };
+
   return (
     <section className="min-h-screen pt-32 pb-16 bg-white relative overflow-hidden">
       <div className="absolute inset-0 bg-white/80" />
@@ -29,13 +33,11 @@ const HeroSection = () => {
           </p>
           <div className="mt-8 flex flex-col items-center gap-8">
             <Button
-              asChild
+              onClick={handleClick}
               size="lg"
               className="bg-novativa-orange hover:bg-novativa-lightOrange text-white px-8 py-6 text-lg rounded-full transition-all hover:scale-105 shadow-lg animate-pulse-slow"
             >
-              <a href="https://chat.novativa.org/register" target="_blank" rel="noopener noreferrer">
-                ¡Pruébalo Gratis! ✨
-              </a>
+              ¡Pruébalo Gratis! ✨
             </Button>
             
             <div className="flex flex-wrap justify-center items-center gap-8 bg-white/80 p-6 rounded-xl backdrop-blur-sm">

@@ -5,17 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Send, ArrowLeft, Menu, Paperclip, Mic, Calendar } from "lucide-react";
 import MessageList from './MessageList';
 import { useChat } from '@/hooks/useChat';
-import { useNavigate } from 'react-router-dom';
 
 const HeroChat = () => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
   const { messages, isLoading, sendMessage } = useChat();
   const [isChatbotActive, setIsChatbotActive] = useState(false);
 
   const handleSchedule = () => {
-    navigate('/agenda');
+    window.location.href = '/formulario';
   };
 
   const scrollToBottom = () => {
