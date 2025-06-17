@@ -29,10 +29,6 @@ const FinalCTASection: React.FC<FinalCTASectionProps> = ({ openTidyCal }) => {
           <div className="flex flex-col md:flex-row gap-4 sm:gap-6 justify-center items-center mb-8 sm:mb-12 px-2">
             <div className="flex items-center text-base sm:text-lg text-gray-700">
               <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mr-3 animate-pulse-custom" />
-              <span>Setup en 24 horas</span>
-            </div>
-            <div className="flex items-center text-base sm:text-lg text-gray-700">
-              <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mr-3 animate-pulse-custom" />
               <span>Soporte especializado</span>
             </div>
             <div className="flex items-center text-base sm:text-lg text-gray-700">
