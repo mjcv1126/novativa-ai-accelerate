@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Calendar, CheckCircle, Heart, ArrowRight, Timer } from 'lucide-react';
+import { Calendar, CheckCircle, Heart, ArrowRight, Timer, Clock } from 'lucide-react';
 
 interface FinalCTASectionProps {
   openTidyCal: () => void;
@@ -35,6 +35,20 @@ const FinalCTASection: React.FC<FinalCTASectionProps> = ({ openTidyCal }) => {
               <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mr-3 animate-pulse-custom" />
               <span>ROI garantizado</span>
             </div>
+          </div>
+
+          {/* Nueva sección de tiempo de implementación */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-gray-200 shadow-lg max-w-3xl mx-auto mb-8 sm:mb-12">
+            <div className="flex items-center justify-center mb-4">
+              <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-novativa-teal mr-3 animate-pulse-custom" />
+              <h3 className="text-xl sm:text-2xl font-bold text-novativa-teal">Tiempo de Implementación</h3>
+            </div>
+            <p className="text-gray-700 mb-4 text-sm sm:text-base leading-relaxed">
+              La implementación de NovaMedic toma entre <strong>10 y 40 días hábiles</strong>, dependiendo del tamaño y complejidad de su clínica.
+            </p>
+            <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+              NovaMedic se adapta completamente a sus procesos, no al revés. Nuestro equipo lo acompaña en cada paso para asegurar una integración fluida y 100% funcional desde el inicio.
+            </p>
           </div>
           
           <div className="space-y-6 px-2">

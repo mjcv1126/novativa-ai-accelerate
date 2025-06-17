@@ -6,6 +6,7 @@ import { Calendar, X } from 'lucide-react';
 const StickyFooterCTA: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
+  
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -18,20 +19,26 @@ const StickyFooterCTA: React.FC = () => {
         setIsVisible(false);
       }
     };
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isDismissed]);
+  
   const handleCTAClick = () => {
     window.location.href = '/formulario';
   };
+  
   const handleDismiss = () => {
     setIsDismissed(true);
     setIsVisible(false);
   };
+  
   if (!isVisible || isDismissed) {
     return null;
   }
-  return <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-novativa-teal to-novativa-orange text-white shadow-2xl border-b-4 border-white/20">
+  
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-novativa-teal to-novativa-orange text-white shadow-2xl border-b-4 border-white/20">
       <div className="container mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1">
@@ -59,7 +66,8 @@ const StickyFooterCTA: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default StickyFooterCTA;
