@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -240,16 +241,62 @@ const ConversationalForm = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
+    console.log('=== WEBHOOK SUBMISSION DEBUG ===');
     console.log('Starting form submission...');
-    console.log('Form data:', {
-      firstName,
-      lastName,
-      email,
-      phone,
-      countryCode,
-      selectedService,
-      selectedBudget
+    
+    // Log all form values before processing
+    console.log('Raw form values:', {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+      countryCode: countryCode,
+      selectedService: selectedService,
+      selectedBudget: selectedBudget
     });
+
+    // Validate all required fields
+    if (!firstName.trim()) {
+      console.error('Missing firstName');
+      toast({ title: "Error", description: "Nombre requerido", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!lastName.trim()) {
+      console.error('Missing lastName');
+      toast({ title: "Error", description: "Apellido requerido", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!email.trim()) {
+      console.error('Missing email');
+      toast({ title: "Error", description: "Email requerido", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!phone.trim()) {
+      console.error('Missing phone');
+      toast({ title: "Error", description: "Teléfono requerido", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!selectedService) {
+      console.error('Missing selectedService');
+      toast({ title: "Error", description: "Servicio requerido", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!selectedBudget) {
+      console.error('Missing selectedBudget');
+      toast({ title: "Error", description: "Presupuesto requerido", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
 
     // Format phone: country code + number (no + symbol, no spaces)
     const digitsOnly = phone.replace(/\D/g, '');
@@ -269,6 +316,7 @@ const ConversationalForm = () => {
     });
     const isoDateTime = now.toISOString();
 
+    // Prepare submission data with explicit field mapping
     const submissionData = {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
@@ -278,40 +326,64 @@ const ConversationalForm = () => {
       countryName: selectedCountry?.name || '',
       services: selectedService,
       budget: selectedBudget,
+      inversion: selectedBudget, // Adding explicit field for investment/budget
       submissionDate: formattedDate,
       submissionTime: formattedTime,
       submissionDateTime: isoDateTime,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      // Additional fields for webhook compatibility
+      service_selected: selectedService,
+      budget_selected: selectedBudget,
+      full_name: `${firstName.trim()} ${lastName.trim()}`,
+      contact_phone: formattedPhone,
+      contact_email: email.trim()
     };
 
-    console.log('Submission data to be sent:', submissionData);
+    console.log('Final submission data being sent to webhook:');
+    console.log(JSON.stringify(submissionData, null, 2));
 
     try {
+      console.log('Sending POST request to webhook...');
       const response = await fetch('https://hook.us2.make.com/8l8pyxyd40p52sqed6mdqhekarmzadaw', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify(submissionData)
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
+      console.log('Webhook response status:', response.status);
+      console.log('Webhook response ok:', response.ok);
+      
+      // Log response headers
+      const responseHeaders = {};
+      response.headers.forEach((value, key) => {
+        responseHeaders[key] = value;
+      });
+      console.log('Webhook response headers:', responseHeaders);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Response error:', errorText);
-        throw new Error(`Error al enviar el formulario: ${response.status} - ${errorText}`);
+        console.error('Webhook error response:', errorText);
+        throw new Error(`Webhook error: ${response.status} - ${errorText}`);
       }
 
       const responseData = await response.text();
-      console.log('Response data:', responseData);
-      console.log('Form submitted successfully');
+      console.log('Webhook success response:', responseData);
+      console.log('✅ Form submitted successfully to webhook');
       
-      // Redirect to confirmation page instead of showing success section
+      // Redirect to confirmation page
+      console.log('Redirecting to confirmation page...');
       window.location.href = '/formulario-confirmacion';
+      
     } catch (error) {
-      console.error("Error sending form:", error);
+      console.error("❌ Error sending form to webhook:", error);
+      console.error("Error details:", {
+        message: error.message,
+        stack: error.stack
+      });
+      
       toast({
         title: "Error",
         description: "No pudimos procesar tu solicitud. Por favor, intenta de nuevo.",
