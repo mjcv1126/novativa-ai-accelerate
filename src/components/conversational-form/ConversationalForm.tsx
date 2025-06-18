@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { User, UserRound, Phone, Send, Mail, ArrowRight, Settings } from 'lucide-react';
+import { User, UserRound, Phone, Send, Mail, ArrowRight, Settings, DollarSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
 import NovativaLogo from '@/components/shared/NovativaLogo';
@@ -16,6 +17,7 @@ const ConversationalForm = () => {
   const [countryCode, setCountryCode] = useState('506');
   const [phone, setPhone] = useState('');
   const [selectedService, setSelectedService] = useState('');
+  const [selectedBudget, setSelectedBudget] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -62,6 +64,76 @@ const ConversationalForm = () => {
     'Creación de Jingle',
     'Manejo de Redes Sociales'
   ];
+
+  const getBudgetOptions = (service: string) => {
+    const budgetOptions = [];
+    
+    if (service === 'Creación de Jingle') {
+      return [
+        'Cuento con $100 (USD) para realizar un Jingle.',
+        'Cuento con $300 (USD) para realizar un Jingle.',
+        'Cuento con $500 (USD) para realizar un Jingle.',
+        'Cuento con +$600 (USD) para realizar un Jingle.',
+        'No cuento con la inversión necesaria.'
+      ];
+    }
+
+    // $49 monthly - only for Agentes IA
+    if (service === 'Agentes IA') {
+      budgetOptions.push('Cuento con $49 (USD) al mes para dicha inversión');
+    }
+
+    // $100 monthly - for specific services
+    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic'].includes(service)) {
+      budgetOptions.push('Cuento con $100 (USD) al mes para dicha inversión');
+    }
+
+    // $200 monthly - for specific services
+    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic'].includes(service)) {
+      budgetOptions.push('Cuento con $200 (USD) al mes para dicha inversión');
+    }
+
+    // $300 monthly - for specific services
+    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic'].includes(service)) {
+      budgetOptions.push('Cuento con $300 (USD) al mes para dicha inversión');
+    }
+
+    // $500 monthly - for specific services
+    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic', 'Manejo de Redes Sociales'].includes(service)) {
+      budgetOptions.push('Cuento con $500 (USD) al mes para dicha inversión');
+    }
+
+    // $800 monthly - for specific services
+    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
+      budgetOptions.push('Cuento con $800 (USD) al mes para dicha inversión');
+    }
+
+    // $1,000 monthly - for specific services
+    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
+      budgetOptions.push('Cuento con $1,000 (USD) al mes para dicha inversión');
+    }
+
+    // $1,500 monthly - for specific services
+    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
+      budgetOptions.push('Cuento con $1,500 (USD) al mes para dicha inversión');
+    }
+
+    // $3,000 monthly - for specific services
+    if (['Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
+      budgetOptions.push('Cuento con $3,000 (USD) al mes para dicha inversión');
+    }
+
+    // One-time payments for specific services
+    if (['Creación de App Personalizada', 'NovaFitness', 'NovaMedic'].includes(service)) {
+      budgetOptions.push('Cuento con $1,500 (USD) para realizar un solo pago.');
+      budgetOptions.push('Cuento con +$3,000 (USD) para realizar un solo pago.');
+    }
+
+    // Always show "no budget" option
+    budgetOptions.push('No cuento con la inversión necesaria.');
+
+    return budgetOptions;
+  };
 
   const steps = [
     {
@@ -110,6 +182,17 @@ const ConversationalForm = () => {
       setValue: setSelectedService,
       icon: Settings,
       isDropdown: true
+    },
+    {
+      question: "¿Con cuánto presupuesto cuentas?",
+      field: "budget",
+      type: "select",
+      placeholder: "Selecciona tu presupuesto",
+      value: selectedBudget,
+      setValue: setSelectedBudget,
+      icon: DollarSign,
+      isDropdown: true,
+      isBudgetStep: true
     }
   ];
 
@@ -126,7 +209,17 @@ const ConversationalForm = () => {
       return;
     }
 
-    if (!currentStepData.value.trim() && currentStepData.field !== 'services') {
+    // For budget step, require a selection
+    if (currentStepData.field === 'budget' && !selectedBudget) {
+      toast({
+        title: "Campo requerido",
+        description: "Por favor selecciona una opción para continuar",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!currentStepData.value.trim() && !currentStepData.isDropdown) {
       toast({
         title: "Campo requerido",
         description: "Por favor completa este campo para continuar",
@@ -189,6 +282,7 @@ const ConversationalForm = () => {
           countryCode: countryCode,
           countryName: selectedCountry?.name || '',
           services: selectedService,
+          budget: selectedBudget,
           submissionDate: formattedDate,
           submissionTime: formattedTime,
           submissionDateTime: isoDateTime,
@@ -266,25 +360,47 @@ const ConversationalForm = () => {
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 leading-tight">
               {currentStepData.question}
             </h2>
+            
+            {/* Show budget description only on budget step */}
+            {currentStepData.isBudgetStep && (
+              <p className="text-sm text-gray-600 mt-2">
+                Todos nuestros servicios son servicios recurrentes que se pagan mensualmente un fee fijo. (Excepción: Jingles)
+              </p>
+            )}
           </div>
 
           <div className="space-y-6">
             {currentStepData.isDropdown ? (
               <div className="w-full">
-                <Select value={selectedService} onValueChange={setSelectedService}>
+                <Select 
+                  value={currentStepData.isBudgetStep ? selectedBudget : selectedService} 
+                  onValueChange={currentStepData.isBudgetStep ? setSelectedBudget : setSelectedService}
+                >
                   <SelectTrigger className="h-12 text-base bg-white border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                    <SelectValue placeholder="Selecciona una opción" />
+                    <SelectValue placeholder={currentStepData.placeholder} />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                    {serviceOptions.map((service) => (
-                      <SelectItem 
-                        key={service} 
-                        value={service}
-                        className="hover:bg-gray-100 cursor-pointer py-3 px-4"
-                      >
-                        {service}
-                      </SelectItem>
-                    ))}
+                  <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-[300px]">
+                    {currentStepData.isBudgetStep ? (
+                      getBudgetOptions(selectedService).map((option) => (
+                        <SelectItem 
+                          key={option} 
+                          value={option}
+                          className="hover:bg-gray-100 cursor-pointer py-3 px-4"
+                        >
+                          {option}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      serviceOptions.map((service) => (
+                        <SelectItem 
+                          key={service} 
+                          value={service}
+                          className="hover:bg-gray-100 cursor-pointer py-3 px-4"
+                        >
+                          {service}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -348,7 +464,7 @@ const ConversationalForm = () => {
 
             <Button 
               onClick={handleNext}
-              disabled={isSubmitting || (!currentStepData.isDropdown && !currentStepData.value.trim()) || (currentStepData.isDropdown && !selectedService)}
+              disabled={isSubmitting || (!currentStepData.isDropdown && !currentStepData.value.trim()) || (currentStepData.isDropdown && currentStepData.isBudgetStep && !selectedBudget) || (currentStepData.isDropdown && !currentStepData.isBudgetStep && !selectedService)}
               className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-lg font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? (
@@ -388,6 +504,7 @@ const ConversationalForm = () => {
                 {email && <p><strong>Email:</strong> {email}</p>}
                 {phone && currentStep >= 3 && <p><strong>Teléfono:</strong> +{countryCode} {phone}</p>}
                 {selectedService && currentStep >= 4 && <p><strong>Servicio:</strong> {selectedService}</p>}
+                {selectedBudget && currentStep >= 5 && <p><strong>Presupuesto:</strong> {selectedBudget}</p>}
               </div>
             </div>
           )}
