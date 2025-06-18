@@ -8,7 +8,6 @@ import { User, UserRound, Phone, Send, Mail, ArrowRight, Settings, DollarSign } 
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
 import NovativaLogo from '@/components/shared/NovativaLogo';
-
 const ConversationalForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [firstName, setFirstName] = useState('');
@@ -19,8 +18,9 @@ const ConversationalForm = () => {
   const [selectedService, setSelectedService] = useState('');
   const [selectedBudget, setSelectedBudget] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const selectedCountry = countries.find(c => c.code === countryCode);
 
   // Hide Botsify widget on this page
@@ -44,9 +44,7 @@ const ConversationalForm = () => {
       `;
       document.head.appendChild(style);
     };
-
     hideBotsifyWidget();
-
     return () => {
       const existingStyle = document.getElementById('hide-botsify-widget');
       if (existingStyle) {
@@ -54,28 +52,11 @@ const ConversationalForm = () => {
       }
     };
   }, []);
-
-  const serviceOptions = [
-    'Agentes IA',
-    'NovaMedic',
-    'NovaFitness',
-    'Creación de App Personalizada',
-    'Clon Avatar',
-    'Creación de Jingle',
-    'Manejo de Redes Sociales'
-  ];
-
+  const serviceOptions = ['Agentes IA', 'NovaMedic', 'NovaFitness', 'Creación de App Personalizada', 'Clon Avatar', 'Creación de Jingle', 'Manejo de Redes Sociales'];
   const getBudgetOptions = (service: string) => {
     const budgetOptions = [];
-    
     if (service === 'Creación de Jingle') {
-      return [
-        'Cuento con $100 (USD) para realizar un Jingle.',
-        'Cuento con $300 (USD) para realizar un Jingle.',
-        'Cuento con $500 (USD) para realizar un Jingle.',
-        'Cuento con +$600 (USD) para realizar un Jingle.',
-        'No cuento con la inversión necesaria.'
-      ];
+      return ['Cuento con $100 (USD) para realizar un Jingle.', 'Cuento con $300 (USD) para realizar un Jingle.', 'Cuento con $500 (USD) para realizar un Jingle.', 'Cuento con +$600 (USD) para realizar un Jingle.', 'No cuento con la inversión necesaria.'];
     }
 
     // $49 monthly - only for Agentes IA
@@ -131,80 +112,69 @@ const ConversationalForm = () => {
 
     // Always show "no budget" option
     budgetOptions.push('No cuento con la inversión necesaria.');
-
     return budgetOptions;
   };
-
-  const steps = [
-    {
-      question: "¿Cuál es tu primer nombre?",
-      field: "firstName",
-      type: "text",
-      placeholder: "Escribe tu nombre aquí",
-      value: firstName,
-      setValue: setFirstName,
-      icon: User
-    },
-    {
-      question: "¡Perfecto! Ahora, ¿cuál es tu apellido?",
-      field: "lastName", 
-      type: "text",
-      placeholder: "Escribe tu apellido aquí",
-      value: lastName,
-      setValue: setLastName,
-      icon: UserRound
-    },
-    {
-      question: "Excelente. ¿Cuál es tu correo electrónico?",
-      field: "email",
-      type: "email", 
-      placeholder: "ejemplo@correo.com",
-      value: email,
-      setValue: setEmail,
-      icon: Mail
-    },
-    {
-      question: "Por último, ¿cuál es tu número de WhatsApp?",
-      field: "phone",
-      type: "tel",
-      placeholder: "Tu número de WhatsApp",
-      value: phone,
-      setValue: setPhone,
-      icon: Phone,
-      hasCountrySelect: true
-    },
-    {
-      question: "¿Qué solución o servicio buscas?",
-      field: "services",
-      type: "select",
-      placeholder: "Selecciona una opción",
-      value: selectedService,
-      setValue: setSelectedService,
-      icon: Settings,
-      isDropdown: true
-    },
-    {
-      question: "¿Con cuánto presupuesto cuentas?",
-      field: "budget",
-      type: "radio",
-      placeholder: "Selecciona tu presupuesto",
-      value: selectedBudget,
-      setValue: setSelectedBudget,
-      icon: DollarSign,
-      isRadioGroup: true,
-      isBudgetStep: true
-    }
-  ];
-
+  const steps = [{
+    question: "¿Cuál es tu primer nombre?",
+    field: "firstName",
+    type: "text",
+    placeholder: "Escribe tu nombre aquí",
+    value: firstName,
+    setValue: setFirstName,
+    icon: User
+  }, {
+    question: "¡Perfecto! Ahora, ¿cuál es tu apellido?",
+    field: "lastName",
+    type: "text",
+    placeholder: "Escribe tu apellido aquí",
+    value: lastName,
+    setValue: setLastName,
+    icon: UserRound
+  }, {
+    question: "Excelente. ¿Cuál es tu correo electrónico?",
+    field: "email",
+    type: "email",
+    placeholder: "ejemplo@correo.com",
+    value: email,
+    setValue: setEmail,
+    icon: Mail
+  }, {
+    question: "Por último, ¿cuál es tu número de WhatsApp?",
+    field: "phone",
+    type: "tel",
+    placeholder: "Tu número de WhatsApp",
+    value: phone,
+    setValue: setPhone,
+    icon: Phone,
+    hasCountrySelect: true
+  }, {
+    question: "¿Qué solución o servicio buscas?",
+    field: "services",
+    type: "select",
+    placeholder: "Selecciona una opción",
+    value: selectedService,
+    setValue: setSelectedService,
+    icon: Settings,
+    isDropdown: true
+  }, {
+    question: "¿Con cuánto presupuesto cuentas?",
+    field: "budget",
+    type: "radio",
+    placeholder: "Selecciona tu presupuesto",
+    value: selectedBudget,
+    setValue: setSelectedBudget,
+    icon: DollarSign,
+    isRadioGroup: true,
+    isBudgetStep: true
+  }];
   const currentStepData = steps[currentStep];
-
   const handleNext = () => {
     // For services step, require a selection
     if (currentStepData.field === 'services' && !selectedService) {
       toast({
         title: "Campo requerido",
         description: "Por favor selecciona una opción para continuar",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
@@ -214,46 +184,42 @@ const ConversationalForm = () => {
       toast({
         title: "Campo requerido",
         description: "Por favor selecciona una opción para continuar",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     if (!currentStepData.value.trim() && !currentStepData.isDropdown) {
       toast({
         title: "Campo requerido",
         description: "Por favor completa este campo para continuar",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     if (currentStepData.field === 'email') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         toast({
           title: "Email inválido",
           description: "Por favor ingresa un email válido",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
     }
-
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
       handleSubmit();
     }
   };
-
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    
+
     // Format phone: country code + number (no + symbol, no spaces)
     const digitsOnly = phone.replace(/\D/g, '');
     const formattedPhone = `${countryCode}${digitsOnly}`;
-    
+
     // Get current date and time
     const now = new Date();
     const formattedDate = now.toLocaleDateString('es-ES', {
@@ -267,12 +233,11 @@ const ConversationalForm = () => {
       second: '2-digit'
     });
     const isoDateTime = now.toISOString();
-    
     try {
       const response = await fetch('https://hook.us2.make.com/8l8pyxyd40p52sqed6mdqhekarmzadaw', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           firstName: firstName.trim(),
@@ -287,36 +252,30 @@ const ConversationalForm = () => {
           submissionTime: formattedTime,
           submissionDateTime: isoDateTime,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        }),
+        })
       });
-
       if (!response.ok) {
         throw new Error('Error al enviar el formulario');
       }
-
       console.log('Form submitted successfully');
       // Redirect to confirmation page instead of showing success section
       window.location.href = '/formulario-confirmacion';
-      
     } catch (error) {
       console.error("Error sending form:", error);
       toast({
         title: "Error",
         description: "No pudimos procesar tu solicitud. Por favor, intenta de nuevo.",
-        variant: "destructive",
+        variant: "destructive"
       });
       setIsSubmitting(false);
     }
   };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleNext();
     }
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+  return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -340,14 +299,13 @@ const ConversationalForm = () => {
               Paso {currentStep + 1} de {steps.length}
             </span>
             <span className="text-sm font-medium text-gray-600">
-              {Math.round(((currentStep + 1) / steps.length) * 100)}%
+              {Math.round((currentStep + 1) / steps.length * 100)}%
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            />
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300 ease-out" style={{
+            width: `${(currentStep + 1) / steps.length * 100}%`
+          }} />
           </div>
         </div>
 
@@ -362,69 +320,40 @@ const ConversationalForm = () => {
             </h2>
             
             {/* Show budget description only on budget step */}
-            {currentStepData.isBudgetStep && (
-              <>
+            {currentStepData.isBudgetStep && <>
                 <p className="text-sm text-gray-600 mt-2">
                   Todos nuestros servicios son servicios recurrentes que se pagan mensualmente un fee fijo. (Excepción: Jingles)
                 </p>
                 
                 {/* Additional text for specific services */}
-                {['NovaFitness', 'Creación de App Personalizada', 'NovaMedic'].includes(selectedService) && (
-                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-blue-800 leading-relaxed">
-                      Adicional al cobro que debes hacer por mantener la plataforma activa mes a mes también hay un cobro inicial. Para desarrollar la solución se necesita una inversión inicial de implementación y desarrollo de $500. Una vez finalizado el desarrollo y entregada la solución se empieza con la suscripción mensual.
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
+                {['NovaFitness', 'Creación de App Personalizada', 'NovaMedic'].includes(selectedService) && <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-800 leading-relaxed">Adicional al pago mensual que debes hacer por mantener la plataforma activa mes a mes también hay un cobro inicial. Para desarrollar la solución se necesita una inversión inicial de implementación y desarrollo de $500. Una vez finalizado el desarrollo y entregada la solución se empieza con la suscripción mensual.</p>
+                  </div>}
+              </>}
           </div>
 
           <div className="space-y-6">
-            {currentStepData.isRadioGroup ? (
-              <div className="w-full">
-                <RadioGroup 
-                  value={selectedBudget} 
-                  onValueChange={setSelectedBudget}
-                  className="space-y-3"
-                >
-                  {getBudgetOptions(selectedService).map((option) => (
-                    <div key={option} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+            {currentStepData.isRadioGroup ? <div className="w-full">
+                <RadioGroup value={selectedBudget} onValueChange={setSelectedBudget} className="space-y-3">
+                  {getBudgetOptions(selectedService).map(option => <div key={option} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                       <RadioGroupItem value={option} id={option} />
-                      <Label 
-                        htmlFor={option} 
-                        className="flex-1 cursor-pointer text-sm leading-relaxed"
-                      >
+                      <Label htmlFor={option} className="flex-1 cursor-pointer text-sm leading-relaxed">
                         {option}
                       </Label>
-                    </div>
-                  ))}
+                    </div>)}
                 </RadioGroup>
-              </div>
-            ) : currentStepData.isDropdown ? (
-              <div className="w-full">
-                <Select 
-                  value={selectedService} 
-                  onValueChange={setSelectedService}
-                >
+              </div> : currentStepData.isDropdown ? <div className="w-full">
+                <Select value={selectedService} onValueChange={setSelectedService}>
                   <SelectTrigger className="h-12 text-base bg-white border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                     <SelectValue placeholder={currentStepData.placeholder} />
                   </SelectTrigger>
                   <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-[300px]">
-                    {serviceOptions.map((service) => (
-                      <SelectItem 
-                        key={service} 
-                        value={service}
-                        className="hover:bg-gray-100 cursor-pointer py-3 px-4"
-                      >
+                    {serviceOptions.map(service => <SelectItem key={service} value={service} className="hover:bg-gray-100 cursor-pointer py-3 px-4">
                         {service}
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </SelectContent>
                 </Select>
-              </div>
-            ) : currentStepData.hasCountrySelect ? (
-              <div className="space-y-4">
+              </div> : currentStepData.hasCountrySelect ? <div className="space-y-4">
                 <div className="w-full">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Código de país
@@ -434,15 +363,13 @@ const ConversationalForm = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="max-h-[280px] bg-white border border-gray-200">
-                      {countries.map((country) => (
-                        <SelectItem key={`${country.code}-${country.name}`} value={country.code} className="hover:bg-gray-100">
+                      {countries.map(country => <SelectItem key={`${country.code}-${country.name}`} value={country.code} className="hover:bg-gray-100">
                           <span className="flex items-center gap-2">
                             <span className="text-lg">{country.flag}</span>
                             <span>+{country.code}</span>
                             <span className="text-gray-600">{country.name}</span>
                           </span>
-                        </SelectItem>
-                      ))}
+                        </SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -454,68 +381,31 @@ const ConversationalForm = () => {
                   <div className="flex items-center gap-2 px-4 py-3 border border-gray-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
                     <Phone className="h-5 w-5 text-gray-400 flex-shrink-0" />
                     <span className="text-gray-500 font-medium">+{countryCode}</span>
-                    <input
-                      type="tel"
-                      placeholder={currentStepData.placeholder}
-                      value={currentStepData.value}
-                      onChange={(e) => currentStepData.setValue(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="flex-1 outline-none bg-transparent text-gray-800 placeholder:text-gray-400 text-lg"
-                      autoFocus
-                    />
+                    <input type="tel" placeholder={currentStepData.placeholder} value={currentStepData.value} onChange={e => currentStepData.setValue(e.target.value)} onKeyPress={handleKeyPress} className="flex-1 outline-none bg-transparent text-gray-800 placeholder:text-gray-400 text-lg" autoFocus />
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3 px-4 py-3 border border-gray-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
+              </div> : <div className="flex items-center gap-3 px-4 py-3 border border-gray-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
                 <currentStepData.icon className="h-6 w-6 text-gray-400 flex-shrink-0" />
-                <input
-                  type={currentStepData.type}
-                  placeholder={currentStepData.placeholder}
-                  value={currentStepData.value}
-                  onChange={(e) => currentStepData.setValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="flex-1 outline-none bg-transparent text-gray-800 placeholder:text-gray-400 text-lg"
-                  autoFocus
-                />
-              </div>
-            )}
+                <input type={currentStepData.type} placeholder={currentStepData.placeholder} value={currentStepData.value} onChange={e => currentStepData.setValue(e.target.value)} onKeyPress={handleKeyPress} className="flex-1 outline-none bg-transparent text-gray-800 placeholder:text-gray-400 text-lg" autoFocus />
+              </div>}
 
-            <Button 
-              onClick={handleNext}
-              disabled={isSubmitting || (!currentStepData.isDropdown && !currentStepData.isRadioGroup && !currentStepData.value.trim()) || (currentStepData.isDropdown && !selectedService) || (currentStepData.isRadioGroup && !selectedBudget)}
-              className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-lg font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              {isSubmitting ? (
-                "Enviando..."
-              ) : currentStep === steps.length - 1 ? (
-                <span className="flex items-center gap-2">
+            <Button onClick={handleNext} disabled={isSubmitting || !currentStepData.isDropdown && !currentStepData.isRadioGroup && !currentStepData.value.trim() || currentStepData.isDropdown && !selectedService || currentStepData.isRadioGroup && !selectedBudget} className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-lg font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+              {isSubmitting ? "Enviando..." : currentStep === steps.length - 1 ? <span className="flex items-center gap-2">
                   <Send size={20} /> 
                   Enviar y Agendar Demo
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
+                </span> : <span className="flex items-center gap-2">
                   Continuar 
                   <ArrowRight size={20} />
-                </span>
-              )}
+                </span>}
             </Button>
 
-            {currentStep > 0 && (
-              <Button 
-                variant="outline"
-                onClick={() => setCurrentStep(currentStep - 1)}
-                className="w-full h-12 border-gray-300 text-gray-600 hover:bg-gray-50"
-                disabled={isSubmitting}
-              >
+            {currentStep > 0 && <Button variant="outline" onClick={() => setCurrentStep(currentStep - 1)} className="w-full h-12 border-gray-300 text-gray-600 hover:bg-gray-50" disabled={isSubmitting}>
                 Regresar
-              </Button>
-            )}
+              </Button>}
           </div>
 
           {/* Summary of filled data */}
-          {currentStep > 0 && (
-            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          {currentStep > 0 && <div className="mt-8 p-4 bg-gray-50 rounded-lg">
               <h3 className="text-sm font-medium text-gray-600 mb-2">Información ingresada:</h3>
               <div className="space-y-1 text-sm text-gray-800">
                 {firstName && <p><strong>Nombre:</strong> {firstName}</p>}
@@ -525,12 +415,9 @@ const ConversationalForm = () => {
                 {selectedService && currentStep >= 4 && <p><strong>Servicio:</strong> {selectedService}</p>}
                 {selectedBudget && currentStep >= 5 && <p><strong>Presupuesto:</strong> {selectedBudget}</p>}
               </div>
-            </div>
-          )}
+            </div>}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ConversationalForm;
