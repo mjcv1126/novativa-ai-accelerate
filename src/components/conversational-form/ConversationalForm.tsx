@@ -241,7 +241,7 @@ const ConversationalForm = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
-    console.log('=== WEBHOOK SUBMISSION DEBUG ===');
+    console.log('=== WEBHOOK SUBMISSION DEBUG v2 ===');
     console.log('Starting form submission...');
     
     // Log all form values before processing
@@ -316,31 +316,64 @@ const ConversationalForm = () => {
     });
     const isoDateTime = now.toISOString();
 
-    // Prepare submission data with explicit field mapping
+    // Log specifically the budget data
+    console.log('=== BUDGET DATA DEBUG ===');
+    console.log('selectedBudget value:', selectedBudget);
+    console.log('selectedBudget type:', typeof selectedBudget);
+    console.log('selectedBudget length:', selectedBudget?.length);
+    console.log('Budget is empty?:', !selectedBudget);
+
+    // Prepare submission data with multiple budget field variations
     const submissionData = {
+      // Basic contact info
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       email: email.trim(),
       phone: formattedPhone,
       countryCode: countryCode,
       countryName: selectedCountry?.name || '',
+      
+      // Service info
       services: selectedService,
+      service: selectedService,
+      servicio: selectedService,
+      service_selected: selectedService,
+      
+      // Budget info - multiple field names to ensure webhook receives it
       budget: selectedBudget,
-      inversion: selectedBudget, // Adding explicit field for investment/budget
+      presupuesto: selectedBudget,
+      inversion: selectedBudget,
+      investment: selectedBudget,
+      budget_selected: selectedBudget,
+      presupuesto_seleccionado: selectedBudget,
+      
+      // Date/time info
       submissionDate: formattedDate,
       submissionTime: formattedTime,
       submissionDateTime: isoDateTime,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      
       // Additional fields for webhook compatibility
-      service_selected: selectedService,
-      budget_selected: selectedBudget,
       full_name: `${firstName.trim()} ${lastName.trim()}`,
       contact_phone: formattedPhone,
-      contact_email: email.trim()
+      contact_email: email.trim(),
+      
+      // Form identifier
+      form_type: 'conversational_form',
+      form_version: '2.0'
     };
 
-    console.log('Final submission data being sent to webhook:');
+    console.log('=== FINAL SUBMISSION DATA ===');
+    console.log('Data being sent to webhook:');
     console.log(JSON.stringify(submissionData, null, 2));
+    
+    // Log specific budget fields being sent
+    console.log('=== BUDGET FIELDS IN SUBMISSION ===');
+    console.log('budget:', submissionData.budget);
+    console.log('presupuesto:', submissionData.presupuesto);
+    console.log('inversion:', submissionData.inversion);
+    console.log('investment:', submissionData.investment);
+    console.log('budget_selected:', submissionData.budget_selected);
 
     try {
       console.log('Sending POST request to webhook...');
@@ -348,7 +381,8 @@ const ConversationalForm = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'User-Agent': 'ConversationalForm/2.0'
         },
         body: JSON.stringify(submissionData)
       });
@@ -372,6 +406,7 @@ const ConversationalForm = () => {
       const responseData = await response.text();
       console.log('Webhook success response:', responseData);
       console.log('✅ Form submitted successfully to webhook');
+      console.log('✅ Budget data sent with multiple field names for compatibility');
       
       // Redirect to confirmation page
       console.log('Redirecting to confirmation page...');
