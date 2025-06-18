@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { User, UserRound, Phone, Send, Mail, ArrowRight, Settings, DollarSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
@@ -186,12 +187,12 @@ const ConversationalForm = () => {
     {
       question: "¿Con cuánto presupuesto cuentas?",
       field: "budget",
-      type: "select",
+      type: "radio",
       placeholder: "Selecciona tu presupuesto",
       value: selectedBudget,
       setValue: setSelectedBudget,
       icon: DollarSign,
-      isDropdown: true,
+      isRadioGroup: true,
       isBudgetStep: true
     }
   ];
@@ -370,37 +371,45 @@ const ConversationalForm = () => {
           </div>
 
           <div className="space-y-6">
-            {currentStepData.isDropdown ? (
+            {currentStepData.isRadioGroup ? (
+              <div className="w-full">
+                <RadioGroup 
+                  value={selectedBudget} 
+                  onValueChange={setSelectedBudget}
+                  className="space-y-3"
+                >
+                  {getBudgetOptions(selectedService).map((option) => (
+                    <div key={option} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                      <RadioGroupItem value={option} id={option} />
+                      <Label 
+                        htmlFor={option} 
+                        className="flex-1 cursor-pointer text-sm leading-relaxed"
+                      >
+                        {option}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            ) : currentStepData.isDropdown ? (
               <div className="w-full">
                 <Select 
-                  value={currentStepData.isBudgetStep ? selectedBudget : selectedService} 
-                  onValueChange={currentStepData.isBudgetStep ? setSelectedBudget : setSelectedService}
+                  value={selectedService} 
+                  onValueChange={setSelectedService}
                 >
                   <SelectTrigger className="h-12 text-base bg-white border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                     <SelectValue placeholder={currentStepData.placeholder} />
                   </SelectTrigger>
                   <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-[300px]">
-                    {currentStepData.isBudgetStep ? (
-                      getBudgetOptions(selectedService).map((option) => (
-                        <SelectItem 
-                          key={option} 
-                          value={option}
-                          className="hover:bg-gray-100 cursor-pointer py-3 px-4"
-                        >
-                          {option}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      serviceOptions.map((service) => (
-                        <SelectItem 
-                          key={service} 
-                          value={service}
-                          className="hover:bg-gray-100 cursor-pointer py-3 px-4"
-                        >
-                          {service}
-                        </SelectItem>
-                      ))
-                    )}
+                    {serviceOptions.map((service) => (
+                      <SelectItem 
+                        key={service} 
+                        value={service}
+                        className="hover:bg-gray-100 cursor-pointer py-3 px-4"
+                      >
+                        {service}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -464,7 +473,7 @@ const ConversationalForm = () => {
 
             <Button 
               onClick={handleNext}
-              disabled={isSubmitting || (!currentStepData.isDropdown && !currentStepData.value.trim()) || (currentStepData.isDropdown && currentStepData.isBudgetStep && !selectedBudget) || (currentStepData.isDropdown && !currentStepData.isBudgetStep && !selectedService)}
+              disabled={isSubmitting || (!currentStepData.isDropdown && !currentStepData.isRadioGroup && !currentStepData.value.trim()) || (currentStepData.isDropdown && !selectedService) || (currentStepData.isRadioGroup && !selectedBudget)}
               className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-lg font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? (
