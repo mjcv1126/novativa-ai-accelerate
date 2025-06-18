@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +15,7 @@ const ConversationalForm = () => {
   const [email, setEmail] = useState('');
   const [countryCode, setCountryCode] = useState('506');
   const [phone, setPhone] = useState('');
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedService, setSelectedService] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -64,14 +63,6 @@ const ConversationalForm = () => {
     'Otra'
   ];
 
-  const handleServiceToggle = (service: string) => {
-    setSelectedServices(prev => 
-      prev.includes(service) 
-        ? prev.filter(s => s !== service)
-        : [...prev, service]
-    );
-  };
-
   const steps = [
     {
       question: "¿Cuál es tu primer nombre?",
@@ -111,31 +102,31 @@ const ConversationalForm = () => {
       hasCountrySelect: true
     },
     {
-      question: "¿Qué solución o servicio buscas? (Puedes seleccionar varias opciones)",
+      question: "¿Qué solución o servicio buscas?",
       field: "services",
-      type: "checkbox",
-      placeholder: "",
-      value: selectedServices.join(', '),
-      setValue: () => {},
+      type: "select",
+      placeholder: "Selecciona una opción",
+      value: selectedService,
+      setValue: setSelectedService,
       icon: Settings,
-      isMultiSelect: true
+      isDropdown: true
     }
   ];
 
   const currentStepData = steps[currentStep];
 
   const handleNext = () => {
-    // For services step, allow proceeding even if no service is selected
-    if (currentStepData.field === 'services') {
-      if (currentStep < steps.length - 1) {
-        setCurrentStep(currentStep + 1);
-      } else {
-        handleSubmit();
-      }
+    // For services step, require a selection
+    if (currentStepData.field === 'services' && !selectedService) {
+      toast({
+        title: "Campo requerido",
+        description: "Por favor selecciona una opción para continuar",
+        variant: "destructive",
+      });
       return;
     }
 
-    if (!currentStepData.value.trim()) {
+    if (!currentStepData.value.trim() && currentStepData.field !== 'services') {
       toast({
         title: "Campo requerido",
         description: "Por favor completa este campo para continuar",
@@ -197,7 +188,7 @@ const ConversationalForm = () => {
           phone: formattedPhone,
           countryCode: countryCode,
           countryName: selectedCountry?.name || '',
-          services: selectedServices,
+          services: selectedService,
           submissionDate: formattedDate,
           submissionTime: formattedTime,
           submissionDateTime: isoDateTime,
@@ -278,24 +269,24 @@ const ConversationalForm = () => {
           </div>
 
           <div className="space-y-6">
-            {currentStepData.isMultiSelect ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {serviceOptions.map((service) => (
-                  <div key={service} className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                    <Checkbox
-                      id={service}
-                      checked={selectedServices.includes(service)}
-                      onCheckedChange={() => handleServiceToggle(service)}
-                      className="h-5 w-5"
-                    />
-                    <label 
-                      htmlFor={service} 
-                      className="text-gray-700 cursor-pointer flex-1 text-sm font-medium"
-                    >
-                      {service}
-                    </label>
-                  </div>
-                ))}
+            {currentStepData.isDropdown ? (
+              <div className="w-full">
+                <Select value={selectedService} onValueChange={setSelectedService}>
+                  <SelectTrigger className="h-12 text-base bg-white border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    <SelectValue placeholder="Selecciona una opción" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                    {serviceOptions.map((service) => (
+                      <SelectItem 
+                        key={service} 
+                        value={service}
+                        className="hover:bg-gray-100 cursor-pointer py-3 px-4"
+                      >
+                        {service}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             ) : currentStepData.hasCountrySelect ? (
               <div className="space-y-4">
@@ -357,7 +348,7 @@ const ConversationalForm = () => {
 
             <Button 
               onClick={handleNext}
-              disabled={isSubmitting || (!currentStepData.isMultiSelect && !currentStepData.value.trim())}
+              disabled={isSubmitting || (!currentStepData.isDropdown && !currentStepData.value.trim()) || (currentStepData.isDropdown && !selectedService)}
               className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-lg font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? (
@@ -396,7 +387,7 @@ const ConversationalForm = () => {
                 {lastName && <p><strong>Apellido:</strong> {lastName}</p>}
                 {email && <p><strong>Email:</strong> {email}</p>}
                 {phone && currentStep >= 3 && <p><strong>Teléfono:</strong> +{countryCode} {phone}</p>}
-                {selectedServices.length > 0 && currentStep >= 4 && <p><strong>Servicios:</strong> {selectedServices.join(', ')}</p>}
+                {selectedService && currentStep >= 4 && <p><strong>Servicio:</strong> {selectedService}</p>}
               </div>
             </div>
           )}
