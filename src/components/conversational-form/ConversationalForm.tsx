@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -364,9 +363,20 @@ const ConversationalForm = () => {
             
             {/* Show budget description only on budget step */}
             {currentStepData.isBudgetStep && (
-              <p className="text-sm text-gray-600 mt-2">
-                Todos nuestros servicios son servicios recurrentes que se pagan mensualmente un fee fijo. (Excepción: Jingles)
-              </p>
+              <>
+                <p className="text-sm text-gray-600 mt-2">
+                  Todos nuestros servicios son servicios recurrentes que se pagan mensualmente un fee fijo. (Excepción: Jingles)
+                </p>
+                
+                {/* Additional text for specific services */}
+                {['NovaFitness', 'Creación de App Personalizada', 'NovaMedic'].includes(selectedService) && (
+                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-800 leading-relaxed">
+                      Adicional al cobro que debes hacer por mantener la plataforma activa mes a mes también hay un cobro inicial. Para desarrollar la solución se necesita una inversión inicial de implementación y desarrollo de $500. Una vez finalizado el desarrollo y entregada la solución se empieza con la suscripción mensual.
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
