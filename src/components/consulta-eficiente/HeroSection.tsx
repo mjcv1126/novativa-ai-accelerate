@@ -85,11 +85,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <p className="text-sm sm:text-xl md:text-2xl text-gray-700 font-medium leading-relaxed max-w-4xl text-center">Plataforma exclusiva para profesionales médicos especialistas que califiquen en nuestro programa Early Adopters. Tu plataforma IA de atenciones médicas al alcance de un click.</p>
         </div>
         
-        {/* Video demo profesional - Un solo video responsivo */}
+        {/* Video demo profesional - Full width en móvil */}
         <div className="relative mb-4 sm:mb-8">
-          <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg mx-2 sm:mx-4 border border-gray-200">
-            <div className="bg-white rounded-xl p-4 sm:p-6 md:p-8 backdrop-blur-sm border border-gray-100">
-              <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-lg border border-gray-100 overflow-hidden" style={{ aspectRatio: '16/9' }}>
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-none sm:rounded-2xl p-0 sm:p-6 md:p-8 shadow-lg -mx-4 sm:mx-4 border-0 sm:border border-gray-200">
+            <div className="bg-white rounded-none sm:rounded-xl p-2 sm:p-6 md:p-8 backdrop-blur-sm border-0 sm:border border-gray-100">
+              <div className="relative w-full bg-gradient-to-br from-novativa-teal/5 to-novativa-orange/5 rounded-none sm:rounded-lg border-0 sm:border border-gray-100 overflow-hidden" style={{ aspectRatio: '16/9' }}>
                 <video 
                   autoPlay 
                   loop 
@@ -97,7 +97,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                   playsInline 
                   controls
                   preload="auto"
-                  className="absolute inset-0 w-full h-full rounded-lg object-cover"
+                  className="absolute inset-0 w-full h-full rounded-none sm:rounded-lg object-cover"
                   onError={(e) => {
                     console.error('Error loading video:', e);
                   }}
