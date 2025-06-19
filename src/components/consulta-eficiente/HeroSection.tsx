@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, UserCheck, Timer, Activity, Play, Award } from 'lucide-react';
@@ -93,7 +92,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                 <video 
                   autoPlay 
                   loop 
-                  muted={false}
+                  muted
                   playsInline 
                   controls
                   preload="auto"
