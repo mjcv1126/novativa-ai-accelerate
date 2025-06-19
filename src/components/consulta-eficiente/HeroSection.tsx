@@ -111,7 +111,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                     console.log('Video data loaded');
                   }}
                 >
-                  <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1749347965073.mp4" type="video/mp4" />
+                  <source src="https://gktrnjjbhqxkbcvonzxv.supabase.co/storage/v1/object/public/user-uploads/uploads/1750370901947.mp4" type="video/mp4" />
                   Tu navegador no soporta el elemento video.
                 </video>
               </div>
