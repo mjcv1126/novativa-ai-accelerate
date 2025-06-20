@@ -60,12 +60,27 @@ const FormularioConfirmacion = () => {
 
         {/* Success message */}
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-gray-100">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
             ¡Tu información ha sido enviada exitosamente!
           </h1>
-          <p className="text-lg text-gray-600 mb-8">
-            Ahora solo debes agendar tu videollamada en la fecha y hora de tu preferencia.
-          </p>
+          
+          {/* Highlighted scheduling instruction */}
+          <div className="bg-gradient-to-r from-blue-100 via-purple-50 to-blue-100 border-2 border-blue-300 rounded-xl p-6 mb-8 shadow-md">
+            <div className="flex items-center justify-center mb-3">
+              <div className="bg-blue-500 rounded-full p-2 mr-3">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <span className="text-blue-600 font-bold text-sm uppercase tracking-wide">Siguiente paso</span>
+            </div>
+            <p className="text-xl font-bold text-gray-800 leading-relaxed">
+              Ahora solo debes agendar tu videollamada en la fecha y hora de tu preferencia.
+            </p>
+            <div className="mt-3 text-blue-600 font-medium">
+              📅 ¡Es muy importante que completes este paso!
+            </div>
+          </div>
           
           {/* Countdown */}
           <div className="text-center p-4 bg-blue-50 rounded-lg">
