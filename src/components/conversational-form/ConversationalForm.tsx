@@ -69,55 +69,65 @@ const ConversationalForm = () => {
       ];
     }
 
+    // Special budget options for NovaMedic, NovaFitness, and Creación de App Personalizada
+    if (['Creación de App Personalizada', 'NovaFitness', 'NovaMedic'].includes(service)) {
+      return [
+        'Cuento con $500 (USD) de pago inicial y luego $100 (USD) al mes para dicha inversión',
+        'Cuento con $500 (USD) de pago inicial y luego $200 (USD) al mes para dicha inversión',
+        'Cuento con $500 (USD) de pago inicial y luego $300 (USD) al mes para dicha inversión',
+        'Cuento con $500 (USD) de pago inicial y luego $500 (USD) al mes para dicha inversión',
+        'Cuento con $500 (USD) de pago inicial y luego $800 (USD) al mes para dicha inversión',
+        'Cuento con $500 (USD) de pago inicial y luego $1,000 (USD) al mes para dicha inversión',
+        'Cuento con $500 (USD) de pago inicial y luego $1,500 (USD) al mes para dicha inversión',
+        'Cuento con $500 (USD) de pago inicial y luego $1,500 (USD) para realizar un solo pago.',
+        'Cuento con $500 (USD) de pago inicial y luego +$3,000 (USD) para realizar un solo pago.',
+        'No cuento con la inversión necesaria.'
+      ];
+    }
+
     // $49 monthly - only for Agentes IA
     if (service === 'Agentes IA') {
       budgetOptions.push('Cuento con $49 (USD) al mes para dicha inversión');
     }
 
-    // $100 monthly - for specific services
-    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic'].includes(service)) {
+    // $100 monthly - for Agentes IA only (since other services now have different options)
+    if (service === 'Agentes IA') {
       budgetOptions.push('Cuento con $100 (USD) al mes para dicha inversión');
     }
 
-    // $200 monthly - for specific services
-    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic'].includes(service)) {
+    // $200 monthly - for Agentes IA only
+    if (service === 'Agentes IA') {
       budgetOptions.push('Cuento con $200 (USD) al mes para dicha inversión');
     }
 
-    // $300 monthly - for specific services
-    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic'].includes(service)) {
+    // $300 monthly - for Agentes IA only
+    if (service === 'Agentes IA') {
       budgetOptions.push('Cuento con $300 (USD) al mes para dicha inversión');
     }
 
     // $500 monthly - for specific services
-    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic', 'Manejo de Redes Sociales'].includes(service)) {
+    if (['Agentes IA', 'Manejo de Redes Sociales'].includes(service)) {
       budgetOptions.push('Cuento con $500 (USD) al mes para dicha inversión');
     }
 
     // $800 monthly - for specific services
-    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
+    if (['Agentes IA', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
       budgetOptions.push('Cuento con $800 (USD) al mes para dicha inversión');
     }
 
     // $1,000 monthly - for specific services
-    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
+    if (['Agentes IA', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
       budgetOptions.push('Cuento con $1,000 (USD) al mes para dicha inversión');
     }
 
     // $1,500 monthly - for specific services
-    if (['Creación de App Personalizada', 'Agentes IA', 'NovaFitness', 'NovaMedic', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
+    if (['Agentes IA', 'Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
       budgetOptions.push('Cuento con $1,500 (USD) al mes para dicha inversión');
     }
 
     // $3,000 monthly - for specific services
     if (['Manejo de Redes Sociales', 'Clon Avatar'].includes(service)) {
       budgetOptions.push('Cuento con $3,000 (USD) al mes para dicha inversión');
-    }
-
-    // One-time payments for specific services
-    if (['Creación de App Personalizada', 'NovaFitness', 'NovaMedic'].includes(service)) {
-      budgetOptions.push('Cuento con $1,500 (USD) para realizar un solo pago.');
-      budgetOptions.push('Cuento con +$3,000 (USD) para realizar un solo pago.');
     }
 
     // Always show "no budget" option
