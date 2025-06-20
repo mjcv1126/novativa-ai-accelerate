@@ -1,6 +1,4 @@
-
 import React, { useEffect } from 'react';
-import NovativaLogo from '@/components/shared/NovativaLogo';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 
 const FormularioSinInversion = () => {
@@ -39,10 +37,8 @@ const FormularioSinInversion = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl text-center">
-        {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <NovativaLogo size="large" />
-        </div>
+        {/* Maintain the same spacing where logo was */}
+        <div className="mb-8"></div>
 
         {/* Main content */}
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-gray-100">
