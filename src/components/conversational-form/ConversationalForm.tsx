@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -253,6 +252,44 @@ const ConversationalForm = () => {
     
     console.log('=== WEBHOOK SUBMISSION DEBUG v2 ===');
     console.log('Starting form submission...');
+    
+    // Check if user selected "No cuento con la inversión necesaria"
+    if (selectedBudget === 'No cuento con la inversión necesaria.') {
+      console.log('User selected no budget option, redirecting to alternative page...');
+      
+      // Still submit the data to webhook for tracking purposes
+      const basicSubmissionData = {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        phone: `${countryCode}${phone.replace(/\D/g, '')}`,
+        services: selectedService,
+        budget: selectedBudget,
+        submissionDate: new Date().toLocaleDateString('es-ES'),
+        submissionTime: new Date().toLocaleTimeString('es-ES'),
+        form_type: 'conversational_form_no_budget',
+        form_version: '2.0'
+      };
+
+      try {
+        await fetch('https://hook.us2.make.com/8l8pyxyd40p52sqed6mdqhekarmzadaw', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'User-Agent': 'ConversationalForm/2.0'
+          },
+          body: JSON.stringify(basicSubmissionData)
+        });
+        console.log('✅ No budget data submitted to webhook');
+      } catch (error) {
+        console.error('Error submitting no budget data:', error);
+      }
+      
+      // Redirect to alternative thank you page
+      window.location.href = '/formulario-sin-inversion';
+      return;
+    }
     
     // Log all form values before processing
     console.log('Raw form values:', {
