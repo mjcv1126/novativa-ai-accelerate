@@ -1,51 +1,49 @@
 
 import { createClient } from '@supabase/supabase-js';
-import { toast } from 'react-hot-toast';
 
 // Credenciales de administrador por defecto
 const ADMIN_EMAIL = 'soporte@novativa.org';
 const ADMIN_PASSWORD = 'Novativa2025$';
 
 // Configuración de Supabase
-const supabaseUrl = window.env?.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = window.env?.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://gktrnjjbhqxkbcvonzxv.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdHJuampiaHF4a2Jjdm9uenh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1OTIyMTEsImV4cCI6MjA2MTE2ODIxMX0.emSsCTQYloww4wrKZXQrro-5oAyJbMQ-3DLj0z8LD7Q';
 
-// Usar las credenciales hardcodeadas si no están disponibles las variables de entorno
-const FALLBACK_SUPABASE_URL = 'https://gktrnjjbhqxkbcvonzxv.supabase.co';
-const FALLBACK_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdHJuampiaHF4a2Jjdm9uenh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1OTIyMTEsImV4cCI6MjA2MTE2ODIxMX0.emSsCTQYloww4wrKZXQrro-5oAyJbMQ-3DLj0z8LD7Q';
+let supabaseClient: any = null;
 
-const finalSupabaseUrl = supabaseUrl || FALLBACK_SUPABASE_URL;
-const finalSupabaseAnonKey = supabaseAnonKey || FALLBACK_SUPABASE_ANON_KEY;
-
-console.log('adminAuth - Using Supabase URL:', finalSupabaseUrl);
-console.log('adminAuth - Has Supabase key:', !!finalSupabaseAnonKey);
-
-const supabase = finalSupabaseUrl ? createClient(finalSupabaseUrl, finalSupabaseAnonKey) : null;
+try {
+  supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+  console.log('adminAuth - Supabase client created successfully');
+} catch (error) {
+  console.error('adminAuth - Failed to create Supabase client:', error);
+}
 
 export const adminAuthService = {
   login: async (email: string, password: string) => {
     console.log('adminAuthService.login - Starting login for:', email);
     try {
-      if (!supabase) {
-        console.log('adminAuthService.login - No Supabase client, using fallback auth');
-        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-          const mockUser = {
-            id: '1',
-            email: ADMIN_EMAIL,
-            role: 'admin'
-          };
-          localStorage.setItem('admin_user', JSON.stringify(mockUser));
-          console.log('adminAuthService.login - Fallback auth successful');
-          return { data: mockUser, error: null };
-        }
-        console.log('adminAuthService.login - Fallback auth failed');
-        return { data: null, error: { message: 'Credenciales incorrectas' } };
+      // Usar autenticación fallback si las credenciales coinciden
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        const mockUser = {
+          id: '1',
+          email: ADMIN_EMAIL,
+          role: 'admin'
+        };
+        localStorage.setItem('admin_user', JSON.stringify(mockUser));
+        console.log('adminAuthService.login - Fallback auth successful');
+        return { data: mockUser, error: null };
       }
 
-      console.log('adminAuthService.login - Using Supabase auth');
-      const result = await supabase.auth.signInWithPassword({ email, password });
-      console.log('adminAuthService.login - Supabase result:', result);
-      return result;
+      // Intentar con Supabase si está disponible
+      if (supabaseClient) {
+        console.log('adminAuthService.login - Trying Supabase auth');
+        const result = await supabaseClient.auth.signInWithPassword({ email, password });
+        console.log('adminAuthService.login - Supabase result:', result);
+        return result;
+      }
+
+      console.log('adminAuthService.login - Invalid credentials');
+      return { data: null, error: { message: 'Credenciales incorrectas' } };
     } catch (error: any) {
       console.error('adminAuthService.login - Error:', error);
       return { data: null, error: { message: 'Error inesperado al iniciar sesión' } };
@@ -55,8 +53,8 @@ export const adminAuthService = {
   logout: async () => {
     console.log('adminAuthService.logout - Starting logout');
     try {
-      if (supabase) {
-        await supabase.auth.signOut();
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
       }
       localStorage.removeItem('admin_user');
       console.log('adminAuthService.logout - Logout successful');
@@ -67,22 +65,49 @@ export const adminAuthService = {
     }
   },
 
+  checkSession: async () => {
+    console.log('adminAuthService.checkSession - Starting session check');
+    try {
+      // Primero revisar localStorage
+      const storedUser = localStorage.getItem('admin_user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        console.log('adminAuthService.checkSession - Found user in localStorage:', user);
+        return { data: { session: { user } }, error: null };
+      }
+      
+      // Si hay Supabase disponible, revisar sesión
+      if (supabaseClient) {
+        console.log('adminAuthService.checkSession - Checking Supabase session');
+        const result = await supabaseClient.auth.getSession();
+        console.log('adminAuthService.checkSession - Supabase result:', result);
+        return result;
+      }
+      
+      console.log('adminAuthService.checkSession - No session found');
+      return { data: { session: null }, error: null };
+    } catch (error) {
+      console.error('adminAuthService.checkSession - Error:', error);
+      return { data: { session: null }, error };
+    }
+  },
+
   resetPassword: async (email: string) => {
     console.log('adminAuthService.resetPassword - Email:', email);
-    if (!supabase) {
+    if (!supabaseClient) {
       return email === ADMIN_EMAIL
         ? { error: null }
         : { error: { message: 'Email no encontrado' } };
     }
 
-    return await supabase.auth.resetPasswordForEmail(email, {
+    return await supabaseClient.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/admin/login`,
     });
   },
 
   verifyResetCode: async (email: string, code: string) => {
     console.log('adminAuthService.verifyResetCode - Email:', email, 'Code:', code);
-    if (!supabase) {
+    if (!supabaseClient) {
       return email === ADMIN_EMAIL && code === '123456'
         ? { error: null }
         : { error: { message: 'Código inválido' } };
@@ -92,34 +117,11 @@ export const adminAuthService = {
 
   updatePassword: async (email: string, code: string, newPassword: string) => {
     console.log('adminAuthService.updatePassword - Email:', email);
-    if (!supabase) {
+    if (!supabaseClient) {
       return email === ADMIN_EMAIL && code === '123456'
         ? { error: null }
         : { error: { message: 'No se pudo actualizar la contraseña' } };
     }
-    return await supabase.auth.updateUser({ password: newPassword });
-  },
-
-  checkSession: async () => {
-    console.log('adminAuthService.checkSession - Starting session check');
-    try {
-      if (!supabase) {
-        console.log('adminAuthService.checkSession - No Supabase, checking localStorage');
-        const storedUser = localStorage.getItem('admin_user');
-        const result = storedUser
-          ? { data: { session: { user: JSON.parse(storedUser) } }, error: null }
-          : { data: { session: null }, error: null };
-        console.log('adminAuthService.checkSession - LocalStorage result:', result);
-        return result;
-      }
-      
-      console.log('adminAuthService.checkSession - Using Supabase');
-      const result = await supabase.auth.getSession();
-      console.log('adminAuthService.checkSession - Supabase result:', result);
-      return result;
-    } catch (error) {
-      console.error('adminAuthService.checkSession - Error:', error);
-      return { data: { session: null }, error };
-    }
+    return await supabaseClient.auth.updateUser({ password: newPassword });
   }
 };

@@ -30,78 +30,80 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   console.log('AdminAuthProvider - Current state:', state);
 
   const checkSession = useCallback(async () => {
-    console.log('checkSession - Starting session check');
+    console.log('AdminAuthProvider.checkSession - Starting');
     try {
-      setState(prev => ({ ...prev, isLoading: true }));
       const { data, error } = await adminAuthService.checkSession();
       
-      console.log('checkSession - Result:', { data, error });
+      console.log('AdminAuthProvider.checkSession - Result:', { data, error });
       
       if (error) {
         console.error("Error al verificar la sesión:", error);
-        setState(prev => ({ ...prev, user: null, isAuthenticated: false, isLoading: false }));
+        setState({ user: null, isAuthenticated: false, isLoading: false });
         return;
       }
       
       if (data?.session?.user) {
-        console.log('checkSession - User found:', data.session.user);
-        setState(prev => ({
-          ...prev,
+        console.log('AdminAuthProvider.checkSession - User found:', data.session.user);
+        setState({
           user: data.session.user,
           isAuthenticated: true,
           isLoading: false
-        }));
+        });
       } else {
-        console.log('checkSession - No user found');
-        setState(prev => ({ ...prev, user: null, isAuthenticated: false, isLoading: false }));
+        console.log('AdminAuthProvider.checkSession - No user found');
+        setState({ user: null, isAuthenticated: false, isLoading: false });
       }
     } catch (error) {
-      console.error('checkSession - Unexpected error:', error);
-      setState(prev => ({ ...prev, user: null, isAuthenticated: false, isLoading: false }));
+      console.error('AdminAuthProvider.checkSession - Unexpected error:', error);
+      setState({ user: null, isAuthenticated: false, isLoading: false });
     }
   }, []);
 
+  // Solo ejecutar checkSession una vez al montar
   useEffect(() => {
-    console.log('AdminAuthProvider - Initial effect triggered');
+    console.log('AdminAuthProvider - Initial mount, checking session');
     checkSession();
-  }, [checkSession]);
+  }, []); // Sin dependencias para evitar bucles
 
   const login = async (email: string, password: string) => {
-    console.log('login - Attempting login for:', email);
+    console.log('AdminAuthProvider.login - Attempting login for:', email);
     try {
+      setState(prev => ({ ...prev, isLoading: true }));
+      
       const { data, error } = await adminAuthService.login(email, password);
       
       if (error) {
-        console.error('login - Error:', error);
+        console.error('AdminAuthProvider.login - Error:', error);
         toast.error(error.message || 'Error al iniciar sesión');
+        setState(prev => ({ ...prev, isLoading: false }));
         return { error };
       }
       
       if (data) {
-        console.log('login - Success:', data);
-        setState(prev => ({
-          ...prev,
+        console.log('AdminAuthProvider.login - Success:', data);
+        setState({
           user: data,
           isAuthenticated: true,
           isLoading: false
-        }));
+        });
         toast.success('Inicio de sesión exitoso');
         navigate('/admin/blog');
       }
       
       return { error: null };
     } catch (error) {
-      console.error('login - Unexpected error:', error);
+      console.error('AdminAuthProvider.login - Unexpected error:', error);
+      setState(prev => ({ ...prev, isLoading: false }));
       return { error: { message: 'Error inesperado al iniciar sesión' } };
     }
   };
 
   const logout = async () => {
-    console.log('logout - Attempting logout');
+    console.log('AdminAuthProvider.logout - Attempting logout');
     try {
       const { error } = await adminAuthService.logout();
       if (error) {
-        console.error('logout - Error:', error);
+        console.error('AdminAuthProvider.logout - Error:', error);
         toast.error(error.message || 'Error al cerrar sesión');
         return;
       }
@@ -115,7 +117,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       toast.success('Sesión cerrada exitosamente');
       navigate('/admin/login');
     } catch (error) {
-      console.error('logout - Unexpected error:', error);
+      console.error('AdminAuthProvider.logout - Unexpected error:', error);
     }
   };
 
