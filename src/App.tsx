@@ -31,8 +31,11 @@ import FormularioSinInversionPage from './pages/FormularioSinInversionPage';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import AdminLayout from './pages/admin/AdminLayout';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminBlogEdit from './pages/admin/AdminBlogEdit';
+import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { useLanguage } from './contexts/LanguageContext';
 
 function App() {
@@ -97,10 +100,47 @@ function App() {
         <Route path="/formulario-confirmacion" element={<FormularioConfirmacion />} />
         <Route path="/formulario-sin-inversion" element={<Layout><FormularioSinInversionPage /></Layout>} />
         
-        {/* Admin blog routes */}
-        <Route path="/admin/blog" element={<AdminLayout><AdminBlog /></AdminLayout>} />
-        <Route path="/admin/blog/new" element={<AdminLayout><AdminBlogEdit /></AdminLayout>} />
-        <Route path="/admin/blog/edit/:id" element={<AdminLayout><AdminBlogEdit /></AdminLayout>} />
+        {/* Admin routes */}
+        <Route path="/admin/login" element={
+          <AdminAuthProvider>
+            <AdminLogin />
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminDashboard />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/dashboard" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminDashboard />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/blog" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminBlog />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/blog/new" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminBlogEdit />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/blog/edit/:id" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminBlogEdit />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
         
         <Route path="*" element={<NotFound />} />
       </Routes>

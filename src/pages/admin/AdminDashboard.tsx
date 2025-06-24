@@ -1,78 +1,120 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Users, Activity } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PenTool, FileText, Users, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 const AdminDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Dashboard | Admin Panel</title>
+        <title>Dashboard | Panel Admin Novativa</title>
       </Helmet>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-gray-600">Bienvenido al panel de administración de Novativa</p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Usuarios Totales</CardTitle>
-              <Users className="h-4 w-4 text-gray-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Posts del Blog
+              </CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">120</div>
-              <p className="text-xs text-gray-500">+10% del mes anterior</p>
+              <div className="text-2xl font-bold">0</div>
+              <p className="text-xs text-muted-foreground">
+                Total de publicaciones
+              </p>
             </CardContent>
           </Card>
-          
+
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Sesiones Esta Semana</CardTitle>
-              <Activity className="h-4 w-4 text-gray-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Publicados
+              </CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">432</div>
-              <p className="text-xs text-gray-500">+5% de la semana anterior</p>
+              <div className="text-2xl font-bold">0</div>
+              <p className="text-xs text-muted-foreground">
+                Posts públicos
+              </p>
             </CardContent>
           </Card>
-          
+
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Eventos Próximos</CardTitle>
-              <Calendar className="h-4 w-4 text-gray-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Borradores
+              </CardTitle>
+              <PenTool className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">3</div>
-              <p className="text-xs text-gray-500">Para los próximos 30 días</p>
+              <div className="text-2xl font-bold">0</div>
+              <p className="text-xs text-muted-foreground">
+                Posts en borrador
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Visualizaciones
+              </CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">0</div>
+              <p className="text-xs text-muted-foreground">
+                Total de vistas
+              </p>
             </CardContent>
           </Card>
         </div>
-        
-        <div className="grid grid-cols-1 gap-6">
+
+        <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Actividad Reciente</CardTitle>
+              <CardTitle>Acciones Rápidas</CardTitle>
               <CardDescription>
-                Resumen de las acciones más recientes en la plataforma
+                Gestiona tu contenido fácilmente
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button asChild className="w-full bg-novativa-teal hover:bg-novativa-lightTeal">
+                <Link to="/admin/blog/new">
+                  <PenTool className="mr-2 h-4 w-4" />
+                  Crear Nuevo Post
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full">
+                <Link to="/admin/blog">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Ver Todos los Posts
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Última Actividad</CardTitle>
+              <CardDescription>
+                Resumen de cambios recientes
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="border-b pb-4">
-                  <p className="font-medium">Actualización de sistema</p>
-                  <p className="text-sm text-gray-500">Nueva versión implementada: 2.4.0</p>
-                  <p className="text-xs text-gray-400">Hace 2 días</p>
-                </div>
-                <div className="border-b pb-4">
-                  <p className="font-medium">Reporte mensual generado</p>
-                  <p className="text-sm text-gray-500">El reporte de Mayo está disponible</p>
-                  <p className="text-xs text-gray-400">Hace 5 días</p>
-                </div>
-                <div>
-                  <p className="font-medium">Nueva configuración</p>
-                  <p className="text-sm text-gray-500">Se habilitó la integración con WhatsApp</p>
-                  <p className="text-xs text-gray-400">Hace 1 semana</p>
-                </div>
+              <div className="text-center text-gray-500 py-8">
+                <p>No hay actividad reciente</p>
+                <p className="text-sm">Comienza creando tu primer post</p>
               </div>
             </CardContent>
           </Card>
