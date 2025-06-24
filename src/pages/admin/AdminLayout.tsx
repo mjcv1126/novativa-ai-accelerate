@@ -1,6 +1,6 @@
 
-import React, { useEffect } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import React, { useEffect, ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { AdminDataProvider } from '@/contexts/AdminDataContext';
 import { CustomCSSProvider } from '@/contexts/CustomCSSContext';
@@ -10,7 +10,11 @@ import { Helmet } from 'react-helmet-async';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-const AdminLayout = () => {
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { isAuthenticated, isLoading, checkSession } = useAdminAuth();
 
   // Verificar autenticación al cargar
@@ -94,7 +98,7 @@ const AdminLayout = () => {
             <div className="flex flex-col flex-1 overflow-hidden">
               <AdminHeader />
               <main className="flex-1 overflow-y-auto p-4 md:p-6">
-                <Outlet />
+                {children}
               </main>
             </div>
           </div>
