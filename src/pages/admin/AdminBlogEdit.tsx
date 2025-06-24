@@ -52,7 +52,7 @@ const AdminBlogEdit = () => {
     meta_description: '',
   });
 
-  const isEditing = id !== 'new';
+  const isEditing = id !== 'new' && id !== undefined;
 
   const fetchCategories = async () => {
     const { data } = await supabase
@@ -64,7 +64,7 @@ const AdminBlogEdit = () => {
   };
 
   const fetchPost = async () => {
-    if (!isEditing) return;
+    if (!isEditing || !id) return;
 
     try {
       const { data, error } = await supabase
@@ -74,6 +74,7 @@ const AdminBlogEdit = () => {
         .single();
 
       if (error) {
+        console.error('Error fetching post:', error);
         toast({
           title: 'Error',
           description: 'No se pudo cargar el post',
@@ -83,21 +84,29 @@ const AdminBlogEdit = () => {
         return;
       }
 
-      setFormData({
-        title: data.title || '',
-        slug: data.slug || '',
-        content: data.content || '',
-        excerpt: data.excerpt || '',
-        featured_image: data.featured_image || '',
-        published: data.published || false,
-        featured: data.featured || false,
-        category: data.category || '',
-        tags: data.tags ? data.tags.join(', ') : '',
-        meta_title: data.meta_title || '',
-        meta_description: data.meta_description || '',
-      });
+      if (data) {
+        setFormData({
+          title: data.title || '',
+          slug: data.slug || '',
+          content: data.content || '',
+          excerpt: data.excerpt || '',
+          featured_image: data.featured_image || '',
+          published: data.published || false,
+          featured: data.featured || false,
+          category: data.category || '',
+          tags: data.tags ? data.tags.join(', ') : '',
+          meta_title: data.meta_title || '',
+          meta_description: data.meta_description || '',
+        });
+      }
     } catch (error) {
       console.error('Error fetching post:', error);
+      toast({
+        title: 'Error',
+        description: 'No se pudo cargar el post',
+        variant: 'destructive',
+      });
+      navigate('/admin/blog');
     }
   };
 
@@ -173,6 +182,7 @@ const AdminBlogEdit = () => {
       }
 
       if (error) {
+        console.error('Error saving post:', error);
         toast({
           title: 'Error',
           description: `No se pudo ${isEditing ? 'actualizar' : 'crear'} el post`,
@@ -189,6 +199,11 @@ const AdminBlogEdit = () => {
       navigate('/admin/blog');
     } catch (error) {
       console.error('Error saving post:', error);
+      toast({
+        title: 'Error',
+        description: 'Error inesperado al guardar el post',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
@@ -196,8 +211,10 @@ const AdminBlogEdit = () => {
 
   useEffect(() => {
     fetchCategories();
-    fetchPost();
-  }, [id]);
+    if (isEditing && id) {
+      fetchPost();
+    }
+  }, [id, isEditing]);
 
   return (
     <div className="space-y-6">
