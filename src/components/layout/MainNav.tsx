@@ -30,6 +30,10 @@ export function MainNav({ items }: MainNavProps) {
       href: "/precios",
     },
     {
+      title: "Blog",
+      href: "/blog",
+    },
+    {
       title: "NovaChannel",
       href: "/novachannel",
     },
@@ -57,7 +61,7 @@ export function MainNav({ items }: MainNavProps) {
           to={item.href}
           className={cn(
             "text-sm font-medium transition-colors hover:text-novativa-orange",
-            pathname === item.href
+            pathname === item.href || (item.href === '/blog' && pathname.startsWith('/blog'))
               ? "text-novativa-orange"
               : "text-gray-600"
           )}

@@ -28,6 +28,11 @@ import AgentsAIThankYou from './pages/AgentsAIThankYou';
 import ConversationalFormPage from './pages/ConversationalFormPage';
 import FormularioConfirmacion from './pages/FormularioConfirmacion';
 import FormularioSinInversionPage from './pages/FormularioSinInversionPage';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminBlog from './pages/admin/AdminBlog';
+import AdminBlogEdit from './pages/admin/AdminBlogEdit';
 import { useLanguage } from './contexts/LanguageContext';
 
 function App() {
@@ -77,6 +82,10 @@ function App() {
         <Route path="/politica-reembolso" element={<Layout><RefundPolicy /></Layout>} />
         <Route path="/refund-policy" element={<Layout><RefundPolicy /></Layout>} />
         
+        {/* Blog routes */}
+        <Route path="/blog" element={<Layout><Blog /></Layout>} />
+        <Route path="/blog/:slug" element={<Layout><BlogPost /></Layout>} />
+        
         <Route path="/novachannel" element={<Layout><NovaChannel /></Layout>} />
         <Route path="/knowledge" element={<Layout><KnowledgeBase /></Layout>} />
         <Route path="/iacoding" element={<Layout><IACoding /></Layout>} />
@@ -87,6 +96,11 @@ function App() {
         <Route path="/formulario" element={<ConversationalFormPage />} />
         <Route path="/formulario-confirmacion" element={<FormularioConfirmacion />} />
         <Route path="/formulario-sin-inversion" element={<Layout><FormularioSinInversionPage /></Layout>} />
+        
+        {/* Admin blog routes */}
+        <Route path="/admin/blog" element={<AdminLayout><AdminBlog /></AdminLayout>} />
+        <Route path="/admin/blog/new" element={<AdminLayout><AdminBlogEdit /></AdminLayout>} />
+        <Route path="/admin/blog/edit/:id" element={<AdminLayout><AdminBlogEdit /></AdminLayout>} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>

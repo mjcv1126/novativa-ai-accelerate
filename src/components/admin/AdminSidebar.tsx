@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Code, Palette } from 'lucide-react';
+import { LayoutDashboard, Code, Palette, PenTool } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarItemProps {
@@ -42,6 +42,12 @@ const AdminSidebar = () => {
             icon={<LayoutDashboard className="h-5 w-5" />}
             title="Dashboard"
             active={pathname === '/admin/dashboard'}
+          />
+          <SidebarItem
+            href="/admin/blog"
+            icon={<PenTool className="h-5 w-5" />}
+            title="Blog"
+            active={pathname.startsWith('/admin/blog')}
           />
           <SidebarItem
             href="/admin/scripts"
