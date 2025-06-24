@@ -17,10 +17,17 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { isAuthenticated, isLoading, checkSession } = useAdminAuth();
 
+  console.log('AdminLayout - Auth state:', { isAuthenticated, isLoading });
+
   // Verificar autenticación al cargar
   useEffect(() => {
+    console.log('AdminLayout - useEffect triggered');
     const verifyAuth = async () => {
-      await checkSession();
+      try {
+        await checkSession();
+      } catch (error) {
+        console.error('Error checking session:', error);
+      }
     };
     
     verifyAuth();
@@ -59,16 +66,20 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     
     addNoCacheHeaders();
     
-    // Mostrar un mensaje de bienvenida una vez autenticado
-    if (isAuthenticated && !isLoading) {
-      toast.success('Bienvenido al panel administrativo');
-    }
-    
     // Limpiar al desmontar
     return () => {
       window.onpageshow = null;
     };
+  }, []);
+
+  // Mostrar mensaje de bienvenida solo una vez autenticado
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      console.log('Admin authenticated successfully');
+    }
   }, [isAuthenticated, isLoading]);
+
+  console.log('AdminLayout - Rendering with state:', { isAuthenticated, isLoading });
 
   if (isLoading) {
     return (
@@ -80,6 +91,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   }
 
   if (!isAuthenticated) {
+    console.log('Not authenticated, redirecting to login');
     return <Navigate to="/admin/login" replace />;
   }
 
