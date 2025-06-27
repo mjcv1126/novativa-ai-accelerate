@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ArrowLeft, Calendar, Clock, User, Eye } from 'lucide-react';
+import BlogNavbar from '@/components/layout/BlogNavbar';
 
 interface BlogPost {
   id: string;
@@ -87,26 +87,32 @@ const BlogPost = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-lg">Cargando artículo...</div>
-      </div>
+      <>
+        <BlogNavbar />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-lg">Cargando artículo...</div>
+        </div>
+      </>
     );
   }
 
   if (notFound || !post) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">404</h1>
-          <p className="text-lg text-gray-600 mb-8">Artículo no encontrado</p>
-          <Link to="/blog">
-            <Button>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Volver al blog
-            </Button>
-          </Link>
+      <>
+        <BlogNavbar />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">404</h1>
+            <p className="text-lg text-gray-600 mb-8">Artículo no encontrado</p>
+            <Link to="/blog">
+              <Button>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Volver al blog
+              </Button>
+            </Link>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -123,6 +129,8 @@ const BlogPost = () => {
         <meta property="og:type" content="article" />
         <link rel="canonical" href={`https://novativa.ai/blog/${post.slug}`} />
       </Helmet>
+
+      <BlogNavbar />
 
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
