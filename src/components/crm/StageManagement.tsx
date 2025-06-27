@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { CrmStage } from '@/types/crm';
 import { Plus, Edit, Trash, Settings, GripVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -92,145 +93,147 @@ export const StageManagement = ({
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Gestión de Etapas del Embudo</DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Current Stages */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Etapas Actuales</h3>
-              <Button 
-                onClick={() => handleOpenDialog()} 
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Nueva Etapa
-              </Button>
-            </div>
-            
-            <div className="space-y-2 max-h-64 overflow-y-auto">
-              {stages
-                .sort((a, b) => a.position - b.position)
-                .map((stage) => (
-                <Card key={stage.id} className="p-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <GripVertical className="h-4 w-4 text-gray-400 cursor-move" />
-                      <div 
-                        className="w-4 h-4 rounded-full border-2 border-white shadow-sm" 
-                        style={{ backgroundColor: stage.color }}
-                      />
-                      <div>
-                        <h4 className="font-medium text-sm">{stage.name}</h4>
-                        {stage.description && (
-                          <p className="text-xs text-gray-500">{stage.description}</p>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleOpenDialog(stage)}>
-                          <Edit className="h-4 w-4 mr-2" />
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => onDeleteStage(stage.id)}
-                          className="text-red-600"
-                        >
-                          <Trash className="h-4 w-4 mr-2" />
-                          Eliminar
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Form */}
-          <div>
-            <h3 className="font-semibold mb-4">
-              {editingStage ? 'Editar Etapa' : 'Nueva Etapa'}
-            </h3>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="name">Nombre de la Etapa</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Ej: Nuevo Lead"
-                  required
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="description">Descripción (opcional)</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Describe esta etapa del embudo"
-                  rows={3}
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="color">Color</Label>
-                <div className="flex gap-2 mt-2">
-                  {colorOptions.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      className={`w-8 h-8 rounded-full border-2 ${
-                        formData.color === color ? 'border-gray-900' : 'border-gray-300'
-                      }`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setFormData(prev => ({ ...prev, color }))}
-                    />
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="position">Posición</Label>
-                <Input
-                  id="position"
-                  type="number"
-                  value={formData.position}
-                  onChange={(e) => setFormData(prev => ({ ...prev, position: parseInt(e.target.value) }))}
-                  min="1"
-                  required
-                />
-              </div>
-              
-              <div className="flex gap-2 pt-4">
-                <Button type="submit" className="flex-1">
-                  {editingStage ? 'Actualizar' : 'Crear'} Etapa
-                </Button>
+        <ScrollArea className="flex-1 pr-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-4">
+            {/* Current Stages */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold">Etapas Actuales</h3>
                 <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={handleCloseDialog}
+                  onClick={() => handleOpenDialog()} 
+                  size="sm"
+                  className="flex items-center gap-2"
                 >
-                  Cancelar
+                  <Plus className="h-4 w-4" />
+                  Nueva Etapa
                 </Button>
               </div>
-            </form>
+              
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {stages
+                  .sort((a, b) => a.position - b.position)
+                  .map((stage) => (
+                  <Card key={stage.id} className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <GripVertical className="h-4 w-4 text-gray-400 cursor-move" />
+                        <div 
+                          className="w-4 h-4 rounded-full border-2 border-white shadow-sm" 
+                          style={{ backgroundColor: stage.color }}
+                        />
+                        <div>
+                          <h4 className="font-medium text-sm">{stage.name}</h4>
+                          {stage.description && (
+                            <p className="text-xs text-gray-500">{stage.description}</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleOpenDialog(stage)}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => onDeleteStage(stage.id)}
+                            className="text-red-600"
+                          >
+                            <Trash className="h-4 w-4 mr-2" />
+                            Eliminar
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Form */}
+            <div>
+              <h3 className="font-semibold mb-4">
+                {editingStage ? 'Editar Etapa' : 'Nueva Etapa'}
+              </h3>
+              
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Nombre de la Etapa</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Ej: Nuevo Lead"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="description">Descripción (opcional)</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Describe esta etapa del embudo"
+                    rows={3}
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="color">Color</Label>
+                  <div className="flex gap-2 mt-2">
+                    {colorOptions.map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        className={`w-8 h-8 rounded-full border-2 ${
+                          formData.color === color ? 'border-gray-900' : 'border-gray-300'
+                        }`}
+                        style={{ backgroundColor: color }}
+                        onClick={() => setFormData(prev => ({ ...prev, color }))}
+                      />
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="position">Posición</Label>
+                  <Input
+                    id="position"
+                    type="number"
+                    value={formData.position}
+                    onChange={(e) => setFormData(prev => ({ ...prev, position: parseInt(e.target.value) }))}
+                    min="1"
+                    required
+                  />
+                </div>
+                
+                <div className="flex gap-2 pt-4">
+                  <Button type="submit" className="flex-1">
+                    {editingStage ? 'Actualizar' : 'Crear'} Etapa
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={handleCloseDialog}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
