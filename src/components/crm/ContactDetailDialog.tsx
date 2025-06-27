@@ -1,0 +1,366 @@
+
+import React, { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ContactWithStage, CrmStage, ContactActivity } from '@/types/crm';
+import { Phone, Mail, Building, MapPin, Calendar, Plus, CheckCircle, Clock } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+interface ContactDetailDialogProps {
+  contact: ContactWithStage | null;
+  isOpen: boolean;
+  onClose: () => void;
+  stages: CrmStage[];
+  onUpdate: (id: string, updates: Partial<ContactWithStage>) => void;
+  onCreateActivity: (activity: Omit<ContactActivity, 'id' | 'created_at' | 'updated_at'>) => void;
+  fetchActivities: (contactId: string) => Promise<ContactActivity[]>;
+}
+
+export const ContactDetailDialog = ({
+  contact,
+  isOpen,
+  onClose,
+  stages,
+  onUpdate,
+  onCreateActivity,
+  fetchActivities
+}: ContactDetailDialogProps) => {
+  const [editMode, setEditMode] = useState(false);
+  const [activities, setActivities] = useState<ContactActivity[]>([]);
+  const [newActivity, setNewActivity] = useState({
+    title: '',
+    description: '',
+    activity_type: 'note' as ContactActivity['activity_type']
+  });
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    company: '',
+    stage_id: '',
+    notes: ''
+  });
+
+  useEffect(() => {
+    if (contact) {
+      setFormData({
+        first_name: contact.first_name,
+        last_name: contact.last_name,
+        email: contact.email || '',
+        phone: contact.phone,
+        company: contact.company || '',
+        stage_id: contact.stage_id || '',
+        notes: contact.notes || ''
+      });
+      
+      // Load activities
+      fetchActivities(contact.id).then(setActivities);
+    }
+  }, [contact, fetchActivities]);
+
+  const handleSave = () => {
+    if (contact) {
+      onUpdate(contact.id, formData);
+      setEditMode(false);
+    }
+  };
+
+  const handleAddActivity = () => {
+    if (contact && newActivity.title) {
+      onCreateActivity({
+        contact_id: contact.id,
+        ...newActivity,
+        is_completed: false
+      });
+      
+      setNewActivity({
+        title: '',
+        description: '',
+        activity_type: 'note'
+      });
+      
+      // Refresh activities
+      fetchActivities(contact.id).then(setActivities);
+    }
+  };
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'call': return <Phone className="h-4 w-4" />;
+      case 'email': return <Mail className="h-4 w-4" />;
+      case 'meeting': return <Calendar className="h-4 w-4" />;
+      default: return <CheckCircle className="h-4 w-4" />;
+    }
+  };
+
+  const getActivityTypeLabel = (type: string) => {
+    const labels = {
+      call: 'Llamada',
+      email: 'Email',
+      meeting: 'Reunión',
+      note: 'Nota',
+      reminder: 'Recordatorio',
+      status_change: 'Cambio de etapa'
+    };
+    return labels[type as keyof typeof labels] || type;
+  };
+
+  if (!contact) return null;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center justify-between">
+            <span>{contact.first_name} {contact.last_name}</span>
+            <div className="flex gap-2">
+              {editMode ? (
+                <>
+                  <Button onClick={handleSave} size="sm">Guardar</Button>
+                  <Button onClick={() => setEditMode(false)} variant="outline" size="sm">
+                    Cancelar
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={() => setEditMode(true)} size="sm">
+                  Editar
+                </Button>
+              )}
+            </div>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Contact Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Información del Contacto</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {editMode ? (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="first_name">Nombre</Label>
+                      <Input
+                        id="first_name"
+                        value={formData.first_name}
+                        onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="last_name">Apellido</Label>
+                      <Input
+                        id="last_name"
+                        value={formData.last_name}
+                        onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="phone">Teléfono</Label>
+                    <Input
+                      id="phone"
+                      value={formData.phone}
+                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="company">Empresa</Label>
+                    <Input
+                      id="company"
+                      value={formData.company}
+                      onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="stage">Etapa</Label>
+                    <Select value={formData.stage_id} onValueChange={(value) => setFormData(prev => ({ ...prev, stage_id: value }))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar etapa" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {stages.map((stage) => (
+                          <SelectItem key={stage.id} value={stage.id}>
+                            <div className="flex items-center gap-2">
+                              <div 
+                                className="w-3 h-3 rounded-full" 
+                                style={{ backgroundColor: stage.color }}
+                              />
+                              {stage.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="notes">Notas</Label>
+                    <Textarea
+                      id="notes"
+                      value={formData.notes}
+                      onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                      rows={3}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-gray-500" />
+                    <span>{contact.phone}</span>
+                  </div>
+                  
+                  {contact.email && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-gray-500" />
+                      <span>{contact.email}</span>
+                    </div>
+                  )}
+                  
+                  {contact.company && (
+                    <div className="flex items-center gap-2">
+                      <Building className="h-4 w-4 text-gray-500" />
+                      <span>{contact.company}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-gray-500" />
+                    <span>{contact.country_name}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <span>Creado {format(new Date(contact.created_at), 'dd MMM yyyy', { locale: es })}</span>
+                  </div>
+                  
+                  {contact.stage && (
+                    <Badge 
+                      style={{ 
+                        backgroundColor: `${contact.stage.color}20`,
+                        color: contact.stage.color,
+                        border: `1px solid ${contact.stage.color}40`
+                      }}
+                    >
+                      {contact.stage.name}
+                    </Badge>
+                  )}
+                  
+                  {contact.notes && (
+                    <div className="mt-4">
+                      <Label>Notas</Label>
+                      <p className="text-sm text-gray-600 mt-1">{contact.notes}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Activities Timeline */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>Timeline de Actividades</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* Add new activity */}
+              <div className="border rounded-lg p-4 mb-4">
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <Select 
+                      value={newActivity.activity_type} 
+                      onValueChange={(value) => setNewActivity(prev => ({ ...prev, activity_type: value as ContactActivity['activity_type'] }))}
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="note">Nota</SelectItem>
+                        <SelectItem value="call">Llamada</SelectItem>
+                        <SelectItem value="email">Email</SelectItem>
+                        <SelectItem value="meeting">Reunión</SelectItem>
+                        <SelectItem value="reminder">Recordatorio</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      placeholder="Título de la actividad"
+                      value={newActivity.title}
+                      onChange={(e) => setNewActivity(prev => ({ ...prev, title: e.target.value }))}
+                    />
+                  </div>
+                  <Textarea
+                    placeholder="Descripción (opcional)"
+                    value={newActivity.description}
+                    onChange={(e) => setNewActivity(prev => ({ ...prev, description: e.target.value }))}
+                    rows={2}
+                  />
+                  <Button onClick={handleAddActivity} size="sm" className="w-full">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Agregar Actividad
+                  </Button>
+                </div>
+              </div>
+
+              {/* Activities list */}
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {activities.map((activity) => (
+                  <div key={activity.id} className="flex gap-3 p-3 border rounded-lg">
+                    <div className="flex-shrink-0 mt-1">
+                      {getActivityIcon(activity.activity_type)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-sm">{activity.title}</span>
+                        <Badge variant="outline" className="text-xs">
+                          {getActivityTypeLabel(activity.activity_type)}
+                        </Badge>
+                      </div>
+                      {activity.description && (
+                        <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
+                      )}
+                      <p className="text-xs text-gray-400">
+                        {format(new Date(activity.created_at), 'dd MMM yyyy HH:mm', { locale: es })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                
+                {activities.length === 0 && (
+                  <div className="text-center py-8 text-gray-400">
+                    <Clock className="h-8 w-8 mx-auto mb-2" />
+                    <p className="text-sm">No hay actividades registradas</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

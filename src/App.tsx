@@ -114,6 +114,13 @@ function App() {
             </AdminLayout>
           </AdminAuthProvider>
         } />
+        <Route path="/admin/crm" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminCRM />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
         <Route path="/admin/blog" element={
           <AdminAuthProvider>
             <AdminLayout>

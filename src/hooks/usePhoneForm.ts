@@ -95,6 +95,13 @@ export const usePhoneForm = () => {
     const formattedPhone = `+${countryCode}${digitsOnly}`;
     
     try {
+      // Store contact in Supabase with first stage assignment
+      const { data: firstStage } = await supabase
+        .from('crm_stages')
+        .select('id')
+        .eq('position', 1)
+        .single();
+
       const { data, error } = await supabase.rpc('store_contact', {
         p_first_name: firstName,
         p_last_name: lastName,
@@ -105,6 +112,25 @@ export const usePhoneForm = () => {
 
       if (error) throw error;
 
+      // If we have a first stage, assign the contact to it
+      if (firstStage && data) {
+        await supabase
+          .from('contacts')
+          .update({ stage_id: firstStage.id })
+          .eq('id', data);
+
+        // Create initial activity
+        await supabase
+          .from('contact_activities')
+          .insert([{
+            contact_id: data,
+            activity_type: 'note',
+            title: 'Contacto registrado desde formulario web',
+            description: `Nuevo contacto registrado desde el formulario de la página web`
+          }]);
+      }
+
+      // Send to Make webhook
       const response = await fetch(HOOK_MAKE_PHONE, {
         method: 'POST',
         headers: {

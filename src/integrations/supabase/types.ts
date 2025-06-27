@@ -140,33 +140,139 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_activities: {
+        Row: {
+          activity_type: string
+          completed_at: string | null
+          contact_id: string
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          is_completed: boolean | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          activity_type: string
+          completed_at?: string | null
+          contact_id: string
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_completed?: boolean | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          activity_type?: string
+          completed_at?: string | null
+          contact_id?: string
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_completed?: boolean | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_activities_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
+          company: string | null
           country_code: string
           country_name: string
           created_at: string
+          email: string | null
           first_name: string
           id: string
+          last_contact_date: string | null
           last_name: string
+          notes: string | null
           phone: string
+          stage_id: string | null
+          updated_at: string | null
         }
         Insert: {
+          company?: string | null
           country_code: string
           country_name: string
           created_at?: string
+          email?: string | null
           first_name: string
           id?: string
+          last_contact_date?: string | null
           last_name: string
+          notes?: string | null
           phone: string
+          stage_id?: string | null
+          updated_at?: string | null
         }
         Update: {
+          company?: string | null
           country_code?: string
           country_name?: string
           created_at?: string
+          email?: string | null
           first_name?: string
           id?: string
+          last_contact_date?: string | null
           last_name?: string
+          notes?: string | null
           phone?: string
+          stage_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "crm_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_stages: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          position: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          position?: number
+          updated_at?: string
         }
         Relationships: []
       }

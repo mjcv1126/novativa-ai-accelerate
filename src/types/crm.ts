@@ -1,0 +1,57 @@
+
+export interface CrmStage {
+  id: string;
+  name: string;
+  description?: string;
+  color: string;
+  position: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Contact {
+  id: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  email?: string;
+  company?: string;
+  country_code: string;
+  country_name: string;
+  stage_id?: string;
+  notes?: string;
+  last_contact_date?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface ContactActivity {
+  id: string;
+  contact_id: string;
+  activity_type: 'call' | 'email' | 'meeting' | 'note' | 'reminder' | 'status_change';
+  title: string;
+  description?: string;
+  due_date?: string;
+  completed_at?: string;
+  is_completed: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ContactWithStage extends Contact {
+  stage?: CrmStage;
+  activities?: ContactActivity[];
+}
+
+export type ViewMode = 'list' | 'kanban';
+
+export interface CrmFilters {
+  search: string;
+  stage_id?: string;
+  country?: string;
+  date_range?: {
+    from?: string;
+    to?: string;
+  };
+}
