@@ -7,6 +7,7 @@ import { User, UserRound, Phone, Send, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
 import { useNavigate } from 'react-router-dom';
+import { useContactSync } from '@/hooks/crm/useContactSync';
 
 const ContactForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -17,6 +18,7 @@ const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { syncContactFromForm } = useContactSync();
 
   const selectedCountry = countries.find(c => c.code === countryCode);
 
@@ -64,6 +66,26 @@ const ContactForm = () => {
     const isoDateTime = now.toISOString();
     
     try {
+      // Sync contact to CRM first
+      const syncResult = await syncContactFromForm({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        phone: digitsOnly,
+        countryCode,
+        countryName: selectedCountry?.name || '',
+        services: 'Curso Agentes IA',
+        formType: 'Curso Agentes IA'
+      });
+
+      if (syncResult.success) {
+        console.log('Contact synced to CRM:', syncResult.contactId);
+        toast({
+          title: syncResult.isNew ? "Nuevo lead agregado al CRM" : "Lead actualizado en CRM",
+          description: `Contacto ${syncResult.isNew ? 'creado' : 'actualizado'} correctamente`,
+        });
+      }
+
       const response = await fetch('https://hook.us2.make.com/ymsbbblf4mxb6sj4somln8ry6j3sb5u8', {
         method: 'POST',
         headers: {

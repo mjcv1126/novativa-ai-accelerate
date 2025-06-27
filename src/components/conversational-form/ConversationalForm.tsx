@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { User, UserRound, Phone, Send, Mail, ArrowRight, Settings, DollarSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
+import { useContactSync } from '@/hooks/crm/useContactSync';
 import NovativaLogo from '@/components/shared/NovativaLogo';
 
 const ConversationalForm = () => {
@@ -20,6 +21,7 @@ const ConversationalForm = () => {
   const [selectedBudget, setSelectedBudget] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { syncContactFromForm } = useContactSync();
   
   const selectedCountry = countries.find(c => c.code === countryCode);
 
@@ -257,7 +259,24 @@ const ConversationalForm = () => {
     if (selectedBudget === 'No cuento con la inversión necesaria.') {
       console.log('User selected no budget option, redirecting to alternative page...');
       
-      // Still submit the data to webhook for tracking purposes
+      // Still sync to CRM for tracking purposes
+      const syncResult = await syncContactFromForm({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        phone: phone.replace(/\D/g, ''),
+        countryCode,
+        countryName: selectedCountry?.name || '',
+        services: selectedService,
+        budget: selectedBudget,
+        formType: 'Formulario conversacional - Sin presupuesto'
+      });
+
+      if (syncResult.success) {
+        console.log('Contact synced to CRM:', syncResult.contactId);
+      }
+      
+      // Still submit the basic data to webhook for tracking purposes
       const basicSubmissionData = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
@@ -369,6 +388,27 @@ const ConversationalForm = () => {
     console.log('selectedBudget type:', typeof selectedBudget);
     console.log('selectedBudget length:', selectedBudget?.length);
     console.log('Budget is empty?:', !selectedBudget);
+
+    // Sync contact to CRM first
+    const syncResult = await syncContactFromForm({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      phone: digitsOnly,
+      countryCode,
+      countryName: selectedCountry?.name || '',
+      services: selectedService,
+      budget: selectedBudget,
+      formType: 'Formulario conversacional'
+    });
+
+    if (syncResult.success) {
+      console.log('Contact synced to CRM:', syncResult.contactId);
+      toast({
+        title: syncResult.isNew ? "Nuevo lead agregado al CRM" : "Lead actualizado en CRM",
+        description: `Contacto ${syncResult.isNew ? 'creado' : 'actualizado'} correctamente`,
+      });
+    }
 
     // Prepare submission data with multiple budget field variations
     const submissionData = {

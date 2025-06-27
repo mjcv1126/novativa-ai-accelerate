@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { trackFacebookConversion } from '@/utils/trackFacebookConversion';
 import { countries } from '@/components/schedule/countryData';
+import { useContactSync } from './crm/useContactSync';
 
 const HOOK_MAKE_PHONE = "https://hook.us2.make.com/o7hcnw3x212w2ent64oopy9gku0m4kjz";
 
@@ -18,6 +19,7 @@ export const usePhoneForm = () => {
   const [lastNameError, setLastNameError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
+  const { syncContactFromForm } = useContactSync();
 
   const selectedCountry = countries.find(c => c.code === countryCode);
 
@@ -95,39 +97,22 @@ export const usePhoneForm = () => {
     const formattedPhone = `+${countryCode}${digitsOnly}`;
     
     try {
-      // Store contact in Supabase with first stage assignment
-      const { data: firstStage } = await supabase
-        .from('crm_stages')
-        .select('id')
-        .eq('position', 1)
-        .single();
-
-      const { data, error } = await supabase.rpc('store_contact', {
-        p_first_name: firstName,
-        p_last_name: lastName,
-        p_country_code: countryCode,
-        p_country_name: selectedCountry?.name || '',
-        p_phone: formattedPhone
+      // Sync contact to CRM first
+      const syncResult = await syncContactFromForm({
+        firstName,
+        lastName,
+        phone: digitsOnly,
+        countryCode,
+        countryName: selectedCountry?.name || '',
+        formType: 'Formulario de descuento'
       });
 
-      if (error) throw error;
-
-      // If we have a first stage, assign the contact to it
-      if (firstStage && data) {
-        await supabase
-          .from('contacts')
-          .update({ stage_id: firstStage.id })
-          .eq('id', data);
-
-        // Create initial activity
-        await supabase
-          .from('contact_activities')
-          .insert([{
-            contact_id: data,
-            activity_type: 'note',
-            title: 'Contacto registrado desde formulario web',
-            description: `Nuevo contacto registrado desde el formulario de la página web`
-          }]);
+      if (syncResult.success) {
+        console.log('Contact synced to CRM:', syncResult.contactId);
+        toast({
+          title: syncResult.isNew ? "Nuevo lead agregado al CRM" : "Lead actualizado en CRM",
+          description: `Contacto ${syncResult.isNew ? 'creado' : 'actualizado'} correctamente`,
+        });
       }
 
       // Send to Make webhook
