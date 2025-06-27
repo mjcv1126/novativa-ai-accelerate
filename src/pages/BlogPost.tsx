@@ -133,18 +133,6 @@ const BlogPost = () => {
       <BlogNavbar />
 
       <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <div className="bg-white border-b">
-          <div className="container mx-auto px-4 py-6">
-            <Link to="/blog">
-              <Button variant="outline">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Volver al blog
-              </Button>
-            </Link>
-          </div>
-        </div>
-
         {/* Article */}
         <article className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
