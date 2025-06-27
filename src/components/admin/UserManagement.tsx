@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface AdminUser {
   id: string;
   email: string;
+  password?: string;
   role: string;
   created_at: string;
   last_sign_in_at?: string;
@@ -32,9 +33,22 @@ export const UserManagement = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      // Note: In a real app, you'd need proper admin endpoints
-      // For now, we'll simulate with local storage users
       const localUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
+      
+      // Crear usuario de prueba si no existe
+      const testUser = localUsers.find((user: AdminUser) => user.email === 'dcuellar@novativa.org');
+      if (!testUser) {
+        const newTestUser = {
+          id: 'test-user-1',
+          email: 'dcuellar@novativa.org',
+          password: 'test123',
+          role: 'admin',
+          created_at: new Date().toISOString()
+        };
+        localUsers.push(newTestUser);
+        localStorage.setItem('admin_users', JSON.stringify(localUsers));
+      }
+
       setUsers([
         {
           id: '1',
@@ -65,16 +79,27 @@ export const UserManagement = () => {
     e.preventDefault();
     
     try {
-      // In a real app, you'd create the user through Supabase Admin API
-      // For now, we'll simulate the creation
       const newUser: AdminUser = {
         id: Math.random().toString(36).substring(7),
         email: formData.email,
+        password: formData.password,
         role: formData.role,
         created_at: new Date().toISOString()
       };
 
       const existingUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
+      
+      // Verificar si el usuario ya existe
+      const userExists = existingUsers.find((user: AdminUser) => user.email === formData.email);
+      if (userExists) {
+        toast({
+          title: "Error",
+          description: "Ya existe un usuario con este email",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const updatedUsers = [...existingUsers, newUser];
       localStorage.setItem('admin_users', JSON.stringify(updatedUsers));
 
@@ -236,6 +261,11 @@ export const UserManagement = () => {
                         {user.last_sign_in_at && (
                           <div className="text-sm text-gray-500">
                             Último acceso: {new Date(user.last_sign_in_at).toLocaleDateString('es-ES')}
+                          </div>
+                        )}
+                        {user.password && (
+                          <div className="text-sm text-gray-500">
+                            Contraseña: {user.password}
                           </div>
                         )}
                       </div>

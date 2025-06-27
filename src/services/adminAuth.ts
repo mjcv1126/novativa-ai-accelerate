@@ -18,20 +18,39 @@ try {
   console.error('adminAuth - Failed to create Supabase client:', error);
 }
 
+// Función para verificar usuarios locales
+const checkLocalUser = (email: string, password: string) => {
+  const localUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
+  return localUsers.find((user: any) => user.email === email && user.password === password);
+};
+
 export const adminAuthService = {
   login: async (email: string, password: string) => {
     console.log('adminAuthService.login - Starting login for:', email);
     try {
-      // Usar autenticación fallback si las credenciales coinciden
+      // Verificar credenciales del admin principal
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         const mockUser = {
           id: '1',
           email: ADMIN_EMAIL,
-          role: 'admin'
+          role: 'super_admin'
         };
         localStorage.setItem('admin_user', JSON.stringify(mockUser));
-        console.log('adminAuthService.login - Fallback auth successful');
+        console.log('adminAuthService.login - Super admin auth successful');
         return { data: mockUser, error: null };
+      }
+
+      // Verificar usuarios locales creados
+      const localUser = checkLocalUser(email, password);
+      if (localUser) {
+        const userSession = {
+          id: localUser.id,
+          email: localUser.email,
+          role: localUser.role
+        };
+        localStorage.setItem('admin_user', JSON.stringify(userSession));
+        console.log('adminAuthService.login - Local user auth successful');
+        return { data: userSession, error: null };
       }
 
       // Intentar con Supabase si está disponible

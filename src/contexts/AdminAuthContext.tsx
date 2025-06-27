@@ -59,11 +59,10 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, []);
 
-  // Solo ejecutar checkSession una vez al montar
   useEffect(() => {
     console.log('AdminAuthProvider - Initial mount, checking session');
     checkSession();
-  }, []); // Sin dependencias para evitar bucles
+  }, []);
 
   const login = async (email: string, password: string) => {
     console.log('AdminAuthProvider.login - Attempting login for:', email);
@@ -87,7 +86,13 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           isLoading: false
         });
         toast.success('Inicio de sesión exitoso');
-        navigate('/admin/blog');
+        
+        // Redirigir según el rol del usuario
+        if (data.role === 'super_admin') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/admin/blog');
+        }
       }
       
       return { error: null };

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -10,57 +11,77 @@ import {
   Video,
   Shield
 } from 'lucide-react';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 const AdminSidebar = () => {
   const location = useLocation();
+  const { user } = useAdminAuth();
 
-  const menuItems = [
+  // Obtener información del usuario desde localStorage si no está disponible en el contexto
+  const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
+  const userRole = currentUser?.role || 'admin';
+
+  const allMenuItems = [
     {
       title: 'Dashboard',
       icon: LayoutDashboard,
-      path: '/admin/dashboard'
+      path: '/admin/dashboard',
+      roles: ['admin', 'super_admin']
     },
     {
       title: 'CRM',
       icon: Users,
-      path: '/admin/crm'
+      path: '/admin/crm',
+      roles: ['admin', 'super_admin']
     },
     {
       title: 'Usuarios',
       icon: Shield,
-      path: '/admin/users'
+      path: '/admin/users',
+      roles: ['admin', 'super_admin']
     },
     {
       title: 'Blog',
       icon: FileText,
-      path: '/admin/blog'
+      path: '/admin/blog',
+      roles: ['admin', 'super_admin']
     },
     {
       title: 'Archivos',
       icon: Upload,
-      path: '/admin/files'
+      path: '/admin/files',
+      roles: ['super_admin']
     },
     {
       title: 'Transcripción',
       icon: Video,
-      path: '/admin/transcription'
+      path: '/admin/transcription',
+      roles: ['admin', 'super_admin']
     },
     {
       title: 'Scripts',
       icon: Code,
-      path: '/admin/scripts'
+      path: '/admin/scripts',
+      roles: ['super_admin']
     },
     {
       title: 'CSS Personalizado',
       icon: Palette,
-      path: '/admin/custom-css'
+      path: '/admin/custom-css',
+      roles: ['super_admin']
     }
   ];
+
+  // Filtrar elementos del menú según el rol del usuario
+  const menuItems = allMenuItems.filter(item => item.roles.includes(userRole));
 
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-full">
       <div className="p-6">
         <h2 className="text-xl font-bold text-gray-800">Panel Admin</h2>
+        {currentUser?.email && (
+          <p className="text-sm text-gray-600 mt-1">{currentUser.email}</p>
+        )}
       </div>
       <nav className="mt-6">
         {menuItems.map((item) => {
