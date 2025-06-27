@@ -1,4 +1,3 @@
-
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
@@ -32,6 +31,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminBlogEdit from './pages/admin/AdminBlogEdit';
+import AdminScripts from './pages/admin/AdminScripts';
 import FileUpload from './pages/FileUpload';
 import TranscriptionPage from './pages/TranscriptionPage';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
@@ -145,6 +145,13 @@ function App() {
           <AdminAuthProvider>
             <AdminLayout>
               <TranscriptionPage />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/scripts" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminScripts />
             </AdminLayout>
           </AdminAuthProvider>
         } />
