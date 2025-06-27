@@ -18,10 +18,39 @@ try {
   console.error('adminAuth - Failed to create Supabase client:', error);
 }
 
+// Inicializar usuarios locales con dcuellar
+const initializeLocalUsers = () => {
+  const existingUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
+  const dcuellarUser = existingUsers.find((user: any) => user.email === 'dcuellar@novativa.org');
+  
+  if (!dcuellarUser) {
+    const newUser = {
+      id: 'dcuellar-user-1',
+      email: 'dcuellar@novativa.org',
+      password: 'Novativa2025$',
+      role: 'admin',
+      created_at: new Date().toISOString()
+    };
+    existingUsers.push(newUser);
+    localStorage.setItem('admin_users', JSON.stringify(existingUsers));
+    console.log('adminAuth - Created dcuellar user with correct password');
+  } else if (dcuellarUser.password !== 'Novativa2025$') {
+    // Actualizar contraseña si es diferente
+    dcuellarUser.password = 'Novativa2025$';
+    localStorage.setItem('admin_users', JSON.stringify(existingUsers));
+    console.log('adminAuth - Updated dcuellar password');
+  }
+};
+
+// Inicializar al cargar el módulo
+initializeLocalUsers();
+
 // Función para verificar usuarios locales
 const checkLocalUser = (email: string, password: string) => {
   const localUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
-  return localUsers.find((user: any) => user.email === email && user.password === password);
+  const user = localUsers.find((user: any) => user.email === email && user.password === password);
+  console.log('adminAuth - Checking local user:', email, 'Found:', !!user);
+  return user;
 };
 
 export const adminAuthService = {
@@ -49,7 +78,7 @@ export const adminAuthService = {
           role: localUser.role
         };
         localStorage.setItem('admin_user', JSON.stringify(userSession));
-        console.log('adminAuthService.login - Local user auth successful');
+        console.log('adminAuthService.login - Local user auth successful:', userSession);
         return { data: userSession, error: null };
       }
 
@@ -58,6 +87,17 @@ export const adminAuthService = {
         console.log('adminAuthService.login - Trying Supabase auth');
         const result = await supabaseClient.auth.signInWithPassword({ email, password });
         console.log('adminAuthService.login - Supabase result:', result);
+        
+        if (result.data?.user) {
+          const userSession = {
+            id: result.data.user.id,
+            email: result.data.user.email,
+            role: 'admin'
+          };
+          localStorage.setItem('admin_user', JSON.stringify(userSession));
+          return { data: userSession, error: null };
+        }
+        
         return result;
       }
 
@@ -90,9 +130,21 @@ export const adminAuthService = {
       // Primero revisar localStorage
       const storedUser = localStorage.getItem('admin_user');
       if (storedUser) {
-        const user = JSON.parse(storedUser);
-        console.log('adminAuthService.checkSession - Found user in localStorage:', user);
-        return { data: { session: { user } }, error: null };
+        try {
+          const user = JSON.parse(storedUser);
+          console.log('adminAuthService.checkSession - Found user in localStorage:', user);
+          
+          // Verificar que el usuario es válido
+          if (user.id && user.email && user.role) {
+            return { data: { session: { user } }, error: null };
+          } else {
+            console.log('adminAuthService.checkSession - Invalid user data, removing');
+            localStorage.removeItem('admin_user');
+          }
+        } catch (parseError) {
+          console.error('adminAuthService.checkSession - Error parsing stored user:', parseError);
+          localStorage.removeItem('admin_user');
+        }
       }
       
       // Si hay Supabase disponible, revisar sesión
@@ -100,6 +152,17 @@ export const adminAuthService = {
         console.log('adminAuthService.checkSession - Checking Supabase session');
         const result = await supabaseClient.auth.getSession();
         console.log('adminAuthService.checkSession - Supabase result:', result);
+        
+        if (result.data?.session?.user) {
+          const userSession = {
+            id: result.data.session.user.id,
+            email: result.data.session.user.email,
+            role: 'admin'
+          };
+          localStorage.setItem('admin_user', JSON.stringify(userSession));
+          return { data: { session: { user: userSession } }, error: null };
+        }
+        
         return result;
       }
       

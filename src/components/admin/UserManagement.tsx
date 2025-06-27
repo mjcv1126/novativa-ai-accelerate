@@ -35,17 +35,20 @@ export const UserManagement = () => {
       setLoading(true);
       const localUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
       
-      // Crear usuario de prueba si no existe
-      const testUser = localUsers.find((user: AdminUser) => user.email === 'dcuellar@novativa.org');
-      if (!testUser) {
-        const newTestUser = {
-          id: 'test-user-1',
+      // Crear usuario dcuellar si no existe o actualizar contraseña
+      let dcuellarUser = localUsers.find((user: AdminUser) => user.email === 'dcuellar@novativa.org');
+      if (!dcuellarUser) {
+        dcuellarUser = {
+          id: 'dcuellar-user-1',
           email: 'dcuellar@novativa.org',
-          password: 'test123',
+          password: 'Novativa2025$',
           role: 'admin',
           created_at: new Date().toISOString()
         };
-        localUsers.push(newTestUser);
+        localUsers.push(dcuellarUser);
+        localStorage.setItem('admin_users', JSON.stringify(localUsers));
+      } else if (dcuellarUser.password !== 'Novativa2025$') {
+        dcuellarUser.password = 'Novativa2025$';
         localStorage.setItem('admin_users', JSON.stringify(localUsers));
       }
 
@@ -264,7 +267,7 @@ export const UserManagement = () => {
                           </div>
                         )}
                         {user.password && (
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-blue-600 font-mono">
                             Contraseña: {user.password}
                           </div>
                         )}
