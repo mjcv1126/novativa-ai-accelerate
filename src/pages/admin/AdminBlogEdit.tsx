@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { ArrowLeft, Save } from 'lucide-react';
-import RichTextEditor from '@/components/admin/RichTextEditor';
 
 interface BlogCategory {
   id: string;
@@ -273,10 +273,14 @@ const AdminBlogEdit = () => {
                 </div>
 
                 <div>
-                  <RichTextEditor
+                  <Label htmlFor="content">Contenido *</Label>
+                  <Textarea
+                    id="content"
                     value={formData.content}
-                    onChange={(content) => setFormData(prev => ({ ...prev, content }))}
-                    placeholder="Escribe el contenido de tu post aquí..."
+                    onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                    placeholder="Contenido del post (puedes usar HTML)"
+                    rows={15}
+                    required
                   />
                 </div>
               </CardContent>
