@@ -17,6 +17,19 @@ const Layout = ({ children }: LayoutProps) => {
   const isContactPage = location.pathname === '/contacto';
   const isIACodingPage = location.pathname === '/iacoding';
   const isTranscriptionPage = location.pathname === '/transcripcion';
+  const isBlogPostPage = location.pathname.startsWith('/blog/') && location.pathname !== '/blog';
+
+  // Exclude blog post pages from main layout
+  if (isBlogPostPage) {
+    return (
+      <AdminDataProvider>
+        <CustomCSSProvider>
+          {children}
+          <Toaster />
+        </CustomCSSProvider>
+      </AdminDataProvider>
+    );
+  }
 
   // Include NavBar on transcription page
   return (
