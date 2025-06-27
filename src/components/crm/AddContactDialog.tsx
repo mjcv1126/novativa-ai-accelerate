@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Plus } from 'lucide-react';
 import { Contact, CrmStage } from '@/types/crm';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +16,18 @@ interface AddContactDialogProps {
   stages: CrmStage[];
   onContactAdded: () => void;
 }
+
+const SERVICES = [
+  { id: 'ai-agents', name: 'Agentes de IA' },
+  { id: 'web-development', name: 'Desarrollo Web' },
+  { id: 'mobile-development', name: 'Desarrollo Móvil' },
+  { id: 'ia-development', name: 'Desarrollo de IA' },
+  { id: 'content-generation', name: 'Generación de Contenido' },
+  { id: 'contact-center', name: 'Contact Center' },
+  { id: 'nova-channel', name: 'Nova Channel' },
+  { id: 'social-media-ai', name: 'Social Media AI' },
+  { id: 'consultation', name: 'Consultoría' }
+];
 
 export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,8 +41,19 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
     country_code: '',
     country_name: '',
     stage_id: '',
-    notes: ''
+    notes: '',
+    primary_service: '',
+    secondary_services: [] as string[]
   });
+
+  const handleSecondaryServiceChange = (serviceId: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      secondary_services: checked 
+        ? [...prev.secondary_services, serviceId]
+        : prev.secondary_services.filter(id => id !== serviceId)
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +73,21 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
       // Set default stage if not selected
       const stageId = formData.stage_id || stages[0]?.id;
 
+      // Create notes with service information
+      let serviceNotes = '';
+      if (formData.primary_service) {
+        const primaryServiceName = SERVICES.find(s => s.id === formData.primary_service)?.name;
+        serviceNotes += `Servicio principal: ${primaryServiceName}\n`;
+      }
+      if (formData.secondary_services.length > 0) {
+        const secondaryServiceNames = formData.secondary_services
+          .map(id => SERVICES.find(s => s.id === id)?.name)
+          .filter(Boolean);
+        serviceNotes += `Servicios secundarios: ${secondaryServiceNames.join(', ')}\n`;
+      }
+      
+      const finalNotes = serviceNotes + (formData.notes ? `\nNotas adicionales: ${formData.notes}` : '');
+
       const { error } = await supabase
         .from('contacts')
         .insert([{
@@ -60,7 +99,7 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
           country_code: formData.country_code || 'ES',
           country_name: formData.country_name || 'España',
           stage_id: stageId,
-          notes: formData.notes || null
+          notes: finalNotes || null
         }]);
 
       if (error) throw error;
@@ -76,7 +115,7 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
             .single()).data?.id,
           activity_type: 'note',
           title: 'Contacto creado manualmente',
-          description: 'Contacto agregado desde el CRM'
+          description: `Contacto agregado desde el CRM${serviceNotes ? ` con interés en: ${formData.primary_service}` : ''}`
         }]);
 
       toast({
@@ -94,7 +133,9 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
         country_code: '',
         country_name: '',
         stage_id: '',
-        notes: ''
+        notes: '',
+        primary_service: '',
+        secondary_services: []
       });
       setIsOpen(false);
       onContactAdded();
@@ -118,7 +159,7 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
           Agregar Lead
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Agregar Nuevo Lead</DialogTitle>
         </DialogHeader>
@@ -211,8 +252,50 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
             </Select>
           </div>
 
+          {/* Services Section */}
+          <div className="space-y-4 border-t pt-4">
+            <h3 className="text-lg font-medium">Servicios de Interés</h3>
+            
+            <div>
+              <Label htmlFor="primary_service">Servicio Principal</Label>
+              <Select value={formData.primary_service} onValueChange={(value) => setFormData(prev => ({ ...prev, primary_service: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar servicio principal" />
+                </SelectTrigger>
+                <SelectContent>
+                  {SERVICES.map((service) => (
+                    <SelectItem key={service.id} value={service.id}>
+                      {service.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Servicios Secundarios (Opcional)</Label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {SERVICES.filter(service => service.id !== formData.primary_service).map((service) => (
+                  <div key={service.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={service.id}
+                      checked={formData.secondary_services.includes(service.id)}
+                      onCheckedChange={(checked) => handleSecondaryServiceChange(service.id, checked as boolean)}
+                    />
+                    <Label
+                      htmlFor={service.id}
+                      className="text-sm font-normal cursor-pointer"
+                    >
+                      {service.name}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
           <div>
-            <Label htmlFor="notes">Notas</Label>
+            <Label htmlFor="notes">Notas Adicionales</Label>
             <Textarea
               id="notes"
               value={formData.notes}
