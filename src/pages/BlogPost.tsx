@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -135,6 +136,17 @@ const BlogPost = () => {
       {/* Article */}
       <article className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
+          {/* Featured Image */}
+          {post.featured_image && (
+            <div className="mb-8">
+              <img
+                src={post.featured_image}
+                alt={post.title}
+                className="w-full rounded-lg shadow-lg"
+              />
+            </div>
+          )}
+
           {/* Header */}
           <header className="mb-8">
             <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -188,17 +200,6 @@ const BlogPost = () => {
               </div>
             </div>
           </header>
-
-          {/* Featured Image */}
-          {post.featured_image && (
-            <div className="mb-8">
-              <img
-                src={post.featured_image}
-                alt={post.title}
-                className="w-full rounded-lg shadow-lg"
-              />
-            </div>
-          )}
 
           {/* Content */}
           <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
