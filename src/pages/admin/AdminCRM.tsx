@@ -7,6 +7,7 @@ import { ListView } from '@/components/crm/ListView';
 import { KanbanView } from '@/components/crm/KanbanView';
 import { ContactDetailDialog } from '@/components/crm/ContactDetailDialog';
 import { StageManagement } from '@/components/crm/StageManagement';
+import { AddContactDialog } from '@/components/crm/AddContactDialog';
 import { Button } from '@/components/ui/button';
 import { ViewMode, ContactWithStage } from '@/types/crm';
 import { List, Kanban, RefreshCw } from 'lucide-react';
@@ -59,6 +60,10 @@ const AdminCRM = () => {
     setSelectedContact(null);
   };
 
+  const handleContactAdded = () => {
+    fetchContacts();
+  };
+
   // Stats
   const totalContacts = contacts.length;
   const contactsByStage = stages.map(stage => ({
@@ -81,6 +86,11 @@ const AdminCRM = () => {
           </div>
           
           <div className="flex items-center gap-2">
+            <AddContactDialog 
+              stages={stages}
+              onContactAdded={handleContactAdded}
+            />
+            
             <StageManagement
               stages={stages}
               onCreateStage={createStage}
