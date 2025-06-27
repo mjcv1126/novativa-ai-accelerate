@@ -25,7 +25,7 @@ const BlogNavbar = () => {
             className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full flex items-center gap-2 transition-colors"
           >
             <MessageCircle className="w-4 h-4" />
-            Contáctanos por WhatsApp
+            Contáctanos
           </Button>
         </div>
       </div>
