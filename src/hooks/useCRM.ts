@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Contact, ContactWithStage, CrmStage, ContactActivity, CrmFilters } from '@/types/crm';
@@ -78,7 +77,7 @@ export const useCRM = () => {
     }
   }, [filters]);
 
-  const fetchContactActivities = useCallback(async (contactId: string) => {
+  const fetchContactActivities = useCallback(async (contactId: string): Promise<ContactActivity[]> => {
     try {
       const { data, error } = await supabase
         .from('contact_activities')
@@ -87,7 +86,12 @@ export const useCRM = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      // Transform the data to match our ContactActivity type
+      return (data || []).map(activity => ({
+        ...activity,
+        activity_type: activity.activity_type as ContactActivity['activity_type']
+      }));
     } catch (error) {
       console.error('Error fetching contact activities:', error);
       return [];

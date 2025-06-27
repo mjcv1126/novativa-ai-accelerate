@@ -1,3 +1,4 @@
+
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
@@ -29,6 +30,7 @@ import BlogPost from './pages/BlogPost';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminCRM from './pages/admin/AdminCRM';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminBlogEdit from './pages/admin/AdminBlogEdit';
 import AdminScripts from './pages/admin/AdminScripts';
