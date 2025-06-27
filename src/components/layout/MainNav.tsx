@@ -42,10 +42,6 @@ export function MainNav({ items }: MainNavProps) {
       href: "/iacoding",
     },
     {
-      title: "Transcripción",
-      href: "/transcripcion",
-    },
-    {
       title: "Contacto",
       href: "/contacto",
     }

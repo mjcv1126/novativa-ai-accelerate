@@ -4,6 +4,7 @@ import { FileUploadForm } from '@/components/file-upload/FileUploadForm';
 import { FileTable } from '@/components/file-upload/FileTable';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { UploadedFile, FileFormData } from '@/types/fileUpload';
+import { Helmet } from 'react-helmet-async';
 
 const FileUpload = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -57,28 +58,33 @@ const FileUpload = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 pt-24">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Gestión de Archivos</h1>
-        <FileUploadForm
-          isDialogOpen={isDialogOpen}
-          setIsDialogOpen={setIsDialogOpen}
-          editingFile={editingFile}
-          setEditingFile={setEditingFile}
-          uploading={uploading}
-          uploadProgress={uploadProgress}
-          onSubmit={handleSubmit}
+    <>
+      <Helmet>
+        <title>Gestión de Archivos | Panel Admin Novativa</title>
+      </Helmet>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Gestión de Archivos</h1>
+          <FileUploadForm
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
+            editingFile={editingFile}
+            setEditingFile={setEditingFile}
+            uploading={uploading}
+            uploadProgress={uploadProgress}
+            onSubmit={handleSubmit}
+          />
+        </div>
+
+        <FileTable
+          files={files}
+          loading={loading}
+          onEdit={openEditDialog}
+          onShare={shareFile}
+          onDelete={deleteFile}
         />
       </div>
-
-      <FileTable
-        files={files}
-        loading={loading}
-        onEdit={openEditDialog}
-        onShare={shareFile}
-        onDelete={deleteFile}
-      />
-    </div>
+    </>
   );
 };
 

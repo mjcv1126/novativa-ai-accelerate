@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Code, Palette, PenTool } from 'lucide-react';
+import { LayoutDashboard, Code, Palette, PenTool, Upload, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarItemProps {
@@ -48,6 +48,18 @@ const AdminSidebar = () => {
             icon={<PenTool className="h-5 w-5" />}
             title="Blog"
             active={pathname.startsWith('/admin/blog')}
+          />
+          <SidebarItem
+            href="/admin/files"
+            icon={<Upload className="h-5 w-5" />}
+            title="Archivos"
+            active={pathname === '/admin/files'}
+          />
+          <SidebarItem
+            href="/admin/transcription"
+            icon={<FileText className="h-5 w-5" />}
+            title="Transcripción"
+            active={pathname === '/admin/transcription'}
           />
           <SidebarItem
             href="/admin/scripts"

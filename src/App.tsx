@@ -10,8 +10,6 @@ import RefundPolicy from './pages/RefundPolicy';
 import Services from './pages/Services';
 import Schedule from './pages/Schedule';
 import ScheduleConfirmation from './pages/ScheduleConfirmation';
-import VideoTranscription from './pages/VideoTranscription';
-import TranscriptionPage from './pages/TranscriptionPage';
 import NovaChannel from './pages/NovaChannel';
 import Index from './pages/Index';
 import KnowledgeBase from './pages/KnowledgeBase';
@@ -22,7 +20,6 @@ import IADevelopment from './pages/services/IADevelopment';
 import ContactCenter from './pages/services/ContactCenter';
 import Welcome from './pages/Welcome';
 import ConsultaEficiente from './pages/ConsultaEficiente';
-import FileUpload from './pages/FileUpload';
 import AgentsAICourse from './pages/AgentsAICourse';
 import AgentsAIThankYou from './pages/AgentsAIThankYou';
 import ConversationalFormPage from './pages/ConversationalFormPage';
@@ -35,6 +32,8 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminBlogEdit from './pages/admin/AdminBlogEdit';
+import FileUpload from './pages/FileUpload';
+import TranscriptionPage from './pages/TranscriptionPage';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { useLanguage } from './contexts/LanguageContext';
 
@@ -72,12 +71,6 @@ function App() {
         
         <Route path="/confirmacion-agenda" element={<ScheduleConfirmation />} />
         <Route path="/schedule-confirmation" element={<ScheduleConfirmation />} />
-        
-        <Route path="/transcripcion" element={<TranscriptionPage />} />
-        <Route path="/transcription" element={<TranscriptionPage />} />
-        
-        <Route path="/subir-archivos" element={<Layout><FileUpload /></Layout>} />
-        <Route path="/upload-files" element={<Layout><FileUpload /></Layout>} />
         
         <Route path="/terminos-condiciones" element={<Layout><TermsAndConditions /></Layout>} />
         <Route path="/terms-conditions" element={<Layout><TermsAndConditions /></Layout>} />
@@ -138,6 +131,20 @@ function App() {
           <AdminAuthProvider>
             <AdminLayout>
               <AdminBlogEdit />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/files" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <FileUpload />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/transcription" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <TranscriptionPage />
             </AdminLayout>
           </AdminAuthProvider>
         } />
