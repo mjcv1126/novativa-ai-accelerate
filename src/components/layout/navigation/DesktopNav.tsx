@@ -16,6 +16,10 @@ const DesktopNav = () => {
         {t('nav.home')}
       </Link>
       
+      <Link to="/blog" className="text-gray-800 hover:text-novativa-teal font-medium transition-colors">
+        Blog
+      </Link>
+      
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>

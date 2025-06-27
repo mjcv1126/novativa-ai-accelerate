@@ -40,6 +40,15 @@ const MobileNav = ({ onClose }: MobileNavProps) => {
         >
           {t('nav.home')}
         </Link>
+        
+        <Link 
+          to="/blog" 
+          className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
+          onClick={onClose}
+        >
+          Blog
+        </Link>
+        
         <div className="px-4 py-2">
           <div className="font-medium text-gray-800 mb-2">{t('nav.services')}</div>
           <div className="ml-4 space-y-2">
@@ -102,13 +111,6 @@ const MobileNav = ({ onClose }: MobileNavProps) => {
           onClick={onClose}
         >
           {t('nav.pricing')}
-        </Link>
-        <Link 
-          to="/blog" 
-          className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md"
-          onClick={onClose}
-        >
-          Blog
         </Link>
         <Link 
           to="/subir-archivos" 

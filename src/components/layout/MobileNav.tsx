@@ -30,6 +30,7 @@ export function MobileNav({ setOpen, onOpenChange }: MobileNavProps) {
 
   const menuItems = [
     { href: '/', label: 'Inicio' },
+    { href: '/blog', label: 'Blog' },
     { href: '/servicios', label: 'Servicios' },
     { href: '/precios', label: 'Precios' },
     { href: '/novachannel', label: 'NovaChannel' },
@@ -71,7 +72,7 @@ export function MobileNav({ setOpen, onOpenChange }: MobileNavProps) {
                 to={item.href}
                 className={cn(
                   "flex items-center rounded-md px-4 py-3 text-base font-medium transition-colors hover:bg-gray-100",
-                  pathname === item.href
+                  pathname === item.href || (item.href === '/blog' && pathname.startsWith('/blog'))
                     ? "bg-gray-100 text-novativa-orange"
                     : "text-gray-700"
                 )}

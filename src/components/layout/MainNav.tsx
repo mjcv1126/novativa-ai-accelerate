@@ -22,16 +22,16 @@ export function MainNav({ items }: MainNavProps) {
       href: "/",
     },
     {
+      title: "Blog",
+      href: "/blog",
+    },
+    {
       title: "Servicios",
       href: "/servicios",
     },
     {
       title: "Precios",
       href: "/precios",
-    },
-    {
-      title: "Blog",
-      href: "/blog",
     },
     {
       title: "NovaChannel",
