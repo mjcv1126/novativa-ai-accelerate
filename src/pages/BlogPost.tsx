@@ -202,9 +202,9 @@ const BlogPost = () => {
           </header>
 
           {/* Content */}
-          <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
+          <div className="w-full bg-white rounded-lg shadow-sm mb-8">
             <div 
-              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-novativa-teal hover:prose-a:text-novativa-lightTeal prose-strong:text-gray-900"
+              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-novativa-teal hover:prose-a:text-novativa-lightTeal prose-strong:text-gray-900 m-4"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>
