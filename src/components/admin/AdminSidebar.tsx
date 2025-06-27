@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -7,7 +6,7 @@ import {
   Users, 
   Code, 
   Palette,
-  FileUpload,
+  Upload,
   Video,
   Shield
 } from 'lucide-react';
@@ -38,7 +37,7 @@ const AdminSidebar = () => {
     },
     {
       title: 'Archivos',
-      icon: FileUpload,
+      icon: Upload,
       path: '/admin/files'
     },
     {
