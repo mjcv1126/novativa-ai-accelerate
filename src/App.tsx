@@ -31,6 +31,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCRM from './pages/admin/AdminCRM';
+import AdminUsers from './pages/admin/AdminUsers';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminBlogEdit from './pages/admin/AdminBlogEdit';
 import AdminScripts from './pages/admin/AdminScripts';
@@ -120,6 +121,13 @@ function App() {
           <AdminAuthProvider>
             <AdminLayout>
               <AdminCRM />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/users" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminUsers />
             </AdminLayout>
           </AdminAuthProvider>
         } />

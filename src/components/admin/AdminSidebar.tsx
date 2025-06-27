@@ -1,85 +1,89 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Code, Palette, PenTool, Upload, FileText, Users } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
-interface SidebarItemProps {
-  href: string;
-  icon: React.ReactNode;
-  title: string;
-  active: boolean;
-}
-
-const SidebarItem = ({ href, icon, title, active }: SidebarItemProps) => {
-  return (
-    <Link
-      to={href}
-      className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
-        active ? "bg-gray-100 text-gray-900" : ""
-      )}
-    >
-      {icon}
-      <span>{title}</span>
-    </Link>
-  );
-};
+import { 
+  LayoutDashboard, 
+  FileText, 
+  Users, 
+  Code, 
+  Palette,
+  FileUpload,
+  Video,
+  Shield
+} from 'lucide-react';
 
 const AdminSidebar = () => {
   const location = useLocation();
-  const pathname = location.pathname;
+
+  const menuItems = [
+    {
+      title: 'Dashboard',
+      icon: LayoutDashboard,
+      path: '/admin/dashboard'
+    },
+    {
+      title: 'CRM',
+      icon: Users,
+      path: '/admin/crm'
+    },
+    {
+      title: 'Usuarios',
+      icon: Shield,
+      path: '/admin/users'
+    },
+    {
+      title: 'Blog',
+      icon: FileText,
+      path: '/admin/blog'
+    },
+    {
+      title: 'Archivos',
+      icon: FileUpload,
+      path: '/admin/files'
+    },
+    {
+      title: 'Transcripción',
+      icon: Video,
+      path: '/admin/transcription'
+    },
+    {
+      title: 'Scripts',
+      icon: Code,
+      path: '/admin/scripts'
+    },
+    {
+      title: 'CSS Personalizado',
+      icon: Palette,
+      path: '/admin/custom-css'
+    }
+  ];
 
   return (
-    <div className="py-4">
-      <div className="px-3 py-2">
-        <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-          Administración
-        </h2>
-        <div className="space-y-1">
-          <SidebarItem
-            href="/admin/dashboard"
-            icon={<LayoutDashboard className="h-5 w-5" />}
-            title="Dashboard"
-            active={pathname === '/admin/dashboard'}
-          />
-          <SidebarItem
-            href="/admin/crm"
-            icon={<Users className="h-5 w-5" />}
-            title="CRM"
-            active={pathname === '/admin/crm'}
-          />
-          <SidebarItem
-            href="/admin/blog"
-            icon={<PenTool className="h-5 w-5" />}
-            title="Blog"
-            active={pathname.startsWith('/admin/blog')}
-          />
-          <SidebarItem
-            href="/admin/files"
-            icon={<Upload className="h-5 w-5" />}
-            title="Archivos"
-            active={pathname === '/admin/files'}
-          />
-          <SidebarItem
-            href="/admin/transcription"
-            icon={<FileText className="h-5 w-5" />}
-            title="Transcripción"
-            active={pathname === '/admin/transcription'}
-          />
-          <SidebarItem
-            href="/admin/scripts"
-            icon={<Code className="h-5 w-5" />}
-            title="Scripts"
-            active={pathname === '/admin/scripts'}
-          />
-          <SidebarItem
-            href="/admin/custom-css"
-            icon={<Palette className="h-5 w-5" />}
-            title="CSS Personalizado"
-            active={pathname === '/admin/custom-css'}
-          />
-        </div>
+    <div className="w-64 bg-white border-r border-gray-200 h-full">
+      <div className="p-6">
+        <h2 className="text-xl font-bold text-gray-800">Panel Admin</h2>
       </div>
+      <nav className="mt-6">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+          
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center px-6 py-3 text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-novativa-teal text-white border-r-2 border-novativa-lightTeal'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+            >
+              <Icon className="mr-3 h-5 w-5" />
+              {item.title}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 };

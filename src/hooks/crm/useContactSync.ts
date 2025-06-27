@@ -17,22 +17,33 @@ export const useContactSync = () => {
     formType?: string;
   }) => {
     try {
-      console.log('Syncing contact from form:', formData);
+      console.log('🔄 Syncing contact from form:', formData);
+
+      // Format phone number properly
+      const formattedPhone = `+${formData.countryCode}${formData.phone.replace(/\D/g, '')}`;
+      console.log('📱 Formatted phone:', formattedPhone);
 
       // Check for existing contact by phone or email
       let existingContactQuery = supabase
         .from('contacts')
         .select('*')
-        .eq('phone', `+${formData.countryCode}${formData.phone.replace(/\D/g, '')}`);
+        .eq('phone', formattedPhone);
 
       if (formData.email) {
         existingContactQuery = existingContactQuery.or(`email.eq.${formData.email}`);
       }
 
-      const { data: existingContacts } = await existingContactQuery;
+      const { data: existingContacts, error: queryError } = await existingContactQuery;
       
+      if (queryError) {
+        console.error('❌ Error querying existing contacts:', queryError);
+        throw queryError;
+      }
+
+      console.log('🔍 Existing contacts found:', existingContacts?.length || 0);
+
       // Get the first stage for new contacts
-      const { data: firstStage } = await supabase
+      const { data: firstStage, error: stageError } = await supabase
         .from('crm_stages')
         .select('id')
         .eq('is_active', true)
@@ -40,18 +51,27 @@ export const useContactSync = () => {
         .limit(1)
         .single();
 
+      if (stageError) {
+        console.error('❌ Error fetching first stage:', stageError);
+        // Continue without stage if there's an error
+      }
+
+      console.log('🎯 First stage:', firstStage);
+
       // Prepare contact data
       const contactData = {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email || null,
-        phone: `+${formData.countryCode}${formData.phone.replace(/\D/g, '')}`,
+        phone: formattedPhone,
         country_code: formData.countryCode,
         country_name: formData.countryName,
         stage_id: firstStage?.id || null,
         notes: buildNotesFromForm(formData),
         last_contact_date: new Date().toISOString()
       };
+
+      console.log('📋 Contact data prepared:', contactData);
 
       let contactId: string;
 
@@ -60,6 +80,8 @@ export const useContactSync = () => {
         const existingContact = existingContacts[0];
         contactId = existingContact.id;
         
+        console.log('🔄 Updating existing contact:', contactId);
+
         const { error: updateError } = await supabase
           .from('contacts')
           .update({
@@ -68,25 +90,35 @@ export const useContactSync = () => {
           })
           .eq('id', contactId);
 
-        if (updateError) throw updateError;
+        if (updateError) {
+          console.error('❌ Error updating contact:', updateError);
+          throw updateError;
+        }
 
-        console.log('Updated existing contact:', contactId);
+        console.log('✅ Updated existing contact:', contactId);
       } else {
         // Create new contact
+        console.log('➕ Creating new contact');
+
         const { data: newContact, error: insertError } = await supabase
           .from('contacts')
           .insert([contactData])
           .select()
           .single();
 
-        if (insertError) throw insertError;
-        contactId = newContact.id;
+        if (insertError) {
+          console.error('❌ Error creating contact:', insertError);
+          throw insertError;
+        }
 
-        console.log('Created new contact:', contactId);
+        contactId = newContact.id;
+        console.log('✅ Created new contact:', contactId);
       }
 
       // Create activity record
-      await supabase
+      console.log('📝 Creating activity record');
+
+      const { error: activityError } = await supabase
         .from('contact_activities')
         .insert([{
           contact_id: contactId,
@@ -95,9 +127,18 @@ export const useContactSync = () => {
           description: `Nuevo contacto registrado desde ${formData.formType || 'formulario web'}${formData.services ? ` con interés en: ${formData.services}` : ''}${formData.budget ? ` - Presupuesto: ${formData.budget}` : ''}`
         }]);
 
+      if (activityError) {
+        console.error('⚠️ Error creating activity (non-critical):', activityError);
+        // Don't throw here as the contact was created successfully
+      } else {
+        console.log('✅ Activity record created');
+      }
+
+      console.log('🎉 Contact sync completed successfully');
+
       return { success: true, contactId, isNew: !existingContacts?.length };
     } catch (error) {
-      console.error('Error syncing contact:', error);
+      console.error('💥 Error syncing contact:', error);
       return { success: false, error };
     }
   }, []);
