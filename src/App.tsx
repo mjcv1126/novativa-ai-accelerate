@@ -32,6 +32,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminBlogEdit from './pages/admin/AdminBlogEdit';
 import AdminScripts from './pages/admin/AdminScripts';
+import AdminCustomCSS from './pages/admin/AdminCustomCSS';
 import FileUpload from './pages/FileUpload';
 import TranscriptionPage from './pages/TranscriptionPage';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
@@ -152,6 +153,13 @@ function App() {
           <AdminAuthProvider>
             <AdminLayout>
               <AdminScripts />
+            </AdminLayout>
+          </AdminAuthProvider>
+        } />
+        <Route path="/admin/custom-css" element={
+          <AdminAuthProvider>
+            <AdminLayout>
+              <AdminCustomCSS />
             </AdminLayout>
           </AdminAuthProvider>
         } />
