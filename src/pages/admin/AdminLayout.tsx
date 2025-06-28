@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { AdminHeader } from '@/components/admin/AdminHeader';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import AdminHeader from '@/components/admin/AdminHeader';
+import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminDashboard from './AdminDashboard';
 import AdminBlog from './AdminBlog';
 import AdminBlogEdit from './AdminBlogEdit';
@@ -13,7 +13,7 @@ import AdminCustomCSS from './AdminCustomCSS';
 import AdminScripts from './AdminScripts';
 import FileUpload from '../FileUpload';
 import TranscriptionPage from '../TranscriptionPage';
-import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
+import ProtectedRoute from '@/components/admin/ProtectedRoute';
 
 const AdminLayout = () => {
   return (

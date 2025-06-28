@@ -31,6 +31,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCRM from './pages/admin/AdminCRM';
+import AdminActivities from './pages/admin/AdminActivities';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminBlogEdit from './pages/admin/AdminBlogEdit';
@@ -103,81 +104,9 @@ function App() {
             <AdminLogin />
           </AdminAuthProvider>
         } />
-        <Route path="/admin" element={
+        <Route path="/admin/*" element={
           <AdminAuthProvider>
-            <AdminLayout>
-              <AdminDashboard />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/dashboard" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <AdminDashboard />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/crm" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <AdminCRM />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/users" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <AdminUsers />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/blog" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <AdminBlog />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/blog/new" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <AdminBlogEdit />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/blog/edit/:id" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <AdminBlogEdit />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/files" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <FileUpload />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/transcription" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <TranscriptionPage />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/scripts" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <AdminScripts />
-            </AdminLayout>
-          </AdminAuthProvider>
-        } />
-        <Route path="/admin/custom-css" element={
-          <AdminAuthProvider>
-            <AdminLayout>
-              <AdminCustomCSS />
-            </AdminLayout>
+            <AdminLayout />
           </AdminAuthProvider>
         } />
         

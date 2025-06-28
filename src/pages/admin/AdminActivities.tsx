@@ -9,10 +9,16 @@ import { RefreshCw, Calendar, Clock } from 'lucide-react';
 import { ActivitiesCard } from '@/components/admin/activities/ActivitiesCard';
 import { useActivitiesData } from '@/hooks/crm/useActivitiesData';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 const AdminActivities = () => {
-  const [activities, setActivities] = useState<any>({
+  const [activities, setActivities] = useState<{
+    today: any[];
+    tomorrow: any[];
+    this_week: any[];
+    next_week: any[];
+    future: any[];
+  }>({
     today: [],
     tomorrow: [],
     this_week: [],
@@ -163,7 +169,7 @@ const AdminActivities = () => {
           <TabsList className="grid w-full grid-cols-5">
             {Object.entries(activities).map(([key, activityList]) => (
               <TabsTrigger key={key} value={key} className="text-xs">
-                {getTabLabel(key, (activityList as any[]).length)}
+                {getTabLabel(key, activityList.length)}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -175,14 +181,14 @@ const AdminActivities = () => {
                   <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-400" />
                   <p className="text-gray-500">Cargando actividades...</p>
                 </div>
-              ) : (activityList as any[]).length === 0 ? (
+              ) : activityList.length === 0 ? (
                 <div className="text-center py-12">
                   <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                   <p className="text-gray-500">No hay actividades programadas para este período</p>
                 </div>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {(activityList as any[]).map((activity) => (
+                  {activityList.map((activity) => (
                     <ActivitiesCard
                       key={activity.id}
                       activity={activity}
