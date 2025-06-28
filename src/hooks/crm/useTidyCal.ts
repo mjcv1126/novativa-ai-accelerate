@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
@@ -9,15 +8,13 @@ function formatDateForTidyCal(date: Date): string {
 }
 
 export const useTidyCal = () => {
-  const getTidyCalBookings = useCallback(async (includePast: boolean = false) => {
+  const getTidyCalBookings = useCallback(async (includePast: boolean = true) => { // Changed default to true
     try {
       console.log('🔍 Fetching TidyCal bookings...');
       
-      // Calculate date range - include past 30 days if includePast is true
+      // Calculate date range - always include past 30 days for proper sync
       const now = new Date();
-      const startDate = includePast 
-        ? new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000)) // 30 days ago
-        : now;
+      const startDate = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000)); // 30 days ago
       const endDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days from now
       
       // Format dates properly for TidyCal (without milliseconds)
@@ -30,8 +27,8 @@ export const useTidyCal = () => {
         body: { 
           action: 'get_bookings',
           starts_at: startsAt,
-          ends_at: endsAt,
-          cancelled: false // Get both active and cancelled bookings
+          ends_at: endsAt
+          // Get all bookings including cancelled ones for proper sync
         }
       });
 
