@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useCRM } from '@/hooks/useCRM';
@@ -109,7 +110,7 @@ const AdminCRM = () => {
           </div>
         </div>
 
-        {/* Centered Container for Stats and Filters */}
+        {/* Centered Container for Stats Cards */}
         <div className="max-w-6xl mx-auto space-y-4">
           {/* Stats Cards - Responsive grid */}
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
@@ -141,8 +142,10 @@ const AdminCRM = () => {
               </Card>
             ))}
           </div>
+        </div>
 
-          {/* Filters */}
+        {/* Filters - Left aligned */}
+        <div className="space-y-4">
           <CRMFilters
             filters={filters}
             onFiltersChange={setFilters}
