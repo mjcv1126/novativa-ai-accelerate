@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -33,7 +32,7 @@ const SERVICES = [
 export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { getCurrentUserEmail, setCurrentUserForTrigger, getAvailableUsers } = useLeadAssignments();
+  const { getCurrentUserEmail, getAvailableUsers } = useLeadAssignments();
   const availableUsers = getAvailableUsers();
   
   const [formData, setFormData] = useState({
@@ -78,9 +77,6 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
       // Set default stage if not selected
       const stageId = formData.stage_id || stages[0]?.id;
 
-      // Establecer el usuario actual para el trigger antes de crear el contacto
-      await setCurrentUserForTrigger(formData.assigned_user_email);
-
       // Create notes with service information
       let serviceNotes = '';
       if (formData.primary_service) {
@@ -122,6 +118,16 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
           activity_type: 'note',
           title: 'Contacto creado manualmente',
           description: `Contacto agregado desde el CRM${serviceNotes ? ` con interés en: ${formData.primary_service}` : ''} - Asignado a: ${formData.assigned_user_email}`
+        }]);
+
+      // Manually create lead assignment since we want to assign to specific user
+      await supabase
+        .from('lead_assignments')
+        .insert([{
+          contact_id: newContact.id,
+          assigned_user_email: formData.assigned_user_email,
+          assigned_by_email: getCurrentUserEmail(),
+          notes: 'Asignado manualmente al crear el lead'
         }]);
 
       toast({
