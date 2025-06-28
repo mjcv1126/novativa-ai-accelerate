@@ -16,8 +16,23 @@ serve(async (req) => {
     const { action, ...params } = await req.json();
     const tidyCalToken = Deno.env.get('Tidycal_Token');
     
+    console.log('🔍 TidyCal API called with action:', action);
+    console.log('📝 Token configured:', tidyCalToken ? 'Yes' : 'No');
+    
     if (!tidyCalToken) {
-      throw new Error('TidyCal token not configured');
+      console.error('❌ TidyCal token not configured');
+      return new Response(
+        JSON.stringify({ 
+          error: { 
+            message: 'TidyCal token not configured',
+            code: 'MISSING_TOKEN'
+          } 
+        }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
     }
 
     const headers = {
@@ -30,6 +45,8 @@ serve(async (req) => {
     switch (action) {
       case 'get_bookings':
         const { starts_at, ends_at, cancelled } = params;
+        console.log('📅 Fetching bookings from:', starts_at, 'to:', ends_at);
+        
         let url = 'https://tidycal.com/api/bookings';
         const queryParams = new URLSearchParams();
         
@@ -41,21 +58,26 @@ serve(async (req) => {
           url += `?${queryParams.toString()}`;
         }
 
+        console.log('🌐 Making request to:', url);
         response = await fetch(url, { headers });
         break;
 
       case 'get_booking':
         const { booking_id } = params;
+        console.log('📋 Fetching booking:', booking_id);
         response = await fetch(`https://tidycal.com/api/bookings/${booking_id}`, { headers });
         break;
 
       case 'sync_booking':
         const bookingId = params.booking_id;
+        console.log('🔄 Syncing booking:', bookingId);
         
         // Get booking details from TidyCal
         const bookingResponse = await fetch(`https://tidycal.com/api/bookings/${bookingId}`, { headers });
         
         if (!bookingResponse.ok) {
+          const errorText = await bookingResponse.text();
+          console.error('❌ Failed to fetch booking:', bookingResponse.status, errorText);
           throw new Error(`Failed to fetch booking: ${bookingResponse.statusText}`);
         }
 
@@ -72,23 +94,63 @@ serve(async (req) => {
         });
 
         if (!webhookResponse.ok) {
+          const errorText = await webhookResponse.text();
+          console.error('❌ Failed to process booking:', webhookResponse.status, errorText);
           throw new Error(`Failed to process booking: ${webhookResponse.statusText}`);
         }
 
+        console.log('✅ Booking synced successfully');
         return new Response(
           JSON.stringify({ success: true, message: 'Booking synced successfully' }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
 
       default:
+        console.error('❌ Unknown action:', action);
         throw new Error(`Unknown action: ${action}`);
     }
 
+    console.log('📊 TidyCal API response status:', response.status);
+
     if (!response.ok) {
-      throw new Error(`TidyCal API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('❌ TidyCal API error:', response.status, response.statusText, errorText);
+      
+      // Handle specific error codes
+      if (response.status === 401) {
+        return new Response(
+          JSON.stringify({ 
+            error: { 
+              message: 'Token de TidyCal no autorizado. Verifica que el token tenga permisos de lectura para bookings.',
+              code: 'UNAUTHORIZED',
+              status: 401
+            } 
+          }),
+          { 
+            status: 401, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          error: { 
+            message: `TidyCal API error: ${response.status} ${response.statusText}`,
+            code: 'API_ERROR',
+            status: response.status,
+            details: errorText
+          } 
+        }),
+        { 
+          status: response.status, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
     }
 
     const data = await response.json();
+    console.log('✅ TidyCal API success, returning', data?.data?.length || 0, 'items');
     
     return new Response(
       JSON.stringify(data),
@@ -96,9 +158,14 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('TidyCal API error:', error);
+    console.error('💥 TidyCal API error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: { 
+          message: error.message,
+          code: 'INTERNAL_ERROR'
+        } 
+      }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 

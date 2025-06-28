@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Clock, User, RefreshCw, ExternalLink, Activity, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, User, RefreshCw, ExternalLink, Activity, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 import { useTidyCal } from '@/hooks/crm/useTidyCal';
 import { TidyCalPollingStatus } from './TidyCalPollingStatus';
 import { TidyCalSetupButton } from './TidyCalSetupButton';
@@ -34,22 +34,70 @@ export const TidyCalIntegration = () => {
   const [bookings, setBookings] = useState<TidyCalBooking[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tokenStatus, setTokenStatus] = useState<'unknown' | 'testing' | 'valid' | 'invalid'>('unknown');
   const { getTidyCalBookings, syncBookingToContact } = useTidyCal();
+
+  const testTokenConnection = async () => {
+    setTokenStatus('testing');
+    try {
+      console.log('🔍 Testing TidyCal token connection...');
+      const data = await getTidyCalBookings();
+      if (data?.data || data?.error?.message?.includes('401')) {
+        if (data?.error?.message?.includes('401')) {
+          setTokenStatus('invalid');
+          setError('Token inválido o sin permisos. El token necesita permisos de lectura para bookings.');
+        } else {
+          setTokenStatus('valid');
+          console.log('✅ Token válido, conexión exitosa');
+        }
+      } else {
+        setTokenStatus('invalid');
+        setError('No se pudo validar el token de TidyCal');
+      }
+    } catch (err) {
+      console.error('❌ Error testing token:', err);
+      setTokenStatus('invalid');
+      setError('Error al validar el token de TidyCal');
+    }
+  };
 
   const loadBookings = async () => {
     setLoading(true);
     setError(null);
     try {
+      console.log('📅 Cargando bookings de TidyCal...');
       const data = await getTidyCalBookings();
-      if (data?.data) {
-        setBookings(data.data);
-      } else {
-        console.warn('No data returned from TidyCal API');
-        setError('No se recibieron datos de TidyCal. Verifica la configuración del token.');
+      
+      console.log('📊 Respuesta de TidyCal:', data);
+      
+      if (data?.error) {
+        console.error('❌ Error en la respuesta:', data.error);
+        if (data.error.message?.includes('401') || data.error.message?.includes('Unauthorized')) {
+          setError('Token de TidyCal inválido o expirado. Verifica que el token tenga permisos de lectura para bookings.');
+          setTokenStatus('invalid');
+        } else {
+          setError(`Error de TidyCal: ${data.error.message}`);
+        }
+        return;
       }
-    } catch (err) {
-      console.error('Error loading bookings:', err);
-      setError('Error al cargar las reservas. Verifica que el token de TidyCal esté configurado correctamente.');
+      
+      if (data?.data) {
+        console.log(`✅ ${data.data.length} bookings cargados exitosamente`);
+        setBookings(data.data);
+        setTokenStatus('valid');
+      } else {
+        console.warn('⚠️ No data returned from TidyCal API');
+        setError('No se recibieron datos de TidyCal. Verifica la configuración del token.');
+        setTokenStatus('invalid');
+      }
+    } catch (err: any) {
+      console.error('💥 Error loading bookings:', err);
+      if (err.message?.includes('401') || err.message?.includes('Unauthorized')) {
+        setError('Token de TidyCal no autorizado. Asegúrate de que el token tenga permisos para leer bookings.');
+        setTokenStatus('invalid');
+      } else {
+        setError('Error al cargar las reservas. Verifica que el token de TidyCal esté configurado correctamente.');
+      }
     } finally {
       setLoading(false);
     }
@@ -61,11 +109,37 @@ export const TidyCalIntegration = () => {
   };
 
   useEffect(() => {
-    loadBookings();
+    testTokenConnection();
   }, []);
 
+  const getTokenStatusIcon = () => {
+    switch (tokenStatus) {
+      case 'testing':
+        return <RefreshCw className="h-4 w-4 animate-spin text-blue-500" />;
+      case 'valid':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'invalid':
+        return <XCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-400" />;
+    }
+  };
+
+  const getTokenStatusText = () => {
+    switch (tokenStatus) {
+      case 'testing':
+        return 'Validando...';
+      case 'valid':
+        return 'Token válido';
+      case 'invalid':
+        return 'Token inválido';
+      default:
+        return 'Token no verificado';
+    }
+  };
+
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full">
       <Card>
         <CardHeader>
           <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -74,14 +148,21 @@ export const TidyCalIntegration = () => {
               Integración TidyCal
             </div>
             <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2 text-sm">
+                {getTokenStatusIcon()}
+                <span className={`${tokenStatus === 'valid' ? 'text-green-600' : tokenStatus === 'invalid' ? 'text-red-600' : 'text-gray-600'}`}>
+                  {getTokenStatusText()}
+                </span>
+              </div>
               <TidyCalSetupButton />
               <Button
                 variant="outline"
                 size="sm"
-                onClick={loadBookings}
-                disabled={loading}
+                onClick={testTokenConnection}
+                disabled={tokenStatus === 'testing'}
               >
-                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ${tokenStatus === 'testing' ? 'animate-spin' : ''}`} />
+                Validar Token
               </Button>
               <Button
                 variant="outline"
@@ -116,19 +197,35 @@ export const TidyCalIntegration = () => {
             </TabsContent>
             
             <TabsContent value="bookings" className="space-y-4">
-              <div className="text-sm text-gray-600">
-                <p>Próximas citas programadas en TidyCal. Puedes sincronizar manualmente reservas específicas si es necesario.</p>
+              <div className="space-y-3">
+                <div className="text-sm text-gray-600">
+                  <p>Próximas citas programadas en TidyCal. Puedes sincronizar manualmente reservas específicas si es necesario.</p>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={loadBookings}
+                    disabled={loading || tokenStatus === 'invalid'}
+                  >
+                    <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                    Cargar Reservas
+                  </Button>
+                </div>
               </div>
               
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-                  <AlertCircle className="h-4 w-4 text-yellow-600 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium text-yellow-800">Problema de configuración</p>
-                    <p className="text-yellow-700">{error}</p>
-                    <p className="text-yellow-600 mt-1">
-                      Asegúrate de que el token <code>Tidycal_Token</code> esté configurado en los secretos de Supabase.
-                    </p>
+                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-sm">
+                  <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-medium text-red-800 mb-1">Error de configuración</p>
+                    <p className="text-red-700 mb-2">{error}</p>
+                    <div className="text-red-600 text-xs space-y-1">
+                      <p>• Verifica que el token <code className="bg-red-100 px-1 rounded">Tidycal_Token</code> esté configurado en los secretos de Supabase</p>
+                      <p>• El token debe tener permisos de lectura para bookings (<code className="bg-red-100 px-1 rounded">bookings:read</code>)</p>
+                      <p>• Puedes generar un nuevo token en: <a href="https://tidycal.com/integrations" target="_blank" rel="noopener noreferrer" className="underline">TidyCal Integrations</a></p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -142,8 +239,9 @@ export const TidyCalIntegration = () => {
                 <div className="text-center py-8">
                   <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                   <p className="text-gray-500">No hay reservas próximas</p>
+                  <p className="text-gray-400 text-sm mt-2">Haz clic en "Cargar Reservas" para buscar citas</p>
                 </div>
-              ) : !error ? (
+              ) : !error && bookings.length > 0 ? (
                 <div className="space-y-3">
                   {bookings.map((booking) => (
                     <div key={booking.id} className="border rounded-lg p-4">

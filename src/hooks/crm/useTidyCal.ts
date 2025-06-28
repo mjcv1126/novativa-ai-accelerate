@@ -6,24 +6,47 @@ import { toast } from '@/components/ui/use-toast';
 export const useTidyCal = () => {
   const getTidyCalBookings = useCallback(async () => {
     try {
+      console.log('🔍 Fetching TidyCal bookings...');
+      
+      // Calculate date range for next 30 days
+      const now = new Date();
+      const thirtyDaysFromNow = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
+      
       const { data, error } = await supabase.functions.invoke('tidycal-api', {
         body: { 
           action: 'get_bookings',
-          starts_at: new Date().toISOString(),
-          ends_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // Next 30 days
+          starts_at: now.toISOString(),
+          ends_at: thirtyDaysFromNow.toISOString(),
+          cancelled: false // Only get active bookings
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('🔥 Supabase function error:', error);
+        return { error };
+      }
+
+      console.log('📊 TidyCal API response:', data);
       return data;
-    } catch (error) {
-      console.error('Error fetching TidyCal bookings:', error);
-      toast({
-        title: "Error",
-        description: "No se pudieron cargar las reservas de TidyCal",
-        variant: "destructive",
-      });
-      return null;
+    } catch (error: any) {
+      console.error('💥 Error fetching TidyCal bookings:', error);
+      
+      // Better error handling for different scenarios
+      if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+        toast({
+          title: "Token inválido",
+          description: "El token de TidyCal no tiene los permisos necesarios para leer bookings",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "No se pudieron cargar las reservas de TidyCal",
+          variant: "destructive",
+        });
+      }
+      
+      return { error: { message: error.message } };
     }
   }, []);
 
