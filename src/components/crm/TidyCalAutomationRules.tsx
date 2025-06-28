@@ -36,7 +36,7 @@ export const TidyCalAutomationRules = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    trigger_condition: 'contact_exists_future_call' as const,
+    trigger_condition: 'contact_exists_future_call' as 'contact_exists_future_call' | 'contact_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled',
     target_stage_id: '',
     create_activity: true,
     activity_title: '',
