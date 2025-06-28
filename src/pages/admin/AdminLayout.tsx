@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminDashboard from './AdminDashboard';
@@ -18,7 +18,17 @@ import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 const AdminLayout = () => {
   const { user } = useAdminAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  
   const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
+
+  // Redirect /admin/ to /admin/dashboard
+  useEffect(() => {
+    if (location.pathname === '/admin' || location.pathname === '/admin/') {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [location.pathname, navigate]);
 
   return (
     <SidebarProvider>

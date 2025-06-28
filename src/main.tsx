@@ -1,41 +1,23 @@
 
-import { createRoot } from 'react-dom/client'
-import { HelmetProvider } from 'react-helmet-async'
-import { BrowserRouter } from 'react-router-dom'
-import App from './App.tsx'
-import './index.css'
-import { LanguageProvider } from './contexts/LanguageContext'
-import LanguageToggle from './components/shared/LanguageToggle'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
+import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { LanguageProvider } from './contexts/LanguageContext';
+import { CustomCSSProvider } from './contexts/CustomCSSContext';
 
-// Clear cache before mounting app
-if ('caches' in window) {
-  caches.keys().then((names) => {
-    names.forEach(name => {
-      caches.delete(name);
-    });
-  });
-}
-
-// Add cache-busting query parameter to the script URL
-const addCacheBuster = () => {
-  const scripts = document.getElementsByTagName('script');
-  Array.from(scripts).forEach(script => {
-    if (script.src && !script.src.includes('?')) {
-      script.src = `${script.src}?v=${new Date().getTime()}`;
-    }
-  });
-};
-
-// Execute cache-busting
-addCacheBuster();
-
-createRoot(document.getElementById("root")!).render(
-  <HelmetProvider>
-    <BrowserRouter>
-      <LanguageProvider>
-        <LanguageToggle variant="floating" />
-        <App />
-      </LanguageProvider>
-    </BrowserRouter>
-  </HelmetProvider>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <HelmetProvider>
+      <BrowserRouter>
+        <LanguageProvider>
+          <CustomCSSProvider>
+            <App />
+          </CustomCSSProvider>
+        </LanguageProvider>
+      </BrowserRouter>
+    </HelmetProvider>
+  </React.StrictMode>,
 );

@@ -1,21 +1,46 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PenTool, FileText, Users, TrendingUp } from 'lucide-react';
+import { PenTool, FileText, Users, TrendingUp, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 const AdminDashboard = () => {
+  const { logout, user } = useAdminAuth();
+
+  const handleLogout = async () => {
+    if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+      await logout();
+    }
+  };
+
   return (
     <>
       <Helmet>
         <title>Dashboard | Panel Admin Novativa</title>
       </Helmet>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-gray-600">Bienvenido al panel de administración de Novativa</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Dashboard</h1>
+            <p className="text-gray-600">Bienvenido al panel de administración de Novativa</p>
+          </div>
+          <div className="flex items-center gap-4">
+            {user?.email && (
+              <span className="text-sm text-gray-600">
+                {user.email}
+              </span>
+            )}
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Cerrar Sesión
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
