@@ -142,7 +142,7 @@ export const TidyCalPollingStatus = () => {
                     <span className="text-sm">
                       {format(new Date(log.sync_started_at), 'dd MMM HH:mm', { locale: es })}
                     </span>
-                    <Badge size="sm" className={getStatusColor(log.status)}>
+                    <Badge className={getStatusColor(log.status)}>
                       {getSyncStatusText(log.status)}
                     </Badge>
                   </div>
@@ -175,7 +175,6 @@ export const TidyCalPollingStatus = () => {
                       {format(new Date(booking.booking_starts_at), 'dd MMM HH:mm', { locale: es })}
                     </div>
                     <Badge 
-                      size="sm" 
                       className={booking.sync_status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
                     >
                       {booking.sync_status === 'success' ? 'Éxito' : 'Error'}
