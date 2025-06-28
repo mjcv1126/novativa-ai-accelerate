@@ -12,12 +12,14 @@ import { supabase } from '@/integrations/supabase/client';
 
 const AdminActivities = () => {
   const [activities, setActivities] = useState<{
+    all: any[];
     today: any[];
     tomorrow: any[];
     this_week: any[];
     next_week: any[];
     future: any[];
   }>({
+    all: [],
     today: [],
     tomorrow: [],
     this_week: [],
@@ -25,7 +27,7 @@ const AdminActivities = () => {
     future: []
   });
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('today');
+  const [activeTab, setActiveTab] = useState('all');
   const { fetchAllUpcomingActivities } = useActivitiesData();
   const { markActivityComplete } = useActivityOperations();
 
@@ -33,8 +35,20 @@ const AdminActivities = () => {
     setLoading(true);
     try {
       const data = await fetchAllUpcomingActivities();
-      setActivities(data);
-      console.log('Activities loaded:', data);
+      // Crear el array "all" con todas las actividades combinadas
+      const allActivities = [
+        ...data.today,
+        ...data.tomorrow,
+        ...data.this_week,
+        ...data.next_week,
+        ...data.future
+      ];
+      
+      setActivities({
+        all: allActivities,
+        ...data
+      });
+      console.log('Activities loaded:', { all: allActivities, ...data });
     } finally {
       setLoading(false);
     }
@@ -83,6 +97,7 @@ const AdminActivities = () => {
 
   const getTabLabel = (key: string, count: number) => {
     const labels = {
+      all: 'Todas',
       today: 'Hoy',
       tomorrow: 'Mañana',
       this_week: 'Esta Semana',
@@ -132,7 +147,7 @@ const AdminActivities = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{getTotalActivities()}</div>
+              <div className="text-2xl font-bold">{activities.all.length}</div>
             </CardContent>
           </Card>
           
@@ -175,7 +190,7 @@ const AdminActivities = () => {
 
         {/* Activities Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             {Object.entries(activities).map(([key, activityList]) => (
               <TabsTrigger key={key} value={key} className="text-xs">
                 {getTabLabel(key, activityList.length)}
