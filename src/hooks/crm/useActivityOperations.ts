@@ -15,10 +15,10 @@ export const useActivityOperations = () => {
 
       if (error) throw error;
       
-      // Transform the data to match our ContactActivity type
       return (data || []).map(activity => ({
         ...activity,
-        activity_type: activity.activity_type as ContactActivity['activity_type']
+        activity_type: activity.activity_type as ContactActivity['activity_type'],
+        status: activity.status || 'pending'
       }));
     } catch (error) {
       console.error('Error fetching contact activities:', error);
@@ -30,7 +30,10 @@ export const useActivityOperations = () => {
     try {
       const { data, error } = await supabase
         .from('contact_activities')
-        .insert([activityData])
+        .insert([{
+          ...activityData,
+          status: activityData.status || 'pending'
+        }])
         .select()
         .single();
 
@@ -55,12 +58,37 @@ export const useActivityOperations = () => {
     }
   }, []);
 
+  const updateActivity = useCallback(async (activityId: string, updates: Partial<ContactActivity>) => {
+    try {
+      const { error } = await supabase
+        .from('contact_activities')
+        .update(updates)
+        .eq('id', activityId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Éxito",
+        description: "Actividad actualizada correctamente",
+      });
+    } catch (error) {
+      console.error('Error updating activity:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar la actividad",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  }, []);
+
   const markActivityComplete = useCallback(async (activityId: string) => {
     try {
       const { error } = await supabase
         .from('contact_activities')
         .update({ 
-          is_completed: true, 
+          is_completed: true,
+          status: 'completed',
           completed_at: new Date().toISOString() 
         })
         .eq('id', activityId);
@@ -82,9 +110,37 @@ export const useActivityOperations = () => {
     }
   }, []);
 
+  const cancelActivity = useCallback(async (activityId: string) => {
+    try {
+      const { error } = await supabase
+        .from('contact_activities')
+        .update({ 
+          status: 'cancelled'
+        })
+        .eq('id', activityId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Éxito",
+        description: "Actividad cancelada correctamente",
+      });
+    } catch (error) {
+      console.error('Error cancelling activity:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo cancelar la actividad",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  }, []);
+
   return {
     fetchContactActivities,
     createActivity,
+    updateActivity,
     markActivityComplete,
+    cancelActivity,
   };
 };

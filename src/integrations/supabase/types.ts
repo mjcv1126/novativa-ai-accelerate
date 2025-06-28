@@ -152,6 +152,7 @@ export type Database = {
           is_completed: boolean | null
           scheduled_date: string | null
           scheduled_time: string | null
+          status: string | null
           title: string
           updated_at: string
         }
@@ -166,6 +167,7 @@ export type Database = {
           is_completed?: boolean | null
           scheduled_date?: string | null
           scheduled_time?: string | null
+          status?: string | null
           title: string
           updated_at?: string
         }
@@ -180,6 +182,7 @@ export type Database = {
           is_completed?: boolean | null
           scheduled_date?: string | null
           scheduled_time?: string | null
+          status?: string | null
           title?: string
           updated_at?: string
         }
@@ -206,6 +209,7 @@ export type Database = {
           last_name: string
           notes: string | null
           phone: string
+          service_of_interest: string | null
           stage_id: string | null
           updated_at: string | null
         }
@@ -221,6 +225,7 @@ export type Database = {
           last_name: string
           notes?: string | null
           phone: string
+          service_of_interest?: string | null
           stage_id?: string | null
           updated_at?: string | null
         }
@@ -236,6 +241,7 @@ export type Database = {
           last_name?: string
           notes?: string | null
           phone?: string
+          service_of_interest?: string | null
           stage_id?: string | null
           updated_at?: string | null
         }

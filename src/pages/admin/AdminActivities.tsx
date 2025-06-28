@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,12 +33,12 @@ const AdminActivities = () => {
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list'); // Changed default to 'list');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   
   // Filtros
   const [searchTerm, setSearchTerm] = useState('');
   const [activityTypeFilter, setActivityTypeFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('pending'); // Por defecto mostrar solo pendientes
   const [sortBy, setSortBy] = useState('scheduled_date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   
@@ -46,48 +47,85 @@ const AdminActivities = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const { fetchAllUpcomingActivities } = useActivitiesData();
-  const { markActivityComplete } = useActivityOperations();
+  const { markActivityComplete, cancelActivity } = useActivityOperations();
 
   const isActivityOverdue = (activity: any) => {
-    if (activity.is_completed) return false;
+    if (activity.status === 'completed' || activity.status === 'cancelled') return false;
     
     const now = new Date();
     const scheduledDate = new Date(activity.scheduled_date);
     
-    // Si hay hora programada, crear fecha completa con hora
     if (activity.scheduled_time) {
       const [hours, minutes] = activity.scheduled_time.split(':').map(Number);
       const scheduledDateTime = new Date(scheduledDate);
       scheduledDateTime.setHours(hours, minutes, 0, 0);
       
-      // Solo está retrasada si la fecha y hora completas han pasado
       return scheduledDateTime < now;
     } else {
       // Si no hay hora, comparar solo fechas (retrasada si la fecha ya pasó completamente)
       const today = new Date();
-      today.setHours(23, 59, 59, 999); // Final del día actual
-      scheduledDate.setHours(23, 59, 59, 999); // Final del día programado
+      today.setHours(0, 0, 0, 0);
+      scheduledDate.setHours(0, 0, 0, 0);
       
       return scheduledDate < today;
+    }
+  };
+
+  const isActivityDueSoon = (activity: any) => {
+    if (activity.status === 'completed' || activity.status === 'cancelled') return false;
+    
+    const now = new Date();
+    const scheduledDate = new Date(activity.scheduled_date);
+    
+    if (activity.scheduled_time) {
+      const [hours, minutes] = activity.scheduled_time.split(':').map(Number);
+      const scheduledDateTime = new Date(scheduledDate);
+      scheduledDateTime.setHours(hours, minutes, 0, 0);
+      
+      // Próxima a vencer si falta menos de 2 horas
+      const timeDiff = scheduledDateTime.getTime() - now.getTime();
+      const hoursDiff = timeDiff / (1000 * 60 * 60);
+      
+      return hoursDiff > 0 && hoursDiff <= 2;
+    } else {
+      // Si no hay hora, verificar si es hoy
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      scheduledDate.setHours(0, 0, 0, 0);
+      
+      return scheduledDate.getTime() === today.getTime();
     }
   };
 
   const loadActivities = async () => {
     setLoading(true);
     try {
+      // Cargar todas las actividades sin filtrar por estado para poder mostrar estadísticas completas
+      const { data: allData, error } = await supabase
+        .from('contact_activities')
+        .select(`
+          *,
+          contact:contacts(*)
+        `)
+        .not('scheduled_date', 'is', null)
+        .order('scheduled_date', { ascending: true })
+        .order('scheduled_time', { ascending: true });
+
+      if (error) throw error;
+
+      // Separar por estado
+      const pendingActivities = (allData || []).filter(activity => 
+        (activity.status || 'pending') === 'pending'
+      );
+
+      // Identificar actividades retrasadas
+      const overdueActivities = pendingActivities.filter(activity => isActivityOverdue(activity));
+      
+      // Agrupar actividades pendientes por timeframe
       const data = await fetchAllUpcomingActivities();
       
-      // Identificar actividades retrasadas usando la nueva lógica
-      const overdueActivities = [
-        ...data.today,
-        ...data.tomorrow,
-        ...data.this_week,
-        ...data.next_week,
-        ...data.future
-      ].filter(activity => isActivityOverdue(activity));
-      
-      // Crear el array "all" con todas las actividades combinadas
-      const allActivities = [
+      // Crear el array "all" solo con actividades pendientes (no completadas ni canceladas)
+      const allPendingActivities = [
         ...data.today,
         ...data.tomorrow,
         ...data.this_week,
@@ -96,11 +134,10 @@ const AdminActivities = () => {
       ];
       
       setActivities({
-        all: allActivities,
+        all: allPendingActivities,
         overdue: overdueActivities,
         ...data
       });
-      console.log('Activities loaded:', { all: allActivities, overdue: overdueActivities, ...data });
     } finally {
       setLoading(false);
     }
@@ -112,6 +149,15 @@ const AdminActivities = () => {
       await loadActivities();
     } catch (error) {
       console.error('Error marking activity as complete:', error);
+    }
+  };
+
+  const handleCancelActivity = async (activityId: string) => {
+    try {
+      await cancelActivity(activityId);
+      await loadActivities();
+    } catch (error) {
+      console.error('Error cancelling activity:', error);
     }
   };
 
@@ -145,10 +191,13 @@ const AdminActivities = () => {
     if (statusFilter !== 'all') {
       switch (statusFilter) {
         case 'completed':
-          filtered = filtered.filter(activity => activity.is_completed);
+          filtered = filtered.filter(activity => (activity.status || 'pending') === 'completed');
+          break;
+        case 'cancelled':
+          filtered = filtered.filter(activity => (activity.status || 'pending') === 'cancelled');
           break;
         case 'pending':
-          filtered = filtered.filter(activity => !activity.is_completed);
+          filtered = filtered.filter(activity => (activity.status || 'pending') === 'pending');
           break;
         case 'overdue':
           filtered = filtered.filter(activity => isActivityOverdue(activity));
@@ -262,7 +311,7 @@ const AdminActivities = () => {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Total Actividades
+                Total Pendientes
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -391,7 +440,10 @@ const AdminActivities = () => {
                       key={activity.id}
                       activity={activity}
                       onComplete={handleMarkComplete}
+                      onCancel={handleCancelActivity}
                       onEdit={handleEditActivity}
+                      isOverdue={isActivityOverdue(activity)}
+                      isDueSoon={isActivityDueSoon(activity)}
                     />
                   ))}
                 </div>
@@ -399,7 +451,10 @@ const AdminActivities = () => {
                 <ActivitiesListView
                   activities={currentActivities}
                   onMarkComplete={handleMarkComplete}
+                  onCancelActivity={handleCancelActivity}
                   onEditActivity={handleEditActivity}
+                  isActivityOverdue={isActivityOverdue}
+                  isActivityDueSoon={isActivityDueSoon}
                 />
               )}
             </TabsContent>

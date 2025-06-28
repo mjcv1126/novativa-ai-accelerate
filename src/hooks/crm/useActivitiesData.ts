@@ -7,6 +7,8 @@ import { toast } from '@/components/ui/use-toast';
 export const useActivitiesData = () => {
   const getActivityTimeframe = (date: string) => {
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
@@ -20,10 +22,11 @@ export const useActivitiesData = () => {
     nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
     
     const activityDate = new Date(date);
+    activityDate.setHours(0, 0, 0, 0);
     
-    if (activityDate.toDateString() === today.toDateString()) {
+    if (activityDate.getTime() === today.getTime()) {
       return 'today';
-    } else if (activityDate.toDateString() === tomorrow.toDateString()) {
+    } else if (activityDate.getTime() === tomorrow.getTime()) {
       return 'tomorrow';
     } else if (activityDate >= today && activityDate <= thisWeekEnd) {
       return 'this_week';
@@ -46,7 +49,6 @@ export const useActivitiesData = () => {
         .order('scheduled_date', { ascending: true })
         .order('scheduled_time', { ascending: true });
 
-      // Aplicar filtros de fecha según el timeframe
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
@@ -86,13 +88,12 @@ export const useActivitiesData = () => {
           break;
       }
 
-      // Aplicar otros filtros
       if (filters.activity_type) {
         query = query.eq('activity_type', filters.activity_type);
       }
 
-      if (filters.completed !== undefined) {
-        query = query.eq('is_completed', filters.completed);
+      if (filters.status) {
+        query = query.eq('status', filters.status);
       }
 
       const { data, error } = await query;
@@ -120,13 +121,16 @@ export const useActivitiesData = () => {
           contact:contacts(*)
         `)
         .not('scheduled_date', 'is', null)
-        .gte('scheduled_date', new Date().toISOString().split('T')[0])
         .order('scheduled_date', { ascending: true })
         .order('scheduled_time', { ascending: true });
 
       if (error) throw error;
 
-      // Agrupar actividades por timeframe
+      // Filtrar solo actividades pendientes por defecto
+      const pendingActivities = (data || []).filter(activity => 
+        (activity.status || 'pending') === 'pending'
+      );
+
       const grouped = {
         today: [] as any[],
         tomorrow: [] as any[],
@@ -135,7 +139,7 @@ export const useActivitiesData = () => {
         future: [] as any[]
       };
 
-      (data || []).forEach(activity => {
+      pendingActivities.forEach(activity => {
         if (activity.scheduled_date) {
           const timeframe = getActivityTimeframe(activity.scheduled_date);
           grouped[timeframe as keyof typeof grouped].push(activity);

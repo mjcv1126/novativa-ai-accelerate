@@ -21,6 +21,7 @@ export interface Contact {
   country_name: string;
   stage_id?: string;
   notes?: string;
+  service_of_interest?: string;
   last_contact_date?: string;
   created_at: string;
   updated_at?: string;
@@ -35,6 +36,7 @@ export interface ContactActivity {
   due_date?: string;
   completed_at?: string;
   is_completed: boolean;
+  status: 'pending' | 'completed' | 'cancelled';
   scheduled_date?: string;
   scheduled_time?: string;
   created_at: string;
@@ -62,6 +64,7 @@ export interface CrmFilters {
   search: string;
   stage_id?: string;
   country?: string;
+  service_of_interest?: string;
   date_range?: {
     from?: string;
     to?: string;
@@ -71,5 +74,5 @@ export interface CrmFilters {
 export interface ActivityFilters {
   timeframe: 'today' | 'tomorrow' | 'this_week' | 'next_week' | 'future';
   activity_type?: string;
-  completed?: boolean;
+  status?: 'pending' | 'completed' | 'cancelled';
 }
