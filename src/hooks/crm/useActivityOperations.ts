@@ -28,16 +28,22 @@ export const useActivityOperations = () => {
 
   const createActivity = useCallback(async (activityData: Omit<ContactActivity, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('contact_activities')
-        .insert([activityData]);
+        .insert([activityData])
+        .select()
+        .single();
 
       if (error) throw error;
+
+      console.log('Activity created successfully:', data);
 
       toast({
         title: "Éxito",
         description: "Actividad creada correctamente",
       });
+
+      return data;
     } catch (error) {
       console.error('Error creating activity:', error);
       toast({
@@ -45,11 +51,40 @@ export const useActivityOperations = () => {
         description: "No se pudo crear la actividad",
         variant: "destructive",
       });
+      throw error;
+    }
+  }, []);
+
+  const markActivityComplete = useCallback(async (activityId: string) => {
+    try {
+      const { error } = await supabase
+        .from('contact_activities')
+        .update({ 
+          is_completed: true, 
+          completed_at: new Date().toISOString() 
+        })
+        .eq('id', activityId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Éxito",
+        description: "Actividad marcada como completada",
+      });
+    } catch (error) {
+      console.error('Error marking activity as complete:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo marcar la actividad como completada",
+        variant: "destructive",
+      });
+      throw error;
     }
   }, []);
 
   return {
     fetchContactActivities,
     createActivity,
+    markActivityComplete,
   };
 };

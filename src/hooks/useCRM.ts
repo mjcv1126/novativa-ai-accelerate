@@ -64,6 +64,17 @@ export const useCRM = () => {
     await loadContacts();
   }, [deleteContact, loadContacts]);
 
+  const handleCreateActivity = useCallback(async (activityData: any) => {
+    try {
+      const result = await createActivity(activityData);
+      console.log('Activity created in CRM hook:', result);
+      return result;
+    } catch (error) {
+      console.error('Error creating activity in CRM hook:', error);
+      throw error;
+    }
+  }, [createActivity]);
+
   useEffect(() => {
     loadStages();
   }, [loadStages]);
@@ -85,7 +96,7 @@ export const useCRM = () => {
     deleteStage: handleDeleteStage,
     updateContact: handleUpdateContact,
     moveContactToStage: handleMoveContactToStage,
-    createActivity,
+    createActivity: handleCreateActivity,
     deleteContact: handleDeleteContact,
   };
 };

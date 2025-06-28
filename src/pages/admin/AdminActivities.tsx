@@ -4,12 +4,11 @@ import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import { RefreshCw, Calendar, Clock } from 'lucide-react';
 import { ActivitiesCard } from '@/components/admin/activities/ActivitiesCard';
 import { useActivitiesData } from '@/hooks/crm/useActivitiesData';
+import { useActivityOperations } from '@/hooks/crm/useActivityOperations';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
 
 const AdminActivities = () => {
   const [activities, setActivities] = useState<{
@@ -28,12 +27,14 @@ const AdminActivities = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('today');
   const { fetchAllUpcomingActivities } = useActivitiesData();
+  const { markActivityComplete } = useActivityOperations();
 
   const loadActivities = async () => {
     setLoading(true);
     try {
       const data = await fetchAllUpcomingActivities();
       setActivities(data);
+      console.log('Activities loaded:', data);
     } finally {
       setLoading(false);
     }
@@ -41,35 +42,43 @@ const AdminActivities = () => {
 
   const handleMarkComplete = async (activityId: string) => {
     try {
-      const { error } = await supabase
-        .from('contact_activities')
-        .update({ 
-          is_completed: true, 
-          completed_at: new Date().toISOString() 
-        })
-        .eq('id', activityId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Éxito",
-        description: "Actividad marcada como completada",
-      });
-
-      // Recargar actividades
-      loadActivities();
+      await markActivityComplete(activityId);
+      // Recargar actividades después de marcar como completada
+      await loadActivities();
     } catch (error) {
       console.error('Error marking activity as complete:', error);
-      toast({
-        title: "Error",
-        description: "No se pudo marcar la actividad como completada",
-        variant: "destructive",
-      });
     }
   };
 
   useEffect(() => {
     loadActivities();
+  }, []);
+
+  // Set up real-time subscription for activities
+  useEffect(() => {
+    console.log('Setting up real-time subscription for activities');
+    
+    const channel = supabase
+      .channel('activities-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'contact_activities'
+        },
+        (payload) => {
+          console.log('Activity change detected:', payload);
+          // Reload activities when any change occurs
+          loadActivities();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      console.log('Cleaning up real-time subscription');
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const getTabLabel = (key: string, count: number) => {

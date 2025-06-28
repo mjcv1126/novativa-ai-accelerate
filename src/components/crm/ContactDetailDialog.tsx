@@ -74,6 +74,17 @@ export const ContactDetailDialog = ({
     }
   }, [contact, getContactAssignment]);
 
+  const loadActivities = useCallback(async () => {
+    if (contact) {
+      try {
+        const activitiesData = await fetchActivities(contact.id);
+        setActivities(activitiesData);
+      } catch (error) {
+        console.error('Error fetching activities:', error);
+      }
+    }
+  }, [contact, fetchActivities]);
+
   useEffect(() => {
     if (contact) {
       console.log('Contact changed:', contact);
@@ -88,14 +99,12 @@ export const ContactDetailDialog = ({
       });
       
       // Load activities
-      fetchActivities(contact.id).then(setActivities).catch(error => {
-        console.error('Error fetching activities:', error);
-      });
+      loadActivities();
       
       // Load assignment
       loadContactAssignment();
     }
-  }, [contact, fetchActivities, loadContactAssignment]);
+  }, [contact, loadActivities, loadContactAssignment]);
 
   const handleSave = () => {
     if (contact) {
@@ -124,7 +133,7 @@ export const ContactDetailDialog = ({
     }
   };
 
-  const handleAddActivity = () => {
+  const handleAddActivity = async () => {
     if (contact && newActivity.title) {
       const activityData = {
         contact_id: contact.id,
@@ -134,20 +143,26 @@ export const ContactDetailDialog = ({
         scheduled_time: newActivity.scheduled_time || undefined
       };
       
-      onCreateActivity(activityData);
-      
-      setNewActivity({
-        title: '',
-        description: '',
-        activity_type: 'note',
-        scheduled_date: '',
-        scheduled_time: ''
-      });
-      
-      setShowActivityForm(false);
-      
-      // Refresh activities
-      fetchActivities(contact.id).then(setActivities);
+      try {
+        await onCreateActivity(activityData);
+        
+        setNewActivity({
+          title: '',
+          description: '',
+          activity_type: 'note',
+          scheduled_date: '',
+          scheduled_time: ''
+        });
+        
+        setShowActivityForm(false);
+        
+        // Refresh activities immediately
+        await loadActivities();
+        
+        console.log('Activity created and timeline refreshed');
+      } catch (error) {
+        console.error('Error creating activity:', error);
+      }
     }
   };
 
@@ -172,19 +187,19 @@ export const ContactDetailDialog = ({
     return labels[type as keyof typeof labels] || type;
   };
 
-  // Separate activities into past and future
+  // Separate activities into future and past
   const now = new Date();
+  const futureActivities = activities.filter(activity => {
+    if (!activity.scheduled_date) return false;
+    const activityDate = new Date(activity.scheduled_date);
+    return activityDate >= now;
+  }).sort((a, b) => new Date(a.scheduled_date!).getTime() - new Date(b.scheduled_date!).getTime());
+
   const pastActivities = activities.filter(activity => {
     if (!activity.scheduled_date) return true; // Activities without date go to past
     const activityDate = new Date(activity.scheduled_date);
     return activityDate < now;
   }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-  const futureActivities = activities.filter(activity => {
-    if (!activity.scheduled_date) return false;
-    const activityDate = new Date(activity.scheduled_date);
-    return activityDate >= now;
-  }).sort((a, b) => new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime());
 
   if (!contact) return null;
 
@@ -467,12 +482,12 @@ export const ContactDetailDialog = ({
                 </div>
               )}
 
-              {/* Future Activities Section */}
+              {/* Próximas Actividades Section */}
               {futureActivities.length > 0 && (
                 <div className="mb-6">
                   <h4 className="font-medium text-sm text-blue-600 mb-3 flex items-center gap-2">
                     <Clock className="h-4 w-4" />
-                    Actividades Programadas ({futureActivities.length})
+                    Próximas Actividades ({futureActivities.length})
                   </h4>
                   <div className="space-y-3 max-h-40 overflow-y-auto">
                     {futureActivities.map((activity) => (
@@ -500,11 +515,11 @@ export const ContactDetailDialog = ({
                 </div>
               )}
 
-              {/* Past Activities Section */}
+              {/* Actividades Anteriores Section */}
               <div>
                 <h4 className="font-medium text-sm text-gray-600 mb-3 flex items-center gap-2">
                   <CheckCircle className="h-4 w-4" />
-                  Historial de Actividades ({pastActivities.length})
+                  Actividades Anteriores ({pastActivities.length})
                 </h4>
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {pastActivities.map((activity) => (
