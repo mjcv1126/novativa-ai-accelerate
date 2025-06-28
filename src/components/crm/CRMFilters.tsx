@@ -41,10 +41,28 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
     });
   };
 
+  const handleDateRangeChange = (type: 'from' | 'to', value: string) => {
+    const currentDateRange = filters.date_range || {};
+    onFiltersChange({
+      ...filters,
+      date_range: {
+        ...currentDateRange,
+        [type]: value || undefined
+      }
+    });
+  };
+
   const clearFilter = (key: keyof CrmFilters) => {
     onFiltersChange({
       ...filters,
       [key]: ''
+    });
+  };
+
+  const clearDateRange = () => {
+    onFiltersChange({
+      ...filters,
+      date_range: undefined
     });
   };
 
@@ -54,12 +72,15 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
       stage_id: '',
       country: '',
       service_of_interest: '',
-      date_from: '',
-      date_to: ''
+      date_range: undefined
     });
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => value !== '');
+  const hasActiveFilters = filters.search || 
+    filters.stage_id || 
+    filters.country || 
+    filters.service_of_interest || 
+    (filters.date_range?.from || filters.date_range?.to);
 
   return (
     <div className="space-y-4">
@@ -164,15 +185,15 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
           <div className="flex gap-1">
             <Input
               type="date"
-              value={filters.date_from || ''}
-              onChange={(e) => handleFilterChange('date_from', e.target.value)}
+              value={filters.date_range?.from || ''}
+              onChange={(e) => handleDateRangeChange('from', e.target.value)}
               className="text-xs"
               placeholder="Desde"
             />
             <Input
               type="date"
-              value={filters.date_to || ''}
-              onChange={(e) => handleFilterChange('date_to', e.target.value)}
+              value={filters.date_range?.to || ''}
+              onChange={(e) => handleDateRangeChange('to', e.target.value)}
               className="text-xs"
               placeholder="Hasta"
             />
@@ -243,17 +264,14 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
             </Badge>
           )}
           
-          {(filters.date_from || filters.date_to) && (
+          {(filters.date_range?.from || filters.date_range?.to) && (
             <Badge variant="secondary" className="flex items-center gap-1">
               <Filter className="h-3 w-3" />
-              Fecha: {filters.date_from || '...'} - {filters.date_to || '...'}
+              Fecha: {filters.date_range?.from || '...'} - {filters.date_range?.to || '...'}
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => {
-                  clearFilter('date_from');
-                  clearFilter('date_to');
-                }}
+                onClick={clearDateRange}
                 className="h-4 w-4 p-0 hover:bg-transparent"
               >
                 <X className="h-3 w-3" />
