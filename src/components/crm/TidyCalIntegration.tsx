@@ -10,6 +10,7 @@ import { TidyCalPollingStatus } from './TidyCalPollingStatus';
 import { TidyCalSetupButton } from './TidyCalSetupButton';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { toast } from '@/components/ui/use-toast';
 
 interface TidyCalBooking {
   id: number;
@@ -35,6 +36,7 @@ export const TidyCalIntegration = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tokenStatus, setTokenStatus] = useState<'unknown' | 'testing' | 'valid' | 'invalid'>('unknown');
+  const [syncingBookingId, setSyncingBookingId] = useState<number | null>(null);
   const { getTidyCalBookings, syncBookingToContact } = useTidyCal();
 
   const testTokenConnection = async () => {
@@ -104,8 +106,25 @@ export const TidyCalIntegration = () => {
   };
 
   const handleSyncBooking = async (bookingId: number) => {
-    await syncBookingToContact(bookingId.toString());
-    // Optionally reload bookings or update UI
+    setSyncingBookingId(bookingId);
+    try {
+      const result = await syncBookingToContact(bookingId.toString());
+      if (result) {
+        toast({
+          title: "Sincronización exitosa",
+          description: `Booking #${bookingId} sincronizado correctamente al CRM`,
+        });
+      }
+    } catch (error) {
+      console.error('Error syncing booking:', error);
+      toast({
+        title: "Error de sincronización",
+        description: `No se pudo sincronizar el booking #${bookingId}`,
+        variant: "destructive",
+      });
+    } finally {
+      setSyncingBookingId(null);
+    }
   };
 
   useEffect(() => {
@@ -260,9 +279,14 @@ export const TidyCalIntegration = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleSyncBooking(booking.id)}
+                            disabled={syncingBookingId === booking.id}
                             className="flex-shrink-0 text-xs px-2"
                           >
-                            Sync
+                            {syncingBookingId === booking.id ? (
+                              <RefreshCw className="h-3 w-3 animate-spin" />
+                            ) : (
+                              'Sync'
+                            )}
                           </Button>
                         </div>
                         

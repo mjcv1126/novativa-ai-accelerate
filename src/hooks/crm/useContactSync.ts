@@ -333,17 +333,19 @@ export const useContactSync = () => {
 
           if (!duplicateCheck || duplicateCheck.length === 0) {
             // Create new activity only if no duplicate exists
-            const activityData = {
+            const isPastBooking = new Date(bookingData.starts_at) < new Date();
+            
+            const activityData: any = {
               contact_id: contactId,
               activity_type: 'call' as const,
               title: `Llamada TidyCal - Booking #${bookingData.booking_id}`,
               description: `Llamada programada desde TidyCal\nBooking ID: ${bookingData.booking_id}\nTimezone: ${tidyCalContact.timezone || 'N/A'}`,
               scheduled_date: startDate.toISOString().split('T')[0],
               scheduled_time: startDate.toTimeString().split(' ')[0].substring(0, 5),
-              is_completed: new Date(bookingData.starts_at) < new Date()
+              is_completed: isPastBooking
             };
 
-            if (activityData.is_completed) {
+            if (isPastBooking) {
               activityData.completed_at = new Date().toISOString();
             }
 
