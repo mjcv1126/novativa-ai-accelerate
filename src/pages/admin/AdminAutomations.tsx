@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,6 +21,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { TidyCalIntegration } from '@/components/crm/TidyCalIntegration';
+import { TidyCalAutomationRules } from '@/components/crm/TidyCalAutomationRules';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -162,7 +162,7 @@ const AdminAutomations = () => {
         </div>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               Resumen
@@ -170,6 +170,10 @@ const AdminAutomations = () => {
             <TabsTrigger value="tidycal" className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               TidyCal
+            </TabsTrigger>
+            <TabsTrigger value="tidycal-rules" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Reglas TidyCal
             </TabsTrigger>
             <TabsTrigger value="webhooks" className="flex items-center gap-2">
               <Webhook className="h-4 w-4" />
@@ -287,6 +291,10 @@ const AdminAutomations = () => {
 
           <TabsContent value="tidycal" className="space-y-4">
             <TidyCalIntegration />
+          </TabsContent>
+
+          <TabsContent value="tidycal-rules" className="space-y-4">
+            <TidyCalAutomationRules />
           </TabsContent>
 
           <TabsContent value="webhooks" className="space-y-4">

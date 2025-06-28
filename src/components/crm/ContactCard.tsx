@@ -23,16 +23,13 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'active':
-      case 'activo':
+  const getStatusColor = (stageName: string) => {
+    switch (stageName?.toLowerCase()) {
+      case 'contactado':
         return 'bg-green-100 text-green-800';
-      case 'inactive':
-      case 'inactivo':
+      case 'no contesta':
         return 'bg-gray-100 text-gray-800';
-      case 'pending':
-      case 'pendiente':
+      case 'llamada programada':
         return 'bg-yellow-100 text-yellow-800';
       default:
         return 'bg-blue-100 text-blue-800';
@@ -45,12 +42,13 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h3 
-              className="font-semibold text-sm leading-tight break-words"
+              className="font-semibold text-sm leading-tight mb-1"
               onClick={() => onView(contact)}
               style={{ 
                 wordBreak: 'break-word',
                 overflowWrap: 'break-word',
-                hyphens: 'auto'
+                hyphens: 'auto',
+                whiteSpace: 'normal'
               }}
             >
               {contact.first_name} {contact.last_name}
@@ -113,14 +111,14 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
           )}
         </div>
 
-        {/* Status Badge */}
-        {contact.status && (
+        {/* Stage Badge */}
+        {contact.stage && (
           <div className="flex justify-start">
             <Badge 
               variant="secondary" 
-              className={`text-xs ${getStatusColor(contact.status)}`}
+              className={`text-xs ${getStatusColor(contact.stage.name)}`}
             >
-              {contact.status}
+              {contact.stage.name}
             </Badge>
           </div>
         )}
