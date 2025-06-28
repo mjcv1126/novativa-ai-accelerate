@@ -3,16 +3,18 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, X } from 'lucide-react';
-import { CrmFilters, CrmStage } from '@/types/crm';
+import { Search, X, Download } from 'lucide-react';
+import { CrmFilters, CrmStage, ContactWithStage } from '@/types/crm';
+import { exportToCSV, contactsCSVHeaders } from '@/utils/exportUtils';
 
 interface CRMFiltersProps {
   filters: CrmFilters;
   onFiltersChange: (filters: CrmFilters) => void;
   stages: CrmStage[];
+  contacts: ContactWithStage[];
 }
 
-export const CRMFilters = ({ filters, onFiltersChange, stages }: CRMFiltersProps) => {
+export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFiltersProps) => {
   const handleSearchChange = (value: string) => {
     onFiltersChange({ ...filters, search: value });
   };
@@ -28,18 +30,40 @@ export const CRMFilters = ({ filters, onFiltersChange, stages }: CRMFiltersProps
     onFiltersChange({ search: '' });
   };
 
+  const handleExportCSV = () => {
+    const dataToExport = contacts.map(contact => ({
+      ...contact,
+      created_at: contact.created_at ? new Date(contact.created_at).toLocaleDateString('es-ES') : '',
+      last_contact_date: contact.last_contact_date ? new Date(contact.last_contact_date).toLocaleDateString('es-ES') : ''
+    }));
+    
+    exportToCSV(dataToExport, 'contactos_crm', contactsCSVHeaders);
+  };
+
   const hasActiveFilters = filters.stage_id || filters.search || filters.country;
 
   return (
     <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-        <Input
-          placeholder="Buscar por nombre, email o empresa..."
-          value={filters.search}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-9"
-        />
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="Buscar por nombre, email o empresa..."
+            value={filters.search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        
+        <Button
+          variant="outline"
+          onClick={handleExportCSV}
+          className="flex items-center gap-2"
+          disabled={contacts.length === 0}
+        >
+          <Download className="h-4 w-4" />
+          Exportar CSV
+        </Button>
       </div>
       
       <div className="flex flex-col sm:flex-row gap-3">

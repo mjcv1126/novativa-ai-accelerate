@@ -150,6 +150,7 @@ const AdminCRM = () => {
             filters={filters}
             onFiltersChange={setFilters}
             stages={stages}
+            contacts={contacts}
           />
         </div>
 
