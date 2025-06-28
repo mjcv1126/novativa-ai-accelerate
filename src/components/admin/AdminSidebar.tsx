@@ -12,7 +12,8 @@ import {
   Shield,
   Calendar,
   CalendarCheck,
-  Zap
+  Zap,
+  LogOut
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -25,12 +26,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
+  SidebarFooter,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
 
 const AdminSidebar = () => {
   const location = useLocation();
-  const { user } = useAdminAuth();
+  const { user, logout } = useAdminAuth();
   const { state } = useSidebar();
 
   // Obtener información del usuario desde localStorage si no está disponible en el contexto
@@ -159,6 +162,26 @@ const AdminSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              asChild
+              tooltip={state === "collapsed" ? "Cerrar Sesión" : undefined}
+            >
+              <Button
+                variant="ghost"
+                onClick={logout}
+                className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Cerrar Sesión</span>
+              </Button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 };
