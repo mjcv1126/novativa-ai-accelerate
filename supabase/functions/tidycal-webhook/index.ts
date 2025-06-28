@@ -73,66 +73,40 @@ serve(async (req) => {
       }
     }
 
-    // Determine the appropriate stage based on booking status
+    // Get active automation rules
+    const { data: automationRules } = await supabase
+      .from('tidycal_automation_rules')
+      .select('*')
+      .eq('is_active', true);
+
+    console.log('Found automation rules:', automationRules?.length || 0);
+
+    // Determine trigger condition
     const now = new Date();
     const bookingStart = new Date(starts_at);
-    let targetStage = null;
-    let activityTitle = '';
-    let activityDescription = '';
-    let shouldCancelPreviousActivity = false;
+    let triggerCondition = '';
 
     if (cancelled_at) {
-      // Booking was cancelled - move to "No Contesta" (position 4)
-      const { data: noAnswerStage } = await supabase
-        .from('crm_stages')
-        .select('*')
-        .eq('position', 4)
-        .eq('is_active', true)
-        .single();
-      
-      targetStage = noAnswerStage;
-      activityTitle = 'Llamada Cancelada';
-      activityDescription = `Llamada cancelada en TidyCal\nBooking ID: ${booking.id}\nFecha original: ${new Date(starts_at).toLocaleString('es-ES')}`;
-      shouldCancelPreviousActivity = true;
-    } else if (bookingStart < now && !existingContact) {
-      // Past booking and contact doesn't exist - move to "Contactado" (position 3)
-      const { data: contactedStage } = await supabase
-        .from('crm_stages')
-        .select('*')
-        .eq('position', 3)
-        .eq('is_active', true)
-        .single();
-      
-      targetStage = contactedStage;
-      activityTitle = 'Llamada Completada';
-      activityDescription = `Llamada completada exitosamente\nBooking ID: ${booking.id}\nDuración: ${booking_type?.duration_minutes || 'N/A'} minutos`;
-    } else if (bookingStart < now && existingContact) {
-      // Past booking but contact exists - don't take action
-      console.log('Contact already exists and booking is past, no action needed');
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: 'No action needed - contact exists and booking is past',
-          contact_id: existingContact.id
-        }),
-        { 
-          status: 200, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
+      triggerCondition = 'booking_cancelled';
+    } else if (existingContact && bookingStart > now) {
+      triggerCondition = 'contact_exists_future_call';
+    } else if (existingContact && bookingStart < now) {
+      triggerCondition = 'contact_exists_past_call';
+    } else if (!existingContact && bookingStart < now) {
+      triggerCondition = 'contact_not_exists_past_call';
+    } else if (!existingContact && bookingStart > now) {
+      triggerCondition = 'new_contact_future_call';
+    }
+
+    console.log('Trigger condition determined:', triggerCondition);
+
+    // Find matching automation rule
+    const matchingRule = automationRules?.find(rule => rule.trigger_condition === triggerCondition);
+    
+    if (!matchingRule) {
+      console.log('No matching automation rule found for trigger:', triggerCondition);
     } else {
-      // Future booking - move to "Llamada Programada" (position 2)
-      const { data: scheduledStage } = await supabase
-        .from('crm_stages')
-        .select('*')
-        .eq('position', 2)
-        .eq('is_active', true)
-        .single();
-      
-      targetStage = scheduledStage;
-      activityTitle = `Llamada programada - ${booking_type?.title || 'TidyCal Booking'}`;
-      activityDescription = `Llamada programada a través de TidyCal\nBooking ID: ${booking.id}\nDuración: ${booking_type?.duration_minutes || 'N/A'} minutos\nTimezone: ${contact.timezone || 'N/A'}`;
-      shouldCancelPreviousActivity = true; // Cancel previous if this is a reschedule
+      console.log('Using automation rule:', matchingRule.name);
     }
 
     // Create contact if it doesn't exist
@@ -144,16 +118,19 @@ serve(async (req) => {
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      // Get the first stage if no target stage is set
-      if (!targetStage) {
+      // Get target stage from rule or default
+      let targetStageId = null;
+      if (matchingRule && matchingRule.target_stage_id) {
+        targetStageId = matchingRule.target_stage_id;
+      } else {
+        // Default to first stage
         const { data: firstStage } = await supabase
           .from('crm_stages')
-          .select('*')
+          .select('id')
           .eq('position', 1)
           .eq('is_active', true)
           .single();
-
-        targetStage = firstStage;
+        targetStageId = firstStage?.id;
       }
 
       // Create new contact
@@ -166,7 +143,7 @@ serve(async (req) => {
           phone: contact.phone_number || '',
           country_code: '', // TidyCal doesn't provide this
           country_name: '', // TidyCal doesn't provide this
-          stage_id: targetStage?.id || null,
+          stage_id: targetStageId,
           notes: `Contacto creado automáticamente desde TidyCal booking #${booking.id}`
         }])
         .select()
@@ -184,37 +161,30 @@ serve(async (req) => {
       }
 
       existingContact = newContact;
-    } else if (targetStage) {
-      // Update existing contact stage only if target stage is set
+    } else if (matchingRule && matchingRule.target_stage_id) {
+      // Update existing contact stage based on rule
       const { error: updateError } = await supabase
         .from('contacts')
         .update({ 
-          stage_id: targetStage.id,
+          stage_id: matchingRule.target_stage_id,
           last_contact_date: new Date().toISOString()
         })
         .eq('id', existingContact.id);
 
       if (updateError) {
         console.error('Error updating contact stage:', updateError);
-        return new Response(
-          JSON.stringify({ error: 'Failed to update contact stage', details: updateError }),
-          { 
-            status: 500, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          }
-        );
       }
     }
 
     console.log('Working with contact:', existingContact.id);
 
-    // Cancel previous call activities if needed (for cancellations or reschedules)
-    if (shouldCancelPreviousActivity) {
+    // Handle previous activity cancellation if rule specifies it
+    if (matchingRule && matchingRule.cancel_previous_activity && booking.id) {
       const { data: previousActivities } = await supabase
         .from('contact_activities')
         .select('*')
         .eq('contact_id', existingContact.id)
-        .eq('activity_type', 'call')
+        .eq('tidycal_booking_id', booking.id)
         .eq('is_completed', false);
 
       if (previousActivities && previousActivities.length > 0) {
@@ -223,94 +193,90 @@ serve(async (req) => {
             .from('contact_activities')
             .update({ 
               is_completed: true,
+              status: 'cancelled',
               completed_at: new Date().toISOString(),
-              title: 'Llamada Cancelada',
-              description: `${activity.description}\n\nCancelada debido a ${cancelled_at ? 'cancelación' : 'reprogramación'} en TidyCal`
+              description: `${activity.description}\n\nCancelada automáticamente por regla: ${matchingRule.name}`
             })
             .eq('id', activity.id);
         }
+        console.log(`Cancelled ${previousActivities.length} previous activities`);
       }
     }
 
-    // Create appropriate activity only if not a past booking with existing contact
-    if (!(bookingStart < now && existingContact && !cancelled_at)) {
-      // Check for duplicate activities before creating
+    // Create activity if rule specifies it
+    if (matchingRule && matchingRule.create_activity) {
       const startDate = new Date(starts_at);
-      const { data: duplicateCheck } = await supabase
-        .from('contact_activities')
-        .select('*')
-        .eq('contact_id', existingContact.id)
-        .eq('activity_type', cancelled_at ? 'note' : 'call')
-        .eq('scheduled_date', startDate.toISOString().split('T')[0])
-        .eq('scheduled_time', startDate.toTimeString().split(' ')[0].substring(0, 5));
+      
+      let activityData = {
+        contact_id: existingContact.id,
+        activity_type: cancelled_at ? 'note' : 'call',
+        title: matchingRule.activity_title || 'Actividad TidyCal',
+        description: matchingRule.activity_description || `Booking ID: ${booking.id}`,
+        tidycal_booking_id: booking.id,
+        tidycal_booking_reference: `${booking.id}`,
+        is_completed: cancelled_at || bookingStart < now,
+        status: cancelled_at ? 'cancelled' : (bookingStart < now ? 'completed' : 'pending')
+      };
 
-      if (!duplicateCheck || duplicateCheck.length === 0) {
-        if (cancelled_at) {
-          // For cancelled bookings, create a note activity
-          const { error: activityError } = await supabase
-            .from('contact_activities')
-            .insert([{
-              contact_id: existingContact.id,
-              activity_type: 'note',
-              title: activityTitle,
-              description: activityDescription,
-              is_completed: true
-            }]);
-
-          if (activityError) {
-            console.error('Error creating cancellation note:', activityError);
-          }
-        } else if (bookingStart < now) {
-          // For completed calls, create a completed call activity
-          const { error: activityError } = await supabase
-            .from('contact_activities')
-            .insert([{
-              contact_id: existingContact.id,
-              activity_type: 'call',
-              title: activityTitle,
-              description: activityDescription,
-              is_completed: true,
-              completed_at: new Date().toISOString()
-            }]);
-
-          if (activityError) {
-            console.error('Error creating completed call activity:', activityError);
-          }
-        } else {
-          // For future calls, create a scheduled call activity
-          const startDate = new Date(starts_at);
-          
-          const { error: activityError } = await supabase
-            .from('contact_activities')
-            .insert([{
-              contact_id: existingContact.id,
-              activity_type: 'call',
-              title: activityTitle,
-              description: activityDescription,
-              scheduled_date: startDate.toISOString().split('T')[0],
-              scheduled_time: startDate.toTimeString().split(' ')[0].substring(0, 5),
-              is_completed: false
-            }]);
-
-          if (activityError) {
-            console.error('Error creating scheduled call activity:', activityError);
-          }
-        }
-      } else {
-        console.log('Duplicate activity found, skipping creation');
+      // Add scheduling info for future calls
+      if (!cancelled_at && bookingStart > now) {
+        activityData = {
+          ...activityData,
+          scheduled_date: startDate.toISOString().split('T')[0],
+          scheduled_time: startDate.toTimeString().split(' ')[0].substring(0, 5),
+          due_date: starts_at
+        };
       }
+
+      // Add completion date for past calls
+      if (bookingStart < now && !cancelled_at) {
+        activityData = {
+          ...activityData,
+          completed_at: new Date().toISOString()
+        };
+      }
+
+      const { error: activityError } = await supabase
+        .from('contact_activities')
+        .insert([activityData]);
+
+      if (activityError) {
+        console.error('Error creating activity:', activityError);
+      } else {
+        console.log('Activity created successfully');
+      }
+    }
+
+    // Log rule execution
+    if (matchingRule) {
+      await supabase
+        .from('tidycal_rule_executions')
+        .insert([{
+          rule_id: matchingRule.id,
+          tidycal_booking_id: booking.id,
+          contact_id: existingContact.id,
+          execution_result: 'success',
+          error_message: null
+        }]);
     }
 
     // Create stage change activity if stage was updated
-    if (targetStage) {
+    if (matchingRule && matchingRule.target_stage_id) {
+      const { data: targetStage } = await supabase
+        .from('crm_stages')
+        .select('name')
+        .eq('id', matchingRule.target_stage_id)
+        .single();
+
       const { error: stageActivityError } = await supabase
         .from('contact_activities')
         .insert([{
           contact_id: existingContact.id,
           activity_type: 'status_change',
           title: 'Cambio de etapa automático',
-          description: `Contacto movido automáticamente a "${targetStage.name}" por ${cancelled_at ? 'cancelación de' : bookingStart < now ? 'finalización de' : ''} booking de TidyCal`,
-          is_completed: true
+          description: `Contacto movido automáticamente a "${targetStage?.name || 'Etapa desconocida'}" por regla: ${matchingRule.name}`,
+          is_completed: true,
+          tidycal_booking_id: booking.id
         }]);
 
       if (stageActivityError) {
@@ -325,8 +291,8 @@ serve(async (req) => {
         success: true, 
         message: 'Booking processed successfully',
         contact_id: existingContact.id,
-        stage: targetStage?.name || 'No cambio de etapa',
-        action: cancelled_at ? 'cancelled' : bookingStart < now ? 'completed' : 'scheduled'
+        rule_applied: matchingRule?.name || 'No rule matched',
+        trigger_condition: triggerCondition
       }),
       { 
         status: 200, 

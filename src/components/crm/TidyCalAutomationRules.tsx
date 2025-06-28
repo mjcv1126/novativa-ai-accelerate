@@ -26,6 +26,7 @@ interface TidyCalRule {
   activity_description?: string;
   contact_action: 'none' | 'create' | 'update' | 'delete';
   contact_action_data?: string;
+  cancel_previous_activity: boolean;
   is_active: boolean;
   created_at: string;
 }
@@ -33,6 +34,7 @@ interface TidyCalRule {
 export const TidyCalAutomationRules = () => {
   const [rules, setRules] = useState<TidyCalRule[]>([]);
   const [stages, setStages] = useState<CrmStage[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<TidyCalRule | null>(null);
   const [formData, setFormData] = useState({
@@ -45,6 +47,7 @@ export const TidyCalAutomationRules = () => {
     activity_description: '',
     contact_action: 'none' as 'none' | 'create' | 'update' | 'delete',
     contact_action_data: '',
+    cancel_previous_activity: false,
     is_active: true
   });
 
@@ -54,67 +57,45 @@ export const TidyCalAutomationRules = () => {
   }, []);
 
   const loadStages = async () => {
-    const { data, error } = await supabase
-      .from('crm_stages')
-      .select('*')
-      .eq('is_active', true)
-      .order('position');
+    try {
+      const { data, error } = await supabase
+        .from('crm_stages')
+        .select('*')
+        .eq('is_active', true)
+        .order('position');
 
-    if (error) {
+      if (error) throw error;
+      setStages(data || []);
+    } catch (error) {
       console.error('Error loading stages:', error);
-      return;
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar las etapas",
+        variant: "destructive",
+      });
     }
-
-    setStages(data);
   };
 
-  const loadRules = () => {
-    // Mock data for now - in real implementation this would come from database
-    const mockRules: TidyCalRule[] = [
-      {
-        id: '1',
-        name: 'Contacto Existente - Llamada Futura',
-        description: 'Cuando un contacto existe y se programa una llamada futura',
-        trigger_condition: 'contact_exists_future_call',
-        target_stage_id: stages.find(s => s.position === 2)?.id || '',
-        create_activity: true,
-        activity_title: 'Llamada programada desde TidyCal',
-        activity_description: 'Llamada programada automáticamente',
-        contact_action: 'update',
-        contact_action_data: 'Actualizar notas con información de la llamada',
-        is_active: true,
-        created_at: new Date().toISOString()
-      },
-      {
-        id: '2',
-        name: 'Llamada Cancelada',
-        description: 'Cuando se cancela una llamada en TidyCal',
-        trigger_condition: 'booking_cancelled',
-        target_stage_id: stages.find(s => s.position === 4)?.id || '',
-        create_activity: true,
-        activity_title: 'Llamada cancelada',
-        activity_description: 'Llamada cancelada desde TidyCal',
-        contact_action: 'update',
-        contact_action_data: 'Agregar nota de cancelación',
-        is_active: true,
-        created_at: new Date().toISOString()
-      },
-      {
-        id: '3',
-        name: 'Contacto No Existe - Llamada Pasada',
-        description: 'Cuando no existe contacto y hubo una llamada pasada',
-        trigger_condition: 'contact_not_exists_past_call',
-        target_stage_id: stages.find(s => s.position === 1)?.id || '',
-        create_activity: true,
-        activity_title: 'Llamada completada - Contacto creado',
-        activity_description: 'Nuevo contacto creado desde llamada completada',
-        contact_action: 'create',
-        contact_action_data: 'Crear contacto con información de TidyCal',
-        is_active: true,
-        created_at: new Date().toISOString()
-      }
-    ];
-    setRules(mockRules);
+  const loadRules = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('tidycal_automation_rules')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setRules(data || []);
+    } catch (error) {
+      console.error('Error loading rules:', error);
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar las reglas",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetForm = () => {
@@ -128,6 +109,7 @@ export const TidyCalAutomationRules = () => {
       activity_description: '',
       contact_action: 'none',
       contact_action_data: '',
+      cancel_previous_activity: false,
       is_active: true
     });
     setEditingRule(null);
@@ -146,6 +128,7 @@ export const TidyCalAutomationRules = () => {
         activity_description: rule.activity_description || '',
         contact_action: rule.contact_action,
         contact_action_data: rule.contact_action_data || '',
+        cancel_previous_activity: rule.cancel_previous_activity,
         is_active: rule.is_active
       });
     } else {
@@ -159,7 +142,7 @@ export const TidyCalAutomationRules = () => {
     resetForm();
   };
 
-  const handleSaveRule = () => {
+  const handleSaveRule = async () => {
     if (!formData.name || !formData.target_stage_id) {
       toast({
         title: "Error",
@@ -169,52 +152,116 @@ export const TidyCalAutomationRules = () => {
       return;
     }
 
-    const newRule: TidyCalRule = {
-      id: editingRule?.id || Date.now().toString(),
-      name: formData.name,
-      description: formData.description,
-      trigger_condition: formData.trigger_condition,
-      target_stage_id: formData.target_stage_id,
-      create_activity: formData.create_activity,
-      activity_title: formData.activity_title,
-      activity_description: formData.activity_description,
-      contact_action: formData.contact_action,
-      contact_action_data: formData.contact_action_data,
-      is_active: formData.is_active,
-      created_at: editingRule?.created_at || new Date().toISOString()
-    };
+    try {
+      if (editingRule) {
+        const { error } = await supabase
+          .from('tidycal_automation_rules')
+          .update({
+            name: formData.name,
+            description: formData.description,
+            trigger_condition: formData.trigger_condition,
+            target_stage_id: formData.target_stage_id,
+            create_activity: formData.create_activity,
+            activity_title: formData.activity_title,
+            activity_description: formData.activity_description,
+            contact_action: formData.contact_action,
+            contact_action_data: formData.contact_action_data,
+            cancel_previous_activity: formData.cancel_previous_activity,
+            is_active: formData.is_active
+          })
+          .eq('id', editingRule.id);
 
-    if (editingRule) {
-      setRules(prev => prev.map(rule => rule.id === editingRule.id ? newRule : rule));
+        if (error) throw error;
+
+        toast({
+          title: "Regla actualizada",
+          description: "La regla de automatización se ha actualizado correctamente",
+        });
+      } else {
+        const { error } = await supabase
+          .from('tidycal_automation_rules')
+          .insert([{
+            name: formData.name,
+            description: formData.description,
+            trigger_condition: formData.trigger_condition,
+            target_stage_id: formData.target_stage_id,
+            create_activity: formData.create_activity,
+            activity_title: formData.activity_title,
+            activity_description: formData.activity_description,
+            contact_action: formData.contact_action,
+            contact_action_data: formData.contact_action_data,
+            cancel_previous_activity: formData.cancel_previous_activity,
+            is_active: formData.is_active
+          }]);
+
+        if (error) throw error;
+
+        toast({
+          title: "Regla creada",
+          description: "La nueva regla de automatización se ha creado correctamente",
+        });
+      }
+
+      await loadRules();
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error saving rule:', error);
       toast({
-        title: "Regla actualizada",
-        description: "La regla de automatización se ha actualizado correctamente",
-      });
-    } else {
-      setRules(prev => [...prev, newRule]);
-      toast({
-        title: "Regla creada",
-        description: "La nueva regla de automatización se ha creado correctamente",
+        title: "Error",
+        description: "No se pudo guardar la regla",
+        variant: "destructive",
       });
     }
-
-    handleCloseDialog();
   };
 
-  const handleDeleteRule = (id: string) => {
-    if (confirm('¿Estás seguro de que quieres eliminar esta regla?')) {
-      setRules(prev => prev.filter(rule => rule.id !== id));
+  const handleDeleteRule = async (id: string) => {
+    if (!confirm('¿Estás seguro de que quieres eliminar esta regla?')) return;
+
+    try {
+      const { error } = await supabase
+        .from('tidycal_automation_rules')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
       toast({
         title: "Regla eliminada",
         description: "La regla de automatización se ha eliminado correctamente",
       });
+
+      await loadRules();
+    } catch (error) {
+      console.error('Error deleting rule:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar la regla",
+        variant: "destructive",
+      });
     }
   };
 
-  const toggleRuleStatus = (id: string) => {
-    setRules(prev => prev.map(rule => 
-      rule.id === id ? { ...rule, is_active: !rule.is_active } : rule
-    ));
+  const toggleRuleStatus = async (id: string) => {
+    try {
+      const rule = rules.find(r => r.id === id);
+      if (!rule) return;
+
+      const { error } = await supabase
+        .from('tidycal_automation_rules')
+        .update({ is_active: !rule.is_active })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      await loadRules();
+    } catch (error) {
+      console.error('Error toggling rule status:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo cambiar el estado de la regla",
+        variant: "destructive",
+      });
+    }
   };
 
   const getTriggerLabel = (condition: string) => {
@@ -252,6 +299,10 @@ export const TidyCalAutomationRules = () => {
     const stage = stages.find(s => s.id === stageId);
     return stage ? stage.name : 'Etapa no encontrada';
   };
+
+  if (loading) {
+    return <div className="p-6">Cargando reglas...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -467,6 +518,11 @@ export const TidyCalAutomationRules = () => {
                       <div className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         <span>Crea actividad</span>
+                      </div>
+                    )}
+                    {rule.cancel_previous_activity && (
+                      <div className="flex items-center gap-1">
+                        <span>Cancela actividades previas</span>
                       </div>
                     )}
                   </div>

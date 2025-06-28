@@ -26,6 +26,35 @@ export const useActivityOperations = () => {
     }
   }, []);
 
+  const fetchAllActivities = useCallback(async (): Promise<ContactActivity[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('contact_activities')
+        .select(`
+          *,
+          contact:contacts(
+            id,
+            first_name,
+            last_name,
+            phone,
+            email
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      return (data || []).map(activity => ({
+        ...activity,
+        activity_type: activity.activity_type as ContactActivity['activity_type'],
+        status: (activity.status || 'pending') as ContactActivity['status']
+      }));
+    } catch (error) {
+      console.error('Error fetching all activities:', error);
+      return [];
+    }
+  }, []);
+
   const createActivity = useCallback(async (activityData: Omit<ContactActivity, 'id' | 'created_at' | 'updated_at'>) => {
     try {
       const { data, error } = await supabase
@@ -138,6 +167,7 @@ export const useActivityOperations = () => {
 
   return {
     fetchContactActivities,
+    fetchAllActivities,
     createActivity,
     updateActivity,
     markActivityComplete,

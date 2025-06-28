@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, User, Phone, CheckCircle, Circle, AlertTriangle, Edit, X } from 'lucide-react';
+import { formatActivityDate, formatActivityDateTime, isActivityOverdue, isActivityDueSoon } from '@/utils/dateUtils';
 
 interface Activity {
   id: string;
@@ -11,8 +13,12 @@ interface Activity {
   activity_type: string;
   scheduled_date: string;
   scheduled_time?: string;
+  due_date?: string;
   is_completed: boolean;
   status?: string;
+  created_at: string;
+  tidycal_booking_id?: number;
+  tidycal_booking_reference?: string;
   contact: {
     id: string;
     first_name: string;
@@ -27,31 +33,14 @@ interface ActivitiesListViewProps {
   onMarkComplete: (id: string) => void;
   onCancelActivity: (id: string) => void;
   onEditActivity: (activity: Activity) => void;
-  isActivityOverdue: (activity: Activity) => boolean;
-  isActivityDueSoon: (activity: Activity) => boolean;
 }
 
 export const ActivitiesListView = ({ 
   activities, 
   onMarkComplete, 
   onCancelActivity, 
-  onEditActivity, 
-  isActivityOverdue, 
-  isActivityDueSoon 
+  onEditActivity
 }: ActivitiesListViewProps) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  };
-
-  const formatTime = (timeString?: string) => {
-    if (!timeString) return '';
-    return timeString.slice(0, 5);
-  };
-
   const getActivityTypeColor = (type: string) => {
     const colors = {
       call: 'bg-blue-100 text-blue-800',
@@ -85,8 +74,9 @@ export const ActivitiesListView = ({
             <TableHead>Actividad</TableHead>
             <TableHead>Tipo</TableHead>
             <TableHead>Contacto</TableHead>
-            <TableHead>Fecha</TableHead>
+            <TableHead>Fecha Límite</TableHead>
             <TableHead>Hora</TableHead>
+            <TableHead>TidyCal</TableHead>
             <TableHead>Acciones</TableHead>
           </TableRow>
         </TableHeader>
@@ -150,7 +140,7 @@ export const ActivitiesListView = ({
                 <TableCell>
                   <div className="flex items-center gap-1 text-sm">
                     <Calendar className="h-4 w-4 text-gray-400" />
-                    {formatDate(activity.scheduled_date)}
+                    {formatActivityDate(activity)}
                   </div>
                 </TableCell>
                 
@@ -158,8 +148,16 @@ export const ActivitiesListView = ({
                   {activity.scheduled_time && (
                     <div className="flex items-center gap-1 text-sm">
                       <Clock className="h-4 w-4 text-gray-400" />
-                      {formatTime(activity.scheduled_time)}
+                      {activity.scheduled_time.slice(0, 5)}
                     </div>
+                  )}
+                </TableCell>
+
+                <TableCell>
+                  {activity.tidycal_booking_id && (
+                    <Badge variant="outline" className="text-xs">
+                      #{activity.tidycal_booking_id}
+                    </Badge>
                   )}
                 </TableCell>
                 

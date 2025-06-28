@@ -4,8 +4,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ContactActivity } from '@/types/crm';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { 
   Clock, 
   Phone, 
@@ -16,16 +14,16 @@ import {
   ArrowUpDown,
   CheckCircle,
   Edit,
-  X
+  X,
+  Calendar
 } from 'lucide-react';
+import { formatActivityDate, formatActivityDateTime, isActivityOverdue, isActivityDueSoon } from '@/utils/dateUtils';
 
 interface ActivitiesCardProps {
   activity: ContactActivity;
   onComplete: (id: string) => void;
   onCancel: (id: string) => void;
   onEdit: (activity: ContactActivity) => void;
-  isOverdue?: boolean;
-  isDueSoon?: boolean;
 }
 
 const getActivityIcon = (type: string) => {
@@ -90,23 +88,9 @@ export const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
   onComplete,
   onCancel,
   onEdit,
-  isOverdue = false,
-  isDueSoon = false,
 }) => {
-  const getScheduledDateTime = () => {
-    if (activity.scheduled_date && activity.scheduled_time) {
-      const dateTime = new Date(`${activity.scheduled_date}T${activity.scheduled_time}`);
-      return format(dateTime, 'dd MMM yyyy - HH:mm', { locale: es });
-    }
-    return null;
-  };
-
-  const getDueDate = () => {
-    if (activity.due_date) {
-      return format(new Date(activity.due_date), 'dd MMM yyyy', { locale: es });
-    }
-    return null;
-  };
+  const isOverdue = isActivityOverdue(activity);
+  const isDueSoon = isActivityDueSoon(activity);
 
   return (
     <Card className={`w-full ${isOverdue ? 'border-red-500 bg-red-50' : isDueSoon ? 'border-orange-500 bg-orange-50' : ''}`}>
@@ -188,17 +172,15 @@ export const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
 
           {/* Dates and times */}
           <div className="space-y-1 text-xs text-gray-500">
-            {getScheduledDateTime() && (
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3 w-3 flex-shrink-0" />
+              <span className="break-words">Fecha límite: {formatActivityDate(activity)}</span>
+            </div>
+
+            {activity.scheduled_time && (
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3 flex-shrink-0" />
-                <span className="break-words">Programada: {getScheduledDateTime()}</span>
-              </div>
-            )}
-            
-            {getDueDate() && (
-              <div className="flex items-center gap-1">
-                <Bell className="h-3 w-3 flex-shrink-0" />
-                <span className="break-words">Vence: {getDueDate()}</span>
+                <span className="break-words">Hora: {activity.scheduled_time.slice(0, 5)}</span>
               </div>
             )}
 
@@ -206,16 +188,18 @@ export const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
               <div className="flex items-center gap-1">
                 <CheckCircle className="h-3 w-3 flex-shrink-0" />
                 <span className="break-words">
-                  Completada: {format(new Date(activity.completed_at), 'dd MMM yyyy - HH:mm', { locale: es })}
+                  Completada: {formatActivityDateTime({ ...activity, scheduled_date: activity.completed_at })}
                 </span>
               </div>
             )}
 
-            <div className="flex items-center gap-1">
-              <span className="break-words">
-                Creada: {format(new Date(activity.created_at), 'dd MMM yyyy', { locale: es })}
-              </span>
-            </div>
+            {(activity as any).tidycal_booking_id && (
+              <div className="flex items-center gap-1">
+                <Badge variant="outline" className="text-xs">
+                  TidyCal #{(activity as any).tidycal_booking_id}
+                </Badge>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

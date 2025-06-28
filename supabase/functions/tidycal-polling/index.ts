@@ -44,9 +44,9 @@ serve(async (req) => {
 
     console.log('📝 Sync log created:', syncLog.id);
 
-    // Calculate time range (last 2 hours to avoid missing bookings)
+    // Calculate time range (last 5 minutes to catch any recent changes)
     const now = new Date();
-    const twoHoursAgo = new Date(now.getTime() - (2 * 60 * 60 * 1000));
+    const fiveMinutesAgo = new Date(now.getTime() - (5 * 60 * 1000));
 
     // Fetch bookings from TidyCal
     const tidyCalHeaders = {
@@ -55,7 +55,7 @@ serve(async (req) => {
     };
 
     const queryParams = new URLSearchParams({
-      starts_at: twoHoursAgo.toISOString(),
+      starts_at: fiveMinutesAgo.toISOString(),
       ends_at: new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)).toISOString(), // Next 30 days
     });
 

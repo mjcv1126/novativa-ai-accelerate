@@ -7,13 +7,12 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('🔧 Setting up TidyCal cron job');
+    console.log('🔧 Setting up TidyCal cron job...');
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -23,77 +22,95 @@ serve(async (req) => {
     const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // First, unschedule any existing TidyCal polling jobs
-    console.log('🧹 Cleaning up existing cron jobs');
-    
-    const { error: unscheduleError } = await supabase.rpc('cron_unschedule', {
-      job_name: 'tidycal-polling-every-15-minutes'
-    });
-
-    if (unscheduleError && !unscheduleError.message.includes('does not exist')) {
-      console.error('Error unscheduling existing job:', unscheduleError);
+    // Enable pg_cron and pg_net extensions if not already enabled
+    try {
+      await supabase.rpc('exec', { 
+        sql: 'CREATE EXTENSION IF NOT EXISTS pg_cron;' 
+      });
+      await supabase.rpc('exec', { 
+        sql: 'CREATE EXTENSION IF NOT EXISTS pg_net;' 
+      });
+      console.log('✅ Extensions enabled');
+    } catch (error) {
+      console.log('Extensions may already be enabled or need manual setup:', error);
     }
 
-    // Schedule new cron job to run every 15 minutes
-    console.log('⏰ Scheduling new cron job for TidyCal polling');
-    
-    const cronQuery = `
+    // Remove existing cron job if exists
+    try {
+      const { error: deleteError } = await supabase
+        .from('cron.job')
+        .delete()
+        .eq('jobname', 'tidycal-sync');
+
+      if (deleteError && !deleteError.message.includes('does not exist')) {
+        console.error('Error removing existing cron job:', deleteError);
+      }
+    } catch (error) {
+      console.log('No existing cron job to remove or cron not available');
+    }
+
+    // Create new cron job to run every minute
+    const cronJobSQL = `
       SELECT cron.schedule(
-        'tidycal-polling-every-15-minutes',
-        '*/15 * * * *', -- Every 15 minutes
+        'tidycal-sync',
+        '* * * * *', -- every minute
         $$
         SELECT
           net.http_post(
-            url:='${supabaseUrl}/functions/v1/tidycal-polling',
-            headers:='{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseAnonKey}"}'::jsonb,
-            body:='{"scheduled": true}'::jsonb
+              url:='${supabaseUrl}/functions/v1/tidycal-polling',
+              headers:='{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseAnonKey}"}'::jsonb,
+              body:=concat('{"triggered_at": "', now(), '"}')::jsonb
           ) as request_id;
         $$
       );
     `;
 
-    const { error: scheduleError } = await supabase.rpc('exec_sql', {
-      sql: cronQuery
-    });
+    try {
+      const { data, error } = await supabase.rpc('exec', { 
+        sql: cronJobSQL 
+      });
 
-    if (scheduleError) {
-      console.error('Error scheduling cron job:', scheduleError);
-      throw scheduleError;
+      if (error) {
+        console.error('Error creating cron job:', error);
+        throw error;
+      }
+
+      console.log('✅ Cron job created successfully:', data);
+    } catch (error) {
+      console.error('Failed to create cron job. This may need to be done manually:', error);
+      
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Cron job setup failed - may need manual configuration',
+          manual_setup_instructions: {
+            sql: cronJobSQL,
+            note: 'Run this SQL manually in your Supabase SQL editor if cron setup fails'
+          }
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    console.log('✅ TidyCal cron job setup completed successfully');
-
-    // Also trigger an immediate polling to test
-    console.log('🧪 Triggering immediate test polling');
-    
-    const testResponse = await fetch(`${supabaseUrl}/functions/v1/tidycal-polling`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseAnonKey}`,
-      },
-      body: JSON.stringify({ test: true })
-    });
-
-    const testResult = await testResponse.json();
-    console.log('🧪 Test polling result:', testResult);
+    console.log('🎉 TidyCal cron job setup completed successfully');
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'TidyCal cron job setup completed successfully',
-        cron_schedule: '*/15 * * * * (every 15 minutes)',
-        test_result: testResult
+        message: 'TidyCal sync cron job configured to run every minute',
+        schedule: 'Every minute (* * * * *)',
+        function_url: `${supabaseUrl}/functions/v1/tidycal-polling`
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
-    console.error('💥 Error setting up TidyCal cron job:', error);
+    console.error('💥 Cron setup error:', error);
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: error.message,
+        note: 'Manual cron setup may be required in Supabase dashboard'
       }),
       { 
         status: 500, 

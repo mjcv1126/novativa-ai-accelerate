@@ -153,6 +153,8 @@ export type Database = {
           scheduled_date: string | null
           scheduled_time: string | null
           status: string | null
+          tidycal_booking_id: number | null
+          tidycal_booking_reference: string | null
           title: string
           updated_at: string
         }
@@ -168,6 +170,8 @@ export type Database = {
           scheduled_date?: string | null
           scheduled_time?: string | null
           status?: string | null
+          tidycal_booking_id?: number | null
+          tidycal_booking_reference?: string | null
           title: string
           updated_at?: string
         }
@@ -183,6 +187,8 @@ export type Database = {
           scheduled_date?: string | null
           scheduled_time?: string | null
           status?: string | null
+          tidycal_booking_id?: number | null
+          tidycal_booking_reference?: string | null
           title?: string
           updated_at?: string
         }
@@ -323,6 +329,65 @@ export type Database = {
           },
         ]
       }
+      tidycal_automation_rules: {
+        Row: {
+          activity_description: string | null
+          activity_title: string | null
+          cancel_previous_activity: boolean | null
+          contact_action: string | null
+          contact_action_data: string | null
+          create_activity: boolean | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          target_stage_id: string | null
+          trigger_condition: string
+          updated_at: string | null
+        }
+        Insert: {
+          activity_description?: string | null
+          activity_title?: string | null
+          cancel_previous_activity?: boolean | null
+          contact_action?: string | null
+          contact_action_data?: string | null
+          create_activity?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          target_stage_id?: string | null
+          trigger_condition: string
+          updated_at?: string | null
+        }
+        Update: {
+          activity_description?: string | null
+          activity_title?: string | null
+          cancel_previous_activity?: boolean | null
+          contact_action?: string | null
+          contact_action_data?: string | null
+          create_activity?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          target_stage_id?: string | null
+          trigger_condition?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tidycal_automation_rules_target_stage_id_fkey"
+            columns: ["target_stage_id"]
+            isOneToOne: false
+            referencedRelation: "crm_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tidycal_processed_bookings: {
         Row: {
           booking_ends_at: string
@@ -369,6 +434,51 @@ export type Database = {
             columns: ["contact_id"]
             isOneToOne: false
             referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tidycal_rule_executions: {
+        Row: {
+          contact_id: string | null
+          error_message: string | null
+          executed_at: string | null
+          execution_result: string | null
+          id: string
+          rule_id: string | null
+          tidycal_booking_id: number
+        }
+        Insert: {
+          contact_id?: string | null
+          error_message?: string | null
+          executed_at?: string | null
+          execution_result?: string | null
+          id?: string
+          rule_id?: string | null
+          tidycal_booking_id: number
+        }
+        Update: {
+          contact_id?: string | null
+          error_message?: string | null
+          executed_at?: string | null
+          execution_result?: string | null
+          id?: string
+          rule_id?: string | null
+          tidycal_booking_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tidycal_rule_executions_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tidycal_rule_executions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "tidycal_automation_rules"
             referencedColumns: ["id"]
           },
         ]
