@@ -68,9 +68,26 @@ export const ActivitiesListView = ({ activities, onMarkComplete, onEditActivity 
 
   const isOverdue = (activity: Activity) => {
     if (activity.is_completed) return false;
-    const today = new Date();
+    
+    const now = new Date();
     const scheduledDate = new Date(activity.scheduled_date);
-    return scheduledDate < today;
+    
+    // Si hay hora programada, crear fecha completa con hora
+    if (activity.scheduled_time) {
+      const [hours, minutes] = activity.scheduled_time.split(':').map(Number);
+      const scheduledDateTime = new Date(scheduledDate);
+      scheduledDateTime.setHours(hours, minutes, 0, 0);
+      
+      // Solo está retrasada si la fecha y hora completas han pasado
+      return scheduledDateTime < now;
+    } else {
+      // Si no hay hora, comparar solo fechas (retrasada si la fecha ya pasó completamente)
+      const today = new Date();
+      today.setHours(23, 59, 59, 999); // Final del día actual
+      scheduledDate.setHours(23, 59, 59, 999); // Final del día programado
+      
+      return scheduledDate < today;
+    }
   };
 
   return (

@@ -49,24 +49,43 @@ const AdminActivities = () => {
   const { fetchAllUpcomingActivities } = useActivitiesData();
   const { markActivityComplete } = useActivityOperations();
 
+  const isActivityOverdue = (activity: any) => {
+    if (activity.is_completed) return false;
+    
+    const now = new Date();
+    const scheduledDate = new Date(activity.scheduled_date);
+    
+    // Si hay hora programada, crear fecha completa con hora
+    if (activity.scheduled_time) {
+      const [hours, minutes] = activity.scheduled_time.split(':').map(Number);
+      const scheduledDateTime = new Date(scheduledDate);
+      scheduledDateTime.setHours(hours, minutes, 0, 0);
+      
+      // Solo está retrasada si la fecha y hora completas han pasado
+      return scheduledDateTime < now;
+    } else {
+      // Si no hay hora, comparar solo fechas (retrasada si la fecha ya pasó completamente)
+      const today = new Date();
+      today.setHours(23, 59, 59, 999); // Final del día actual
+      scheduledDate.setHours(23, 59, 59, 999); // Final del día programado
+      
+      return scheduledDate < today;
+    }
+  };
+
   const loadActivities = async () => {
     setLoading(true);
     try {
       const data = await fetchAllUpcomingActivities();
       
-      // Identificar actividades retrasadas
-      const today = new Date();
+      // Identificar actividades retrasadas usando la nueva lógica
       const overdueActivities = [
         ...data.today,
         ...data.tomorrow,
         ...data.this_week,
         ...data.next_week,
         ...data.future
-      ].filter(activity => {
-        if (activity.is_completed) return false;
-        const scheduledDate = new Date(activity.scheduled_date);
-        return scheduledDate < today;
-      });
+      ].filter(activity => isActivityOverdue(activity));
       
       // Crear el array "all" con todas las actividades combinadas
       const allActivities = [
@@ -133,12 +152,7 @@ const AdminActivities = () => {
           filtered = filtered.filter(activity => !activity.is_completed);
           break;
         case 'overdue':
-          const today = new Date();
-          filtered = filtered.filter(activity => {
-            if (activity.is_completed) return false;
-            const scheduledDate = new Date(activity.scheduled_date);
-            return scheduledDate < today;
-          });
+          filtered = filtered.filter(activity => isActivityOverdue(activity));
           break;
       }
     }
