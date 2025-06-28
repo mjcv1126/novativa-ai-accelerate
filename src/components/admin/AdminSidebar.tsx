@@ -38,7 +38,7 @@ const AdminSidebar = () => {
       title: 'Usuarios',
       icon: Shield,
       path: '/admin/users',
-      roles: ['admin', 'super_admin']
+      roles: ['super_admin']
     },
     {
       title: 'Blog',
