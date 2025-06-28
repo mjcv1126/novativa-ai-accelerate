@@ -19,9 +19,9 @@ const AdminLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminHeader />
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         <AdminSidebar />
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 lg:p-8 min-w-0">
           <Routes>
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="blog" element={<AdminBlog />} />

@@ -66,25 +66,25 @@ export const ActivitiesCard = ({ activity, onMarkComplete }: ActivitiesCardProps
   };
 
   return (
-    <Card className={`hover:shadow-md transition-shadow ${activity.is_completed ? 'opacity-75' : ''}`}>
+    <Card className={`hover:shadow-md transition-shadow h-fit ${activity.is_completed ? 'opacity-75' : ''}`}>
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Badge className={getActivityTypeColor(activity.activity_type)}>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+              <Badge className={`${getActivityTypeColor(activity.activity_type)} text-xs w-fit`}>
                 {getActivityTypeLabel(activity.activity_type)}
               </Badge>
               {activity.is_completed ? (
-                <CheckCircle className="h-4 w-4 text-green-600" />
+                <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
               ) : (
-                <Circle className="h-4 w-4 text-gray-400" />
+                <Circle className="h-4 w-4 text-gray-400 flex-shrink-0" />
               )}
             </div>
-            <CardTitle className="text-lg font-semibold text-gray-900">
+            <CardTitle className="text-base lg:text-lg font-semibold text-gray-900">
               {activity.title}
             </CardTitle>
             {activity.description && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
                 {activity.description}
               </p>
             )}
@@ -93,27 +93,31 @@ export const ActivitiesCard = ({ activity, onMarkComplete }: ActivitiesCardProps
       </CardHeader>
       
       <CardContent className="space-y-3">
-        <div className="flex items-center gap-4 text-sm text-gray-600">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
+            <Calendar className="h-4 w-4 flex-shrink-0" />
             <span>{formatDate(activity.scheduled_date)}</span>
           </div>
           {activity.scheduled_time && (
             <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
+              <Clock className="h-4 w-4 flex-shrink-0" />
               <span>{formatTime(activity.scheduled_time)}</span>
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm">
-            <User className="h-4 w-4 text-gray-500" />
-            <span className="font-medium">
-              {activity.contact.first_name} {activity.contact.last_name}
-            </span>
-            <Phone className="h-3 w-3 text-gray-400 ml-2" />
-            <span className="text-gray-500">{activity.contact.phone}</span>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm min-w-0">
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-gray-500 flex-shrink-0" />
+              <span className="font-medium truncate">
+                {activity.contact.first_name} {activity.contact.last_name}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-500">
+              <Phone className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">{activity.contact.phone}</span>
+            </div>
           </div>
 
           {!activity.is_completed && (
@@ -121,7 +125,7 @@ export const ActivitiesCard = ({ activity, onMarkComplete }: ActivitiesCardProps
               size="sm"
               variant="outline"
               onClick={() => onMarkComplete(activity.id)}
-              className="text-green-600 hover:text-green-700 hover:border-green-300"
+              className="text-green-600 hover:text-green-700 hover:border-green-300 w-full sm:w-auto flex-shrink-0"
             >
               Completar
             </Button>

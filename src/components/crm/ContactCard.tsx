@@ -30,26 +30,26 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow cursor-pointer">
+    <Card className="hover:shadow-md transition-shadow cursor-pointer h-fit">
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <CardTitle className="text-lg font-semibold text-gray-900">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-base lg:text-lg font-semibold text-gray-900 truncate">
               {contact.first_name} {contact.last_name}
             </CardTitle>
             {contact.company && (
               <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                <Building className="h-3 w-3" />
-                {contact.company}
+                <Building className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate">{contact.company}</span>
               </div>
             )}
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {contact.stage && (
               <Badge 
                 variant="secondary" 
-                className="text-xs"
+                className="text-xs hidden sm:inline-flex"
                 style={{ 
                   backgroundColor: `${contact.stage.color}20`,
                   color: contact.stage.color,
@@ -86,40 +86,55 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
             </DropdownMenu>
           </div>
         </div>
+        
+        {/* Mobile badge */}
+        {contact.stage && (
+          <Badge 
+            variant="secondary" 
+            className="text-xs sm:hidden w-fit"
+            style={{ 
+              backgroundColor: `${contact.stage.color}20`,
+              color: contact.stage.color,
+              borderColor: contact.stage.color
+            }}
+          >
+            {contact.stage.name}
+          </Badge>
+        )}
       </CardHeader>
       
       <CardContent className="space-y-2">
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Phone className="h-3 w-3" />
-          <span>{formatPhone(contact.phone)}</span>
-          <span className="text-xs text-gray-400">({contact.country_name})</span>
+          <Phone className="h-3 w-3 flex-shrink-0" />
+          <span className="truncate">{formatPhone(contact.phone)}</span>
+          <span className="text-xs text-gray-400 hidden sm:inline">({contact.country_name})</span>
         </div>
         
         {contact.email && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Mail className="h-3 w-3" />
+            <Mail className="h-3 w-3 flex-shrink-0" />
             <span className="truncate">{contact.email}</span>
           </div>
         )}
 
         {contact.assignment && (
           <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-3 py-2 rounded-md border-l-4 border-blue-500">
-            <User className="h-4 w-4" />
-            <span className="font-medium">
+            <User className="h-4 w-4 flex-shrink-0" />
+            <span className="font-medium truncate">
               Lead asignado a: {contact.assignment.assigned_user_email.split('@')[0]}
             </span>
           </div>
         )}
         
         <div className="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t">
-          <Calendar className="h-3 w-3" />
-          <span>Creado: {formatDate(contact.created_at)}</span>
+          <Calendar className="h-3 w-3 flex-shrink-0" />
+          <span className="truncate">Creado: {formatDate(contact.created_at)}</span>
         </div>
         
         {contact.last_contact_date && (
           <div className="flex items-center gap-2 text-xs text-gray-500">
-            <Calendar className="h-3 w-3" />
-            <span>Último contacto: {formatDate(contact.last_contact_date)}</span>
+            <Calendar className="h-3 w-3 flex-shrink-0" />
+            <span className="truncate">Último contacto: {formatDate(contact.last_contact_date)}</span>
           </div>
         )}
       </CardContent>
