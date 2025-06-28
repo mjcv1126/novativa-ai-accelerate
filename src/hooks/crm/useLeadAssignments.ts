@@ -18,19 +18,6 @@ export const useLeadAssignments = () => {
     return 'soporte@novativa.org';
   }, []);
 
-  const setCurrentUserForTrigger = useCallback(async (userEmail: string) => {
-    try {
-      // Establecer el email del usuario actual para que el trigger lo use
-      await supabase.rpc('set_config', {
-        setting_name: 'app.current_user_email',
-        new_value: userEmail,
-        is_local: false
-      });
-    } catch (error) {
-      console.error('Error setting current user for trigger:', error);
-    }
-  }, []);
-
   const getContactAssignment = useCallback(async (contactId: string): Promise<LeadAssignment | null> => {
     try {
       const { data, error } = await supabase
@@ -108,7 +95,6 @@ export const useLeadAssignments = () => {
 
   return {
     getCurrentUserEmail,
-    setCurrentUserForTrigger,
     getContactAssignment,
     assignLead,
     getAvailableUsers,

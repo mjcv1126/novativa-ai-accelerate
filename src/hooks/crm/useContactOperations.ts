@@ -18,18 +18,6 @@ export const useContactOperations = () => {
     return 'soporte@novativa.org';
   };
 
-  const setCurrentUserForTrigger = async (userEmail: string) => {
-    try {
-      await supabase.rpc('set_config', {
-        setting_name: 'app.current_user_email',
-        new_value: userEmail,
-        is_local: false
-      });
-    } catch (error) {
-      console.error('Error setting current user for trigger:', error);
-    }
-  };
-
   const fetchContacts = useCallback(async (filters: CrmFilters): Promise<ContactWithStage[]> => {
     try {
       let query = supabase
@@ -99,15 +87,23 @@ export const useContactOperations = () => {
     try {
       const currentUserEmail = getCurrentUserEmail();
       
-      // Establecer el usuario actual para el trigger
-      await setCurrentUserForTrigger(currentUserEmail);
-
+      // Primero actualizar el contacto
       const { error } = await supabase
         .from('contacts')
         .update(updates)
         .eq('id', id);
 
       if (error) throw error;
+
+      // Luego crear una nueva asignación para el usuario que modificó
+      await supabase
+        .from('lead_assignments')
+        .insert([{
+          contact_id: id,
+          assigned_user_email: currentUserEmail,
+          assigned_by_email: currentUserEmail,
+          notes: 'Reasignado al modificar el lead'
+        }]);
 
       toast({
         title: "Éxito",
@@ -127,15 +123,23 @@ export const useContactOperations = () => {
     try {
       const currentUserEmail = getCurrentUserEmail();
       
-      // Establecer el usuario actual para el trigger
-      await setCurrentUserForTrigger(currentUserEmail);
-
+      // Actualizar el contacto
       const { error } = await supabase
         .from('contacts')
         .update({ stage_id: stageId, last_contact_date: new Date().toISOString() })
         .eq('id', contactId);
 
       if (error) throw error;
+
+      // Crear nueva asignación
+      await supabase
+        .from('lead_assignments')
+        .insert([{
+          contact_id: contactId,
+          assigned_user_email: currentUserEmail,
+          assigned_by_email: currentUserEmail,
+          notes: 'Reasignado al cambiar de etapa'
+        }]);
 
       // Create activity for stage change
       await supabase
