@@ -391,8 +391,8 @@ const AdminActivities = () => {
                     <ActivitiesCard
                       key={activity.id}
                       activity={activity}
-                      onMarkComplete={handleMarkComplete}
-                      onEditActivity={handleEditActivity}
+                      onComplete={handleMarkComplete}
+                      onEdit={handleEditActivity}
                     />
                   ))}
                 </div>
