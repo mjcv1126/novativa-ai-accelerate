@@ -7,11 +7,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ContactWithStage, CrmStage, ContactActivity } from '@/types/crm';
-import { Phone, Mail, Building, MapPin, Calendar, Plus, CheckCircle, Clock } from 'lucide-react';
+import { Phone, Mail, Building, MapPin, Calendar, Plus, CheckCircle, Clock, User } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLeadAssignments } from '@/hooks/crm/useLeadAssignments';
 
 interface ContactDetailDialogProps {
   contact: ContactWithStage | null;
@@ -34,10 +35,13 @@ export const ContactDetailDialog = ({
 }: ContactDetailDialogProps) => {
   const [editMode, setEditMode] = useState(false);
   const [activities, setActivities] = useState<ContactActivity[]>([]);
+  const [assignedUser, setAssignedUser] = useState<string>('');
   const [newActivity, setNewActivity] = useState({
     title: '',
     description: '',
-    activity_type: 'note' as ContactActivity['activity_type']
+    activity_type: 'note' as ContactActivity['activity_type'],
+    scheduled_date: '',
+    scheduled_time: ''
   });
   const [formData, setFormData] = useState({
     first_name: '',
@@ -48,6 +52,9 @@ export const ContactDetailDialog = ({
     stage_id: '',
     notes: ''
   });
+
+  const { getContactAssignment, assignLead, getAvailableUsers } = useLeadAssignments();
+  const availableUsers = getAvailableUsers();
 
   useEffect(() => {
     if (contact) {
@@ -63,8 +70,17 @@ export const ContactDetailDialog = ({
       
       // Load activities
       fetchActivities(contact.id).then(setActivities);
+      
+      // Load assignment
+      getContactAssignment(contact.id).then(assignment => {
+        if (assignment) {
+          setAssignedUser(assignment.assigned_user_email);
+        } else {
+          setAssignedUser('');
+        }
+      });
     }
-  }, [contact, fetchActivities]);
+  }, [contact, fetchActivities, getContactAssignment]);
 
   const handleSave = () => {
     if (contact) {
@@ -73,18 +89,33 @@ export const ContactDetailDialog = ({
     }
   };
 
+  const handleAssignUser = async (userEmail: string) => {
+    if (contact && userEmail !== assignedUser) {
+      const success = await assignLead(contact.id, userEmail, 'Reasignación manual desde la ficha del contacto');
+      if (success) {
+        setAssignedUser(userEmail);
+      }
+    }
+  };
+
   const handleAddActivity = () => {
     if (contact && newActivity.title) {
-      onCreateActivity({
+      const activityData = {
         contact_id: contact.id,
         ...newActivity,
-        is_completed: false
-      });
+        is_completed: false,
+        scheduled_date: newActivity.scheduled_date || undefined,
+        scheduled_time: newActivity.scheduled_time || undefined
+      };
+      
+      onCreateActivity(activityData);
       
       setNewActivity({
         title: '',
         description: '',
-        activity_type: 'note'
+        activity_type: 'note',
+        scheduled_date: '',
+        scheduled_time: ''
       });
       
       // Refresh activities
@@ -215,6 +246,25 @@ export const ContactDetailDialog = ({
                       </SelectContent>
                     </Select>
                   </div>
+
+                  <div>
+                    <Label htmlFor="assigned_user">Lead Asignado a</Label>
+                    <Select value={assignedUser} onValueChange={handleAssignUser}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar usuario" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableUsers.map((user) => (
+                          <SelectItem key={user.email} value={user.email}>
+                            <div className="flex items-center gap-2">
+                              <User className="h-4 w-4" />
+                              {user.name} ({user.email})
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   
                   <div>
                     <Label htmlFor="notes">Notas</Label>
@@ -256,6 +306,13 @@ export const ContactDetailDialog = ({
                     <Calendar className="h-4 w-4 text-gray-500" />
                     <span>Creado {format(new Date(contact.created_at), 'dd MMM yyyy', { locale: es })}</span>
                   </div>
+
+                  {assignedUser && (
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-gray-500" />
+                      <span>Asignado a: {assignedUser}</span>
+                    </div>
+                  )}
                   
                   {contact.stage && (
                     <Badge 
@@ -313,6 +370,22 @@ export const ContactDetailDialog = ({
                       onChange={(e) => setNewActivity(prev => ({ ...prev, title: e.target.value }))}
                     />
                   </div>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      type="date"
+                      placeholder="Fecha"
+                      value={newActivity.scheduled_date}
+                      onChange={(e) => setNewActivity(prev => ({ ...prev, scheduled_date: e.target.value }))}
+                    />
+                    <Input
+                      type="time"
+                      placeholder="Hora"
+                      value={newActivity.scheduled_time}
+                      onChange={(e) => setNewActivity(prev => ({ ...prev, scheduled_time: e.target.value }))}
+                    />
+                  </div>
+                  
                   <Textarea
                     placeholder="Descripción (opcional)"
                     value={newActivity.description}
@@ -342,6 +415,11 @@ export const ContactDetailDialog = ({
                       </div>
                       {activity.description && (
                         <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
+                      )}
+                      {(activity.scheduled_date || activity.scheduled_time) && (
+                        <p className="text-xs text-blue-600 mb-1">
+                          Programada: {activity.scheduled_date} {activity.scheduled_time}
+                        </p>
                       )}
                       <p className="text-xs text-gray-400">
                         {format(new Date(activity.created_at), 'dd MMM yyyy HH:mm', { locale: es })}
