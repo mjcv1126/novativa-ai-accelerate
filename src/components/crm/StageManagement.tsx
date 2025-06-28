@@ -9,8 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CrmStage } from '@/types/crm';
-import { Plus, Edit, Trash, Settings, GripVertical } from 'lucide-react';
+import { Plus, Edit, Trash, Settings, GripVertical, Copy } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
 
 interface StageManagementProps {
   stages: CrmStage[];
@@ -79,6 +80,14 @@ export const StageManagement = ({
     handleCloseDialog();
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copiado",
+      description: "ID copiado al portapapeles",
+    });
+  };
+
   const colorOptions = [
     '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6', 
     '#F97316', '#22C55E', '#EF4444', '#6B7280'
@@ -93,7 +102,7 @@ export const StageManagement = ({
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>Gestión de Etapas del Embudo</DialogTitle>
         </DialogHeader>
@@ -114,29 +123,49 @@ export const StageManagement = ({
                 </Button>
               </div>
               
-              <div className="space-y-2 max-h-64 overflow-y-auto">
+              <div className="space-y-3 max-h-96 overflow-y-auto">
                 {stages
                   .sort((a, b) => a.position - b.position)
                   .map((stage) => (
                   <Card key={stage.id} className="p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <GripVertical className="h-4 w-4 text-gray-400 cursor-move" />
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <GripVertical className="h-4 w-4 text-gray-400 cursor-move mt-1 flex-shrink-0" />
                         <div 
-                          className="w-4 h-4 rounded-full border-2 border-white shadow-sm" 
+                          className="w-4 h-4 rounded-full border-2 border-white shadow-sm mt-1 flex-shrink-0" 
                           style={{ backgroundColor: stage.color }}
                         />
-                        <div>
-                          <h4 className="font-medium text-sm">{stage.name}</h4>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-medium text-sm truncate">{stage.name}</h4>
+                            <Badge variant="outline" className="text-xs font-mono px-1">
+                              Pos: {stage.position}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 mb-2">
+                            <code className="text-xs bg-gray-100 px-2 py-1 rounded font-mono text-gray-600 truncate max-w-[200px]">
+                              {stage.id}
+                            </code>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => copyToClipboard(stage.id)}
+                            >
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          
                           {stage.description && (
-                            <p className="text-xs text-gray-500">{stage.description}</p>
+                            <p className="text-xs text-gray-500 line-clamp-2">{stage.description}</p>
                           )}
                         </div>
                       </div>
                       
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0">
                             <Edit className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>

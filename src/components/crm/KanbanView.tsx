@@ -42,33 +42,33 @@ export const KanbanView = ({
 
   return (
     <div className="w-full">
-      {/* Desktop View */}
-      <div className="hidden lg:flex gap-4 overflow-x-auto pb-4 min-h-[600px]">
+      {/* Desktop View - Fixed width columns */}
+      <div className="hidden lg:flex gap-3 overflow-x-auto pb-4 min-h-[600px]">
         {stages.map((stage) => {
           const stageContacts = getContactsForStage(stage.id);
           
           return (
             <Card 
               key={stage.id} 
-              className="min-w-[300px] flex-shrink-0"
+              className="w-72 flex-shrink-0"
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, stage.id)}
             >
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
                     <div 
-                      className="w-3 h-3 rounded-full" 
+                      className="w-3 h-3 rounded-full flex-shrink-0" 
                       style={{ backgroundColor: stage.color }}
                     />
-                    <span className="text-sm font-medium">{stage.name}</span>
+                    <span className="text-sm font-medium truncate">{stage.name}</span>
                   </div>
                   <Badge variant="secondary" className="text-xs">
                     {stageContacts.length}
                   </Badge>
                 </CardTitle>
                 {stage.description && (
-                  <p className="text-xs text-gray-500">{stage.description}</p>
+                  <p className="text-xs text-gray-500 line-clamp-2">{stage.description}</p>
                 )}
               </CardHeader>
               

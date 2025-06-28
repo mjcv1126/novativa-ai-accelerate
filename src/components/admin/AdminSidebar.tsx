@@ -11,7 +11,8 @@ import {
   Video,
   Shield,
   Calendar,
-  CalendarCheck
+  CalendarCheck,
+  Zap
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -59,6 +60,12 @@ const AdminSidebar = () => {
       title: 'Actividades',
       icon: Calendar,
       path: '/admin/activities',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'Automatizaciones',
+      icon: Zap,
+      path: '/admin/automations',
       roles: ['admin', 'super_admin']
     },
     {

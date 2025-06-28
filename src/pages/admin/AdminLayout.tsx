@@ -9,6 +9,7 @@ import AdminBlogEdit from './AdminBlogEdit';
 import AdminCRM from './AdminCRM';
 import AdminBookings from './AdminBookings';
 import AdminActivities from './AdminActivities';
+import AdminAutomations from './AdminAutomations';
 import AdminUsers from './AdminUsers';
 import AdminCustomCSS from './AdminCustomCSS';
 import AdminScripts from './AdminScripts';
@@ -58,6 +59,7 @@ const AdminLayout = () => {
               <Route path="crm" element={<AdminCRM />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="activities" element={<AdminActivities />} />
+              <Route path="automations" element={<AdminAutomations />} />
               <Route 
                 path="users" 
                 element={
