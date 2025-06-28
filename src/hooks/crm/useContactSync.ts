@@ -143,7 +143,140 @@ export const useContactSync = () => {
     }
   }, []);
 
-  return { syncContactFromForm };
+  const syncContactFromTidyCal = useCallback(async (tidyCalContact: {
+    name: string;
+    email: string;
+    phone_number?: string;
+    timezone?: string;
+  }) => {
+    try {
+      console.log('🔄 Syncing contact from TidyCal:', tidyCalContact);
+
+      // Parse the name into first and last name
+      const nameParts = tidyCalContact.name.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      // Check for existing contact by email or phone
+      let existingContactQuery = supabase
+        .from('contacts')
+        .select('*');
+
+      if (tidyCalContact.email) {
+        existingContactQuery = existingContactQuery.eq('email', tidyCalContact.email);
+      }
+
+      if (tidyCalContact.phone_number) {
+        existingContactQuery = existingContactQuery.or(`phone.eq.${tidyCalContact.phone_number}`);
+      }
+
+      const { data: existingContacts, error: queryError } = await existingContactQuery;
+      
+      if (queryError) {
+        console.error('❌ Error querying existing contacts:', queryError);
+        throw queryError;
+      }
+
+      console.log('🔍 Existing contacts found:', existingContacts?.length || 0);
+
+      // Get the "Llamada Programada" stage (position 2)
+      const { data: programmedCallStage, error: stageError } = await supabase
+        .from('crm_stages')
+        .select('id')
+        .eq('position', 2)
+        .eq('is_active', true)
+        .single();
+
+      let targetStageId = programmedCallStage?.id;
+
+      // If stage #2 doesn't exist, try to find any stage with "llamada" in the name
+      if (!targetStageId) {
+        const { data: fallbackStage } = await supabase
+          .from('crm_stages')
+          .select('id')
+          .ilike('name', '%llamada%')
+          .eq('is_active', true)
+          .single();
+        
+        targetStageId = fallbackStage?.id;
+      }
+
+      // If no suitable stage found, use the first stage
+      if (!targetStageId) {
+        const { data: firstStage } = await supabase
+          .from('crm_stages')
+          .select('id')
+          .eq('is_active', true)
+          .order('position')
+          .limit(1)
+          .single();
+        
+        targetStageId = firstStage?.id;
+      }
+
+      const contactData = {
+        first_name: firstName,
+        last_name: lastName,
+        email: tidyCalContact.email,
+        phone: tidyCalContact.phone_number || '',
+        country_code: '', // TidyCal doesn't provide this
+        country_name: '', // TidyCal doesn't provide this
+        stage_id: targetStageId,
+        notes: `Contacto creado/actualizado desde TidyCal. Timezone: ${tidyCalContact.timezone || 'N/A'}`,
+        last_contact_date: new Date().toISOString()
+      };
+
+      let contactId: string;
+
+      if (existingContacts && existingContacts.length > 0) {
+        // Update existing contact
+        const existingContact = existingContacts[0];
+        contactId = existingContact.id;
+        
+        console.log('🔄 Updating existing contact for TidyCal:', contactId);
+
+        const { error: updateError } = await supabase
+          .from('contacts')
+          .update({
+            stage_id: targetStageId,
+            last_contact_date: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', contactId);
+
+        if (updateError) {
+          console.error('❌ Error updating contact:', updateError);
+          throw updateError;
+        }
+
+        console.log('✅ Updated existing contact for TidyCal:', contactId);
+      } else {
+        // Create new contact
+        console.log('➕ Creating new contact from TidyCal');
+
+        const { data: newContact, error: insertError } = await supabase
+          .from('contacts')
+          .insert([contactData])
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error('❌ Error creating contact:', insertError);
+          throw insertError;
+        }
+
+        contactId = newContact.id;
+        console.log('✅ Created new contact from TidyCal:', contactId);
+      }
+
+      return { success: true, contactId, isNew: !existingContacts?.length };
+    } catch (error) {
+      console.error('💥 Error syncing TidyCal contact:', error);
+      return { success: false, error };
+    }
+  }, []);
+
+  return { syncContactFromForm, syncContactFromTidyCal };
 };
 
 const buildNotesFromForm = (formData: {
