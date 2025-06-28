@@ -110,11 +110,11 @@ const AdminCRM = () => {
           </div>
         </div>
 
-        {/* Stats Cards - Left aligned */}
+        {/* Stats Cards - Left aligned with fixed width */}
         <div className="space-y-4">
-          {/* Stats Cards - Responsive grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-            <Card>
+          {/* Stats Cards - Fixed width grid starting from left */}
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            <Card className="w-32 sm:w-36 lg:w-40">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                   Total Contactos
@@ -126,7 +126,7 @@ const AdminCRM = () => {
             </Card>
             
             {contactsByStage.slice(0, 3).map((stage) => (
-              <Card key={stage.id}>
+              <Card key={stage.id} className="w-32 sm:w-36 lg:w-40">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 flex items-center gap-1">
                     <div 
