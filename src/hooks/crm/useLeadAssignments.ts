@@ -20,22 +20,21 @@ export const useLeadAssignments = () => {
 
   const getContactAssignment = useCallback(async (contactId: string): Promise<LeadAssignment | null> => {
     try {
+      console.log('Fetching assignment for contact:', contactId);
       const { data, error } = await supabase
         .from('lead_assignments')
         .select('*')
         .eq('contact_id', contactId)
         .order('assigned_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle(); // Cambiar a maybeSingle para evitar errores cuando no hay datos
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          // No hay asignaciones para este contacto
-          return null;
-        }
-        throw error;
+        console.error('Error fetching contact assignment:', error);
+        return null;
       }
 
+      console.log('Assignment data received:', data);
       return data;
     } catch (error) {
       console.error('Error fetching contact assignment:', error);
@@ -47,16 +46,30 @@ export const useLeadAssignments = () => {
     try {
       const currentUserEmail = getCurrentUserEmail();
       
-      const { error } = await supabase
+      console.log('Creating assignment:', {
+        contact_id: contactId,
+        assigned_user_email: assignedUserEmail,
+        assigned_by_email: currentUserEmail,
+        notes: notes || 'Asignación manual'
+      });
+
+      const { data, error } = await supabase
         .from('lead_assignments')
         .insert([{
           contact_id: contactId,
           assigned_user_email: assignedUserEmail,
           assigned_by_email: currentUserEmail,
           notes: notes || 'Asignación manual'
-        }]);
+        }])
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error assigning lead:', error);
+        throw error;
+      }
+
+      console.log('Assignment created successfully:', data);
 
       toast({
         title: "Asignación exitosa",

@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,6 +55,23 @@ export const ContactDetailDialog = ({
   const { getContactAssignment, assignLead, getAvailableUsers } = useLeadAssignments();
   const availableUsers = getAvailableUsers();
 
+  const loadContactAssignment = useCallback(async () => {
+    if (contact) {
+      try {
+        const assignment = await getContactAssignment(contact.id);
+        console.log('Assignment loaded:', assignment);
+        if (assignment && assignment.assigned_user_email) {
+          setAssignedUser(assignment.assigned_user_email);
+        } else {
+          setAssignedUser('unassigned');
+        }
+      } catch (error) {
+        console.error('Error fetching assignment:', error);
+        setAssignedUser('unassigned');
+      }
+    }
+  }, [contact, getContactAssignment]);
+
   useEffect(() => {
     if (contact) {
       console.log('Contact changed:', contact);
@@ -75,19 +91,9 @@ export const ContactDetailDialog = ({
       });
       
       // Load assignment
-      getContactAssignment(contact.id).then(assignment => {
-        console.log('Assignment loaded:', assignment);
-        if (assignment && assignment.assigned_user_email) {
-          setAssignedUser(assignment.assigned_user_email);
-        } else {
-          setAssignedUser('unassigned');
-        }
-      }).catch(error => {
-        console.error('Error fetching assignment:', error);
-        setAssignedUser('unassigned');
-      });
+      loadContactAssignment();
     }
-  }, [contact, fetchActivities, getContactAssignment]);
+  }, [contact, fetchActivities, loadContactAssignment]);
 
   const handleSave = () => {
     if (contact) {
@@ -109,7 +115,8 @@ export const ContactDetailDialog = ({
       
       const success = await assignLead(contact.id, userEmail, 'Reasignación manual desde la ficha del contacto');
       if (success) {
-        setAssignedUser(userEmail);
+        // Recargar la asignación para obtener los datos actualizados
+        await loadContactAssignment();
         console.log('Lead assigned successfully to:', userEmail);
       } else {
         console.error('Failed to assign lead');
