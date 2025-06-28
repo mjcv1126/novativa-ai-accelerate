@@ -33,9 +33,11 @@ export const useTidyCalPolling = () => {
   const [syncLogs, setSyncLogs] = useState<SyncLog[]>([]);
   const [processedBookings, setProcessedBookings] = useState<ProcessedBooking[]>([]);
   const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState(false);
 
   const triggerPolling = useCallback(async () => {
     setLoading(true);
+    setAuthError(false);
     try {
       console.log('🔄 Triggering TidyCal polling...');
 
@@ -73,36 +75,70 @@ export const useTidyCalPolling = () => {
 
   const loadSyncLogs = useCallback(async () => {
     try {
+      setAuthError(false);
+      
+      // Check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log('User not authenticated, skipping sync logs fetch');
+        setAuthError(true);
+        return [];
+      }
+
       const { data, error } = await supabase
         .from('tidycal_sync_logs')
         .select('*')
         .order('sync_started_at', { ascending: false })
         .limit(10);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading sync logs:', error);
+        if (error.message.includes('RLS') || error.message.includes('policy')) {
+          setAuthError(true);
+        }
+        return [];
+      }
       
       setSyncLogs(data || []);
       return data;
     } catch (error) {
       console.error('Error loading sync logs:', error);
+      setAuthError(true);
       return [];
     }
   }, []);
 
   const loadProcessedBookings = useCallback(async (limit = 20) => {
     try {
+      setAuthError(false);
+      
+      // Check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log('User not authenticated, skipping processed bookings fetch');
+        setAuthError(true);
+        return [];
+      }
+
       const { data, error } = await supabase
         .from('tidycal_processed_bookings')
         .select('*')
         .order('processed_at', { ascending: false })
         .limit(limit);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading processed bookings:', error);
+        if (error.message.includes('RLS') || error.message.includes('policy')) {
+          setAuthError(true);
+        }
+        return [];
+      }
       
       setProcessedBookings(data || []);
       return data;
     } catch (error) {
       console.error('Error loading processed bookings:', error);
+      setAuthError(true);
       return [];
     }
   }, []);
@@ -121,8 +157,18 @@ export const useTidyCalPolling = () => {
   }, [syncLogs]);
 
   useEffect(() => {
-    loadSyncLogs();
-    loadProcessedBookings();
+    // Only load data if user is authenticated
+    const checkAuthAndLoadData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        loadSyncLogs();
+        loadProcessedBookings();
+      } else {
+        setAuthError(true);
+      }
+    };
+
+    checkAuthAndLoadData();
   }, [loadSyncLogs, loadProcessedBookings]);
 
   return {
@@ -132,6 +178,7 @@ export const useTidyCalPolling = () => {
     getLastSyncStatus,
     syncLogs,
     processedBookings,
-    loading
+    loading,
+    authError
   };
 };

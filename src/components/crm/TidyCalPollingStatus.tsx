@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { RefreshCw, Clock, CheckCircle, AlertCircle, XCircle, Activity } from 'lucide-react';
+import { RefreshCw, Clock, CheckCircle, AlertCircle, XCircle, Activity, Shield } from 'lucide-react';
 import { useTidyCalPolling } from '@/hooks/crm/useTidyCalPolling';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -14,7 +14,8 @@ export const TidyCalPollingStatus = () => {
     getLastSyncStatus, 
     syncLogs, 
     processedBookings,
-    loading 
+    loading,
+    authError
   } = useTidyCalPolling();
 
   const lastSync = getLastSyncStatus();
@@ -63,6 +64,25 @@ export const TidyCalPollingStatus = () => {
         return 'Desconocido';
     }
   };
+
+  if (authError) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center gap-3 text-amber-600">
+            <Shield className="h-5 w-5" />
+            <div>
+              <p className="font-medium">Acceso Restringido</p>
+              <p className="text-sm text-gray-600">
+                Necesitas estar autenticado para ver el historial de sincronización.
+                La funcionalidad de sincronización automática sigue funcionando en segundo plano.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-4">
