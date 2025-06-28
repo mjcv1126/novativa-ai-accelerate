@@ -8,7 +8,6 @@ import { KanbanView } from '@/components/crm/KanbanView';
 import { ContactDetailDialog } from '@/components/crm/ContactDetailDialog';
 import { StageManagement } from '@/components/crm/StageManagement';
 import { AddContactDialog } from '@/components/crm/AddContactDialog';
-import { TidyCalIntegration } from '@/components/crm/TidyCalIntegration';
 import { Button } from '@/components/ui/button';
 import { ViewMode, ContactWithStage } from '@/types/crm';
 import { List, Kanban, RefreshCw } from 'lucide-react';
@@ -210,11 +209,6 @@ const AdminCRM = () => {
             )}
           </>
         )}
-
-        {/* TidyCal Integration - Moved to the bottom */}
-        <div className="border-t pt-6 mt-8">
-          <TidyCalIntegration />
-        </div>
 
         {/* Contact Detail Dialog */}
         <ContactDetailDialog

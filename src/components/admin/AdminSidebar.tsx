@@ -10,7 +10,8 @@ import {
   Upload,
   Video,
   Shield,
-  Calendar
+  Calendar,
+  CalendarCheck
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -46,6 +47,12 @@ const AdminSidebar = () => {
       title: 'CRM',
       icon: Users,
       path: '/admin/crm',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'Bookings',
+      icon: CalendarCheck,
+      path: '/admin/bookings',
       roles: ['admin', 'super_admin']
     },
     {
