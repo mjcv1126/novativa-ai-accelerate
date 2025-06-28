@@ -55,8 +55,64 @@ export const useTidyCal = () => {
     }
   }, []);
 
+  const setupCronJob = useCallback(async () => {
+    try {
+      console.log('🔧 Setting up TidyCal cron job...');
+
+      const { data, error } = await supabase.functions.invoke('setup-tidycal-cron');
+
+      if (error) throw error;
+
+      console.log('✅ Cron job setup completed:', data);
+
+      toast({
+        title: "Éxito",
+        description: "Sincronización automática configurada correctamente",
+      });
+
+      return data;
+    } catch (error) {
+      console.error('Error setting up cron job:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo configurar la sincronización automática",
+        variant: "destructive",
+      });
+      return null;
+    }
+  }, []);
+
+  const triggerPolling = useCallback(async () => {
+    try {
+      console.log('🔄 Triggering manual polling...');
+
+      const { data, error } = await supabase.functions.invoke('tidycal-polling');
+
+      if (error) throw error;
+
+      console.log('✅ Manual polling completed:', data);
+
+      toast({
+        title: "Sincronización completada",
+        description: `Procesados: ${data.results.bookings_processed}, Omitidos: ${data.results.bookings_skipped}`,
+      });
+
+      return data;
+    } catch (error) {
+      console.error('Error triggering polling:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo ejecutar la sincronización manual",
+        variant: "destructive",
+      });
+      return null;
+    }
+  }, []);
+
   return {
     getTidyCalBookings,
     syncBookingToContact,
+    setupCronJob,
+    triggerPolling,
   };
 };

@@ -317,6 +317,95 @@ export type Database = {
           },
         ]
       }
+      tidycal_processed_bookings: {
+        Row: {
+          booking_ends_at: string
+          booking_starts_at: string
+          contact_email: string
+          contact_id: string | null
+          contact_name: string
+          created_at: string
+          error_message: string | null
+          id: string
+          processed_at: string
+          sync_status: string | null
+          tidycal_booking_id: number
+        }
+        Insert: {
+          booking_ends_at: string
+          booking_starts_at: string
+          contact_email: string
+          contact_id?: string | null
+          contact_name: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          processed_at?: string
+          sync_status?: string | null
+          tidycal_booking_id: number
+        }
+        Update: {
+          booking_ends_at?: string
+          booking_starts_at?: string
+          contact_email?: string
+          contact_id?: string | null
+          contact_name?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          processed_at?: string
+          sync_status?: string | null
+          tidycal_booking_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tidycal_processed_bookings_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tidycal_sync_logs: {
+        Row: {
+          bookings_failed: number | null
+          bookings_found: number | null
+          bookings_processed: number | null
+          bookings_skipped: number | null
+          error_message: string | null
+          id: string
+          last_booking_date: string | null
+          status: string | null
+          sync_completed_at: string | null
+          sync_started_at: string
+        }
+        Insert: {
+          bookings_failed?: number | null
+          bookings_found?: number | null
+          bookings_processed?: number | null
+          bookings_skipped?: number | null
+          error_message?: string | null
+          id?: string
+          last_booking_date?: string | null
+          status?: string | null
+          sync_completed_at?: string | null
+          sync_started_at?: string
+        }
+        Update: {
+          bookings_failed?: number | null
+          bookings_found?: number | null
+          bookings_processed?: number | null
+          bookings_skipped?: number | null
+          error_message?: string | null
+          id?: string
+          last_booking_date?: string | null
+          status?: string | null
+          sync_completed_at?: string | null
+          sync_started_at?: string
+        }
+        Relationships: []
+      }
       uploaded_files: {
         Row: {
           created_at: string
