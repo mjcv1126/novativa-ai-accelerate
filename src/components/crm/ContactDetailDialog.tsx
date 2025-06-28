@@ -150,6 +150,7 @@ export const ContactDetailDialog = ({
       const activityData = {
         contact_id: contact.id,
         ...newActivity,
+        status: 'pending' as const,
         is_completed: false,
         scheduled_date: newActivity.scheduled_date || undefined,
         scheduled_time: newActivity.scheduled_time || undefined

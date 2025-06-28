@@ -15,13 +15,17 @@ import {
   Bell, 
   ArrowUpDown,
   CheckCircle,
-  Edit
+  Edit,
+  X
 } from 'lucide-react';
 
 interface ActivitiesCardProps {
   activity: ContactActivity;
   onComplete: (id: string) => void;
+  onCancel: (id: string) => void;
   onEdit: (activity: ContactActivity) => void;
+  isOverdue?: boolean;
+  isDueSoon?: boolean;
 }
 
 const getActivityIcon = (type: string) => {
@@ -84,7 +88,10 @@ const getActivityTypeLabel = (type: string) => {
 export const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
   activity,
   onComplete,
+  onCancel,
   onEdit,
+  isOverdue = false,
+  isDueSoon = false,
 }) => {
   const getScheduledDateTime = () => {
     if (activity.scheduled_date && activity.scheduled_time) {
@@ -102,7 +109,7 @@ export const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
   };
 
   return (
-    <Card className="w-full">
+    <Card className={`w-full ${isOverdue ? 'border-red-500 bg-red-50' : isDueSoon ? 'border-orange-500 bg-orange-50' : ''}`}>
       <CardContent className="p-4">
         <div className="space-y-3">
           {/* Header with type badge and actions */}
@@ -121,20 +128,37 @@ export const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                   Completada
                 </Badge>
               )}
+              {activity.status === 'cancelled' && (
+                <Badge variant="outline" className="text-red-600 border-red-200 text-xs flex-shrink-0">
+                  <X className="h-3 w-3 mr-1" />
+                  Cancelada
+                </Badge>
+              )}
             </div>
             
             {/* Action buttons */}
             <div className="flex items-center gap-1 flex-shrink-0">
-              {!activity.is_completed && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onComplete(activity.id)}
-                  className="h-8 w-8 p-0"
-                  title="Completar"
-                >
-                  <CheckCircle className="h-4 w-4" />
-                </Button>
+              {!activity.is_completed && activity.status !== 'cancelled' && (
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onComplete(activity.id)}
+                    className="h-8 w-8 p-0"
+                    title="Completar"
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onCancel(activity.id)}
+                    className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:border-red-300"
+                    title="Cancelar"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </>
               )}
               <Button
                 size="sm"

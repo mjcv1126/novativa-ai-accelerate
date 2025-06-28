@@ -18,7 +18,7 @@ export const useActivityOperations = () => {
       return (data || []).map(activity => ({
         ...activity,
         activity_type: activity.activity_type as ContactActivity['activity_type'],
-        status: activity.status || 'pending'
+        status: (activity.status || 'pending') as ContactActivity['status']
       }));
     } catch (error) {
       console.error('Error fetching contact activities:', error);

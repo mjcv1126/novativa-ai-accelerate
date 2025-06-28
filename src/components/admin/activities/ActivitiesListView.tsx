@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, User, Phone, CheckCircle, Circle, AlertTriangle, Edit } from 'lucide-react';
+import { Calendar, Clock, User, Phone, CheckCircle, Circle, AlertTriangle, Edit, X } from 'lucide-react';
 
 interface Activity {
   id: string;
@@ -13,6 +12,7 @@ interface Activity {
   scheduled_date: string;
   scheduled_time?: string;
   is_completed: boolean;
+  status?: string;
   contact: {
     id: string;
     first_name: string;
@@ -25,10 +25,20 @@ interface Activity {
 interface ActivitiesListViewProps {
   activities: Activity[];
   onMarkComplete: (id: string) => void;
+  onCancelActivity: (id: string) => void;
   onEditActivity: (activity: Activity) => void;
+  isActivityOverdue: (activity: Activity) => boolean;
+  isActivityDueSoon: (activity: Activity) => boolean;
 }
 
-export const ActivitiesListView = ({ activities, onMarkComplete, onEditActivity }: ActivitiesListViewProps) => {
+export const ActivitiesListView = ({ 
+  activities, 
+  onMarkComplete, 
+  onCancelActivity, 
+  onEditActivity, 
+  isActivityOverdue, 
+  isActivityDueSoon 
+}: ActivitiesListViewProps) => {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       day: '2-digit',
@@ -66,30 +76,6 @@ export const ActivitiesListView = ({ activities, onMarkComplete, onEditActivity 
     return labels[type as keyof typeof labels] || type;
   };
 
-  const isOverdue = (activity: Activity) => {
-    if (activity.is_completed) return false;
-    
-    const now = new Date();
-    const scheduledDate = new Date(activity.scheduled_date);
-    
-    // Si hay hora programada, crear fecha completa con hora
-    if (activity.scheduled_time) {
-      const [hours, minutes] = activity.scheduled_time.split(':').map(Number);
-      const scheduledDateTime = new Date(scheduledDate);
-      scheduledDateTime.setHours(hours, minutes, 0, 0);
-      
-      // Solo está retrasada si la fecha y hora completas han pasado
-      return scheduledDateTime < now;
-    } else {
-      // Si no hay hora, comparar solo fechas (retrasada si la fecha ya pasó completamente)
-      const today = new Date();
-      today.setHours(23, 59, 59, 999); // Final del día actual
-      scheduledDate.setHours(23, 59, 59, 999); // Final del día programado
-      
-      return scheduledDate < today;
-    }
-  };
-
   return (
     <div className="bg-white rounded-lg border">
       <Table>
@@ -105,89 +91,112 @@ export const ActivitiesListView = ({ activities, onMarkComplete, onEditActivity 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {activities.map((activity) => (
-            <TableRow key={activity.id} className={isOverdue(activity) ? 'bg-red-50' : ''}>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  {isOverdue(activity) && (
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                  )}
-                  {activity.is_completed ? (
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                  ) : (
-                    <Circle className="h-4 w-4 text-gray-400" />
-                  )}
-                </div>
-              </TableCell>
-              
-              <TableCell>
-                <div>
-                  <div className="font-medium">{activity.title}</div>
-                  {activity.description && (
-                    <div className="text-sm text-gray-500 truncate max-w-xs">
-                      {activity.description}
+          {activities.map((activity) => {
+            const isOverdue = isActivityOverdue(activity);
+            const isDueSoon = isActivityDueSoon(activity);
+            
+            return (
+              <TableRow 
+                key={activity.id} 
+                className={
+                  isOverdue ? 'bg-red-50' : 
+                  isDueSoon ? 'bg-orange-50' : ''
+                }
+              >
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    {isOverdue && (
+                      <AlertTriangle className="h-4 w-4 text-red-500" />
+                    )}
+                    {activity.is_completed ? (
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                    ) : activity.status === 'cancelled' ? (
+                      <X className="h-4 w-4 text-red-600" />
+                    ) : (
+                      <Circle className="h-4 w-4 text-gray-400" />
+                    )}
+                  </div>
+                </TableCell>
+                
+                <TableCell>
+                  <div>
+                    <div className="font-medium">{activity.title}</div>
+                    {activity.description && (
+                      <div className="text-sm text-gray-500 truncate max-w-xs">
+                        {activity.description}
+                      </div>
+                    )}
+                  </div>
+                </TableCell>
+                
+                <TableCell>
+                  <Badge className={`${getActivityTypeColor(activity.activity_type)} text-xs`}>
+                    {getActivityTypeLabel(activity.activity_type)}
+                  </Badge>
+                </TableCell>
+                
+                <TableCell>
+                  <div className="space-y-1">
+                    <div className="font-medium text-sm">
+                      {activity.contact.first_name} {activity.contact.last_name}
+                    </div>
+                    <div className="text-xs text-gray-500 flex items-center gap-1">
+                      <Phone className="h-3 w-3" />
+                      {activity.contact.phone}
+                    </div>
+                  </div>
+                </TableCell>
+                
+                <TableCell>
+                  <div className="flex items-center gap-1 text-sm">
+                    <Calendar className="h-4 w-4 text-gray-400" />
+                    {formatDate(activity.scheduled_date)}
+                  </div>
+                </TableCell>
+                
+                <TableCell>
+                  {activity.scheduled_time && (
+                    <div className="flex items-center gap-1 text-sm">
+                      <Clock className="h-4 w-4 text-gray-400" />
+                      {formatTime(activity.scheduled_time)}
                     </div>
                   )}
-                </div>
-              </TableCell>
-              
-              <TableCell>
-                <Badge className={`${getActivityTypeColor(activity.activity_type)} text-xs`}>
-                  {getActivityTypeLabel(activity.activity_type)}
-                </Badge>
-              </TableCell>
-              
-              <TableCell>
-                <div className="space-y-1">
-                  <div className="font-medium text-sm">
-                    {activity.contact.first_name} {activity.contact.last_name}
-                  </div>
-                  <div className="text-xs text-gray-500 flex items-center gap-1">
-                    <Phone className="h-3 w-3" />
-                    {activity.contact.phone}
-                  </div>
-                </div>
-              </TableCell>
-              
-              <TableCell>
-                <div className="flex items-center gap-1 text-sm">
-                  <Calendar className="h-4 w-4 text-gray-400" />
-                  {formatDate(activity.scheduled_date)}
-                </div>
-              </TableCell>
-              
-              <TableCell>
-                {activity.scheduled_time && (
-                  <div className="flex items-center gap-1 text-sm">
-                    <Clock className="h-4 w-4 text-gray-400" />
-                    {formatTime(activity.scheduled_time)}
-                  </div>
-                )}
-              </TableCell>
-              
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEditActivity(activity)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  {!activity.is_completed && (
+                </TableCell>
+                
+                <TableCell>
+                  <div className="flex items-center gap-2">
                     <Button
+                      variant="ghost"
                       size="sm"
-                      variant="outline"
-                      onClick={() => onMarkComplete(activity.id)}
-                      className="text-green-600 hover:text-green-700 hover:border-green-300"
+                      onClick={() => onEditActivity(activity)}
                     >
-                      Completar
+                      <Edit className="h-4 w-4" />
                     </Button>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+                    {!activity.is_completed && activity.status !== 'cancelled' && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => onMarkComplete(activity.id)}
+                          className="text-green-600 hover:text-green-700 hover:border-green-300"
+                        >
+                          Completar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => onCancelActivity(activity.id)}
+                          className="text-red-600 hover:text-red-700 hover:border-red-300"
+                        >
+                          Cancelar
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
