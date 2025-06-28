@@ -19,11 +19,13 @@ interface TidyCalRule {
   id: string;
   name: string;
   description: string;
-  trigger_condition: 'contact_exists_future_call' | 'contact_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled';
+  trigger_condition: 'contact_exists_future_call' | 'contact_exists_past_call' | 'contact_not_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled';
   target_stage_id: string;
   create_activity: boolean;
   activity_title?: string;
   activity_description?: string;
+  contact_action: 'none' | 'create' | 'update' | 'delete';
+  contact_action_data?: string;
   is_active: boolean;
   created_at: string;
 }
@@ -36,11 +38,13 @@ export const TidyCalAutomationRules = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    trigger_condition: 'contact_exists_future_call' as 'contact_exists_future_call' | 'contact_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled',
+    trigger_condition: 'contact_exists_future_call' as 'contact_exists_future_call' | 'contact_exists_past_call' | 'contact_not_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled',
     target_stage_id: '',
     create_activity: true,
     activity_title: '',
     activity_description: '',
+    contact_action: 'none' as 'none' | 'create' | 'update' | 'delete',
+    contact_action_data: '',
     is_active: true
   });
 
@@ -76,6 +80,8 @@ export const TidyCalAutomationRules = () => {
         create_activity: true,
         activity_title: 'Llamada programada desde TidyCal',
         activity_description: 'Llamada programada automáticamente',
+        contact_action: 'update',
+        contact_action_data: 'Actualizar notas con información de la llamada',
         is_active: true,
         created_at: new Date().toISOString()
       },
@@ -88,6 +94,22 @@ export const TidyCalAutomationRules = () => {
         create_activity: true,
         activity_title: 'Llamada cancelada',
         activity_description: 'Llamada cancelada desde TidyCal',
+        contact_action: 'update',
+        contact_action_data: 'Agregar nota de cancelación',
+        is_active: true,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '3',
+        name: 'Contacto No Existe - Llamada Pasada',
+        description: 'Cuando no existe contacto y hubo una llamada pasada',
+        trigger_condition: 'contact_not_exists_past_call',
+        target_stage_id: stages.find(s => s.position === 1)?.id || '',
+        create_activity: true,
+        activity_title: 'Llamada completada - Contacto creado',
+        activity_description: 'Nuevo contacto creado desde llamada completada',
+        contact_action: 'create',
+        contact_action_data: 'Crear contacto con información de TidyCal',
         is_active: true,
         created_at: new Date().toISOString()
       }
@@ -104,6 +126,8 @@ export const TidyCalAutomationRules = () => {
       create_activity: true,
       activity_title: '',
       activity_description: '',
+      contact_action: 'none',
+      contact_action_data: '',
       is_active: true
     });
     setEditingRule(null);
@@ -120,6 +144,8 @@ export const TidyCalAutomationRules = () => {
         create_activity: rule.create_activity,
         activity_title: rule.activity_title || '',
         activity_description: rule.activity_description || '',
+        contact_action: rule.contact_action,
+        contact_action_data: rule.contact_action_data || '',
         is_active: rule.is_active
       });
     } else {
@@ -152,6 +178,8 @@ export const TidyCalAutomationRules = () => {
       create_activity: formData.create_activity,
       activity_title: formData.activity_title,
       activity_description: formData.activity_description,
+      contact_action: formData.contact_action,
+      contact_action_data: formData.contact_action_data,
       is_active: formData.is_active,
       created_at: editingRule?.created_at || new Date().toISOString()
     };
@@ -195,12 +223,28 @@ export const TidyCalAutomationRules = () => {
         return 'Contacto existe + Llamada futura';
       case 'contact_exists_past_call':
         return 'Contacto existe + Llamada pasada';
+      case 'contact_not_exists_past_call':
+        return 'Contacto no existe + Llamada pasada';
       case 'new_contact_future_call':
         return 'Nuevo contacto + Llamada futura';
       case 'booking_cancelled':
         return 'Reserva cancelada';
       default:
         return condition;
+    }
+  };
+
+  const getContactActionLabel = (action: string) => {
+    switch (action) {
+      case 'create':
+        return 'Crear contacto';
+      case 'update':
+        return 'Actualizar contacto';
+      case 'delete':
+        return 'Eliminar contacto';
+      case 'none':
+      default:
+        return 'Sin acción';
     }
   };
 
@@ -224,7 +268,7 @@ export const TidyCalAutomationRules = () => {
             </Button>
           </DialogTrigger>
           
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {editingRule ? 'Editar Regla' : 'Nueva Regla de Automatización'}
@@ -255,6 +299,7 @@ export const TidyCalAutomationRules = () => {
                     <SelectContent>
                       <SelectItem value="contact_exists_future_call">Contacto existe + Llamada futura</SelectItem>
                       <SelectItem value="contact_exists_past_call">Contacto existe + Llamada pasada</SelectItem>
+                      <SelectItem value="contact_not_exists_past_call">Contacto no existe + Llamada pasada</SelectItem>
                       <SelectItem value="new_contact_future_call">Nuevo contacto + Llamada futura</SelectItem>
                       <SelectItem value="booking_cancelled">Reserva cancelada</SelectItem>
                     </SelectContent>
@@ -297,7 +342,43 @@ export const TidyCalAutomationRules = () => {
                 </Select>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="font-medium">Acciones sobre Contacto</h4>
+                
+                <div>
+                  <Label htmlFor="contact_action">Acción del Contacto</Label>
+                  <Select 
+                    value={formData.contact_action} 
+                    onValueChange={(value: any) => setFormData(prev => ({ ...prev, contact_action: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Sin acción</SelectItem>
+                      <SelectItem value="create">Crear contacto</SelectItem>
+                      <SelectItem value="update">Actualizar contacto</SelectItem>
+                      <SelectItem value="delete">Eliminar contacto</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {formData.contact_action !== 'none' && (
+                  <div>
+                    <Label htmlFor="contact_action_data">Datos de la Acción</Label>
+                    <Textarea
+                      id="contact_action_data"
+                      value={formData.contact_action_data}
+                      onChange={(e) => setFormData(prev => ({ ...prev, contact_action_data: e.target.value }))}
+                      placeholder="Describe qué hacer con el contacto (ej: campos a actualizar, criterios, etc.)"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-3 border-t pt-4">
+                <h4 className="font-medium">Acciones sobre Actividades</h4>
+                
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="create_activity"
@@ -377,6 +458,10 @@ export const TidyCalAutomationRules = () => {
                     <div className="flex items-center gap-1">
                       <User className="h-3 w-3" />
                       <span>Etapa: {getStageLabel(rule.target_stage_id)}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Edit className="h-3 w-3" />
+                      <span>Contacto: {getContactActionLabel(rule.contact_action)}</span>
                     </div>
                     {rule.create_activity && (
                       <div className="flex items-center gap-1">
