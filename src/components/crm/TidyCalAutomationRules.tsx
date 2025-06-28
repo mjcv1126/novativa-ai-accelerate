@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -84,10 +85,25 @@ export const TidyCalAutomationRules = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRules((data || []).map(rule => ({
-        ...rule,
-        trigger_condition: rule.trigger_condition as TidyCalRule['trigger_condition']
-      })));
+      
+      // Properly cast the database results to match our interface
+      const typedRules: TidyCalRule[] = (data || []).map(rule => ({
+        id: rule.id,
+        name: rule.name || '',
+        description: rule.description || '',
+        trigger_condition: rule.trigger_condition as TidyCalRule['trigger_condition'],
+        target_stage_id: rule.target_stage_id || '',
+        create_activity: rule.create_activity || false,
+        activity_title: rule.activity_title || '',
+        activity_description: rule.activity_description || '',
+        contact_action: (rule.contact_action || 'none') as TidyCalRule['contact_action'],
+        contact_action_data: rule.contact_action_data || '',
+        cancel_previous_activity: rule.cancel_previous_activity || false,
+        is_active: rule.is_active || false,
+        created_at: rule.created_at || ''
+      }));
+      
+      setRules(typedRules);
     } catch (error) {
       console.error('Error loading rules:', error);
       toast({
