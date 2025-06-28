@@ -90,10 +90,14 @@ export const ContactDetailDialog = ({
   };
 
   const handleAssignUser = async (userEmail: string) => {
-    if (contact && userEmail !== assignedUser) {
+    if (contact) {
+      console.log('Assigning lead to:', userEmail);
       const success = await assignLead(contact.id, userEmail, 'Reasignación manual desde la ficha del contacto');
       if (success) {
         setAssignedUser(userEmail);
+        console.log('Lead assigned successfully to:', userEmail);
+      } else {
+        console.error('Failed to assign lead');
       }
     }
   };
@@ -246,25 +250,6 @@ export const ContactDetailDialog = ({
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div>
-                    <Label htmlFor="assigned_user">Lead Asignado a</Label>
-                    <Select value={assignedUser} onValueChange={handleAssignUser}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar usuario" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableUsers.map((user) => (
-                          <SelectItem key={user.email} value={user.email}>
-                            <div className="flex items-center gap-2">
-                              <User className="h-4 w-4" />
-                              {user.name} ({user.email})
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                   
                   <div>
                     <Label htmlFor="notes">Notas</Label>
@@ -306,13 +291,6 @@ export const ContactDetailDialog = ({
                     <Calendar className="h-4 w-4 text-gray-500" />
                     <span>Creado {format(new Date(contact.created_at), 'dd MMM yyyy', { locale: es })}</span>
                   </div>
-
-                  {assignedUser && (
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-gray-500" />
-                      <span>Asignado a: {assignedUser}</span>
-                    </div>
-                  )}
                   
                   {contact.stage && (
                     <Badge 
@@ -334,6 +312,46 @@ export const ContactDetailDialog = ({
                   )}
                 </div>
               )}
+
+              {/* Lead Assignment Section - Always visible */}
+              <div className="border-t pt-4 mt-4">
+                <div>
+                  <Label htmlFor="assigned_user">Lead Asignado a</Label>
+                  <Select 
+                    value={assignedUser || ''} 
+                    onValueChange={handleAssignUser}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Seleccionar usuario">
+                        {assignedUser ? (
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            <span>{assignedUser}</span>
+                          </div>
+                        ) : (
+                          "Sin asignar"
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border shadow-lg z-50">
+                      <SelectItem value="">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          Sin asignar
+                        </div>
+                      </SelectItem>
+                      {availableUsers.map((user) => (
+                        <SelectItem key={user.email} value={user.email}>
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            {user.name} ({user.email})
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
