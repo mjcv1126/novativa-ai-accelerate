@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, User, Phone, CheckCircle, Circle } from 'lucide-react';
+import { Calendar, Clock, User, Phone, CheckCircle, Circle, AlertTriangle, Edit } from 'lucide-react';
 
 interface Activity {
   id: string;
@@ -25,9 +25,10 @@ interface Activity {
 interface ActivitiesCardProps {
   activity: Activity;
   onMarkComplete: (id: string) => void;
+  onEditActivity: (activity: Activity) => void;
 }
 
-export const ActivitiesCard = ({ activity, onMarkComplete }: ActivitiesCardProps) => {
+export const ActivitiesCard = ({ activity, onMarkComplete, onEditActivity }: ActivitiesCardProps) => {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       weekday: 'short',
@@ -65,8 +66,19 @@ export const ActivitiesCard = ({ activity, onMarkComplete }: ActivitiesCardProps
     return labels[type as keyof typeof labels] || type;
   };
 
+  const isOverdue = () => {
+    if (activity.is_completed) return false;
+    const today = new Date();
+    const scheduledDate = new Date(activity.scheduled_date);
+    return scheduledDate < today;
+  };
+
+  const cardClassName = `hover:shadow-md transition-shadow h-fit ${
+    activity.is_completed ? 'opacity-75' : ''
+  } ${isOverdue() ? 'border-red-300 bg-red-50' : ''}`;
+
   return (
-    <Card className={`hover:shadow-md transition-shadow h-fit ${activity.is_completed ? 'opacity-75' : ''}`}>
+    <Card className={cardClassName}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
@@ -74,11 +86,19 @@ export const ActivitiesCard = ({ activity, onMarkComplete }: ActivitiesCardProps
               <Badge className={`${getActivityTypeColor(activity.activity_type)} text-xs w-fit`}>
                 {getActivityTypeLabel(activity.activity_type)}
               </Badge>
-              {activity.is_completed ? (
-                <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
-              ) : (
-                <Circle className="h-4 w-4 text-gray-400 flex-shrink-0" />
-              )}
+              <div className="flex items-center gap-2">
+                {isOverdue() && (
+                  <div className="flex items-center gap-1 text-red-600">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span className="text-xs font-medium">Retrasada</span>
+                  </div>
+                )}
+                {activity.is_completed ? (
+                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                ) : (
+                  <Circle className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                )}
+              </div>
             </div>
             <CardTitle className="text-base lg:text-lg font-semibold text-gray-900">
               {activity.title}
@@ -120,16 +140,26 @@ export const ActivitiesCard = ({ activity, onMarkComplete }: ActivitiesCardProps
             </div>
           </div>
 
-          {!activity.is_completed && (
+          <div className="flex gap-2 flex-shrink-0">
             <Button
               size="sm"
-              variant="outline"
-              onClick={() => onMarkComplete(activity.id)}
-              className="text-green-600 hover:text-green-700 hover:border-green-300 w-full sm:w-auto flex-shrink-0"
+              variant="ghost"
+              onClick={() => onEditActivity(activity)}
+              className="w-full sm:w-auto"
             >
-              Completar
+              <Edit className="h-4 w-4" />
             </Button>
-          )}
+            {!activity.is_completed && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onMarkComplete(activity.id)}
+                className="text-green-600 hover:text-green-700 hover:border-green-300 w-full sm:w-auto flex-shrink-0"
+              >
+                Completar
+              </Button>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
