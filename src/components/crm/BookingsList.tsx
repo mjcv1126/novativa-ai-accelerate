@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { format, isToday, isTomorrow, isThisWeek, isNextWeek } from 'date-fns';
+import { format, isToday, isTomorrow, isThisWeek, addWeeks, startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Phone, User, Clock, Calendar } from 'lucide-react';
 
@@ -66,12 +66,18 @@ export const BookingsList: React.FC<BookingsListProps> = ({ bookings }) => {
     }
   };
 
+  // Custom function to check if date is in next week or beyond
+  const isNextWeekOrBeyond = (date: Date) => {
+    const nextWeekStart = startOfWeek(addWeeks(new Date(), 1), { weekStartsOn: 1 });
+    return date >= nextWeekStart;
+  };
+
   // Organize bookings by time periods
   const organizeBookings = () => {
     const today: TidyCalBooking[] = [];
     const tomorrow: TidyCalBooking[] = [];
     const thisWeek: TidyCalBooking[] = [];
-    const others: TidyCalBooking[] = [];
+    const nextWeeks: TidyCalBooking[] = [];
 
     bookings.forEach(booking => {
       const bookingDate = new Date(booking.starts_at);
@@ -82,8 +88,8 @@ export const BookingsList: React.FC<BookingsListProps> = ({ bookings }) => {
         tomorrow.push(booking);
       } else if (isThisWeek(bookingDate, { weekStartsOn: 1 })) {
         thisWeek.push(booking);
-      } else {
-        others.push(booking);
+      } else if (isNextWeekOrBeyond(bookingDate)) {
+        nextWeeks.push(booking);
       }
     });
 
@@ -95,7 +101,7 @@ export const BookingsList: React.FC<BookingsListProps> = ({ bookings }) => {
       today: today.sort(sortByTime),
       tomorrow: tomorrow.sort(sortByTime),
       thisWeek: thisWeek.sort(sortByTime),
-      others: others.sort(sortByTime)
+      nextWeeks: nextWeeks.sort(sortByTime)
     };
   };
 
@@ -173,7 +179,7 @@ export const BookingsList: React.FC<BookingsListProps> = ({ bookings }) => {
       {renderSection('Hoy', organizedBookings.today, <Clock className="h-5 w-5 text-red-500" />)}
       {renderSection('Mañana', organizedBookings.tomorrow, <Clock className="h-5 w-5 text-orange-500" />)}
       {renderSection('Esta Semana', organizedBookings.thisWeek, <Calendar className="h-5 w-5 text-blue-500" />)}
-      {renderSection('Próximas Semanas', organizedBookings.others, <Calendar className="h-5 w-5 text-green-500" />)}
+      {renderSection('Próximas Semanas', organizedBookings.nextWeeks, <Calendar className="h-5 w-5 text-green-500" />)}
     </div>
   );
 };
