@@ -6,6 +6,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Helper function to format dates for TidyCal API (without milliseconds)
+function formatDateForTidyCal(date: Date): string {
+  return date.toISOString().replace(/\.\d{3}Z$/, 'Z');
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -44,7 +49,21 @@ serve(async (req) => {
 
     switch (action) {
       case 'get_bookings':
-        const { starts_at, ends_at, cancelled } = params;
+        let { starts_at, ends_at, cancelled } = params;
+        
+        // Format dates properly for TidyCal (without milliseconds)
+        if (starts_at) {
+          const startDate = new Date(starts_at);
+          starts_at = formatDateForTidyCal(startDate);
+          console.log('📅 Formatted starts_at:', starts_at);
+        }
+        
+        if (ends_at) {
+          const endDate = new Date(ends_at);
+          ends_at = formatDateForTidyCal(endDate);
+          console.log('📅 Formatted ends_at:', ends_at);
+        }
+        
         console.log('📅 Fetching bookings from:', starts_at, 'to:', ends_at);
         
         let url = 'https://tidycal.com/api/bookings';
@@ -59,6 +78,7 @@ serve(async (req) => {
         }
 
         console.log('🌐 Making request to:', url);
+        console.log('🔗 Query parameters:', queryParams.toString());
         response = await fetch(url, { headers });
         break;
 
@@ -128,6 +148,31 @@ serve(async (req) => {
           }),
           { 
             status: 401, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+      
+      // Handle 422 validation errors with specific message
+      if (response.status === 422) {
+        let errorDetails;
+        try {
+          errorDetails = JSON.parse(errorText);
+        } catch (e) {
+          errorDetails = { message: errorText };
+        }
+        
+        return new Response(
+          JSON.stringify({ 
+            error: { 
+              message: `Error de validación en TidyCal: ${errorDetails.message || 'Formato de datos incorrecto'}`,
+              code: 'VALIDATION_ERROR',
+              status: 422,
+              details: errorDetails
+            } 
+          }),
+          { 
+            status: 422, 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         );

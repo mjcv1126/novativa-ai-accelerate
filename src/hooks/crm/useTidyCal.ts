@@ -3,6 +3,11 @@ import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 
+// Helper function to format dates for TidyCal API (without milliseconds)
+function formatDateForTidyCal(date: Date): string {
+  return date.toISOString().replace(/\.\d{3}Z$/, 'Z');
+}
+
 export const useTidyCal = () => {
   const getTidyCalBookings = useCallback(async () => {
     try {
@@ -12,11 +17,17 @@ export const useTidyCal = () => {
       const now = new Date();
       const thirtyDaysFromNow = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
       
+      // Format dates properly for TidyCal (without milliseconds)
+      const startsAt = formatDateForTidyCal(now);
+      const endsAt = formatDateForTidyCal(thirtyDaysFromNow);
+      
+      console.log('📅 Date range:', startsAt, 'to', endsAt);
+      
       const { data, error } = await supabase.functions.invoke('tidycal-api', {
         body: { 
           action: 'get_bookings',
-          starts_at: now.toISOString(),
-          ends_at: thirtyDaysFromNow.toISOString(),
+          starts_at: startsAt,
+          ends_at: endsAt,
           cancelled: false // Only get active bookings
         }
       });
@@ -36,6 +47,12 @@ export const useTidyCal = () => {
         toast({
           title: "Token inválido",
           description: "El token de TidyCal no tiene los permisos necesarios para leer bookings",
+          variant: "destructive",
+        });
+      } else if (error.message?.includes('422') || error.message?.includes('Validation')) {
+        toast({
+          title: "Error de formato",
+          description: "Los parámetros de fecha no tienen el formato correcto",
           variant: "destructive",
         });
       } else {
