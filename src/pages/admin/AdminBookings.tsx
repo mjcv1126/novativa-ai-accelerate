@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { TidyCalIntegration } from '@/components/crm/TidyCalIntegration';
+import { BookingsList } from '@/components/crm/BookingsList';
+import { BookingsCalendar } from '@/components/crm/BookingsCalendar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { List, Kanban, Calendar, RefreshCw, Phone, User, Clock } from 'lucide-react';
+import { List, Kanban, Calendar, RefreshCw, Phone } from 'lucide-react';
 import { useTidyCal } from '@/hooks/crm/useTidyCal';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 
 type ViewMode = 'list' | 'kanban' | 'calendar';
 
@@ -78,77 +78,6 @@ const AdminBookings = () => {
     return 'confirmed';
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'confirmed':
-        return 'bg-green-100 text-green-800';
-      case 'completed':
-        return 'bg-blue-100 text-blue-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'confirmed':
-        return 'Confirmada';
-      case 'completed':
-        return 'Completada';
-      case 'cancelled':
-        return 'Cancelada';
-      default:
-        return 'Pendiente';
-    }
-  };
-
-  const renderListView = () => (
-    <div className="space-y-4">
-      {bookings.length === 0 && !loading ? (
-        <div className="text-center py-12">
-          <Phone className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-          <p className="text-gray-500">No hay bookings disponibles</p>
-        </div>
-      ) : (
-        bookings.map((booking) => {
-          const status = getBookingStatus(booking);
-          return (
-            <Card key={booking.id}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Phone className="h-5 w-5 text-blue-500" />
-                    <div>
-                      <h3 className="font-medium">{booking.booking_type.title}</h3>
-                      <p className="text-sm text-gray-600">{booking.contact.name}</p>
-                      <p className="text-sm text-gray-500">{booking.contact.email}</p>
-                      {booking.contact.phone_number && (
-                        <p className="text-sm text-gray-500">{booking.contact.phone_number}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">
-                      {format(new Date(booking.starts_at), 'dd MMM yyyy', { locale: es })}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {format(new Date(booking.starts_at), 'HH:mm')} - {format(new Date(booking.ends_at), 'HH:mm')}
-                    </p>
-                    <span className={`inline-block px-2 py-1 rounded text-xs mt-1 ${getStatusColor(status)}`}>
-                      {getStatusText(status)}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })
-      )}
-    </div>
-  );
-
   const renderKanbanView = () => {
     const confirmedBookings = bookings.filter(b => getBookingStatus(b) === 'confirmed');
     const completedBookings = bookings.filter(b => getBookingStatus(b) === 'completed');
@@ -175,7 +104,12 @@ const AdminBookings = () => {
                   <h4 className="font-medium text-sm">{booking.booking_type.title}</h4>
                   <p className="text-sm text-gray-600">{booking.contact.name}</p>
                   <p className="text-xs text-gray-500">
-                    {format(new Date(booking.starts_at), 'dd MMM - HH:mm', { locale: es })}
+                    {new Date(booking.starts_at).toLocaleDateString('es-ES', { 
+                      day: '2-digit', 
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
                   </p>
                 </div>
               ))
@@ -202,7 +136,12 @@ const AdminBookings = () => {
                   <h4 className="font-medium text-sm">{booking.booking_type.title}</h4>
                   <p className="text-sm text-gray-600">{booking.contact.name}</p>
                   <p className="text-xs text-gray-500">
-                    {format(new Date(booking.starts_at), 'dd MMM - HH:mm', { locale: es })}
+                    {new Date(booking.starts_at).toLocaleDateString('es-ES', { 
+                      day: '2-digit', 
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
                   </p>
                 </div>
               ))
@@ -229,7 +168,12 @@ const AdminBookings = () => {
                   <h4 className="font-medium text-sm">{booking.booking_type.title}</h4>
                   <p className="text-sm text-gray-600">{booking.contact.name}</p>
                   <p className="text-xs text-gray-500">
-                    {format(new Date(booking.starts_at), 'dd MMM - HH:mm', { locale: es })}
+                    {new Date(booking.starts_at).toLocaleDateString('es-ES', { 
+                      day: '2-digit', 
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
                   </p>
                 </div>
               ))
@@ -239,25 +183,6 @@ const AdminBookings = () => {
       </div>
     );
   };
-
-  const renderCalendarView = () => (
-    <Card>
-      <CardContent className="p-6">
-        <div className="text-center py-12">
-          <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Vista de Calendario</h3>
-          <p className="text-gray-600 mb-4">
-            La vista de calendario mostrará los bookings organizados por fecha.
-          </p>
-          {bookings.length > 0 && (
-            <div className="text-sm text-gray-500">
-              {bookings.length} booking{bookings.length !== 1 ? 's' : ''} disponible{bookings.length !== 1 ? 's' : ''}
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
 
   // Stats calculations
   const totalBookings = bookings.length;
@@ -385,9 +310,9 @@ const AdminBookings = () => {
             </div>
           ) : (
             <>
-              {viewMode === 'list' && renderListView()}
+              {viewMode === 'list' && <BookingsList bookings={bookings} />}
               {viewMode === 'kanban' && renderKanbanView()}
-              {viewMode === 'calendar' && renderCalendarView()}
+              {viewMode === 'calendar' && <BookingsCalendar bookings={bookings} />}
             </>
           )}
         </div>
