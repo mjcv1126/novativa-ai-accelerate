@@ -318,6 +318,7 @@ const AdminActivities = () => {
           onSortChange={setSortBy}
           sortOrder={sortOrder}
           onSortOrderChange={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+          activities={currentActivities}
         />
 
         {/* View Mode Toggle */}
