@@ -165,7 +165,7 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({ 
             error: { 
-              message: `Error de validación en TidyCal: ${errorDetails.message || 'Formato de datos incorrecto'}`,
+              message: `Error de validación en TidyCal: ${errorDetails.message || 'Formato de parámetros incorrecto. Verificar formato de fechas.'}`,
               code: 'VALIDATION_ERROR',
               status: 422,
               details: errorDetails

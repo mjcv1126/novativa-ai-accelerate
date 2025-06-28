@@ -9,17 +9,20 @@ function formatDateForTidyCal(date: Date): string {
 }
 
 export const useTidyCal = () => {
-  const getTidyCalBookings = useCallback(async () => {
+  const getTidyCalBookings = useCallback(async (includePast: boolean = false) => {
     try {
       console.log('🔍 Fetching TidyCal bookings...');
       
-      // Calculate date range for next 30 days
+      // Calculate date range - include past 30 days if includePast is true
       const now = new Date();
-      const thirtyDaysFromNow = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
+      const startDate = includePast 
+        ? new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000)) // 30 days ago
+        : now;
+      const endDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days from now
       
       // Format dates properly for TidyCal (without milliseconds)
-      const startsAt = formatDateForTidyCal(now);
-      const endsAt = formatDateForTidyCal(thirtyDaysFromNow);
+      const startsAt = formatDateForTidyCal(startDate);
+      const endsAt = formatDateForTidyCal(endDate);
       
       console.log('📅 Date range:', startsAt, 'to', endsAt);
       
@@ -28,7 +31,7 @@ export const useTidyCal = () => {
           action: 'get_bookings',
           starts_at: startsAt,
           ends_at: endsAt,
-          cancelled: false // Only get active bookings
+          cancelled: false // Get both active and cancelled bookings
         }
       });
 
@@ -63,6 +66,41 @@ export const useTidyCal = () => {
         });
       }
       
+      return { error: { message: error.message } };
+    }
+  }, []);
+
+  const getAllBookingsForSync = useCallback(async () => {
+    try {
+      console.log('🔄 Fetching all bookings for sync (including past and cancelled)...');
+      
+      // Get bookings from 30 days ago to 30 days in the future
+      const now = new Date();
+      const startDate = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+      const endDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
+      
+      const startsAt = formatDateForTidyCal(startDate);
+      const endsAt = formatDateForTidyCal(endDate);
+      
+      // Get all bookings (including cancelled ones)
+      const { data, error } = await supabase.functions.invoke('tidycal-api', {
+        body: { 
+          action: 'get_bookings',
+          starts_at: startsAt,
+          ends_at: endsAt
+          // Don't filter by cancelled status to get all bookings
+        }
+      });
+
+      if (error) {
+        console.error('🔥 Error fetching all bookings:', error);
+        return { error };
+      }
+
+      console.log('📊 All bookings fetched for sync:', data?.data?.length || 0);
+      return data;
+    } catch (error: any) {
+      console.error('💥 Error fetching all bookings for sync:', error);
       return { error: { message: error.message } };
     }
   }, []);
@@ -134,7 +172,7 @@ export const useTidyCal = () => {
 
       toast({
         title: "Sincronización completada",
-        description: `Procesados: ${data.results.bookings_processed}, Omitidos: ${data.results.bookings_skipped}`,
+        description: `Procesados: ${data.results?.bookings_processed || 0}, Omitidos: ${data.results?.bookings_skipped || 0}`,
       });
 
       return data;
@@ -151,6 +189,7 @@ export const useTidyCal = () => {
 
   return {
     getTidyCalBookings,
+    getAllBookingsForSync,
     syncBookingToContact,
     setupCronJob,
     triggerPolling,
