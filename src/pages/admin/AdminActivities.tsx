@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -442,8 +441,6 @@ const AdminActivities = () => {
                       onComplete={handleMarkComplete}
                       onCancel={handleCancelActivity}
                       onEdit={handleEditActivity}
-                      isOverdue={isActivityOverdue(activity)}
-                      isDueSoon={isActivityDueSoon(activity)}
                     />
                   ))}
                 </div>
@@ -453,8 +450,6 @@ const AdminActivities = () => {
                   onMarkComplete={handleMarkComplete}
                   onCancelActivity={handleCancelActivity}
                   onEditActivity={handleEditActivity}
-                  isActivityOverdue={isActivityOverdue}
-                  isActivityDueSoon={isActivityDueSoon}
                 />
               )}
             </TabsContent>

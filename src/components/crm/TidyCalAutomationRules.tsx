@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,7 @@ interface TidyCalRule {
   id: string;
   name: string;
   description: string;
-  trigger_condition: 'contact_exists_future_call' | 'contact_exists_past_call' | 'contact_not_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled';
+  trigger_condition: 'contact_exists_future_call' | 'contact_exists_past_call' | 'contact_not_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled' | 'booking_rescheduled';
   target_stage_id: string;
   create_activity: boolean;
   activity_title?: string;
@@ -40,7 +39,7 @@ export const TidyCalAutomationRules = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    trigger_condition: 'contact_exists_future_call' as 'contact_exists_future_call' | 'contact_exists_past_call' | 'contact_not_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled',
+    trigger_condition: 'contact_exists_future_call' as 'contact_exists_future_call' | 'contact_exists_past_call' | 'contact_not_exists_past_call' | 'new_contact_future_call' | 'booking_cancelled' | 'booking_rescheduled',
     target_stage_id: '',
     create_activity: true,
     activity_title: '',
@@ -85,7 +84,10 @@ export const TidyCalAutomationRules = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRules(data || []);
+      setRules((data || []).map(rule => ({
+        ...rule,
+        trigger_condition: rule.trigger_condition as TidyCalRule['trigger_condition']
+      })));
     } catch (error) {
       console.error('Error loading rules:', error);
       toast({
@@ -276,6 +278,8 @@ export const TidyCalAutomationRules = () => {
         return 'Nuevo contacto + Llamada futura';
       case 'booking_cancelled':
         return 'Reserva cancelada';
+      case 'booking_rescheduled':
+        return 'Reserva reprogramada';
       default:
         return condition;
     }
@@ -353,6 +357,7 @@ export const TidyCalAutomationRules = () => {
                       <SelectItem value="contact_not_exists_past_call">Contacto no existe + Llamada pasada</SelectItem>
                       <SelectItem value="new_contact_future_call">Nuevo contacto + Llamada futura</SelectItem>
                       <SelectItem value="booking_cancelled">Reserva cancelada</SelectItem>
+                      <SelectItem value="booking_rescheduled">Reserva reprogramada</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
