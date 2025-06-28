@@ -39,9 +39,19 @@ export interface ContactActivity {
   updated_at: string;
 }
 
+export interface LeadAssignment {
+  id: string;
+  contact_id: string;
+  assigned_user_email: string;
+  assigned_by_email: string;
+  assigned_at: string;
+  notes?: string;
+}
+
 export interface ContactWithStage extends Contact {
   stage?: CrmStage;
   activities?: ContactActivity[];
+  assignment?: LeadAssignment;
 }
 
 export type ViewMode = 'list' | 'kanban';

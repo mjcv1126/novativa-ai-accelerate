@@ -5,6 +5,31 @@ import { Contact, ContactWithStage, CrmFilters } from '@/types/crm';
 import { toast } from '@/components/ui/use-toast';
 
 export const useContactOperations = () => {
+  const getCurrentUserEmail = () => {
+    const adminUser = localStorage.getItem('admin_user');
+    if (adminUser) {
+      try {
+        const user = JSON.parse(adminUser);
+        return user.email || 'soporte@novativa.org';
+      } catch (error) {
+        console.error('Error parsing admin user:', error);
+      }
+    }
+    return 'soporte@novativa.org';
+  };
+
+  const setCurrentUserForTrigger = async (userEmail: string) => {
+    try {
+      await supabase.rpc('set_config', {
+        setting_name: 'app.current_user_email',
+        new_value: userEmail,
+        is_local: false
+      });
+    } catch (error) {
+      console.error('Error setting current user for trigger:', error);
+    }
+  };
+
   const fetchContacts = useCallback(async (filters: CrmFilters): Promise<ContactWithStage[]> => {
     try {
       let query = supabase
@@ -39,7 +64,26 @@ export const useContactOperations = () => {
       const { data, error } = await query;
 
       if (error) throw error;
-      return data || [];
+
+      // Obtener asignaciones para cada contacto
+      const contactsWithAssignments = await Promise.all(
+        (data || []).map(async (contact) => {
+          const { data: assignment } = await supabase
+            .from('lead_assignments')
+            .select('*')
+            .eq('contact_id', contact.id)
+            .order('assigned_at', { ascending: false })
+            .limit(1)
+            .single();
+
+          return {
+            ...contact,
+            assignment: assignment || null
+          };
+        })
+      );
+
+      return contactsWithAssignments;
     } catch (error) {
       console.error('Error fetching contacts:', error);
       toast({
@@ -53,6 +97,11 @@ export const useContactOperations = () => {
 
   const updateContact = useCallback(async (id: string, updates: Partial<Contact>) => {
     try {
+      const currentUserEmail = getCurrentUserEmail();
+      
+      // Establecer el usuario actual para el trigger
+      await setCurrentUserForTrigger(currentUserEmail);
+
       const { error } = await supabase
         .from('contacts')
         .update(updates)
@@ -76,6 +125,11 @@ export const useContactOperations = () => {
 
   const moveContactToStage = useCallback(async (contactId: string, stageId: string) => {
     try {
+      const currentUserEmail = getCurrentUserEmail();
+      
+      // Establecer el usuario actual para el trigger
+      await setCurrentUserForTrigger(currentUserEmail);
+
       const { error } = await supabase
         .from('contacts')
         .update({ stage_id: stageId, last_contact_date: new Date().toISOString() })

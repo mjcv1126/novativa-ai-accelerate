@@ -1,114 +1,126 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React from 'react';
 import { ContactWithStage } from '@/types/crm';
-import { Phone, Mail, Building, MapPin, Calendar, MoreVertical, Eye, Edit, Trash } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { Eye, Edit, Trash, MoreVertical, Phone, Mail, Building, User, Calendar } from 'lucide-react';
 
 interface ContactCardProps {
   contact: ContactWithStage;
   onEdit: (contact: ContactWithStage) => void;
   onView: (contact: ContactWithStage) => void;
   onDelete: (id: string) => void;
-  isDragging?: boolean;
-  dragProps?: any;
 }
 
-export const ContactCard = ({ 
-  contact, 
-  onEdit, 
-  onView, 
-  onDelete, 
-  isDragging = false,
-  dragProps 
-}: ContactCardProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardProps) => {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
 
-  const fullName = `${contact.first_name} ${contact.last_name}`;
-  const createdDate = format(new Date(contact.created_at), 'dd MMM yyyy', { locale: es });
+  const formatPhone = (phone: string) => {
+    // Simple phone formatting
+    if (phone.startsWith('+')) return phone;
+    return `+${phone}`;
+  };
 
   return (
-    <Card 
-      className={`transition-all duration-200 hover:shadow-md ${isDragging ? 'opacity-50 rotate-2' : ''}`}
-      {...dragProps}
-    >
+    <Card className="hover:shadow-md transition-shadow cursor-pointer">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="font-semibold text-lg">{fullName}</h3>
+            <CardTitle className="text-lg font-semibold text-gray-900">
+              {contact.first_name} {contact.last_name}
+            </CardTitle>
             {contact.company && (
-              <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
+              <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
                 <Building className="h-3 w-3" />
                 {contact.company}
-              </p>
+              </div>
             )}
           </div>
-          <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onView(contact)}>
-                <Eye className="h-4 w-4 mr-2" />
-                Ver detalles
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onEdit(contact)}>
-                <Edit className="h-4 w-4 mr-2" />
-                Editar
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => onDelete(contact.id)}
-                className="text-red-600"
+          
+          <div className="flex items-center gap-2">
+            {contact.stage && (
+              <Badge 
+                variant="secondary" 
+                className="text-xs"
+                style={{ 
+                  backgroundColor: `${contact.stage.color}20`,
+                  color: contact.stage.color,
+                  borderColor: contact.stage.color
+                }}
               >
-                <Trash className="h-4 w-4 mr-2" />
-                Eliminar
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {contact.stage.name}
+              </Badge>
+            )}
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onView(contact)}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  Ver detalles
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onEdit(contact)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Editar
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => onDelete(contact.id)}
+                  className="text-red-600"
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Eliminar
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2">
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Phone className="h-4 w-4" />
-          <span>{contact.phone}</span>
+          <Phone className="h-3 w-3" />
+          <span>{formatPhone(contact.phone)}</span>
+          <span className="text-xs text-gray-400">({contact.country_name})</span>
         </div>
         
         {contact.email && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Mail className="h-4 w-4" />
-            <span>{contact.email}</span>
+            <Mail className="h-3 w-3" />
+            <span className="truncate">{contact.email}</span>
+          </div>
+        )}
+
+        {contact.assignment && (
+          <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded">
+            <User className="h-3 w-3" />
+            <span className="text-xs font-medium">
+              Asignado a: {contact.assignment.assigned_user_email.split('@')[0]}
+            </span>
           </div>
         )}
         
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <MapPin className="h-4 w-4" />
-          <span>{contact.country_name}</span>
+        <div className="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t">
+          <Calendar className="h-3 w-3" />
+          <span>Creado: {formatDate(contact.created_at)}</span>
         </div>
         
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Calendar className="h-4 w-4" />
-          <span>Creado {createdDate}</span>
-        </div>
-
-        {contact.stage && (
-          <Badge 
-            variant="secondary" 
-            className="mt-2"
-            style={{ 
-              backgroundColor: `${contact.stage.color}20`,
-              color: contact.stage.color,
-              border: `1px solid ${contact.stage.color}40`
-            }}
-          >
-            {contact.stage.name}
-          </Badge>
+        {contact.last_contact_date && (
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <Calendar className="h-3 w-3" />
+            <span>Último contacto: {formatDate(contact.last_contact_date)}</span>
+          </div>
         )}
       </CardContent>
     </Card>

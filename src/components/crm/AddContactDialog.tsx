@@ -11,6 +11,7 @@ import { Plus } from 'lucide-react';
 import { Contact, CrmStage } from '@/types/crm';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
+import { useLeadAssignments } from '@/hooks/crm/useLeadAssignments';
 
 interface AddContactDialogProps {
   stages: CrmStage[];
@@ -32,6 +33,9 @@ const SERVICES = [
 export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { getCurrentUserEmail, setCurrentUserForTrigger, getAvailableUsers } = useLeadAssignments();
+  const availableUsers = getAvailableUsers();
+  
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -43,7 +47,8 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
     stage_id: '',
     notes: '',
     primary_service: '',
-    secondary_services: [] as string[]
+    secondary_services: [] as string[],
+    assigned_user_email: getCurrentUserEmail()
   });
 
   const handleSecondaryServiceChange = (serviceId: string, checked: boolean) => {
@@ -73,6 +78,9 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
       // Set default stage if not selected
       const stageId = formData.stage_id || stages[0]?.id;
 
+      // Establecer el usuario actual para el trigger antes de crear el contacto
+      await setCurrentUserForTrigger(formData.assigned_user_email);
+
       // Create notes with service information
       let serviceNotes = '';
       if (formData.primary_service) {
@@ -88,7 +96,7 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
       
       const finalNotes = serviceNotes + (formData.notes ? `\nNotas adicionales: ${formData.notes}` : '');
 
-      const { error } = await supabase
+      const { data: newContact, error } = await supabase
         .from('contacts')
         .insert([{
           first_name: formData.first_name,
@@ -100,7 +108,9 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
           country_name: formData.country_name || 'España',
           stage_id: stageId,
           notes: finalNotes || null
-        }]);
+        }])
+        .select()
+        .single();
 
       if (error) throw error;
 
@@ -108,19 +118,15 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
       await supabase
         .from('contact_activities')
         .insert([{
-          contact_id: (await supabase
-            .from('contacts')
-            .select('id')
-            .eq('phone', formData.phone)
-            .single()).data?.id,
+          contact_id: newContact.id,
           activity_type: 'note',
           title: 'Contacto creado manualmente',
-          description: `Contacto agregado desde el CRM${serviceNotes ? ` con interés en: ${formData.primary_service}` : ''}`
+          description: `Contacto agregado desde el CRM${serviceNotes ? ` con interés en: ${formData.primary_service}` : ''} - Asignado a: ${formData.assigned_user_email}`
         }]);
 
       toast({
         title: "Éxito",
-        description: "Contacto creado correctamente",
+        description: `Contacto creado y asignado a ${formData.assigned_user_email}`,
       });
 
       // Reset form and close dialog
@@ -135,7 +141,8 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
         stage_id: '',
         notes: '',
         primary_service: '',
-        secondary_services: []
+        secondary_services: [],
+        assigned_user_email: getCurrentUserEmail()
       });
       setIsOpen(false);
       onContactAdded();
@@ -230,26 +237,46 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="stage">Etapa</Label>
-            <Select value={formData.stage_id} onValueChange={(value) => setFormData(prev => ({ ...prev, stage_id: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar etapa" />
-              </SelectTrigger>
-              <SelectContent>
-                {stages.map((stage) => (
-                  <SelectItem key={stage.id} value={stage.id}>
-                    <div className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
-                        style={{ backgroundColor: stage.color }}
-                      />
-                      {stage.name}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="stage">Etapa</Label>
+              <Select value={formData.stage_id} onValueChange={(value) => setFormData(prev => ({ ...prev, stage_id: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar etapa" />
+                </SelectTrigger>
+                <SelectContent>
+                  {stages.map((stage) => (
+                    <SelectItem key={stage.id} value={stage.id}>
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: stage.color }}
+                        />
+                        {stage.name}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="assigned_user">Asignar a</Label>
+              <Select 
+                value={formData.assigned_user_email} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, assigned_user_email: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar usuario" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableUsers.map((user) => (
+                    <SelectItem key={user.email} value={user.email}>
+                      {user.name} ({user.email})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Services Section */}

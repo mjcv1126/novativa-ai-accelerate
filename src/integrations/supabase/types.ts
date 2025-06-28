@@ -276,6 +276,41 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_assignments: {
+        Row: {
+          assigned_at: string
+          assigned_by_email: string
+          assigned_user_email: string
+          contact_id: string
+          id: string
+          notes: string | null
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by_email: string
+          assigned_user_email: string
+          contact_id: string
+          id?: string
+          notes?: string | null
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by_email?: string
+          assigned_user_email?: string
+          contact_id?: string
+          id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_assignments_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       uploaded_files: {
         Row: {
           created_at: string
@@ -317,6 +352,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_latest_assignment: {
+        Args: { contact_uuid: string }
+        Returns: {
+          assigned_user_email: string
+          assigned_at: string
+        }[]
+      }
       store_contact: {
         Args:
           | Record<PropertyKey, never>
