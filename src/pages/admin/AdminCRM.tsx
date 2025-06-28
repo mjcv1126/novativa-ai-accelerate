@@ -77,15 +77,15 @@ const AdminCRM = () => {
         <title>CRM | Panel Admin Novativa</title>
       </Helmet>
       
-      <div className="space-y-4 lg:space-y-6 max-w-full overflow-hidden">
+      <div className="space-y-4 max-w-full">
         {/* Header */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold">CRM - Gestión de Contactos</h1>
-            <p className="text-gray-600 text-sm lg:text-base">Administra tus contactos y embudo de ventas</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">CRM - Gestión de Contactos</h1>
+            <p className="text-gray-600 text-sm">Administra tus contactos y embudo de ventas</p>
           </div>
           
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <AddContactDialog 
               stages={stages}
               onContactAdded={handleContactAdded}
@@ -110,32 +110,32 @@ const AdminCRM = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+        {/* Stats Cards - Responsive grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs lg:text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                 Total Contactos
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-xl lg:text-2xl font-bold">{totalContacts}</div>
+            <CardContent className="pt-0">
+              <div className="text-lg sm:text-xl lg:text-2xl font-bold">{totalContacts}</div>
             </CardContent>
           </Card>
           
           {contactsByStage.slice(0, 3).map((stage) => (
             <Card key={stage.id}>
               <CardHeader className="pb-2">
-                <CardTitle className="text-xs lg:text-sm font-medium text-gray-600 flex items-center gap-1 lg:gap-2">
+                <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 flex items-center gap-1">
                   <div 
-                    className="w-2 h-2 lg:w-3 lg:h-3 rounded-full flex-shrink-0" 
+                    className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" 
                     style={{ backgroundColor: stage.color }}
                   />
                   <span className="truncate">{stage.name}</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-xl lg:text-2xl font-bold">{stage.count}</div>
+              <CardContent className="pt-0">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold">{stage.count}</div>
               </CardContent>
             </Card>
           ))}
@@ -149,7 +149,7 @@ const AdminCRM = () => {
         />
 
         {/* View Toggle */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
@@ -158,7 +158,7 @@ const AdminCRM = () => {
               className="flex items-center gap-2 flex-1 sm:flex-initial"
             >
               <List className="h-4 w-4" />
-              <span className="hidden sm:inline">Lista</span>
+              <span>Lista</span>
             </Button>
             <Button
               variant={viewMode === 'kanban' ? 'default' : 'outline'}
@@ -167,11 +167,11 @@ const AdminCRM = () => {
               className="flex items-center gap-2 flex-1 sm:flex-initial"
             >
               <Kanban className="h-4 w-4" />
-              <span className="hidden sm:inline">Kanban</span>
+              <span>Kanban</span>
             </Button>
           </div>
 
-          <div className="text-sm text-gray-500 w-full sm:w-auto text-right">
+          <div className="text-sm text-gray-500 w-full sm:w-auto text-left sm:text-right">
             {loading ? 'Cargando...' : `${contacts.length} contactos`}
           </div>
         </div>

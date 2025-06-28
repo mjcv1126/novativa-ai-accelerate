@@ -13,10 +13,23 @@ import {
   Calendar
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarHeader,
+  useSidebar,
+} from '@/components/ui/sidebar';
 
 const AdminSidebar = () => {
   const location = useLocation();
   const { user } = useAdminAuth();
+  const { state } = useSidebar();
 
   // Obtener información del usuario desde localStorage si no está disponible en el contexto
   const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
@@ -82,36 +95,57 @@ const AdminSidebar = () => {
   // Filtrar elementos del menú según el rol del usuario
   const menuItems = allMenuItems.filter(item => item.roles.includes(userRole));
 
+  const isActive = (path: string) => location.pathname === path;
+
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-full">
-      <div className="p-6">
-        <h2 className="text-xl font-bold text-gray-800">Panel Admin</h2>
-        {currentUser?.email && (
-          <p className="text-sm text-gray-600 mt-1">{currentUser.email}</p>
-        )}
-      </div>
-      <nav className="mt-6">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = location.pathname === item.path;
-          
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center px-6 py-3 text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-novativa-teal text-white border-r-2 border-novativa-lightTeal'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-              }`}
-            >
-              <Icon className="mr-3 h-5 w-5" />
-              {item.title}
-            </Link>
-          );
-        })}
-      </nav>
-    </div>
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <div className="flex items-center gap-2 px-2 py-1">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-novativa-teal text-white text-sm font-bold">
+            N
+          </div>
+          {state === "expanded" && (
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold">Panel Admin</span>
+              {currentUser?.email && (
+                <span className="text-xs text-gray-500 truncate max-w-[180px]">
+                  {currentUser.email}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </SidebarHeader>
+      
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navegación</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.path);
+                
+                return (
+                  <SidebarMenuItem key={item.path}>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={active}
+                      tooltip={state === "collapsed" ? item.title : undefined}
+                    >
+                      <Link to={item.path} className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 };
 
