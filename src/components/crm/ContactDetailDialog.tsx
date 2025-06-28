@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ContactWithStage, CrmStage, ContactActivity } from '@/types/crm';
-import { Phone, Mail, Building, MapPin, Calendar, Plus, CheckCircle, Clock, User } from 'lucide-react';
+import { Phone, Mail, Building, MapPin, Calendar, Plus, CheckCircle, Clock, User, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +34,7 @@ export const ContactDetailDialog = ({
   fetchActivities
 }: ContactDetailDialogProps) => {
   const [editMode, setEditMode] = useState(false);
+  const [showActivityForm, setShowActivityForm] = useState(false);
   const [activities, setActivities] = useState<ContactActivity[]>([]);
   const [assignedUser, setAssignedUser] = useState<string>('unassigned');
   const [newActivity, setNewActivity] = useState({
@@ -107,7 +109,6 @@ export const ContactDetailDialog = ({
       console.log('Assigning lead to:', userEmail);
       
       if (userEmail === 'unassigned') {
-        // Handle unassigned case - we don't create an assignment record for this
         setAssignedUser('unassigned');
         console.log('Lead unassigned');
         return;
@@ -115,7 +116,6 @@ export const ContactDetailDialog = ({
       
       const success = await assignLead(contact.id, userEmail, 'Reasignación manual desde la ficha del contacto');
       if (success) {
-        // Recargar la asignación para obtener los datos actualizados
         await loadContactAssignment();
         console.log('Lead assigned successfully to:', userEmail);
       } else {
@@ -144,6 +144,8 @@ export const ContactDetailDialog = ({
         scheduled_time: ''
       });
       
+      setShowActivityForm(false);
+      
       // Refresh activities
       fetchActivities(contact.id).then(setActivities);
     }
@@ -170,11 +172,25 @@ export const ContactDetailDialog = ({
     return labels[type as keyof typeof labels] || type;
   };
 
+  // Separate activities into past and future
+  const now = new Date();
+  const pastActivities = activities.filter(activity => {
+    if (!activity.scheduled_date) return true; // Activities without date go to past
+    const activityDate = new Date(activity.scheduled_date);
+    return activityDate < now;
+  }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  const futureActivities = activities.filter(activity => {
+    if (!activity.scheduled_date) return false;
+    const activityDate = new Date(activity.scheduled_date);
+    return activityDate >= now;
+  }).sort((a, b) => new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime());
+
   if (!contact) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>{contact.first_name} {contact.last_name}</span>
@@ -382,98 +398,149 @@ export const ContactDetailDialog = ({
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Timeline de Actividades</span>
+                <Button
+                  onClick={() => setShowActivityForm(!showActivityForm)}
+                  size="sm"
+                  variant="outline"
+                  className="flex items-center gap-2"
+                >
+                  {showActivityForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  {showActivityForm ? 'Cancelar' : 'Nueva Actividad'}
+                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Add new activity */}
-              <div className="border rounded-lg p-4 mb-4">
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <Select 
-                      value={newActivity.activity_type} 
-                      onValueChange={(value) => setNewActivity(prev => ({ ...prev, activity_type: value as ContactActivity['activity_type'] }))}
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="note">Nota</SelectItem>
-                        <SelectItem value="call">Llamada</SelectItem>
-                        <SelectItem value="email">Email</SelectItem>
-                        <SelectItem value="meeting">Reunión</SelectItem>
-                        <SelectItem value="reminder">Recordatorio</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      placeholder="Título de la actividad"
-                      value={newActivity.title}
-                      onChange={(e) => setNewActivity(prev => ({ ...prev, title: e.target.value }))}
+              {/* Add new activity form - only visible when toggled */}
+              {showActivityForm && (
+                <div className="border rounded-lg p-4 mb-6 bg-blue-50">
+                  <h4 className="font-medium mb-3">Nueva Actividad</h4>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Select 
+                        value={newActivity.activity_type} 
+                        onValueChange={(value) => setNewActivity(prev => ({ ...prev, activity_type: value as ContactActivity['activity_type'] }))}
+                      >
+                        <SelectTrigger className="w-32">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="note">Nota</SelectItem>
+                          <SelectItem value="call">Llamada</SelectItem>
+                          <SelectItem value="email">Email</SelectItem>
+                          <SelectItem value="meeting">Reunión</SelectItem>
+                          <SelectItem value="reminder">Recordatorio</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        placeholder="Título de la actividad"
+                        value={newActivity.title}
+                        onChange={(e) => setNewActivity(prev => ({ ...prev, title: e.target.value }))}
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input
+                        type="date"
+                        placeholder="Fecha"
+                        value={newActivity.scheduled_date}
+                        onChange={(e) => setNewActivity(prev => ({ ...prev, scheduled_date: e.target.value }))}
+                      />
+                      <Input
+                        type="time"
+                        placeholder="Hora"
+                        value={newActivity.scheduled_time}
+                        onChange={(e) => setNewActivity(prev => ({ ...prev, scheduled_time: e.target.value }))}
+                      />
+                    </div>
+                    
+                    <Textarea
+                      placeholder="Descripción (opcional)"
+                      value={newActivity.description}
+                      onChange={(e) => setNewActivity(prev => ({ ...prev, description: e.target.value }))}
+                      rows={2}
                     />
+                    <Button onClick={handleAddActivity} size="sm" className="w-full">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Agregar Actividad
+                    </Button>
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input
-                      type="date"
-                      placeholder="Fecha"
-                      value={newActivity.scheduled_date}
-                      onChange={(e) => setNewActivity(prev => ({ ...prev, scheduled_date: e.target.value }))}
-                    />
-                    <Input
-                      type="time"
-                      placeholder="Hora"
-                      value={newActivity.scheduled_time}
-                      onChange={(e) => setNewActivity(prev => ({ ...prev, scheduled_time: e.target.value }))}
-                    />
-                  </div>
-                  
-                  <Textarea
-                    placeholder="Descripción (opcional)"
-                    value={newActivity.description}
-                    onChange={(e) => setNewActivity(prev => ({ ...prev, description: e.target.value }))}
-                    rows={2}
-                  />
-                  <Button onClick={handleAddActivity} size="sm" className="w-full">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Agregar Actividad
-                  </Button>
                 </div>
-              </div>
+              )}
 
-              {/* Activities list */}
-              <div className="space-y-3 max-h-64 overflow-y-auto">
-                {activities.map((activity) => (
-                  <div key={activity.id} className="flex gap-3 p-3 border rounded-lg">
-                    <div className="flex-shrink-0 mt-1">
-                      {getActivityIcon(activity.activity_type)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-sm">{activity.title}</span>
-                        <Badge variant="outline" className="text-xs">
-                          {getActivityTypeLabel(activity.activity_type)}
-                        </Badge>
+              {/* Future Activities Section */}
+              {futureActivities.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="font-medium text-sm text-blue-600 mb-3 flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Actividades Programadas ({futureActivities.length})
+                  </h4>
+                  <div className="space-y-3 max-h-40 overflow-y-auto">
+                    {futureActivities.map((activity) => (
+                      <div key={activity.id} className="flex gap-3 p-3 border rounded-lg bg-blue-50">
+                        <div className="flex-shrink-0 mt-1">
+                          {getActivityIcon(activity.activity_type)}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium text-sm">{activity.title}</span>
+                            <Badge variant="outline" className="text-xs">
+                              {getActivityTypeLabel(activity.activity_type)}
+                            </Badge>
+                          </div>
+                          {activity.description && (
+                            <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
+                          )}
+                          <p className="text-xs text-blue-600 mb-1">
+                            📅 {activity.scheduled_date} {activity.scheduled_time}
+                          </p>
+                        </div>
                       </div>
-                      {activity.description && (
-                        <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
-                      )}
-                      {(activity.scheduled_date || activity.scheduled_time) && (
-                        <p className="text-xs text-blue-600 mb-1">
-                          Programada: {activity.scheduled_date} {activity.scheduled_time}
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Past Activities Section */}
+              <div>
+                <h4 className="font-medium text-sm text-gray-600 mb-3 flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  Historial de Actividades ({pastActivities.length})
+                </h4>
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {pastActivities.map((activity) => (
+                    <div key={activity.id} className="flex gap-3 p-3 border rounded-lg">
+                      <div className="flex-shrink-0 mt-1">
+                        {getActivityIcon(activity.activity_type)}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium text-sm">{activity.title}</span>
+                          <Badge variant="outline" className="text-xs">
+                            {getActivityTypeLabel(activity.activity_type)}
+                          </Badge>
+                        </div>
+                        {activity.description && (
+                          <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
+                        )}
+                        {(activity.scheduled_date || activity.scheduled_time) && (
+                          <p className="text-xs text-blue-600 mb-1">
+                            Programada: {activity.scheduled_date} {activity.scheduled_time}
+                          </p>
+                        )}
+                        <p className="text-xs text-gray-400">
+                          {format(new Date(activity.created_at), 'dd MMM yyyy HH:mm', { locale: es })}
                         </p>
-                      )}
-                      <p className="text-xs text-gray-400">
-                        {format(new Date(activity.created_at), 'dd MMM yyyy HH:mm', { locale: es })}
-                      </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
-                
-                {activities.length === 0 && (
-                  <div className="text-center py-8 text-gray-400">
-                    <Clock className="h-8 w-8 mx-auto mb-2" />
-                    <p className="text-sm">No hay actividades registradas</p>
-                  </div>
-                )}
+                  ))}
+                  
+                  {pastActivities.length === 0 && futureActivities.length === 0 && (
+                    <div className="text-center py-8 text-gray-400">
+                      <Clock className="h-8 w-8 mx-auto mb-2" />
+                      <p className="text-sm">No hay actividades registradas</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
