@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -13,6 +12,7 @@ import { es } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLeadAssignments } from '@/hooks/crm/useLeadAssignments';
+import { useActivityOperations } from '@/hooks/crm/useActivityOperations';
 
 interface ContactDetailDialogProps {
   contact: ContactWithStage | null;
@@ -55,6 +55,7 @@ export const ContactDetailDialog = ({
   });
 
   const { getContactAssignment, assignLead, getAvailableUsers } = useLeadAssignments();
+  const { markActivityComplete } = useActivityOperations();
   const availableUsers = getAvailableUsers();
 
   const loadContactAssignment = useCallback(async () => {
@@ -84,6 +85,17 @@ export const ContactDetailDialog = ({
       }
     }
   }, [contact, fetchActivities]);
+
+  const handleMarkActivityComplete = async (activityId: string) => {
+    try {
+      await markActivityComplete(activityId);
+      // Refresh activities immediately
+      await loadActivities();
+      console.log('Activity marked as complete and timeline refreshed');
+    } catch (error) {
+      console.error('Error marking activity as complete:', error);
+    }
+  };
 
   useEffect(() => {
     if (contact) {
@@ -508,6 +520,20 @@ export const ContactDetailDialog = ({
                           <p className="text-xs text-blue-600 mb-1">
                             📅 {activity.scheduled_date} {activity.scheduled_time}
                           </p>
+                          {/* Complete button - only for activities with scheduled date and not completed */}
+                          {activity.scheduled_date && !activity.is_completed && (
+                            <div className="mt-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleMarkActivityComplete(activity.id)}
+                                className="text-green-600 hover:text-green-700 hover:border-green-300 text-xs px-2 py-1 h-7"
+                              >
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                Completar
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -533,6 +559,11 @@ export const ContactDetailDialog = ({
                           <Badge variant="outline" className="text-xs">
                             {getActivityTypeLabel(activity.activity_type)}
                           </Badge>
+                          {activity.is_completed && (
+                            <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                              Completada
+                            </Badge>
+                          )}
                         </div>
                         {activity.description && (
                           <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
@@ -545,6 +576,20 @@ export const ContactDetailDialog = ({
                         <p className="text-xs text-gray-400">
                           {format(new Date(activity.created_at), 'dd MMM yyyy HH:mm', { locale: es })}
                         </p>
+                        {/* Complete button - only for activities with scheduled date and not completed */}
+                        {activity.scheduled_date && !activity.is_completed && (
+                          <div className="mt-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleMarkActivityComplete(activity.id)}
+                              className="text-green-600 hover:text-green-700 hover:border-green-300 text-xs px-2 py-1 h-7"
+                            >
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Completar
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
