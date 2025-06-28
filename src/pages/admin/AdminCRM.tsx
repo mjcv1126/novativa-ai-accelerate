@@ -145,9 +145,6 @@ const AdminCRM = () => {
           </div>
         </div>
 
-        {/* TidyCal Integration */}
-        <TidyCalIntegration />
-
         {/* Filters - Left aligned */}
         <div className="space-y-4">
           <CRMFilters
@@ -213,6 +210,11 @@ const AdminCRM = () => {
             )}
           </>
         )}
+
+        {/* TidyCal Integration - Moved to the bottom */}
+        <div className="border-t pt-6 mt-8">
+          <TidyCalIntegration />
+        </div>
 
         {/* Contact Detail Dialog */}
         <ContactDetailDialog

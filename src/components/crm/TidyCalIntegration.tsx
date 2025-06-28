@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Clock, User, RefreshCw, ExternalLink, Activity } from 'lucide-react';
+import { Calendar, Clock, User, RefreshCw, ExternalLink, Activity, AlertCircle } from 'lucide-react';
 import { useTidyCal } from '@/hooks/crm/useTidyCal';
 import { TidyCalPollingStatus } from './TidyCalPollingStatus';
 import { TidyCalSetupButton } from './TidyCalSetupButton';
@@ -33,15 +33,23 @@ interface TidyCalBooking {
 export const TidyCalIntegration = () => {
   const [bookings, setBookings] = useState<TidyCalBooking[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { getTidyCalBookings, syncBookingToContact } = useTidyCal();
 
   const loadBookings = async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await getTidyCalBookings();
       if (data?.data) {
         setBookings(data.data);
+      } else {
+        console.warn('No data returned from TidyCal API');
+        setError('No se recibieron datos de TidyCal. Verifica la configuración del token.');
       }
+    } catch (err) {
+      console.error('Error loading bookings:', err);
+      setError('Error al cargar las reservas. Verifica que el token de TidyCal esté configurado correctamente.');
     } finally {
       setLoading(false);
     }
@@ -57,7 +65,7 @@ export const TidyCalIntegration = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl">
+    <div className="w-full max-w-5xl mx-auto">
       <Card>
         <CardHeader>
           <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -112,17 +120,30 @@ export const TidyCalIntegration = () => {
                 <p>Próximas citas programadas en TidyCal. Puedes sincronizar manualmente reservas específicas si es necesario.</p>
               </div>
               
+              {error && (
+                <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
+                  <AlertCircle className="h-4 w-4 text-yellow-600 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-yellow-800">Problema de configuración</p>
+                    <p className="text-yellow-700">{error}</p>
+                    <p className="text-yellow-600 mt-1">
+                      Asegúrate de que el token <code>Tidycal_Token</code> esté configurado en los secretos de Supabase.
+                    </p>
+                  </div>
+                </div>
+              )}
+              
               {loading ? (
                 <div className="text-center py-8">
                   <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-400" />
                   <p className="text-gray-500">Cargando reservas...</p>
                 </div>
-              ) : bookings.length === 0 ? (
+              ) : bookings.length === 0 && !error ? (
                 <div className="text-center py-8">
                   <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                   <p className="text-gray-500">No hay reservas próximas</p>
                 </div>
-              ) : (
+              ) : !error ? (
                 <div className="space-y-3">
                   {bookings.map((booking) => (
                     <div key={booking.id} className="border rounded-lg p-4">
@@ -173,7 +194,7 @@ export const TidyCalIntegration = () => {
                     </div>
                   ))}
                 </div>
-              )}
+              ) : null}
             </TabsContent>
           </Tabs>
         </CardContent>
