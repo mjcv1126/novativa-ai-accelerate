@@ -35,7 +35,7 @@ export const ContactDetailDialog = ({
 }: ContactDetailDialogProps) => {
   const [editMode, setEditMode] = useState(false);
   const [activities, setActivities] = useState<ContactActivity[]>([]);
-  const [assignedUser, setAssignedUser] = useState<string>('');
+  const [assignedUser, setAssignedUser] = useState<string>('unassigned');
   const [newActivity, setNewActivity] = useState({
     title: '',
     description: '',
@@ -58,6 +58,7 @@ export const ContactDetailDialog = ({
 
   useEffect(() => {
     if (contact) {
+      console.log('Contact changed:', contact);
       setFormData({
         first_name: contact.first_name,
         last_name: contact.last_name,
@@ -69,15 +70,21 @@ export const ContactDetailDialog = ({
       });
       
       // Load activities
-      fetchActivities(contact.id).then(setActivities);
+      fetchActivities(contact.id).then(setActivities).catch(error => {
+        console.error('Error fetching activities:', error);
+      });
       
       // Load assignment
       getContactAssignment(contact.id).then(assignment => {
-        if (assignment) {
+        console.log('Assignment loaded:', assignment);
+        if (assignment && assignment.assigned_user_email) {
           setAssignedUser(assignment.assigned_user_email);
         } else {
-          setAssignedUser('');
+          setAssignedUser('unassigned');
         }
+      }).catch(error => {
+        console.error('Error fetching assignment:', error);
+        setAssignedUser('unassigned');
       });
     }
   }, [contact, fetchActivities, getContactAssignment]);
@@ -92,6 +99,14 @@ export const ContactDetailDialog = ({
   const handleAssignUser = async (userEmail: string) => {
     if (contact) {
       console.log('Assigning lead to:', userEmail);
+      
+      if (userEmail === 'unassigned') {
+        // Handle unassigned case - we don't create an assignment record for this
+        setAssignedUser('unassigned');
+        console.log('Lead unassigned');
+        return;
+      }
+      
       const success = await assignLead(contact.id, userEmail, 'Reasignación manual desde la ficha del contacto');
       if (success) {
         setAssignedUser(userEmail);
@@ -318,23 +333,23 @@ export const ContactDetailDialog = ({
                 <div>
                   <Label htmlFor="assigned_user">Lead Asignado a</Label>
                   <Select 
-                    value={assignedUser || ''} 
+                    value={assignedUser} 
                     onValueChange={handleAssignUser}
                   >
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Seleccionar usuario">
-                        {assignedUser ? (
+                        {assignedUser === 'unassigned' ? (
+                          "Sin asignar"
+                        ) : (
                           <div className="flex items-center gap-2">
                             <User className="h-4 w-4" />
                             <span>{assignedUser}</span>
                           </div>
-                        ) : (
-                          "Sin asignar"
                         )}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent className="bg-white border shadow-lg z-50">
-                      <SelectItem value="">
+                      <SelectItem value="unassigned">
                         <div className="flex items-center gap-2">
                           <User className="h-4 w-4" />
                           Sin asignar
