@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useCRM } from '@/hooks/useCRM';
@@ -110,43 +109,46 @@ const AdminCRM = () => {
           </div>
         </div>
 
-        {/* Stats Cards - Responsive grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
-                Total Contactos
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold">{totalContacts}</div>
-            </CardContent>
-          </Card>
-          
-          {contactsByStage.slice(0, 3).map((stage) => (
-            <Card key={stage.id}>
+        {/* Centered Container for Stats and Filters */}
+        <div className="max-w-6xl mx-auto space-y-4">
+          {/* Stats Cards - Responsive grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+            <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 flex items-center gap-1">
-                  <div 
-                    className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" 
-                    style={{ backgroundColor: stage.color }}
-                  />
-                  <span className="truncate">{stage.name}</span>
+                <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
+                  Total Contactos
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold">{stage.count}</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold">{totalContacts}</div>
               </CardContent>
             </Card>
-          ))}
-        </div>
+            
+            {contactsByStage.slice(0, 3).map((stage) => (
+              <Card key={stage.id}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 flex items-center gap-1">
+                    <div 
+                      className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" 
+                      style={{ backgroundColor: stage.color }}
+                    />
+                    <span className="truncate">{stage.name}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold">{stage.count}</div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-        {/* Filters */}
-        <CRMFilters
-          filters={filters}
-          onFiltersChange={setFilters}
-          stages={stages}
-        />
+          {/* Filters */}
+          <CRMFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            stages={stages}
+          />
+        </div>
 
         {/* View Toggle */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
