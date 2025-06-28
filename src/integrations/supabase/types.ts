@@ -150,6 +150,8 @@ export type Database = {
           due_date: string | null
           id: string
           is_completed: boolean | null
+          scheduled_date: string | null
+          scheduled_time: string | null
           title: string
           updated_at: string
         }
@@ -162,6 +164,8 @@ export type Database = {
           due_date?: string | null
           id?: string
           is_completed?: boolean | null
+          scheduled_date?: string | null
+          scheduled_time?: string | null
           title: string
           updated_at?: string
         }
@@ -174,6 +178,8 @@ export type Database = {
           due_date?: string | null
           id?: string
           is_completed?: boolean | null
+          scheduled_date?: string | null
+          scheduled_time?: string | null
           title?: string
           updated_at?: string
         }

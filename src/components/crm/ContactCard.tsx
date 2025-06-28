@@ -103,10 +103,10 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
         )}
 
         {contact.assignment && (
-          <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded">
-            <User className="h-3 w-3" />
-            <span className="text-xs font-medium">
-              Asignado a: {contact.assignment.assigned_user_email.split('@')[0]}
+          <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-3 py-2 rounded-md border-l-4 border-blue-500">
+            <User className="h-4 w-4" />
+            <span className="font-medium">
+              Lead asignado a: {contact.assignment.assigned_user_email.split('@')[0]}
             </span>
           </div>
         )}

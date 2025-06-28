@@ -35,6 +35,8 @@ export interface ContactActivity {
   due_date?: string;
   completed_at?: string;
   is_completed: boolean;
+  scheduled_date?: string;
+  scheduled_time?: string;
   created_at: string;
   updated_at: string;
 }
@@ -64,4 +66,10 @@ export interface CrmFilters {
     from?: string;
     to?: string;
   };
+}
+
+export interface ActivityFilters {
+  timeframe: 'today' | 'tomorrow' | 'this_week' | 'next_week' | 'future';
+  activity_type?: string;
+  completed?: boolean;
 }

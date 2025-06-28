@@ -9,7 +9,8 @@ import {
   Palette,
   Upload,
   Video,
-  Shield
+  Shield,
+  Calendar
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
@@ -32,6 +33,12 @@ const AdminSidebar = () => {
       title: 'CRM',
       icon: Users,
       path: '/admin/crm',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'Actividades',
+      icon: Calendar,
+      path: '/admin/activities',
       roles: ['admin', 'super_admin']
     },
     {
