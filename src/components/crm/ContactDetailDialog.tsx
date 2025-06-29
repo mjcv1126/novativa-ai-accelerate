@@ -358,6 +358,19 @@ export const ContactDetailDialog = ({
                       <span>{contact.email}</span>
                     </div>
                   )}
+
+                  {/* Mostrar correos adicionales */}
+                  {contact.additional_emails && contact.additional_emails.length > 0 && (
+                    <div className="ml-6 space-y-1">
+                      <Label className="text-xs text-gray-500">Correos adicionales:</Label>
+                      {contact.additional_emails.map((email, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                          <Mail className="h-3 w-3 text-gray-400" />
+                          <span>{email}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   
                   {contact.company && (
                     <div className="flex items-center gap-2">

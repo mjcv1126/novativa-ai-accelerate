@@ -24,6 +24,7 @@ export interface Contact {
   service_of_interest?: string;
   last_contact_date?: string;
   additional_phones?: string[];
+  additional_emails?: string[];
   created_at: string;
   updated_at?: string;
 }
