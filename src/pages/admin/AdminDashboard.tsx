@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { formatDateForDisplay } from '@/utils/dateUtils';
+import { formatDate } from '@/utils/dateUtils';
 
 interface DashboardStats {
   totalContacts: number;
@@ -352,7 +351,7 @@ const AdminDashboard = () => {
                         </div>
                       </div>
                       <div className="text-xs text-gray-400">
-                        {formatDateForDisplay(activity.created_at)}
+                        {formatDate(activity.created_at)}
                       </div>
                     </div>
                   ))}
