@@ -17,7 +17,7 @@ interface DashboardStats {
   totalActivities: number;
   completedActivities: number;
   pendingActivities: number;
-  overdue Activities: number;
+  overdueActivities: number;
   totalBookings: number;
   futureBookings: number;
   pastBookings: number;
