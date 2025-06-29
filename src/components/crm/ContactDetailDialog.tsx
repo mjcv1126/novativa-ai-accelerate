@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ContactWithStage, CrmStage, ContactActivity } from '@/types/crm';
-import { Phone, Mail, Building, MapPin, Calendar, Plus, CheckCircle, Clock, User, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ContactWithStage, CrmStage } from '@/types/crm';
+import { User, Phone, Mail, Building, MapPin, Calendar, Clock, Plus, X, Edit2, Save } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useLeadAssignments } from '@/hooks/crm/useLeadAssignments';
-import { useActivityOperations } from '@/hooks/crm/useActivityOperations';
+import { toast } from '@/components/ui/use-toast';
 import { countries } from '@/components/schedule/countryData';
 
 interface ContactDetailDialogProps {
@@ -21,8 +21,8 @@ interface ContactDetailDialogProps {
   onClose: () => void;
   stages: CrmStage[];
   onUpdate: (id: string, updates: Partial<ContactWithStage>) => void;
-  onCreateActivity: (activity: Omit<ContactActivity, 'id' | 'created_at' | 'updated_at'>) => void;
-  fetchActivities: (contactId: string) => Promise<ContactActivity[]>;
+  onCreateActivity: (data: any) => Promise<any>;
+  fetchActivities: (contactId: string) => Promise<any[]>;
 }
 
 export const ContactDetailDialog = ({
@@ -34,369 +34,406 @@ export const ContactDetailDialog = ({
   onCreateActivity,
   fetchActivities
 }: ContactDetailDialogProps) => {
-  const [editMode, setEditMode] = useState(false);
-  const [showActivityForm, setShowActivityForm] = useState(false);
-  const [activities, setActivities] = useState<ContactActivity[]>([]);
-  const [assignedUser, setAssignedUser] = useState<string>('unassigned');
-  const [newActivity, setNewActivity] = useState({
-    title: '',
-    description: '',
-    activity_type: 'note' as ContactActivity['activity_type'],
-    scheduled_date: '',
-    scheduled_time: ''
-  });
-  const [formData, setFormData] = useState({
+  const [isEditing, setIsEditing] = useState(false);
+  const [activities, setActivities] = useState<any[]>([]);
+  const [loadingActivities, setLoadingActivities] = useState(false);
+  const [editForm, setEditForm] = useState({
     first_name: '',
     last_name: '',
     email: '',
     phone: '',
     company: '',
+    country_code: '506',
+    country_name: '',
     stage_id: '',
     notes: '',
-    secondary_email: '',
-    secondary_phone: '',
-    secondary_country_code: '506'
+    service_of_interest: '',
+    additional_phones: [] as string[],
+    additional_emails: [] as string[]
   });
 
-  const { getContactAssignment, assignLead, getAvailableUsers } = useLeadAssignments();
-  const { markActivityComplete } = useActivityOperations();
-  const availableUsers = getAvailableUsers();
-
-  const loadContactAssignment = useCallback(async () => {
-    if (contact) {
-      try {
-        const assignment = await getContactAssignment(contact.id);
-        console.log('Assignment loaded:', assignment);
-        if (assignment && assignment.assigned_user_email) {
-          setAssignedUser(assignment.assigned_user_email);
-        } else {
-          setAssignedUser('unassigned');
-        }
-      } catch (error) {
-        console.error('Error fetching assignment:', error);
-        setAssignedUser('unassigned');
-      }
+  useEffect(() => {
+    if (contact && isOpen) {
+      setEditForm({
+        first_name: contact.first_name || '',
+        last_name: contact.last_name || '',
+        email: contact.email || '',
+        phone: contact.phone || '',
+        company: contact.company || '',
+        country_code: contact.country_code || '506',
+        country_name: contact.country_name || '',
+        stage_id: contact.stage_id || '',
+        notes: contact.notes || '',
+        service_of_interest: contact.service_of_interest || '',
+        additional_phones: contact.additional_phones || [],
+        additional_emails: contact.additional_emails || []
+      });
+      loadActivities();
     }
-  }, [contact, getContactAssignment]);
+  }, [contact, isOpen]);
 
-  const loadActivities = useCallback(async () => {
-    if (contact) {
-      try {
-        const activitiesData = await fetchActivities(contact.id);
-        setActivities(activitiesData);
-      } catch (error) {
-        console.error('Error fetching activities:', error);
-      }
-    }
-  }, [contact, fetchActivities]);
-
-  const handleMarkActivityComplete = async (activityId: string) => {
+  const loadActivities = async () => {
+    if (!contact) return;
+    setLoadingActivities(true);
     try {
-      await markActivityComplete(activityId);
-      // Refresh activities immediately
-      await loadActivities();
-      console.log('Activity marked as complete and timeline refreshed');
+      const activitiesData = await fetchActivities(contact.id);
+      setActivities(activitiesData || []);
     } catch (error) {
-      console.error('Error marking activity as complete:', error);
+      console.error('Error loading activities:', error);
+    } finally {
+      setLoadingActivities(false);
     }
   };
 
   useEffect(() => {
-    if (contact) {
-      console.log('Contact changed:', contact);
-      
-      // Extraer teléfono y correo secundario de los arrays existentes
-      const secondaryPhone = contact.additional_phones?.[0] || '';
-      const secondaryEmail = contact.additional_emails?.[0] || '';
-      
-      // Extraer código de país del teléfono secundario si existe
-      let secondaryCountryCode = '506';
-      let cleanSecondaryPhone = secondaryPhone;
-      if (secondaryPhone.startsWith('+')) {
-        const phoneMatch = secondaryPhone.match(/^\+(\d{1,4})(.+)$/);
-        if (phoneMatch) {
-          secondaryCountryCode = phoneMatch[1];
-          cleanSecondaryPhone = phoneMatch[2];
-        }
-      }
-      
-      setFormData({
-        first_name: contact.first_name,
-        last_name: contact.last_name,
+    if (contact && isOpen) {
+      setEditForm({
+        first_name: contact.first_name || '',
+        last_name: contact.last_name || '',
         email: contact.email || '',
-        phone: contact.phone,
+        phone: contact.phone || '',
         company: contact.company || '',
+        country_code: contact.country_code || '506',
+        country_name: contact.country_name || '',
         stage_id: contact.stage_id || '',
         notes: contact.notes || '',
-        secondary_email: secondaryEmail,
-        secondary_phone: cleanSecondaryPhone,
-        secondary_country_code: secondaryCountryCode
+        service_of_interest: contact.service_of_interest || '',
+        additional_phones: contact.additional_phones || [],
+        additional_emails: contact.additional_emails || []
+      });
+      loadActivities();
+    }
+  }, [contact, isOpen]);
+
+  const handleSave = async () => {
+    if (!contact) return;
+    
+    try {
+      const selectedCountry = countries.find(c => c.code === editForm.country_code);
+      
+      await onUpdate(contact.id, {
+        ...editForm,
+        country_name: selectedCountry?.name || editForm.country_name,
+        additional_phones: editForm.additional_phones.filter(phone => phone.trim()),
+        additional_emails: editForm.additional_emails.filter(email => email.trim())
       });
       
-      // Load activities
-      loadActivities();
-      
-      // Load assignment
-      loadContactAssignment();
-    }
-  }, [contact, loadActivities, loadContactAssignment]);
-
-  const handleSave = () => {
-    if (contact) {
-      // Preparar teléfonos adicionales
-      const additionalPhones = [];
-      if (formData.secondary_phone.trim()) {
-        additionalPhones.push(`+${formData.secondary_country_code}${formData.secondary_phone.trim()}`);
-      }
-
-      // Preparar correos adicionales
-      const additionalEmails = [];
-      if (formData.secondary_email.trim()) {
-        additionalEmails.push(formData.secondary_email.trim());
-      }
-
-      const updates = {
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        email: formData.email || null,
-        phone: formData.phone,
-        company: formData.company || null,
-        stage_id: formData.stage_id || null,
-        notes: formData.notes || null,
-        additional_phones: additionalPhones.length > 0 ? additionalPhones : null,
-        additional_emails: additionalEmails.length > 0 ? additionalEmails : null
-      };
-
-      onUpdate(contact.id, updates);
-      setEditMode(false);
+      setIsEditing(false);
+      toast({
+        title: "Éxito",
+        description: "Contacto actualizado correctamente",
+      });
+    } catch (error) {
+      console.error('Error updating contact:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar el contacto",
+        variant: "destructive",
+      });
     }
   };
 
-  const handleAssignUser = async (userEmail: string) => {
-    if (contact) {
-      console.log('Assigning lead to:', userEmail);
-      
-      if (userEmail === 'unassigned') {
-        setAssignedUser('unassigned');
-        console.log('Lead unassigned');
-        return;
-      }
-      
-      const success = await assignLead(contact.id, userEmail, 'Reasignación manual desde la ficha del contacto');
-      if (success) {
-        await loadContactAssignment();
-        console.log('Lead assigned successfully to:', userEmail);
-      } else {
-        console.error('Failed to assign lead');
-      }
-    }
+  const addAdditionalPhone = () => {
+    setEditForm(prev => ({
+      ...prev,
+      additional_phones: [...prev.additional_phones, '']
+    }));
   };
 
-  const handleAddActivity = async () => {
-    if (contact && newActivity.title) {
-      const activityData = {
-        contact_id: contact.id,
-        ...newActivity,
-        status: 'pending' as const,
-        is_completed: false,
-        scheduled_date: newActivity.scheduled_date || undefined,
-        scheduled_time: newActivity.scheduled_time || undefined
-      };
-      
-      try {
-        await onCreateActivity(activityData);
-        
-        setNewActivity({
-          title: '',
-          description: '',
-          activity_type: 'note',
-          scheduled_date: '',
-          scheduled_time: ''
-        });
-        
-        setShowActivityForm(false);
-        
-        // Refresh activities immediately
-        await loadActivities();
-        
-        console.log('Activity created and timeline refreshed');
-      } catch (error) {
-        console.error('Error creating activity:', error);
-      }
-    }
+  const removeAdditionalPhone = (index: number) => {
+    setEditForm(prev => ({
+      ...prev,
+      additional_phones: prev.additional_phones.filter((_, i) => i !== index)
+    }));
   };
 
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'call': return <Phone className="h-4 w-4" />;
-      case 'email': return <Mail className="h-4 w-4" />;
-      case 'meeting': return <Calendar className="h-4 w-4" />;
-      default: return <CheckCircle className="h-4 w-4" />;
-    }
+  const updateAdditionalPhone = (index: number, value: string) => {
+    setEditForm(prev => ({
+      ...prev,
+      additional_phones: prev.additional_phones.map((phone, i) => i === index ? value : phone)
+    }));
   };
 
-  const getActivityTypeLabel = (type: string) => {
-    const labels = {
-      call: 'Llamada',
-      email: 'Email',
-      meeting: 'Reunión',
-      note: 'Nota',
-      reminder: 'Recordatorio',
-      status_change: 'Cambio de etapa'
-    };
-    return labels[type as keyof typeof labels] || type;
+  const addAdditionalEmail = () => {
+    setEditForm(prev => ({
+      ...prev,
+      additional_emails: [...prev.additional_emails, '']
+    }));
   };
 
-  // Separate activities into future and past
-  const now = new Date();
-  const futureActivities = activities.filter(activity => {
-    if (!activity.scheduled_date) return false;
-    const activityDate = new Date(activity.scheduled_date);
-    return activityDate >= now;
-  }).sort((a, b) => new Date(a.scheduled_date!).getTime() - new Date(b.scheduled_date!).getTime());
+  const removeAdditionalEmail = (index: number) => {
+    setEditForm(prev => ({
+      ...prev,
+      additional_emails: prev.additional_emails.filter((_, i) => i !== index)
+    }));
+  };
 
-  const pastActivities = activities.filter(activity => {
-    if (!activity.scheduled_date) return true; // Activities without date go to past
-    const activityDate = new Date(activity.scheduled_date);
-    return activityDate < now;
-  }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-  const selectedSecondaryCountry = countries.find(c => c.code === formData.secondary_country_code);
+  const updateAdditionalEmail = (index: number, value: string) => {
+    setEditForm(prev => ({
+      ...prev,
+      additional_emails: prev.additional_emails.map((email, i) => i === index ? value : email)
+    }));
+  };
 
   if (!contact) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <div>
-              <span>{contact.first_name} {contact.last_name}</span>
-              <div className="text-sm text-gray-500 font-mono mt-1">
-                ID: {contact.id}
-              </div>
-            </div>
-            <div className="flex gap-2">
-              {editMode ? (
-                <>
-                  <Button onClick={handleSave} size="sm">Guardar</Button>
-                  <Button onClick={() => setEditMode(false)} variant="outline" size="sm">
-                    Cancelar
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={() => setEditMode(true)} size="sm">
-                  Editar
-                </Button>
-              )}
-            </div>
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              {contact.first_name} {contact.last_name}
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? <Save className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
+              {isEditing ? 'Guardar' : 'Editar'}
+            </Button>
+          </div>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Contact Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Información del Contacto</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {editMode ? (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="first_name">Nombre</Label>
-                      <Input
-                        id="first_name"
-                        value={formData.first_name}
-                        onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="last_name">Apellido</Label>
-                      <Input
-                        id="last_name"
-                        value={formData.last_name}
-                        onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="email">Email Principal</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="secondary_email">Email Secundario</Label>
-                      <Input
-                        id="secondary_email"
-                        type="email"
-                        value={formData.secondary_email}
-                        onChange={(e) => setFormData(prev => ({ ...prev, secondary_email: e.target.value }))}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="phone">Teléfono Principal</Label>
-                    <Input
-                      id="phone"
-                      value={formData.phone}
-                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    />
-                  </div>
+        <Tabs defaultValue="details" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="details">Detalles</TabsTrigger>
+            <TabsTrigger value="activities">Actividades</TabsTrigger>
+          </TabsList>
 
-                  <div>
-                    <Label>Teléfono Secundario</Label>
-                    <div className="flex gap-2">
-                      <div className="w-[140px]">
-                        <Select 
-                          value={formData.secondary_country_code} 
-                          onValueChange={(value) => setFormData(prev => ({ ...prev, secondary_country_code: value }))}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[280px]">
-                            {countries.map((country) => (
-                              <SelectItem key={`edit-secondary-${country.code}-${country.name}`} value={country.code}>
-                                <span className="flex items-center gap-2">
-                                  <span>{country.flag}</span>
-                                  <span>+{country.code}</span>
-                                </span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="flex-1">
-                        <Input
-                          type="tel"
-                          placeholder={`Número opcional (${selectedSecondaryCountry?.minLength} dígitos)`}
-                          value={formData.secondary_phone}
-                          onChange={(e) => setFormData(prev => ({ ...prev, secondary_phone: e.target.value }))}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="company">Empresa</Label>
+          <TabsContent value="details" className="space-y-6">
+            {/* Información Personal */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Información Personal</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Nombre</Label>
+                  {isEditing ? (
                     <Input
-                      id="company"
-                      value={formData.company}
-                      onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+                      value={editForm.first_name}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, first_name: e.target.value }))}
+                    />
+                  ) : (
+                    <p className="text-sm mt-1">{contact.first_name}</p>
+                  )}
+                </div>
+                <div>
+                  <Label>Apellido</Label>
+                  {isEditing ? (
+                    <Input
+                      value={editForm.last_name}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, last_name: e.target.value }))}
+                    />
+                  ) : (
+                    <p className="text-sm mt-1">{contact.last_name}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Información de Contacto */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Información de Contacto</h3>
+              
+              {/* Email Principal */}
+              <div>
+                <Label className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Email Principal
+                </Label>
+                {isEditing ? (
+                  <Input
+                    type="email"
+                    value={editForm.email}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
+                  />
+                ) : (
+                  <p className="text-sm mt-1">{contact.email || 'No especificado'}</p>
+                )}
+              </div>
+
+              {/* Emails Adicionales */}
+              <div>
+                <Label className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Emails Adicionales
+                </Label>
+                {isEditing ? (
+                  <div className="space-y-2">
+                    {editForm.additional_emails.map((email, index) => (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          type="email"
+                          value={email}
+                          onChange={(e) => updateAdditionalEmail(index, e.target.value)}
+                          placeholder="email@ejemplo.com"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeAdditionalEmail(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addAdditionalEmail}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Agregar Email
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {contact.additional_emails && contact.additional_emails.length > 0 ? (
+                      contact.additional_emails.map((email, index) => (
+                        <p key={index} className="text-sm">{email}</p>
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-500">No especificados</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Teléfono Principal */}
+              <div>
+                <Label className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  Teléfono Principal
+                </Label>
+                {isEditing ? (
+                  <div className="flex gap-2">
+                    <Select 
+                      value={editForm.country_code} 
+                      onValueChange={(value) => setEditForm(prev => ({ ...prev, country_code: value }))}
+                    >
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countries.map((country) => (
+                          <SelectItem key={country.code} value={country.code}>
+                            {country.flag} +{country.code}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      value={editForm.phone}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, phone: e.target.value }))}
                     />
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="stage">Etapa</Label>
-                    <Select value={formData.stage_id} onValueChange={(value) => setFormData(prev => ({ ...prev, stage_id: value }))}>
+                ) : (
+                  <p className="text-sm mt-1">+{contact.country_code} {contact.phone}</p>
+                )}
+              </div>
+
+              {/* Teléfonos Adicionales */}
+              <div>
+                <Label className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  Teléfonos Adicionales
+                </Label>
+                {isEditing ? (
+                  <div className="space-y-2">
+                    {editForm.additional_phones.map((phone, index) => (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          value={phone}
+                          onChange={(e) => updateAdditionalPhone(index, e.target.value)}
+                          placeholder="+506 1234 5678"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeAdditionalPhone(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addAdditionalPhone}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Agregar Teléfono
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {contact.additional_phones && contact.additional_phones.length > 0 ? (
+                      contact.additional_phones.map((phone, index) => (
+                        <p key={index} className="text-sm">{phone}</p>
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-500">No especificados</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Información Empresarial */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Información Empresarial</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="flex items-center gap-2">
+                    <Building className="h-4 w-4" />
+                    Empresa
+                  </Label>
+                  {isEditing ? (
+                    <Input
+                      value={editForm.company}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, company: e.target.value }))}
+                    />
+                  ) : (
+                    <p className="text-sm mt-1">{contact.company || 'No especificada'}</p>
+                  )}
+                </div>
+                <div>
+                  <Label className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    País
+                  </Label>
+                  {isEditing ? (
+                    <Input
+                      value={editForm.country_name}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, country_name: e.target.value }))}
+                    />
+                  ) : (
+                    <p className="text-sm mt-1">{contact.country_name}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Información del CRM */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Información del CRM</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label>Etapa</Label>
+                  {isEditing ? (
+                    <Select value={editForm.stage_id} onValueChange={(value) => setEditForm(prev => ({ ...prev, stage_id: value }))}>
                       <SelectTrigger>
                         <SelectValue placeholder="Seleccionar etapa" />
                       </SelectTrigger>
@@ -404,333 +441,117 @@ export const ContactDetailDialog = ({
                         {stages.map((stage) => (
                           <SelectItem key={stage.id} value={stage.id}>
                             <div className="flex items-center gap-2">
-                              <div 
-                                className="w-3 h-3 rounded-full" 
-                                style={{ backgroundColor: stage.color }}
-                              />
+                              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: stage.color }} />
                               {stage.name}
                             </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="notes">Notas</Label>
-                    <Textarea
-                      id="notes"
-                      value={formData.notes}
-                      onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                      rows={3}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-gray-500" />
-                    <span>{contact.phone}</span>
-                  </div>
-
-                  {/* Mostrar teléfonos adicionales */}
-                  {contact.additional_phones && contact.additional_phones.length > 0 && (
-                    <div className="ml-6 space-y-1">
-                      <Label className="text-xs text-gray-500">Teléfonos adicionales:</Label>
-                      {contact.additional_phones.map((phone, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                          <Phone className="h-3 w-3 text-gray-400" />
-                          <span>{phone}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {contact.email && (
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-gray-500" />
-                      <span>{contact.email}</span>
-                    </div>
-                  )}
-
-                  {/* Mostrar correos adicionales */}
-                  {contact.additional_emails && contact.additional_emails.length > 0 && (
-                    <div className="ml-6 space-y-1">
-                      <Label className="text-xs text-gray-500">Correos adicionales:</Label>
-                      {contact.additional_emails.map((email, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                          <Mail className="h-3 w-3 text-gray-400" />
-                          <span>{email}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {contact.company && (
-                    <div className="flex items-center gap-2">
-                      <Building className="h-4 w-4 text-gray-500" />
-                      <span>{contact.company}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-gray-500" />
-                    <span>{contact.country_name}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-gray-500" />
-                    <span>Creado {format(new Date(contact.created_at), 'dd MMM yyyy', { locale: es })}</span>
-                  </div>
-                  
-                  {contact.stage && (
-                    <Badge 
-                      style={{ 
-                        backgroundColor: `${contact.stage.color}20`,
-                        color: contact.stage.color,
-                        border: `1px solid ${contact.stage.color}40`
-                      }}
-                    >
-                      {contact.stage.name}
-                    </Badge>
-                  )}
-                  
-                  {contact.notes && (
-                    <div className="mt-4">
-                      <Label>Notas</Label>
-                      <p className="text-sm text-gray-600 mt-1">{contact.notes}</p>
+                  ) : (
+                    <div className="mt-1">
+                      {contact.stage ? (
+                        <Badge style={{ backgroundColor: contact.stage.color + '20', color: contact.stage.color }}>
+                          {contact.stage.name}
+                        </Badge>
+                      ) : (
+                        <span className="text-sm text-gray-500">Sin etapa</span>
+                      )}
                     </div>
                   )}
                 </div>
-              )}
 
-              {/* Lead Assignment Section - Always visible */}
-              <div className="border-t pt-4 mt-4">
                 <div>
-                  <Label htmlFor="assigned_user">Lead Asignado a</Label>
-                  <Select 
-                    value={assignedUser} 
-                    onValueChange={handleAssignUser}
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Seleccionar usuario">
-                        {assignedUser === 'unassigned' ? (
-                          "Sin asignar"
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4" />
-                            <span>{assignedUser}</span>
-                          </div>
-                        )}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border shadow-lg z-50">
-                      <SelectItem value="unassigned">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4" />
-                          Sin asignar
-                        </div>
-                      </SelectItem>
-                      {availableUsers.map((user) => (
-                        <SelectItem key={user.email} value={user.email}>
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4" />
-                            {user.name} ({user.email})
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Activities Timeline */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Timeline de Actividades</span>
-                <Button
-                  onClick={() => setShowActivityForm(!showActivityForm)}
-                  size="sm"
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  {showActivityForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  {showActivityForm ? 'Cancelar' : 'Nueva Actividad'}
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* Add new activity form - only visible when toggled */}
-              {showActivityForm && (
-                <div className="border rounded-lg p-4 mb-6 bg-blue-50">
-                  <h4 className="font-medium mb-3">Nueva Actividad</h4>
-                  <div className="space-y-3">
-                    <div className="flex gap-2">
-                      <Select 
-                        value={newActivity.activity_type} 
-                        onValueChange={(value) => setNewActivity(prev => ({ ...prev, activity_type: value as ContactActivity['activity_type'] }))}
-                      >
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="note">Nota</SelectItem>
-                          <SelectItem value="call">Llamada</SelectItem>
-                          <SelectItem value="email">Email</SelectItem>
-                          <SelectItem value="meeting">Reunión</SelectItem>
-                          <SelectItem value="reminder">Recordatorio</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        placeholder="Título de la actividad"
-                        value={newActivity.title}
-                        onChange={(e) => setNewActivity(prev => ({ ...prev, title: e.target.value }))}
-                      />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input
-                        type="date"
-                        placeholder="Fecha"
-                        value={newActivity.scheduled_date}
-                        onChange={(e) => setNewActivity(prev => ({ ...prev, scheduled_date: e.target.value }))}
-                      />
-                      <Input
-                        type="time"
-                        placeholder="Hora"
-                        value={newActivity.scheduled_time}
-                        onChange={(e) => setNewActivity(prev => ({ ...prev, scheduled_time: e.target.value }))}
-                      />
-                    </div>
-                    
-                    <Textarea
-                      placeholder="Descripción (opcional)"
-                      value={newActivity.description}
-                      onChange={(e) => setNewActivity(prev => ({ ...prev, description: e.target.value }))}
-                      rows={2}
+                  <Label>Servicio de Interés</Label>
+                  {isEditing ? (
+                    <Input
+                      value={editForm.service_of_interest}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, service_of_interest: e.target.value }))}
                     />
-                    <Button onClick={handleAddActivity} size="sm" className="w-full">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Agregar Actividad
-                    </Button>
-                  </div>
+                  ) : (
+                    <p className="text-sm mt-1">{contact.service_of_interest || 'No especificado'}</p>
+                  )}
                 </div>
-              )}
 
-              {/* Próximas Actividades Section */}
-              {futureActivities.length > 0 && (
-                <div className="mb-6">
-                  <h4 className="font-medium text-sm text-blue-600 mb-3 flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    Próximas Actividades ({futureActivities.length})
-                  </h4>
-                  <div className="space-y-3 max-h-40 overflow-y-auto">
-                    {futureActivities.map((activity) => (
-                      <div key={activity.id} className="flex gap-3 p-3 border rounded-lg bg-blue-50">
-                        <div className="flex-shrink-0 mt-1">
-                          {getActivityIcon(activity.activity_type)}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-sm">{activity.title}</span>
-                            <Badge variant="outline" className="text-xs">
-                              {getActivityTypeLabel(activity.activity_type)}
-                            </Badge>
-                          </div>
-                          {activity.description && (
-                            <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
-                          )}
-                          <p className="text-xs text-blue-600 mb-1">
-                            📅 {activity.scheduled_date} {activity.scheduled_time}
-                          </p>
-                          {/* Complete button - only for activities with scheduled date and not completed */}
-                          {activity.scheduled_date && !activity.is_completed && (
-                            <div className="mt-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleMarkActivityComplete(activity.id)}
-                                className="text-green-600 hover:text-green-700 hover:border-green-300 text-xs px-2 py-1 h-7"
-                              >
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                Completar
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Actividades Anteriores Section */}
-              <div>
-                <h4 className="font-medium text-sm text-gray-600 mb-3 flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4" />
-                  Actividades Anteriores ({pastActivities.length})
-                </h4>
-                <div className="space-y-3 max-h-64 overflow-y-auto">
-                  {pastActivities.map((activity) => (
-                    <div key={activity.id} className="flex gap-3 p-3 border rounded-lg">
-                      <div className="flex-shrink-0 mt-1">
-                        {getActivityIcon(activity.activity_type)}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-sm">{activity.title}</span>
-                          <Badge variant="outline" className="text-xs">
-                            {getActivityTypeLabel(activity.activity_type)}
-                          </Badge>
-                          {activity.is_completed && (
-                            <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
-                              Completada
-                            </Badge>
-                          )}
-                        </div>
-                        {activity.description && (
-                          <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
-                        )}
-                        {(activity.scheduled_date || activity.scheduled_time) && (
-                          <p className="text-xs text-blue-600 mb-1">
-                            Programada: {activity.scheduled_date} {activity.scheduled_time}
-                          </p>
-                        )}
-                        <p className="text-xs text-gray-400">
-                          {format(new Date(activity.created_at), 'dd MMM yyyy HH:mm', { locale: es })}
-                        </p>
-                        {/* Complete button - only for activities with scheduled date and not completed */}
-                        {activity.scheduled_date && !activity.is_completed && (
-                          <div className="mt-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleMarkActivityComplete(activity.id)}
-                              className="text-green-600 hover:text-green-700 hover:border-green-300 text-xs px-2 py-1 h-7"
-                            >
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              Completar
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {pastActivities.length === 0 && futureActivities.length === 0 && (
-                    <div className="text-center py-8 text-gray-400">
-                      <Clock className="h-8 w-8 mx-auto mb-2" />
-                      <p className="text-sm">No hay actividades registradas</p>
-                    </div>
+                <div>
+                  <Label>Notas</Label>
+                  {isEditing ? (
+                    <Textarea
+                      value={editForm.notes}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, notes: e.target.value }))}
+                      rows={4}
+                    />
+                  ) : (
+                    <p className="text-sm mt-1 whitespace-pre-wrap">{contact.notes || 'Sin notas'}</p>
                   )}
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+
+            <Separator />
+
+            {/* Información de Fechas */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Información de Fechas</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Fecha de Creación
+                  </Label>
+                  <p className="text-sm mt-1">
+                    {format(new Date(contact.created_at), 'dd/MM/yyyy HH:mm', { locale: es })}
+                  </p>
+                </div>
+                <div>
+                  <Label className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Último Contacto
+                  </Label>
+                  <p className="text-sm mt-1">
+                    {contact.last_contact_date 
+                      ? format(new Date(contact.last_contact_date), 'dd/MM/yyyy HH:mm', { locale: es })
+                      : 'Sin contacto registrado'
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {isEditing && (
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={() => setIsEditing(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSave}>
+                  Guardar Cambios
+                </Button>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="activities">
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Actividades</h3>
+              {loadingActivities ? (
+                <p>Cargando actividades...</p>
+              ) : (
+                <div className="space-y-2">
+                  {activities.length > 0 ? (
+                    activities.map((activity) => (
+                      <div key={activity.id} className="border rounded-md p-4">
+                        <h4 className="font-semibold">{activity.title}</h4>
+                        <p className="text-sm">{activity.description}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No hay actividades registradas.</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

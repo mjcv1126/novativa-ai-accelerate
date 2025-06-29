@@ -204,6 +204,7 @@ export type Database = {
       }
       contacts: {
         Row: {
+          additional_emails: string[] | null
           additional_phones: string[] | null
           company: string | null
           country_code: string
@@ -221,6 +222,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          additional_emails?: string[] | null
           additional_phones?: string[] | null
           company?: string | null
           country_code: string
@@ -238,6 +240,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          additional_emails?: string[] | null
           additional_phones?: string[] | null
           company?: string | null
           country_code?: string

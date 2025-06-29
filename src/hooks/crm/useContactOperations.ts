@@ -45,23 +45,23 @@ export const useContactOperations = () => {
             .or(`first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`)
         );
         
-        // Search by email
+        // Search by email (both main and additional emails)
         if (searchTerm.includes('@') || searchTerm.length >= 3) {
           searchPromises.push(
             supabase
               .from('contacts')
               .select(`*, stage:crm_stages(*)`)
-              .ilike('email', `%${searchTerm}%`)
+              .or(`email.ilike.%${searchTerm}%,additional_emails.cs.{${searchTerm}}`)
           );
         }
         
-        // Search by phone (clean version)
+        // Search by phone (clean version) - both main and additional phones
         if (cleanSearchTerm.length >= 3) {
           searchPromises.push(
             supabase
               .from('contacts')
               .select(`*, stage:crm_stages(*)`)
-              .or(`phone.ilike.%${cleanSearchTerm}%,phone.ilike.%${searchTerm}%`)
+              .or(`phone.ilike.%${cleanSearchTerm}%,phone.ilike.%${searchTerm}%,additional_phones.cs.{${cleanSearchTerm}},additional_phones.cs.{${searchTerm}}`)
           );
         }
         
@@ -239,6 +239,25 @@ export const useContactOperations = () => {
     if (contact.notes?.toLowerCase().includes(term)) score += 15;
     if (contact.service_of_interest?.toLowerCase().includes(term)) score += 20;
     
+    // Búsqueda en correos adicionales
+    if (contact.additional_emails) {
+      contact.additional_emails.forEach(email => {
+        if (email.toLowerCase() === term) score += 90;
+        if (email.toLowerCase().startsWith(term)) score += 55;
+        if (email.toLowerCase().includes(term)) score += 25;
+      });
+    }
+    
+    // Búsqueda en teléfonos adicionales
+    if (contact.additional_phones) {
+      contact.additional_phones.forEach(phone => {
+        const cleanAdditionalPhone = phone.replace(/[\s\-\(\)\+]/g, '');
+        if (cleanAdditionalPhone === cleanTerm) score += 90;
+        if (cleanAdditionalPhone.startsWith(cleanTerm)) score += 80;
+        if (cleanAdditionalPhone.includes(cleanTerm)) score += 55;
+      });
+    }
+    
     // Búsqueda por ID
     if (contact.id.toLowerCase().startsWith(term)) score += 50;
     if (contact.id.toLowerCase().includes(term)) score += 25;
@@ -250,10 +269,17 @@ export const useContactOperations = () => {
     try {
       const currentUserEmail = getCurrentUserEmail();
       
+      // Limpiar campos de arrays vacíos
+      const cleanUpdates = {
+        ...updates,
+        additional_phones: updates.additional_phones?.filter(phone => phone && phone.trim()) || null,
+        additional_emails: updates.additional_emails?.filter(email => email && email.trim()) || null
+      };
+      
       // Primero actualizar el contacto
       const { error } = await supabase
         .from('contacts')
-        .update(updates)
+        .update(cleanUpdates)
         .eq('id', id);
 
       if (error) throw error;
