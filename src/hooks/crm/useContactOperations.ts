@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Contact, ContactWithStage, CrmFilters } from '@/types/crm';
@@ -28,9 +27,30 @@ export const useContactOperations = () => {
         `)
         .order('created_at', { ascending: false });
 
-      // Apply filters
-      if (filters.search) {
-        query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,company.ilike.%${filters.search}%`);
+      // Apply intelligent search filters
+      if (filters.search && filters.search.trim()) {
+        const searchTerm = filters.search.trim();
+        
+        // Búsqueda inteligente que incluye:
+        // - Coincidencias parciales en nombre y apellido
+        // - Búsqueda en email completo y dominio
+        // - Búsqueda en teléfono (removiendo espacios y caracteres especiales)
+        // - Búsqueda en empresa
+        // - Búsqueda en país
+        // - Búsqueda en ID (primeros 8 caracteres)
+        // - Búsqueda en notas y servicio de interés
+        query = query.or(`
+          first_name.ilike.%${searchTerm}%,
+          last_name.ilike.%${searchTerm}%,
+          email.ilike.%${searchTerm}%,
+          phone.ilike.%${searchTerm.replace(/[\s\-\(\)]/g, '')}%,
+          company.ilike.%${searchTerm}%,
+          country_name.ilike.%${searchTerm}%,
+          country_code.ilike.%${searchTerm}%,
+          notes.ilike.%${searchTerm}%,
+          service_of_interest.ilike.%${searchTerm}%,
+          id::text.ilike.${searchTerm}%
+        `.replace(/\s+/g, ''));
       }
 
       if (filters.stage_id) {
@@ -39,6 +59,10 @@ export const useContactOperations = () => {
 
       if (filters.country) {
         query = query.eq('country_name', filters.country);
+      }
+
+      if (filters.service_of_interest) {
+        query = query.eq('service_of_interest', filters.service_of_interest);
       }
 
       if (filters.date_range?.from) {
@@ -71,6 +95,17 @@ export const useContactOperations = () => {
         })
       );
 
+      // Si hay un término de búsqueda, ordenar por relevancia
+      if (filters.search && filters.search.trim()) {
+        const searchTerm = filters.search.toLowerCase().trim();
+        
+        return contactsWithAssignments.sort((a, b) => {
+          const scoreA = calculateRelevanceScore(a, searchTerm);
+          const scoreB = calculateRelevanceScore(b, searchTerm);
+          return scoreB - scoreA; // Orden descendente por relevancia
+        });
+      }
+
       return contactsWithAssignments;
     } catch (error) {
       console.error('Error fetching contacts:', error);
@@ -82,6 +117,39 @@ export const useContactOperations = () => {
       return [];
     }
   }, []);
+
+  // Función para calcular puntuación de relevancia
+  const calculateRelevanceScore = (contact: ContactWithStage, searchTerm: string): number => {
+    let score = 0;
+    const term = searchTerm.toLowerCase();
+    
+    // Coincidencias exactas tienen mayor puntuación
+    if (contact.first_name?.toLowerCase() === term) score += 100;
+    if (contact.last_name?.toLowerCase() === term) score += 100;
+    if (contact.email?.toLowerCase() === term) score += 100;
+    if (contact.phone?.replace(/[\s\-\(\)]/g, '').includes(term.replace(/[\s\-\(\)]/g, ''))) score += 90;
+    if (contact.company?.toLowerCase() === term) score += 80;
+    
+    // Coincidencias al inicio de la palabra tienen mayor puntuación
+    if (contact.first_name?.toLowerCase().startsWith(term)) score += 50;
+    if (contact.last_name?.toLowerCase().startsWith(term)) score += 50;
+    if (contact.email?.toLowerCase().startsWith(term)) score += 40;
+    if (contact.company?.toLowerCase().startsWith(term)) score += 30;
+    
+    // Coincidencias parciales tienen menor puntuación
+    if (contact.first_name?.toLowerCase().includes(term)) score += 20;
+    if (contact.last_name?.toLowerCase().includes(term)) score += 20;
+    if (contact.email?.toLowerCase().includes(term)) score += 15;
+    if (contact.company?.toLowerCase().includes(term)) score += 10;
+    if (contact.country_name?.toLowerCase().includes(term)) score += 10;
+    if (contact.notes?.toLowerCase().includes(term)) score += 5;
+    if (contact.service_of_interest?.toLowerCase().includes(term)) score += 8;
+    
+    // Búsqueda por ID (primeros caracteres)
+    if (contact.id.toLowerCase().startsWith(term)) score += 60;
+    
+    return score;
+  };
 
   const updateContact = useCallback(async (id: string, updates: Partial<Contact>) => {
     try {
