@@ -26,21 +26,36 @@ export const useContactSync = () => {
       // Check for existing contact by phone or email
       let existingContactQuery = supabase
         .from('contacts')
+        .select('*');
+
+      // First priority: exact phone match
+      const { data: phoneMatches, error: phoneError } = await supabase
+        .from('contacts')
         .select('*')
         .eq('phone', formattedPhone);
 
+      if (phoneError) {
+        console.error('❌ Error querying by phone:', phoneError);
+        throw phoneError;
+      }
+
+      // Second priority: email match (if email provided)
+      let emailMatches: any[] = [];
       if (formData.email) {
-        existingContactQuery = existingContactQuery.or(`email.eq.${formData.email}`);
+        const { data: emailData, error: emailError } = await supabase
+          .from('contacts')
+          .select('*')
+          .eq('email', formData.email);
+
+        if (emailError) {
+          console.error('❌ Error querying by email:', emailError);
+          throw emailError;
+        }
+        emailMatches = emailData || [];
       }
 
-      const { data: existingContacts, error: queryError } = await existingContactQuery;
-      
-      if (queryError) {
-        console.error('❌ Error querying existing contacts:', queryError);
-        throw queryError;
-      }
-
-      console.log('🔍 Existing contacts found:', existingContacts?.length || 0);
+      console.log('🔍 Phone matches found:', phoneMatches?.length || 0);
+      console.log('📧 Email matches found:', emailMatches?.length || 0);
 
       // Get the first stage for new contacts
       const { data: firstStage, error: stageError } = await supabase
@@ -53,41 +68,44 @@ export const useContactSync = () => {
 
       if (stageError) {
         console.error('❌ Error fetching first stage:', stageError);
-        // Continue without stage if there's an error
       }
 
       console.log('🎯 First stage:', firstStage);
 
-      // Prepare contact data
-      const contactData = {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email || null,
-        phone: formattedPhone,
-        country_code: formData.countryCode,
-        country_name: formData.countryName,
-        stage_id: firstStage?.id || null,
-        notes: buildNotesFromForm(formData),
-        last_contact_date: new Date().toISOString()
-      };
-
-      console.log('📋 Contact data prepared:', contactData);
-
       let contactId: string;
 
-      if (existingContacts && existingContacts.length > 0) {
-        // Update existing contact with most recent data
-        const existingContact = existingContacts[0];
+      // Priority 1: Phone number match (exact contact)
+      if (phoneMatches && phoneMatches.length > 0) {
+        const existingContact = phoneMatches[0];
         contactId = existingContact.id;
         
-        console.log('🔄 Updating existing contact:', contactId);
+        console.log('🔄 Updating existing contact (phone match):', contactId);
+
+        const updateData: any = {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          country_code: formData.countryCode,
+          country_name: formData.countryName,
+          last_contact_date: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        // Update email if provided and different
+        if (formData.email && formData.email !== existingContact.email) {
+          updateData.email = formData.email;
+        }
+
+        // Update notes
+        const newNotes = buildNotesFromForm(formData);
+        if (newNotes) {
+          updateData.notes = existingContact.notes ? 
+            `${existingContact.notes}\n\n--- Actualización ${new Date().toLocaleDateString('es-ES')} ---\n${newNotes}` : 
+            newNotes;
+        }
 
         const { error: updateError } = await supabase
           .from('contacts')
-          .update({
-            ...contactData,
-            updated_at: new Date().toISOString()
-          })
+          .update(updateData)
           .eq('id', contactId);
 
         if (updateError) {
@@ -96,9 +114,70 @@ export const useContactSync = () => {
         }
 
         console.log('✅ Updated existing contact:', contactId);
+
+      // Priority 2: Email match but different phone (add additional phone)
+      } else if (emailMatches && emailMatches.length > 0) {
+        const existingContact = emailMatches[0];
+        contactId = existingContact.id;
+        
+        console.log('📞 Adding additional phone to existing contact:', contactId);
+
+        // Add phone to additional_phones array
+        const currentAdditionalPhones = existingContact.additional_phones || [];
+        const updatedAdditionalPhones = [...currentAdditionalPhones];
+        
+        // Only add if not already in additional phones
+        if (!updatedAdditionalPhones.includes(formattedPhone)) {
+          updatedAdditionalPhones.push(formattedPhone);
+        }
+
+        const updateData: any = {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          country_code: formData.countryCode,
+          country_name: formData.countryName,
+          additional_phones: updatedAdditionalPhones,
+          last_contact_date: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        // Update notes
+        const newNotes = buildNotesFromForm(formData);
+        if (newNotes) {
+          updateData.notes = existingContact.notes ? 
+            `${existingContact.notes}\n\n--- Teléfono adicional ${new Date().toLocaleDateString('es-ES')} ---\n${newNotes}\nTeléfono adicional: ${formattedPhone}` : 
+            `${newNotes}\nTeléfono adicional: ${formattedPhone}`;
+        }
+
+        const { error: updateError } = await supabase
+          .from('contacts')
+          .update(updateData)
+          .eq('id', contactId);
+
+        if (updateError) {
+          console.error('❌ Error updating contact with additional phone:', updateError);
+          throw updateError;
+        }
+
+        console.log('✅ Added additional phone to existing contact:', contactId);
+
       } else {
         // Create new contact
         console.log('➕ Creating new contact');
+
+        const contactData = {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email || null,
+          phone: formattedPhone,
+          country_code: formData.countryCode,
+          country_name: formData.countryName,
+          stage_id: firstStage?.id || null,
+          notes: buildNotesFromForm(formData),
+          last_contact_date: new Date().toISOString()
+        };
+
+        console.log('📋 Contact data prepared:', contactData);
 
         const { data: newContact, error: insertError } = await supabase
           .from('contacts')
@@ -129,14 +208,13 @@ export const useContactSync = () => {
 
       if (activityError) {
         console.error('⚠️ Error creating activity (non-critical):', activityError);
-        // Don't throw here as the contact was created successfully
       } else {
         console.log('✅ Activity record created');
       }
 
       console.log('🎉 Contact sync completed successfully');
 
-      return { success: true, contactId, isNew: !existingContacts?.length };
+      return { success: true, contactId, isNew: !phoneMatches?.length && !emailMatches?.length };
     } catch (error) {
       console.error('💥 Error syncing contact:', error);
       return { success: false, error };

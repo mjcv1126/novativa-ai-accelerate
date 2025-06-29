@@ -58,6 +58,10 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
                 {contact.company}
               </p>
             )}
+            {/* ID mostrado sutilmente */}
+            <p className="text-xs text-gray-400 mt-1 font-mono">
+              ID: {contact.id.slice(0, 8)}...
+            </p>
           </div>
           
           <DropdownMenu>
@@ -98,6 +102,14 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
             <div className="flex items-center gap-2 text-xs text-gray-600">
               <Phone className="h-3 w-3 flex-shrink-0" />
               <span className="truncate">{contact.phone}</span>
+            </div>
+          )}
+
+          {/* Mostrar teléfonos adicionales si existen */}
+          {contact.additional_phones && contact.additional_phones.length > 0 && (
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Phone className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">+{contact.additional_phones.length} tel. adicional(es)</span>
             </div>
           )}
           

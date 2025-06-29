@@ -41,7 +41,7 @@ export const ListView = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Nombre</TableHead>
+            <TableHead>Nombre / ID</TableHead>
             <TableHead>Teléfono</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Empresa</TableHead>
@@ -57,16 +57,28 @@ export const ListView = ({
               <TableCell>
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-gray-400" />
-                  <span className="font-medium">
-                    {contact.first_name} {contact.last_name}
-                  </span>
+                  <div>
+                    <span className="font-medium">
+                      {contact.first_name} {contact.last_name}
+                    </span>
+                    <div className="text-xs text-gray-400 font-mono">
+                      ID: {contact.id.slice(0, 8)}...
+                    </div>
+                  </div>
                 </div>
               </TableCell>
               
               <TableCell>
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-gray-400" />
-                  <span>{contact.phone}</span>
+                  <div>
+                    <span>{contact.phone}</span>
+                    {contact.additional_phones && contact.additional_phones.length > 0 && (
+                      <div className="text-xs text-gray-500">
+                        +{contact.additional_phones.length} adicional(es)
+                      </div>
+                    )}
+                  </div>
                 </div>
               </TableCell>
               

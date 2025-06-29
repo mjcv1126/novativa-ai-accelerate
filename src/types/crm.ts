@@ -23,6 +23,7 @@ export interface Contact {
   notes?: string;
   service_of_interest?: string;
   last_contact_date?: string;
+  additional_phones?: string[];
   created_at: string;
   updated_at?: string;
 }

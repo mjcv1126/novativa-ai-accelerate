@@ -221,7 +221,12 @@ export const ContactDetailDialog = ({
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            <span>{contact.first_name} {contact.last_name}</span>
+            <div>
+              <span>{contact.first_name} {contact.last_name}</span>
+              <div className="text-sm text-gray-500 font-mono mt-1">
+                ID: {contact.id}
+              </div>
+            </div>
             <div className="flex gap-2">
               {editMode ? (
                 <>
@@ -333,6 +338,19 @@ export const ContactDetailDialog = ({
                     <Phone className="h-4 w-4 text-gray-500" />
                     <span>{contact.phone}</span>
                   </div>
+
+                  {/* Mostrar teléfonos adicionales */}
+                  {contact.additional_phones && contact.additional_phones.length > 0 && (
+                    <div className="ml-6 space-y-1">
+                      <Label className="text-xs text-gray-500">Teléfonos adicionales:</Label>
+                      {contact.additional_phones.map((phone, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                          <Phone className="h-3 w-3 text-gray-400" />
+                          <span>{phone}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   
                   {contact.email && (
                     <div className="flex items-center gap-2">
