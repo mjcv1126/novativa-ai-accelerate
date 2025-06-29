@@ -292,7 +292,48 @@ serve(async (req) => {
       }
     }
 
-    // Create activity for the booking
+    // 🆕 NUEVA VALIDACIÓN: Verificar si ya existe una actividad con este booking ID
+    console.log('🔍 Checking for existing activities with booking ID:', booking_id);
+    const { data: existingActivities } = await supabase
+      .from('contact_activities')
+      .select('id, title, created_at')
+      .eq('tidycal_booking_id', booking_id || 0);
+
+    if (existingActivities && existingActivities.length > 0) {
+      console.log(`⚠️ Found ${existingActivities.length} existing activities with booking ID ${booking_id}. Skipping activity creation to avoid duplicates.`);
+      
+      // Store processed booking without creating new activity
+      await supabase
+        .from('tidycal_processed_bookings')
+        .upsert([{
+          tidycal_booking_id: booking_id || 0,
+          contact_name: contact.name,
+          contact_email: contact.email,
+          booking_starts_at: starts_at,
+          booking_ends_at: ends_at,
+          contact_id: contactId,
+          sync_status: 'skipped_duplicate'
+        }], {
+          onConflict: 'tidycal_booking_id'
+        });
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'Booking processed - activity already exists',
+          contact_id: contactId,
+          trigger_condition: triggerCondition,
+          existing_activities: existingActivities.length,
+          skipped_duplicate: true
+        }),
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Create activity for the booking (only if no duplicate exists)
     console.log('📅 Creating activity for booking...');
     const startDate = new Date(starts_at);
     const isPast = startDate < now;
