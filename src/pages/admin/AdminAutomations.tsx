@@ -28,6 +28,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/components/ui/use-toast';
+import { createDefaultAutomationRules } from '@/utils/automationSetup';
 
 interface Automation {
   id: string;
@@ -146,6 +147,16 @@ const AdminAutomations = () => {
     }
   };
 
+  const handleCreateDefaultRules = async () => {
+    try {
+      await createDefaultAutomationRules();
+      // Refresh the page to show the new rules
+      window.location.reload();
+    } catch (error) {
+      console.error('Error creating default rules:', error);
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -158,6 +169,17 @@ const AdminAutomations = () => {
           <div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Automatizaciones</h1>
             <p className="text-gray-600 text-sm">Administra todas las automatizaciones del CRM y sistema</p>
+          </div>
+          
+          {/* Quick Setup Button */}
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleCreateDefaultRules}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Crear Reglas Predeterminadas
+            </Button>
           </div>
         </div>
 

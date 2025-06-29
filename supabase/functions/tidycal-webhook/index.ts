@@ -30,7 +30,7 @@ serve(async (req) => {
 
     // Extract booking information from the webhook
     const booking = payload.data || payload;
-    const { contact, starts_at, ends_at, booking_type, cancelled_at } = booking;
+    const { contact, starts_at, ends_at, booking_type, cancelled_at, questions } = booking;
 
     if (!contact || !contact.email) {
       console.error('No contact information found in webhook');
@@ -88,6 +88,8 @@ serve(async (req) => {
 
     if (cancelled_at) {
       triggerCondition = 'booking_cancelled';
+    } else if (payload.event === 'booking.rescheduled') {
+      triggerCondition = 'booking_rescheduled';
     } else if (existingContact && bookingStart > now) {
       triggerCondition = 'contact_exists_future_call';
     } else if (existingContact && bookingStart < now) {
@@ -109,7 +111,18 @@ serve(async (req) => {
       console.log('Using automation rule:', matchingRule.name);
     }
 
-    // Create contact if it doesn't exist
+    // Extract business info from TidyCal questions
+    let businessInfo = '';
+    if (questions && questions.length > 0) {
+      const businessQuestion = questions.find(q => 
+        q.question.includes('Negocio') || q.question.includes('IA') || q.question.includes('ayudarte')
+      );
+      if (businessQuestion) {
+        businessInfo = businessQuestion.answer;
+      }
+    }
+
+    // Create or update contact
     if (!existingContact) {
       console.log('No existing contact found, creating new one');
       
@@ -133,6 +146,12 @@ serve(async (req) => {
         targetStageId = firstStage?.id;
       }
 
+      // Prepare notes with business info
+      let notes = `Contacto creado automáticamente desde TidyCal booking #${booking.id}`;
+      if (businessInfo) {
+        notes += `\n\nInformación del negocio: ${businessInfo}`;
+      }
+
       // Create new contact
       const { data: newContact, error: createError } = await supabase
         .from('contacts')
@@ -144,7 +163,7 @@ serve(async (req) => {
           country_code: '', // TidyCal doesn't provide this
           country_name: '', // TidyCal doesn't provide this
           stage_id: targetStageId,
-          notes: `Contacto creado automáticamente desde TidyCal booking #${booking.id}`
+          notes: notes
         }])
         .select()
         .single();
@@ -161,25 +180,39 @@ serve(async (req) => {
       }
 
       existingContact = newContact;
-    } else if (matchingRule && matchingRule.target_stage_id) {
-      // Update existing contact stage based on rule
-      const { error: updateError } = await supabase
-        .from('contacts')
-        .update({ 
-          stage_id: matchingRule.target_stage_id,
-          last_contact_date: new Date().toISOString()
-        })
-        .eq('id', existingContact.id);
+    } else if (matchingRule) {
+      // Update existing contact
+      let updateData: any = {};
+      
+      if (matchingRule.target_stage_id) {
+        updateData.stage_id = matchingRule.target_stage_id;
+      }
+      
+      updateData.last_contact_date = new Date().toISOString();
+      
+      // Add business info to notes if available
+      if (businessInfo && matchingRule.contact_action === 'update') {
+        const currentNotes = existingContact.notes || '';
+        updateData.notes = currentNotes + `\n\nActualización TidyCal: ${businessInfo}`;
+      }
 
-      if (updateError) {
-        console.error('Error updating contact stage:', updateError);
+      if (Object.keys(updateData).length > 0) {
+        const { error: updateError } = await supabase
+          .from('contacts')
+          .update(updateData)
+          .eq('id', existingContact.id);
+
+        if (updateError) {
+          console.error('Error updating contact:', updateError);
+        }
       }
     }
 
     console.log('Working with contact:', existingContact.id);
 
-    // Handle previous activity cancellation if rule specifies it
-    if (matchingRule && matchingRule.cancel_previous_activity && booking.id) {
+    // Handle cancellation logic
+    if (triggerCondition === 'booking_cancelled' && matchingRule?.cancel_previous_activity) {
+      // Cancel previous activities for this booking
       const { data: previousActivities } = await supabase
         .from('contact_activities')
         .select('*')
@@ -195,7 +228,7 @@ serve(async (req) => {
               is_completed: true,
               status: 'cancelled',
               completed_at: new Date().toISOString(),
-              description: `${activity.description}\n\nCancelada automáticamente por regla: ${matchingRule.name}`
+              description: `${activity.description}\n\nCancelada automáticamente: ${matchingRule.name}`
             })
             .eq('id', activity.id);
         }
@@ -203,8 +236,35 @@ serve(async (req) => {
       }
     }
 
+    // Handle rescheduled bookings
+    if (triggerCondition === 'booking_rescheduled') {
+      // Update existing activities for this booking
+      const { data: existingActivities } = await supabase
+        .from('contact_activities')
+        .select('*')
+        .eq('contact_id', existingContact.id)
+        .eq('tidycal_booking_id', booking.id);
+
+      if (existingActivities && existingActivities.length > 0) {
+        const startDate = new Date(starts_at);
+        
+        for (const activity of existingActivities) {
+          await supabase
+            .from('contact_activities')
+            .update({
+              scheduled_date: startDate.toISOString().split('T')[0],
+              scheduled_time: startDate.toTimeString().split(' ')[0].substring(0, 5),
+              due_date: starts_at,
+              description: `${activity.description}\n\nReprogramada automáticamente: ${matchingRule?.name || 'Sistema'}`
+            })
+            .eq('id', activity.id);
+        }
+        console.log(`Updated ${existingActivities.length} rescheduled activities`);
+      }
+    }
+
     // Create activity if rule specifies it
-    if (matchingRule && matchingRule.create_activity) {
+    if (matchingRule && matchingRule.create_activity && triggerCondition !== 'booking_rescheduled') {
       const startDate = new Date(starts_at);
       
       let activityData = {

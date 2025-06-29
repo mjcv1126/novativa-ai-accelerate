@@ -83,10 +83,10 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
     (filters.date_range?.from || filters.date_range?.to);
 
   return (
-    <div className="space-y-4">
-      {/* Search */}
-      <div className="flex flex-col sm:flex-row gap-2">
-        <div className="flex-1">
+    <div className="space-y-4 w-full max-w-full">
+      {/* Search and Clear Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 w-full">
+        <div className="flex-1 min-w-0">
           <Input
             placeholder="Buscar contactos..."
             value={filters.search || ''}
@@ -100,119 +100,122 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
             variant="outline"
             size="sm"
             onClick={clearAllFilters}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 flex-shrink-0"
           >
             <X className="h-4 w-4" />
-            Limpiar filtros
+            <span className="hidden sm:inline">Limpiar filtros</span>
+            <span className="sm:hidden">Limpiar</span>
           </Button>
         )}
       </div>
 
-      {/* Filter Selects */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-        {/* Stage Filter */}
-        <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">Etapa</label>
-          <Select
-            value={filters.stage_id || 'all'}
-            onValueChange={(value) => handleFilterChange('stage_id', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Todas las etapas" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas las etapas</SelectItem>
-              {stages.map((stage) => (
-                <SelectItem key={stage.id} value={stage.id}>
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-2 h-2 rounded-full" 
-                      style={{ backgroundColor: stage.color }}
-                    />
-                    {stage.name}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Filter Selects - Responsive Grid */}
+      <div className="w-full overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-full">
+          {/* Stage Filter */}
+          <div className="space-y-1 min-w-0">
+            <label className="text-xs font-medium text-gray-600">Etapa</label>
+            <Select
+              value={filters.stage_id || 'all'}
+              onValueChange={(value) => handleFilterChange('stage_id', value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Todas" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas las etapas</SelectItem>
+                {stages.map((stage) => (
+                  <SelectItem key={stage.id} value={stage.id}>
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-2 h-2 rounded-full flex-shrink-0" 
+                        style={{ backgroundColor: stage.color }}
+                      />
+                      <span className="truncate">{stage.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Country Filter */}
-        <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">País</label>
-          <Select
-            value={filters.country || 'all'}
-            onValueChange={(value) => handleFilterChange('country', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Todos los países" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos los países</SelectItem>
-              {uniqueCountries.map((country) => (
-                <SelectItem key={country} value={country}>
-                  {country}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Country Filter */}
+          <div className="space-y-1 min-w-0">
+            <label className="text-xs font-medium text-gray-600">País</label>
+            <Select
+              value={filters.country || 'all'}
+              onValueChange={(value) => handleFilterChange('country', value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los países</SelectItem>
+                {uniqueCountries.map((country) => (
+                  <SelectItem key={country} value={country}>
+                    <span className="truncate">{country}</span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Service Filter */}
-        <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">Servicio</label>
-          <Select
-            value={filters.service_of_interest || 'all'}
-            onValueChange={(value) => handleFilterChange('service_of_interest', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Todos los servicios" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos los servicios</SelectItem>
-              {uniqueServices.map((service) => (
-                <SelectItem key={service} value={service}>
-                  {service}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Service Filter */}
+          <div className="space-y-1 min-w-0">
+            <label className="text-xs font-medium text-gray-600">Servicio</label>
+            <Select
+              value={filters.service_of_interest || 'all'}
+              onValueChange={(value) => handleFilterChange('service_of_interest', value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los servicios</SelectItem>
+                {uniqueServices.map((service) => (
+                  <SelectItem key={service} value={service}>
+                    <span className="truncate">{service}</span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Date Range */}
-        <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">Fecha de creación</label>
-          <div className="flex gap-1">
-            <Input
-              type="date"
-              value={filters.date_range?.from || ''}
-              onChange={(e) => handleDateRangeChange('from', e.target.value)}
-              className="text-xs"
-              placeholder="Desde"
-            />
-            <Input
-              type="date"
-              value={filters.date_range?.to || ''}
-              onChange={(e) => handleDateRangeChange('to', e.target.value)}
-              className="text-xs"
-              placeholder="Hasta"
-            />
+          {/* Date Range - Stacks on mobile */}
+          <div className="space-y-1 min-w-0">
+            <label className="text-xs font-medium text-gray-600">Fecha</label>
+            <div className="flex gap-1">
+              <Input
+                type="date"
+                value={filters.date_range?.from || ''}
+                onChange={(e) => handleDateRangeChange('from', e.target.value)}
+                className="text-xs flex-1 min-w-0"
+                placeholder="Desde"
+              />
+              <Input
+                type="date"
+                value={filters.date_range?.to || ''}
+                onChange={(e) => handleDateRangeChange('to', e.target.value)}
+                className="text-xs flex-1 min-w-0"
+                placeholder="Hasta"
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Active Filters Display */}
       {hasActiveFilters && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 max-w-full">
           {filters.search && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Filter className="h-3 w-3" />
-              Búsqueda: {filters.search}
+            <Badge variant="secondary" className="flex items-center gap-1 max-w-full">
+              <Filter className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">Búsqueda: {filters.search}</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => clearFilter('search')}
-                className="h-4 w-4 p-0 hover:bg-transparent"
+                className="h-4 w-4 p-0 hover:bg-transparent flex-shrink-0"
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -220,14 +223,14 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
           )}
           
           {filters.stage_id && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Filter className="h-3 w-3" />
-              Etapa: {stages.find(s => s.id === filters.stage_id)?.name || 'Desconocida'}
+            <Badge variant="secondary" className="flex items-center gap-1 max-w-full">
+              <Filter className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">Etapa: {stages.find(s => s.id === filters.stage_id)?.name || 'Desconocida'}</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => clearFilter('stage_id')}
-                className="h-4 w-4 p-0 hover:bg-transparent"
+                className="h-4 w-4 p-0 hover:bg-transparent flex-shrink-0"
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -235,14 +238,14 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
           )}
           
           {filters.country && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Filter className="h-3 w-3" />
-              País: {filters.country}
+            <Badge variant="secondary" className="flex items-center gap-1 max-w-full">
+              <Filter className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">País: {filters.country}</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => clearFilter('country')}
-                className="h-4 w-4 p-0 hover:bg-transparent"
+                className="h-4 w-4 p-0 hover:bg-transparent flex-shrink-0"
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -250,14 +253,14 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
           )}
           
           {filters.service_of_interest && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Filter className="h-3 w-3" />
-              Servicio: {filters.service_of_interest}
+            <Badge variant="secondary" className="flex items-center gap-1 max-w-full">
+              <Filter className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">Servicio: {filters.service_of_interest}</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => clearFilter('service_of_interest')}
-                className="h-4 w-4 p-0 hover:bg-transparent"
+                className="h-4 w-4 p-0 hover:bg-transparent flex-shrink-0"
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -265,14 +268,14 @@ export const CRMFilters = ({ filters, onFiltersChange, stages, contacts }: CRMFi
           )}
           
           {(filters.date_range?.from || filters.date_range?.to) && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Filter className="h-3 w-3" />
-              Fecha: {filters.date_range?.from || '...'} - {filters.date_range?.to || '...'}
+            <Badge variant="secondary" className="flex items-center gap-1 max-w-full">
+              <Filter className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">Fecha: {filters.date_range?.from || '...'} - {filters.date_range?.to || '...'}</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearDateRange}
-                className="h-4 w-4 p-0 hover:bg-transparent"
+                className="h-4 w-4 p-0 hover:bg-transparent flex-shrink-0"
               >
                 <X className="h-3 w-3" />
               </Button>
