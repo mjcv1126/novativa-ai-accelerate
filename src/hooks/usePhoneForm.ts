@@ -18,18 +18,33 @@ export const usePhoneForm = () => {
   const [nameError, setNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  // Nuevos campos
+  const [secondaryPhone, setSecondaryPhone] = useState("");
+  const [secondaryCountryCode, setSecondaryCountryCode] = useState("506");
+  const [secondaryEmail, setSecondaryEmail] = useState("");
+  const [secondaryPhoneError, setSecondaryPhoneError] = useState("");
+  const [secondaryEmailError, setSecondaryEmailError] = useState("");
+  
   const { toast } = useToast();
   const { syncContactFromForm } = useContactSync();
 
   const selectedCountry = countries.find(c => c.code === countryCode);
+  const selectedSecondaryCountry = countries.find(c => c.code === secondaryCountryCode);
 
-  const validatePhone = (phoneNumber: string) => {
-    if (!selectedCountry) return false;
+  const validatePhone = (phoneNumber: string, country: any) => {
+    if (!country) return false;
     const digitsOnly = phoneNumber.replace(/\D/g, '');
     return (
-      digitsOnly.length >= selectedCountry.minLength && 
-      digitsOnly.length <= selectedCountry.maxLength
+      digitsOnly.length >= country.minLength && 
+      digitsOnly.length <= country.maxLength
     );
+  };
+
+  const validateEmail = (email: string) => {
+    if (!email) return true; // Email is optional
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const handlePhoneChange = (value: string) => {
@@ -38,10 +53,36 @@ export const usePhoneForm = () => {
       setPhoneError("");
       return;
     }
-    if (!validatePhone(value)) {
+    if (!validatePhone(value, selectedCountry)) {
       setPhoneError(`Introduce ${selectedCountry?.minLength} dígitos para ${selectedCountry?.name}`);
     } else {
       setPhoneError("");
+    }
+  };
+
+  const handleSecondaryPhoneChange = (value: string) => {
+    setSecondaryPhone(value);
+    if (!value) {
+      setSecondaryPhoneError("");
+      return;
+    }
+    if (!validatePhone(value, selectedSecondaryCountry)) {
+      setSecondaryPhoneError(`Introduce ${selectedSecondaryCountry?.minLength} dígitos para ${selectedSecondaryCountry?.name}`);
+    } else {
+      setSecondaryPhoneError("");
+    }
+  };
+
+  const handleSecondaryEmailChange = (value: string) => {
+    setSecondaryEmail(value);
+    if (!value) {
+      setSecondaryEmailError("");
+      return;
+    }
+    if (!validateEmail(value)) {
+      setSecondaryEmailError("Introduce un email válido");
+    } else {
+      setSecondaryEmailError("");
     }
   };
 
@@ -76,8 +117,20 @@ export const usePhoneForm = () => {
       isValid = false;
     }
 
-    if (!validatePhone(phone)) {
+    if (!validatePhone(phone, selectedCountry)) {
       setPhoneError(`Introduce ${selectedCountry?.minLength} dígitos para ${selectedCountry?.name}`);
+      isValid = false;
+    }
+
+    // Validar teléfono secundario solo si se proporcionó
+    if (secondaryPhone && !validatePhone(secondaryPhone, selectedSecondaryCountry)) {
+      setSecondaryPhoneError(`Introduce ${selectedSecondaryCountry?.minLength} dígitos para ${selectedSecondaryCountry?.name}`);
+      isValid = false;
+    }
+
+    // Validar email secundario solo si se proporcionó
+    if (secondaryEmail && !validateEmail(secondaryEmail)) {
+      setSecondaryEmailError("Introduce un email válido");
       isValid = false;
     }
 
@@ -96,7 +149,20 @@ export const usePhoneForm = () => {
     const digitsOnly = phone.replace(/\D/g, '');
     const formattedPhone = `+${countryCode}${digitsOnly}`;
     
+    // Formatear teléfono secundario si existe
+    let formattedSecondaryPhone = '';
+    if (secondaryPhone.trim()) {
+      const secondaryDigitsOnly = secondaryPhone.replace(/\D/g, '');
+      formattedSecondaryPhone = `+${secondaryCountryCode}${secondaryDigitsOnly}`;
+    }
+    
     try {
+      // Preparar datos adicionales para el CRM
+      const additionalData = {
+        additionalPhones: formattedSecondaryPhone ? [formattedSecondaryPhone] : undefined,
+        additionalEmails: secondaryEmail.trim() ? [secondaryEmail.trim()] : undefined
+      };
+
       // Sync contact to CRM first
       const syncResult = await syncContactFromForm({
         firstName,
@@ -104,7 +170,8 @@ export const usePhoneForm = () => {
         phone: digitsOnly,
         countryCode,
         countryName: selectedCountry?.name || '',
-        formType: 'Formulario de descuento'
+        formType: 'Formulario de descuento',
+        ...additionalData
       });
 
       if (syncResult.success) {
@@ -116,18 +183,22 @@ export const usePhoneForm = () => {
       }
 
       // Send to Make webhook
+      const webhookData = {
+        firstName: firstName,
+        lastName: lastName,
+        phone: formattedPhone,
+        countryCode: countryCode,
+        countryName: selectedCountry?.name,
+        ...(formattedSecondaryPhone && { secondaryPhone: formattedSecondaryPhone }),
+        ...(secondaryEmail.trim() && { secondaryEmail: secondaryEmail.trim() })
+      };
+
       const response = await fetch(HOOK_MAKE_PHONE, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          firstName: firstName,
-          lastName: lastName,
-          phone: formattedPhone,
-          countryCode: countryCode,
-          countryName: selectedCountry?.name
-        }),
+        body: JSON.stringify(webhookData),
       });
 
       if (!response.ok) {
@@ -147,9 +218,13 @@ export const usePhoneForm = () => {
         title: "¡Genial! 🎉",
         description: "Te enviaremos el descuento especial por WhatsApp pronto.",
       });
+      
+      // Reset form
       setPhone("");
       setFirstName("");
       setLastName("");
+      setSecondaryPhone("");
+      setSecondaryEmail("");
       
     } catch (error) {
       console.error("Error sending number:", error);
@@ -178,6 +253,16 @@ export const usePhoneForm = () => {
     handlePhoneChange,
     handleFirstNameChange,
     handleLastNameChange,
-    handleSubmit
+    handleSubmit,
+    // Nuevos campos
+    secondaryPhone,
+    secondaryCountryCode,
+    secondaryEmail,
+    secondaryPhoneError,
+    secondaryEmailError,
+    selectedSecondaryCountry,
+    setSecondaryCountryCode,
+    handleSecondaryPhoneChange,
+    handleSecondaryEmailChange
   };
 };

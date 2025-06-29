@@ -3,7 +3,7 @@ import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Gift, User, UserRound } from 'lucide-react';
+import { Gift, User, UserRound, Phone, Mail } from 'lucide-react';
 import { countries } from './countryData';
 import { usePhoneForm } from '@/hooks/usePhoneForm';
 import SuccessMessage from './SuccessMessage';
@@ -25,7 +25,17 @@ const PhoneForm = () => {
     handlePhoneChange,
     handleFirstNameChange,
     handleLastNameChange,
-    handleSubmit
+    handleSubmit,
+    // Nuevos campos
+    secondaryPhone,
+    secondaryCountryCode,
+    secondaryEmail,
+    secondaryPhoneError,
+    secondaryEmailError,
+    selectedSecondaryCountry,
+    setSecondaryCountryCode,
+    handleSecondaryPhoneChange,
+    handleSecondaryEmailChange
   } = usePhoneForm();
 
   if (isSubmitted) {
@@ -64,8 +74,24 @@ const PhoneForm = () => {
           {lastNameError && (
             <p className="text-red-500 text-xs mt-1 ml-1">{lastNameError}</p>
           )}
+
+          {/* Email Secundario */}
+          <div className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-md bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
+            <Mail className="h-4 w-4 text-gray-400" />
+            <input
+              type="email"
+              placeholder="Email secundario (opcional)"
+              value={secondaryEmail}
+              onChange={(e) => handleSecondaryEmailChange(e.target.value)}
+              className="flex-1 outline-none bg-transparent text-gray-800 placeholder:text-gray-400"
+            />
+          </div>
+          {secondaryEmailError && (
+            <p className="text-red-500 text-xs mt-1 ml-1">{secondaryEmailError}</p>
+          )}
         </div>
         
+        {/* Teléfono Principal */}
         <div className="flex gap-3">
           <div className="w-[140px]">
             <Select value={countryCode} onValueChange={setCountryCode}>
@@ -74,7 +100,7 @@ const PhoneForm = () => {
               </SelectTrigger>
               <SelectContent className="max-h-[280px]">
                 {countries.map((country) => (
-                  <SelectItem key={`${country.code}-${country.name}`} value={country.code}>
+                  <SelectItem key={`primary-${country.code}-${country.name}`} value={country.code}>
                     <span className="flex items-center gap-2">
                       <span>{country.flag}</span>
                       <span>+{country.code}</span>
@@ -88,7 +114,7 @@ const PhoneForm = () => {
           <div className="flex-1">
             <Input
               type="tel"
-              placeholder={`Número (${selectedCountry?.minLength} dígitos)`}
+              placeholder={`Teléfono principal (${selectedCountry?.minLength} dígitos)`}
               value={phone}
               onChange={(e) => handlePhoneChange(e.target.value)}
               className={`w-full ${phoneError ? 'border-red-300 focus:ring-red-500' : ''}`}
@@ -98,11 +124,45 @@ const PhoneForm = () => {
             )}
           </div>
         </div>
+
+        {/* Teléfono Secundario */}
+        <div className="flex gap-3">
+          <div className="w-[140px]">
+            <Select value={secondaryCountryCode} onValueChange={setSecondaryCountryCode}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-[280px]">
+                {countries.map((country) => (
+                  <SelectItem key={`secondary-${country.code}-${country.name}`} value={country.code}>
+                    <span className="flex items-center gap-2">
+                      <span>{country.flag}</span>
+                      <span>+{country.code}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex-1">
+            <Input
+              type="tel"
+              placeholder={`Teléfono secundario opcional (${selectedSecondaryCountry?.minLength} dígitos)`}
+              value={secondaryPhone}
+              onChange={(e) => handleSecondaryPhoneChange(e.target.value)}
+              className={`w-full ${secondaryPhoneError ? 'border-red-300 focus:ring-red-500' : ''}`}
+            />
+            {secondaryPhoneError && (
+              <p className="text-red-500 text-xs mt-1">{secondaryPhoneError}</p>
+            )}
+          </div>
+        </div>
         
         <Button 
           type="submit" 
           className="w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 hover:opacity-90 transition-all"
-          disabled={isSubmitting || !!phoneError || !!nameError || !!lastNameError}
+          disabled={isSubmitting || !!phoneError || !!nameError || !!lastNameError || !!secondaryPhoneError || !!secondaryEmailError}
         >
           {isSubmitting ? "Enviando..." : (
             <span className="flex items-center gap-2">

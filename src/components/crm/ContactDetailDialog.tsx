@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLeadAssignments } from '@/hooks/crm/useLeadAssignments';
 import { useActivityOperations } from '@/hooks/crm/useActivityOperations';
+import { countries } from '@/components/schedule/countryData';
 
 interface ContactDetailDialogProps {
   contact: ContactWithStage | null;
@@ -51,7 +52,10 @@ export const ContactDetailDialog = ({
     phone: '',
     company: '',
     stage_id: '',
-    notes: ''
+    notes: '',
+    secondary_email: '',
+    secondary_phone: '',
+    secondary_country_code: '506'
   });
 
   const { getContactAssignment, assignLead, getAvailableUsers } = useLeadAssignments();
@@ -100,6 +104,22 @@ export const ContactDetailDialog = ({
   useEffect(() => {
     if (contact) {
       console.log('Contact changed:', contact);
+      
+      // Extraer teléfono y correo secundario de los arrays existentes
+      const secondaryPhone = contact.additional_phones?.[0] || '';
+      const secondaryEmail = contact.additional_emails?.[0] || '';
+      
+      // Extraer código de país del teléfono secundario si existe
+      let secondaryCountryCode = '506';
+      let cleanSecondaryPhone = secondaryPhone;
+      if (secondaryPhone.startsWith('+')) {
+        const phoneMatch = secondaryPhone.match(/^\+(\d{1,4})(.+)$/);
+        if (phoneMatch) {
+          secondaryCountryCode = phoneMatch[1];
+          cleanSecondaryPhone = phoneMatch[2];
+        }
+      }
+      
       setFormData({
         first_name: contact.first_name,
         last_name: contact.last_name,
@@ -107,7 +127,10 @@ export const ContactDetailDialog = ({
         phone: contact.phone,
         company: contact.company || '',
         stage_id: contact.stage_id || '',
-        notes: contact.notes || ''
+        notes: contact.notes || '',
+        secondary_email: secondaryEmail,
+        secondary_phone: cleanSecondaryPhone,
+        secondary_country_code: secondaryCountryCode
       });
       
       // Load activities
@@ -120,7 +143,31 @@ export const ContactDetailDialog = ({
 
   const handleSave = () => {
     if (contact) {
-      onUpdate(contact.id, formData);
+      // Preparar teléfonos adicionales
+      const additionalPhones = [];
+      if (formData.secondary_phone.trim()) {
+        additionalPhones.push(`+${formData.secondary_country_code}${formData.secondary_phone.trim()}`);
+      }
+
+      // Preparar correos adicionales
+      const additionalEmails = [];
+      if (formData.secondary_email.trim()) {
+        additionalEmails.push(formData.secondary_email.trim());
+      }
+
+      const updates = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email || null,
+        phone: formData.phone,
+        company: formData.company || null,
+        stage_id: formData.stage_id || null,
+        notes: formData.notes || null,
+        additional_phones: additionalPhones.length > 0 ? additionalPhones : null,
+        additional_emails: additionalEmails.length > 0 ? additionalEmails : null
+      };
+
+      onUpdate(contact.id, updates);
       setEditMode(false);
     }
   };
@@ -214,6 +261,8 @@ export const ContactDetailDialog = ({
     return activityDate < now;
   }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
+  const selectedSecondaryCountry = countries.find(c => c.code === formData.secondary_country_code);
+
   if (!contact) return null;
 
   return (
@@ -272,23 +321,68 @@ export const ContactDetailDialog = ({
                     </div>
                   </div>
                   
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="email">Email Principal</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="secondary_email">Email Secundario</Label>
+                      <Input
+                        id="secondary_email"
+                        type="email"
+                        value={formData.secondary_email}
+                        onChange={(e) => setFormData(prev => ({ ...prev, secondary_email: e.target.value }))}
+                      />
+                    </div>
                   </div>
                   
                   <div>
-                    <Label htmlFor="phone">Teléfono</Label>
+                    <Label htmlFor="phone">Teléfono Principal</Label>
                     <Input
                       id="phone"
                       value={formData.phone}
                       onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                     />
+                  </div>
+
+                  <div>
+                    <Label>Teléfono Secundario</Label>
+                    <div className="flex gap-2">
+                      <div className="w-[140px]">
+                        <Select 
+                          value={formData.secondary_country_code} 
+                          onValueChange={(value) => setFormData(prev => ({ ...prev, secondary_country_code: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[280px]">
+                            {countries.map((country) => (
+                              <SelectItem key={`edit-secondary-${country.code}-${country.name}`} value={country.code}>
+                                <span className="flex items-center gap-2">
+                                  <span>{country.flag}</span>
+                                  <span>+{country.code}</span>
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Input
+                          type="tel"
+                          placeholder={`Número opcional (${selectedSecondaryCountry?.minLength} dígitos)`}
+                          value={formData.secondary_phone}
+                          onChange={(e) => setFormData(prev => ({ ...prev, secondary_phone: e.target.value }))}
+                        />
+                      </div>
+                    </div>
                   </div>
                   
                   <div>

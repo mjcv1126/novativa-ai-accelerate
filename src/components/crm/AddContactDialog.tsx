@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import { CrmStage, ContactWithStage } from '@/types/crm';
 import { ExistingContactDialog } from './ExistingContactDialog';
+import { countries } from '@/components/schedule/countryData';
 
 interface AddContactDialogProps {
   stages: CrmStage[];
@@ -28,11 +29,18 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
     email: '',
     phone: '',
     company: '',
-    country_code: '',
+    country_code: '506',
     country_name: '',
     stage_id: '',
-    notes: ''
+    notes: '',
+    // Nuevos campos
+    secondary_phone: '',
+    secondary_country_code: '506',
+    secondary_email: ''
   });
+
+  const selectedCountry = countries.find(c => c.code === formData.country_code);
+  const selectedSecondaryCountry = countries.find(c => c.code === formData.secondary_country_code);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +66,18 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
         return;
       }
 
+      // Preparar teléfonos adicionales
+      const additionalPhones = [];
+      if (formData.secondary_phone.trim()) {
+        additionalPhones.push(`+${formData.secondary_country_code}${formData.secondary_phone.trim()}`);
+      }
+
+      // Preparar correos adicionales
+      const additionalEmails = [];
+      if (formData.secondary_email.trim()) {
+        additionalEmails.push(formData.secondary_email.trim());
+      }
+
       // Crear nuevo contacto
       const { error } = await supabase
         .from('contacts')
@@ -68,9 +88,11 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
           phone: formData.phone,
           company: formData.company || null,
           country_code: formData.country_code,
-          country_name: formData.country_name,
+          country_name: selectedCountry?.name || formData.country_name,
           stage_id: formData.stage_id || null,
-          notes: formData.notes || null
+          notes: formData.notes || null,
+          additional_phones: additionalPhones.length > 0 ? additionalPhones : null,
+          additional_emails: additionalEmails.length > 0 ? additionalEmails : null
         }]);
 
       if (error) throw error;
@@ -87,10 +109,13 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
         email: '',
         phone: '',
         company: '',
-        country_code: '',
+        country_code: '506',
         country_name: '',
         stage_id: '',
-        notes: ''
+        notes: '',
+        secondary_phone: '',
+        secondary_country_code: '506',
+        secondary_email: ''
       });
       setIsOpen(false);
       onContactAdded();
@@ -123,7 +148,7 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
             Agregar Contacto
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Agregar Nuevo Contacto</DialogTitle>
             <DialogDescription>
@@ -155,7 +180,7 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Email Principal</Label>
                 <Input
                   id="email"
                   type="email"
@@ -164,13 +189,84 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
                 />
               </div>
               <div>
-                <Label htmlFor="phone">Teléfono *</Label>
+                <Label htmlFor="secondary_email">Email Secundario</Label>
                 <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  required
+                  id="secondary_email"
+                  type="email"
+                  value={formData.secondary_email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, secondary_email: e.target.value }))}
                 />
+              </div>
+            </div>
+
+            {/* Teléfono Principal */}
+            <div>
+              <Label>Teléfono Principal *</Label>
+              <div className="flex gap-2">
+                <div className="w-[140px]">
+                  <Select 
+                    value={formData.country_code} 
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, country_code: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[280px]">
+                      {countries.map((country) => (
+                        <SelectItem key={`primary-${country.code}-${country.name}`} value={country.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{country.flag}</span>
+                            <span>+{country.code}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Input
+                    type="tel"
+                    placeholder={`Número (${selectedCountry?.minLength} dígitos)`}
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Teléfono Secundario */}
+            <div>
+              <Label>Teléfono Secundario</Label>
+              <div className="flex gap-2">
+                <div className="w-[140px]">
+                  <Select 
+                    value={formData.secondary_country_code} 
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, secondary_country_code: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[280px]">
+                      {countries.map((country) => (
+                        <SelectItem key={`secondary-${country.code}-${country.name}`} value={country.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{country.flag}</span>
+                            <span>+{country.code}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Input
+                    type="tel"
+                    placeholder={`Número opcional (${selectedSecondaryCountry?.minLength} dígitos)`}
+                    value={formData.secondary_phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, secondary_phone: e.target.value }))}
+                  />
+                </div>
               </div>
             </div>
 
@@ -187,9 +283,9 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
                 <Label htmlFor="country_name">País *</Label>
                 <Input
                   id="country_name"
-                  value={formData.country_name}
+                  value={selectedCountry?.name || formData.country_name}
                   onChange={(e) => setFormData(prev => ({ ...prev, country_name: e.target.value }))}
-                  required
+                  placeholder="Se llenará automáticamente"
                 />
               </div>
             </div>
