@@ -41,7 +41,8 @@ export const ListView = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Nombre / ID</TableHead>
+            <TableHead>ID</TableHead>
+            <TableHead>Nombre</TableHead>
             <TableHead>Teléfono</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Empresa</TableHead>
@@ -55,16 +56,17 @@ export const ListView = ({
           {contacts.map((contact) => (
             <TableRow key={contact.id} className="hover:bg-gray-50">
               <TableCell>
+                <div className="text-xs text-gray-400 font-mono">
+                  {contact.id.slice(0, 8)}...
+                </div>
+              </TableCell>
+              
+              <TableCell>
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-gray-400" />
-                  <div>
-                    <span className="font-medium">
-                      {contact.first_name} {contact.last_name}
-                    </span>
-                    <div className="text-xs text-gray-400 font-mono">
-                      ID: {contact.id.slice(0, 8)}...
-                    </div>
-                  </div>
+                  <span className="font-medium">
+                    {contact.first_name} {contact.last_name}
+                  </span>
                 </div>
               </TableCell>
               

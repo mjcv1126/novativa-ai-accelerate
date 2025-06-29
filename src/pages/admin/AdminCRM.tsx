@@ -8,6 +8,7 @@ import { KanbanView } from '@/components/crm/KanbanView';
 import { ContactDetailDialog } from '@/components/crm/ContactDetailDialog';
 import { StageManagement } from '@/components/crm/StageManagement';
 import { AddContactDialog } from '@/components/crm/AddContactDialog';
+import { ExportContactsButton } from '@/components/crm/ExportContactsButton';
 import { Button } from '@/components/ui/button';
 import { ViewMode, ContactWithStage } from '@/types/crm';
 import { List, Kanban, RefreshCw } from 'lucide-react';
@@ -97,6 +98,8 @@ const AdminCRM = () => {
               onUpdateStage={updateStage}
               onDeleteStage={deleteStage}
             />
+
+            <ExportContactsButton contacts={contacts} />
             
             <Button
               variant="outline"

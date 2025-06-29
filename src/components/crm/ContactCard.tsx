@@ -58,10 +58,6 @@ export const ContactCard = ({ contact, onEdit, onView, onDelete }: ContactCardPr
                 {contact.company}
               </p>
             )}
-            {/* ID mostrado sutilmente */}
-            <p className="text-xs text-gray-400 mt-1 font-mono">
-              ID: {contact.id.slice(0, 8)}...
-            </p>
           </div>
           
           <DropdownMenu>

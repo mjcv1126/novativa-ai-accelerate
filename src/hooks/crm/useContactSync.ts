@@ -34,7 +34,7 @@ export const useContactSync = () => {
         .select('*')
         .eq('phone', formattedPhone);
 
-      if (phoneError) {
+      if (phoneError && phoneError.code !== 'PGRST116') {
         console.error('❌ Error querying by phone:', phoneError);
         throw phoneError;
       }
@@ -47,7 +47,7 @@ export const useContactSync = () => {
           .select('*')
           .eq('email', formData.email);
 
-        if (emailError) {
+        if (emailError && emailError.code !== 'PGRST116') {
           console.error('❌ Error querying by email:', emailError);
           throw emailError;
         }
@@ -187,6 +187,16 @@ export const useContactSync = () => {
 
         if (insertError) {
           console.error('❌ Error creating contact:', insertError);
+          
+          // Handle duplicate errors specifically
+          if (insertError.code === '23505') {
+            if (insertError.message.includes('idx_contacts_unique_email')) {
+              throw new Error('DUPLICATE_EMAIL');
+            } else if (insertError.message.includes('idx_contacts_unique_phone')) {
+              throw new Error('DUPLICATE_PHONE');
+            }
+          }
+          
           throw insertError;
         }
 
@@ -255,7 +265,7 @@ export const useContactSync = () => {
 
       const { data: existingContacts, error: queryError } = await existingContactQuery;
       
-      if (queryError) {
+      if (queryError && queryError.code !== 'PGRST116') {
         console.error('❌ Error querying existing contacts:', queryError);
         throw queryError;
       }
@@ -269,33 +279,31 @@ export const useContactSync = () => {
         const bookingStart = new Date(bookingData.starts_at);
 
         if (bookingData.cancelled_at) {
-          // Cancelled booking - move to "No Contesta" (position 4)
+          // Cancelled booking - move to "No Contesta"
           const { data: noAnswerStage } = await supabase
             .from('crm_stages')
             .select('id')
-            .eq('position', 4)
+            .eq('name', 'No Contesta')
             .eq('is_active', true)
             .single();
           
           targetStageId = noAnswerStage?.id || null;
         } else if (bookingStart < now) {
-          // Past booking - move to "Contactado" (position 3) only if contact doesn't exist
-          if (!existingContacts || existingContacts.length === 0) {
-            const { data: contactedStage } = await supabase
-              .from('crm_stages')
-              .select('id')
-              .eq('position', 3)
-              .eq('is_active', true)
-              .single();
-            
-            targetStageId = contactedStage?.id || null;
-          }
+          // Past booking - move to "Contactado"
+          const { data: contactedStage } = await supabase
+            .from('crm_stages')
+            .select('id')
+            .eq('name', 'Contactado')
+            .eq('is_active', true)
+            .single();
+          
+          targetStageId = contactedStage?.id || null;
         } else {
-          // Future booking - move to "Llamada Programada" (position 2)
+          // Future booking - move to "Llamada Programada"
           const { data: programmedCallStage } = await supabase
             .from('crm_stages')
             .select('id')
-            .eq('position', 2)
+            .eq('name', 'Llamada Programada')
             .eq('is_active', true)
             .single();
           
@@ -331,32 +339,29 @@ export const useContactSync = () => {
       let contactId: string;
 
       if (existingContacts && existingContacts.length > 0) {
-        // Update existing contact only if needed
+        // Update existing contact
         const existingContact = existingContacts[0];
         contactId = existingContact.id;
         
         console.log('🔄 Existing contact found:', contactId);
 
-        // Only update if this is a cancelled booking or future booking
-        if (bookingData && (bookingData.cancelled_at || new Date(bookingData.starts_at) > new Date())) {
-          const { error: updateError } = await supabase
-            .from('contacts')
-            .update({
-              stage_id: targetStageId,
-              last_contact_date: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', contactId);
+        const { error: updateError } = await supabase
+          .from('contacts')
+          .update({
+            stage_id: targetStageId,
+            last_contact_date: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', contactId);
 
-          if (updateError) {
-            console.error('❌ Error updating contact:', updateError);
-            throw updateError;
-          }
-
-          console.log('✅ Updated existing contact:', contactId);
+        if (updateError) {
+          console.error('❌ Error updating contact:', updateError);
+          throw updateError;
         }
+
+        console.log('✅ Updated existing contact:', contactId);
       } else {
-        // Create new contact only if it doesn't exist
+        // Create new contact
         console.log('➕ Creating new contact from TidyCal');
 
         const { data: newContact, error: insertError } = await supabase
