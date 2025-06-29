@@ -32,27 +32,123 @@ export const useContactOperations = () => {
         const searchTerm = filters.search.trim();
         const cleanSearchTerm = searchTerm.replace(/[\s\-\(\)\+]/g, '');
         
-        // Crear múltiples condiciones de búsqueda
-        const searchConditions = [
-          `first_name.ilike.%${searchTerm}%`,
-          `last_name.ilike.%${searchTerm}%`,
-          `email.ilike.%${searchTerm}%`,
-          `phone.ilike.%${cleanSearchTerm}%`,
-          `company.ilike.%${searchTerm}%`,
-          `country_name.ilike.%${searchTerm}%`,
-          `country_code.ilike.%${searchTerm}%`,
-          `notes.ilike.%${searchTerm}%`,
-          `service_of_interest.ilike.%${searchTerm}%`
-        ];
+        console.log('Searching for:', searchTerm, 'Clean term:', cleanSearchTerm);
         
-        // También buscar por ID si parece ser un UUID o parte de uno
-        if (searchTerm.length >= 3) {
-          searchConditions.push(`id.ilike.${searchTerm}%`);
+        // Use a more flexible approach with individual queries
+        const searchPromises = [];
+        
+        // Search by name
+        searchPromises.push(
+          supabase
+            .from('contacts')
+            .select(`*, stage:crm_stages(*)`)
+            .or(`first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`)
+        );
+        
+        // Search by email
+        if (searchTerm.includes('@') || searchTerm.length >= 3) {
+          searchPromises.push(
+            supabase
+              .from('contacts')
+              .select(`*, stage:crm_stages(*)`)
+              .ilike('email', `%${searchTerm}%`)
+          );
         }
         
-        query = query.or(searchConditions.join(','));
+        // Search by phone (clean version)
+        if (cleanSearchTerm.length >= 3) {
+          searchPromises.push(
+            supabase
+              .from('contacts')
+              .select(`*, stage:crm_stages(*)`)
+              .or(`phone.ilike.%${cleanSearchTerm}%,phone.ilike.%${searchTerm}%`)
+          );
+        }
+        
+        // Search by company, country, notes
+        searchPromises.push(
+          supabase
+            .from('contacts')
+            .select(`*, stage:crm_stages(*)`)
+            .or(`company.ilike.%${searchTerm}%,country_name.ilike.%${searchTerm}%,country_code.ilike.%${searchTerm}%,notes.ilike.%${searchTerm}%,service_of_interest.ilike.%${searchTerm}%`)
+        );
+        
+        // Search by ID if it looks like a UUID
+        if (searchTerm.length >= 8) {
+          searchPromises.push(
+            supabase
+              .from('contacts')
+              .select(`*, stage:crm_stages(*)`)
+              .ilike('id', `${searchTerm}%`)
+          );
+        }
+        
+        // Execute all searches in parallel
+        const results = await Promise.all(searchPromises);
+        
+        // Combine and deduplicate results
+        const allContacts = new Map();
+        results.forEach(({ data }) => {
+          if (data) {
+            data.forEach((contact: any) => {
+              allContacts.set(contact.id, contact);
+            });
+          }
+        });
+        
+        const uniqueContacts = Array.from(allContacts.values());
+        console.log('Search results found:', uniqueContacts.length, 'contacts');
+        
+        // Apply other filters if they exist
+        let filteredContacts = uniqueContacts;
+        
+        if (filters.stage_id) {
+          filteredContacts = filteredContacts.filter((contact: any) => contact.stage_id === filters.stage_id);
+        }
+        
+        if (filters.country) {
+          filteredContacts = filteredContacts.filter((contact: any) => contact.country_name === filters.country);
+        }
+        
+        if (filters.service_of_interest) {
+          filteredContacts = filteredContacts.filter((contact: any) => contact.service_of_interest === filters.service_of_interest);
+        }
+        
+        if (filters.date_range?.from) {
+          filteredContacts = filteredContacts.filter((contact: any) => new Date(contact.created_at) >= new Date(filters.date_range!.from!));
+        }
+        
+        if (filters.date_range?.to) {
+          filteredContacts = filteredContacts.filter((contact: any) => new Date(contact.created_at) <= new Date(filters.date_range!.to!));
+        }
+        
+        // Get assignments for each contact
+        const contactsWithAssignments = await Promise.all(
+          filteredContacts.map(async (contact: any) => {
+            const { data: assignment } = await supabase
+              .from('lead_assignments')
+              .select('*')
+              .eq('contact_id', contact.id)
+              .order('assigned_at', { ascending: false })
+              .limit(1)
+              .single();
+
+            return {
+              ...contact,
+              assignment: assignment || null
+            };
+          })
+        );
+        
+        // Sort by relevance
+        return contactsWithAssignments.sort((a, b) => {
+          const scoreA = calculateRelevanceScore(a, searchTerm);
+          const scoreB = calculateRelevanceScore(b, searchTerm);
+          return scoreB - scoreA;
+        });
       }
 
+      // No search term, apply other filters normally
       if (filters.stage_id) {
         query = query.eq('stage_id', filters.stage_id);
       }
@@ -80,9 +176,9 @@ export const useContactOperations = () => {
         throw error;
       }
 
-      console.log('Search results:', data?.length || 0, 'contacts found');
+      console.log('Results without search:', data?.length || 0, 'contacts found');
 
-      // Obtener asignaciones para cada contacto
+      // Get assignments for each contact
       const contactsWithAssignments = await Promise.all(
         (data || []).map(async (contact) => {
           const { data: assignment } = await supabase
@@ -99,17 +195,6 @@ export const useContactOperations = () => {
           };
         })
       );
-
-      // Si hay un término de búsqueda, hacer ordenamiento adicional por relevancia
-      if (filters.search && filters.search.trim()) {
-        const searchTerm = filters.search.toLowerCase().trim();
-        
-        return contactsWithAssignments.sort((a, b) => {
-          const scoreA = calculateRelevanceScore(a, searchTerm);
-          const scoreB = calculateRelevanceScore(b, searchTerm);
-          return scoreB - scoreA; // Orden descendente por relevancia
-        });
-      }
 
       return contactsWithAssignments;
     } catch (error) {

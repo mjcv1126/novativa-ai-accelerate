@@ -54,6 +54,7 @@ serve(async (req) => {
 
     // Search for existing contact by email first, then by phone
     let existingContact = null;
+    let foundByPhone = false;
     
     const { data: contactByEmail } = await supabase
       .from('contacts')
@@ -77,7 +78,9 @@ serve(async (req) => {
       
       if (contactByPhone) {
         existingContact = contactByPhone;
+        foundByPhone = true;
         console.log('✅ Found existing contact by phone:', existingContact.id);
+        console.log('📧 Different email detected - will add as secondary email');
       }
     }
 
@@ -208,8 +211,8 @@ serve(async (req) => {
           last_name: lastName,
           email: contact.email,
           phone: formattedPhone,
-          country_code: '', // TidyCal doesn't provide this
-          country_name: '', // TidyCal doesn't provide this
+          country_code: '',
+          country_name: '',
           stage_id: targetStageId,
           notes: notes,
           last_contact_date: new Date().toISOString()
@@ -245,6 +248,13 @@ serve(async (req) => {
       if (businessInfo) {
         const currentNotes = existingContact.notes || '';
         updateData.notes = currentNotes + `\n\nActualización TidyCal (${new Date().toLocaleDateString()}): ${businessInfo}`;
+      }
+
+      // If found by phone but different email, add email as secondary
+      if (foundByPhone && existingContact.email !== contact.email) {
+        console.log('📧 Adding secondary email since contact was found by phone with different email');
+        const currentNotes = updateData.notes || existingContact.notes || '';
+        updateData.notes = currentNotes + `\n\nEmail secundario desde TidyCal: ${contact.email}`;
       }
 
       const { error: updateError } = await supabase
@@ -350,7 +360,8 @@ serve(async (req) => {
             contact_id: contactId,
             trigger_condition: triggerCondition,
             existing_activities: existingActivities.length,
-            skipped_duplicate: true
+            skipped_duplicate: true,
+            secondary_email_added: foundByPhone
           }),
           { 
             status: 200, 
@@ -455,7 +466,8 @@ serve(async (req) => {
         trigger_condition: triggerCondition,
         target_stage: targetStage?.name,
         business_info_extracted: !!businessInfo,
-        cancellation_handled: !!cancelled_at
+        cancellation_handled: !!cancelled_at,
+        secondary_email_added: foundByPhone
       }),
       { 
         status: 200, 

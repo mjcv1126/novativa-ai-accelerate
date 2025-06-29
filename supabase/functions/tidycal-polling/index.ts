@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('🔄 TidyCal polling started');
+    console.log('🔄 TidyCal polling started at:', new Date().toISOString());
 
     const tidyCalToken = Deno.env.get('Tidycal_Token');
     if (!tidyCalToken) {
@@ -44,9 +44,31 @@ serve(async (req) => {
 
     console.log('📝 Sync log created:', syncLog.id);
 
-    // Calculate time range (last 5 minutes to catch any recent changes)
+    // Calculate time range - get all bookings from 7 days ago to 30 days in the future
+    // This ensures we catch any recent changes or new bookings
     const now = new Date();
-    const fiveMinutesAgo = new Date(now.getTime() - (5 * 60 * 1000));
+    const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+    const thirtyDaysFromNow = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
+
+    // Get the last successful sync time to be more efficient
+    const { data: lastSync } = await supabase
+      .from('tidycal_sync_logs')
+      .select('sync_completed_at, last_booking_date')
+      .eq('status', 'completed')
+      .order('sync_completed_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    let startTime = sevenDaysAgo;
+    if (lastSync?.last_booking_date) {
+      // Start from the last booking date minus 1 hour for safety
+      const lastBookingTime = new Date(lastSync.last_booking_date);
+      lastBookingTime.setHours(lastBookingTime.getHours() - 1);
+      startTime = lastBookingTime;
+      console.log('📅 Using incremental sync from:', startTime.toISOString());
+    } else {
+      console.log('📅 Full sync from:', startTime.toISOString());
+    }
 
     // Fetch bookings from TidyCal
     const tidyCalHeaders = {
@@ -55,8 +77,8 @@ serve(async (req) => {
     };
 
     const queryParams = new URLSearchParams({
-      starts_at: fiveMinutesAgo.toISOString(),
-      ends_at: new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)).toISOString(), // Next 30 days
+      starts_at: startTime.toISOString(),
+      ends_at: thirtyDaysFromNow.toISOString(),
     });
 
     const tidyCalUrl = `https://tidycal.com/api/bookings?${queryParams.toString()}`;
@@ -65,7 +87,9 @@ serve(async (req) => {
     const response = await fetch(tidyCalUrl, { headers: tidyCalHeaders });
 
     if (!response.ok) {
-      throw new Error(`TidyCal API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('TidyCal API error response:', errorText);
+      throw new Error(`TidyCal API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const tidyCalData = await response.json();
@@ -81,20 +105,22 @@ serve(async (req) => {
     // Process each booking
     for (const booking of bookings) {
       try {
-        // Check if booking already processed
+        console.log(`🔄 Processing booking ${booking.id} - ${booking.contact?.name} - ${booking.starts_at}`);
+
+        // Check if booking already processed recently (within last hour to avoid reprocessing)
+        const oneHourAgo = new Date(now.getTime() - (60 * 60 * 1000));
         const { data: existingBooking } = await supabase
           .from('tidycal_processed_bookings')
-          .select('id')
+          .select('id, processed_at, sync_status')
           .eq('tidycal_booking_id', booking.id)
+          .gte('processed_at', oneHourAgo.toISOString())
           .single();
 
         if (existingBooking) {
-          console.log(`⏭️ Booking ${booking.id} already processed, skipping`);
+          console.log(`⏭️ Booking ${booking.id} already processed recently (${existingBooking.sync_status}), skipping`);
           bookingsSkipped++;
           continue;
         }
-
-        console.log(`🔄 Processing booking ${booking.id}`);
 
         // Process the booking using existing webhook logic
         const webhookResponse = await fetch(`${supabaseUrl}/functions/v1/tidycal-webhook`, {
@@ -123,19 +149,22 @@ serve(async (req) => {
           bookingsFailed++;
         }
 
-        // Record the processed booking
+        // Record the processed booking (upsert to handle duplicates)
         await supabase
           .from('tidycal_processed_bookings')
-          .insert([{
+          .upsert([{
             tidycal_booking_id: booking.id,
             contact_id: contactId,
             booking_starts_at: booking.starts_at,
             booking_ends_at: booking.ends_at,
-            contact_email: booking.contact.email,
-            contact_name: booking.contact.name,
+            contact_email: booking.contact?.email || '',
+            contact_name: booking.contact?.name || '',
             sync_status: syncStatus,
-            error_message: errorMessage
-          }]);
+            error_message: errorMessage,
+            processed_at: new Date().toISOString()
+          }], {
+            onConflict: 'tidycal_booking_id'
+          });
 
         // Update last booking date
         if (!lastBookingDate || new Date(booking.starts_at) > new Date(lastBookingDate)) {
@@ -150,16 +179,19 @@ serve(async (req) => {
         try {
           await supabase
             .from('tidycal_processed_bookings')
-            .insert([{
+            .upsert([{
               tidycal_booking_id: booking.id,
               contact_id: null,
               booking_starts_at: booking.starts_at,
               booking_ends_at: booking.ends_at,
-              contact_email: booking.contact.email,
-              contact_name: booking.contact.name,
+              contact_email: booking.contact?.email || '',
+              contact_name: booking.contact?.name || '',
               sync_status: 'error',
-              error_message: error.message
-            }]);
+              error_message: error.message,
+              processed_at: new Date().toISOString()
+            }], {
+              onConflict: 'tidycal_booking_id'
+            });
         } catch (recordError) {
           console.error('Failed to record failed booking:', recordError);
         }
@@ -167,6 +199,7 @@ serve(async (req) => {
     }
 
     // Update sync log with results
+    const finalStatus = bookingsFailed > 0 ? 'partial_success' : 'completed';
     await supabase
       .from('tidycal_sync_logs')
       .update({
@@ -175,7 +208,7 @@ serve(async (req) => {
         bookings_processed: bookingsProcessed,
         bookings_skipped: bookingsSkipped,
         bookings_failed: bookingsFailed,
-        status: bookingsFailed > 0 ? 'partial_success' : 'completed',
+        status: finalStatus,
         last_booking_date: lastBookingDate
       })
       .eq('id', syncLog.id);
@@ -187,12 +220,14 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         message: 'TidyCal polling completed',
+        sync_type: lastSync?.last_booking_date ? 'incremental' : 'full',
         results: {
           bookings_found: bookings.length,
           bookings_processed: bookingsProcessed,
           bookings_skipped: bookingsSkipped,
           bookings_failed: bookingsFailed,
-          last_booking_date: lastBookingDate
+          last_booking_date: lastBookingDate,
+          status: finalStatus
         }
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
