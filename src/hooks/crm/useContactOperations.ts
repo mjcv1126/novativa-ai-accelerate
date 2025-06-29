@@ -31,19 +31,17 @@ export const useContactOperations = () => {
       if (filters.search && filters.search.trim()) {
         const searchTerm = filters.search.trim();
         
-        // Búsqueda inteligente que incluye:
-        // - Coincidencias parciales en nombre y apellido
-        // - Búsqueda en email completo y dominio
-        // - Búsqueda en teléfono (removiendo espacios y caracteres especiales)
-        // - Búsqueda en empresa
-        // - Búsqueda en país
-        // - Búsqueda en ID (primeros 8 caracteres)
-        // - Búsqueda en notas y servicio de interés
+        // Búsqueda muy flexible que incluye:
+        // - Coincidencias parciales en cualquier orden
+        // - Búsqueda de números sin formato (solo dígitos)
+        // - Búsqueda fuzzy en todos los campos de texto
+        const cleanSearchTerm = searchTerm.replace(/[\s\-\(\)\+]/g, '');
+        
         query = query.or(`
           first_name.ilike.%${searchTerm}%,
           last_name.ilike.%${searchTerm}%,
           email.ilike.%${searchTerm}%,
-          phone.ilike.%${searchTerm.replace(/[\s\-\(\)]/g, '')}%,
+          phone.ilike.%${cleanSearchTerm}%,
           company.ilike.%${searchTerm}%,
           country_name.ilike.%${searchTerm}%,
           country_code.ilike.%${searchTerm}%,
@@ -95,13 +93,18 @@ export const useContactOperations = () => {
         })
       );
 
-      // Si hay un término de búsqueda, ordenar por relevancia
+      // Si hay un término de búsqueda, hacer búsqueda fuzzy adicional y ordenar por relevancia
       if (filters.search && filters.search.trim()) {
         const searchTerm = filters.search.toLowerCase().trim();
         
-        return contactsWithAssignments.sort((a, b) => {
-          const scoreA = calculateRelevanceScore(a, searchTerm);
-          const scoreB = calculateRelevanceScore(b, searchTerm);
+        // Realizar búsqueda fuzzy adicional en memoria
+        const fuzzyResults = contactsWithAssignments.filter(contact => 
+          isFuzzyMatch(contact, searchTerm)
+        );
+        
+        return fuzzyResults.sort((a, b) => {
+          const scoreA = calculateAdvancedRelevanceScore(a, searchTerm);
+          const scoreB = calculateAdvancedRelevanceScore(b, searchTerm);
           return scoreB - scoreA; // Orden descendente por relevancia
         });
       }
@@ -118,35 +121,126 @@ export const useContactOperations = () => {
     }
   }, []);
 
-  // Función para calcular puntuación de relevancia
-  const calculateRelevanceScore = (contact: ContactWithStage, searchTerm: string): number => {
+  // Función para búsqueda fuzzy más inteligente
+  const isFuzzyMatch = (contact: ContactWithStage, searchTerm: string): boolean => {
+    const term = searchTerm.toLowerCase();
+    const cleanTerm = term.replace(/[\s\-\(\)\+]/g, '');
+    
+    // Campos de texto para buscar
+    const textFields = [
+      contact.first_name,
+      contact.last_name,
+      contact.email,
+      contact.company,
+      contact.country_name,
+      contact.country_code,
+      contact.notes,
+      contact.service_of_interest
+    ].filter(Boolean).map(field => field?.toLowerCase() || '');
+    
+    // Búsqueda en teléfono (solo números)
+    const cleanPhone = contact.phone?.replace(/[\s\-\(\)\+]/g, '') || '';
+    
+    // Búsqueda por ID (primeros caracteres)
+    const contactId = contact.id.toLowerCase();
+    
+    // 1. Coincidencia exacta en cualquier campo
+    if (textFields.some(field => field.includes(term))) return true;
+    
+    // 2. Coincidencia en teléfono (números limpios)
+    if (cleanPhone.includes(cleanTerm)) return true;
+    
+    // 3. Coincidencia en ID
+    if (contactId.includes(term)) return true;
+    
+    // 4. Búsqueda fuzzy por palabras individuales
+    const words = term.split(/\s+/).filter(word => word.length > 1);
+    if (words.length > 1) {
+      const wordMatches = words.filter(word => 
+        textFields.some(field => field.includes(word)) ||
+        cleanPhone.includes(word.replace(/[\s\-\(\)\+]/g, '')) ||
+        contactId.includes(word)
+      );
+      if (wordMatches.length >= Math.ceil(words.length * 0.6)) return true; // 60% de las palabras deben coincidir
+    }
+    
+    // 5. Búsqueda por similitud de caracteres (para números de teléfono parciales)
+    if (cleanTerm.length >= 4) {
+      // Para teléfonos, buscar subsecuencias de al menos 4 dígitos
+      if (/^\d+$/.test(cleanTerm) && cleanPhone.includes(cleanTerm)) return true;
+      
+      // Para otros campos, buscar similitudes de al menos 3 caracteres
+      if (textFields.some(field => hasSubsequence(field, term, 3))) return true;
+    }
+    
+    return false;
+  };
+
+  // Función para detectar subsecuencias de caracteres
+  const hasSubsequence = (text: string, pattern: string, minLength: number): boolean => {
+    if (pattern.length < minLength) return false;
+    
+    let patternIndex = 0;
+    for (let i = 0; i < text.length && patternIndex < pattern.length; i++) {
+      if (text[i] === pattern[patternIndex]) {
+        patternIndex++;
+      }
+    }
+    
+    return patternIndex >= Math.min(pattern.length, minLength);
+  };
+
+  // Función mejorada para calcular puntuación de relevancia
+  const calculateAdvancedRelevanceScore = (contact: ContactWithStage, searchTerm: string): number => {
     let score = 0;
     const term = searchTerm.toLowerCase();
+    const cleanTerm = term.replace(/[\s\-\(\)\+]/g, '');
+    const cleanPhone = contact.phone?.replace(/[\s\-\(\)\+]/g, '') || '';
     
-    // Coincidencias exactas tienen mayor puntuación
+    // Coincidencias exactas (máxima puntuación)
     if (contact.first_name?.toLowerCase() === term) score += 100;
     if (contact.last_name?.toLowerCase() === term) score += 100;
     if (contact.email?.toLowerCase() === term) score += 100;
-    if (contact.phone?.replace(/[\s\-\(\)]/g, '').includes(term.replace(/[\s\-\(\)]/g, ''))) score += 90;
+    if (cleanPhone === cleanTerm) score += 95;
     if (contact.company?.toLowerCase() === term) score += 80;
     
-    // Coincidencias al inicio de la palabra tienen mayor puntuación
-    if (contact.first_name?.toLowerCase().startsWith(term)) score += 50;
-    if (contact.last_name?.toLowerCase().startsWith(term)) score += 50;
-    if (contact.email?.toLowerCase().startsWith(term)) score += 40;
-    if (contact.company?.toLowerCase().startsWith(term)) score += 30;
+    // Coincidencias al inicio (alta puntuación)
+    if (contact.first_name?.toLowerCase().startsWith(term)) score += 70;
+    if (contact.last_name?.toLowerCase().startsWith(term)) score += 70;
+    if (contact.email?.toLowerCase().startsWith(term)) score += 60;
+    if (cleanPhone.startsWith(cleanTerm)) score += 85;
+    if (contact.company?.toLowerCase().startsWith(term)) score += 50;
     
-    // Coincidencias parciales tienen menor puntuación
-    if (contact.first_name?.toLowerCase().includes(term)) score += 20;
-    if (contact.last_name?.toLowerCase().includes(term)) score += 20;
-    if (contact.email?.toLowerCase().includes(term)) score += 15;
-    if (contact.company?.toLowerCase().includes(term)) score += 10;
-    if (contact.country_name?.toLowerCase().includes(term)) score += 10;
-    if (contact.notes?.toLowerCase().includes(term)) score += 5;
-    if (contact.service_of_interest?.toLowerCase().includes(term)) score += 8;
+    // Coincidencias parciales (puntuación media)
+    if (contact.first_name?.toLowerCase().includes(term)) score += 40;
+    if (contact.last_name?.toLowerCase().includes(term)) score += 40;
+    if (contact.email?.toLowerCase().includes(term)) score += 30;
+    if (cleanPhone.includes(cleanTerm)) score += 60;
+    if (contact.company?.toLowerCase().includes(term)) score += 25;
+    if (contact.country_name?.toLowerCase().includes(term)) score += 20;
+    if (contact.notes?.toLowerCase().includes(term)) score += 15;
+    if (contact.service_of_interest?.toLowerCase().includes(term)) score += 20;
     
-    // Búsqueda por ID (primeros caracteres)
-    if (contact.id.toLowerCase().startsWith(term)) score += 60;
+    // Búsqueda por ID
+    if (contact.id.toLowerCase().startsWith(term)) score += 50;
+    if (contact.id.toLowerCase().includes(term)) score += 25;
+    
+    // Bonus por múltiples coincidencias en el mismo contacto
+    const words = term.split(/\s+/).filter(word => word.length > 1);
+    if (words.length > 1) {
+      const matchingWords = words.filter(word => {
+        const cleanWord = word.replace(/[\s\-\(\)\+]/g, '');
+        return [
+          contact.first_name?.toLowerCase(),
+          contact.last_name?.toLowerCase(),
+          contact.email?.toLowerCase(),
+          contact.company?.toLowerCase()
+        ].some(field => field?.includes(word)) ||
+        cleanPhone.includes(cleanWord);
+      });
+      
+      score += matchingWords.length * 10; // Bonus por cada palabra que coincide
+    }
     
     return score;
   };
