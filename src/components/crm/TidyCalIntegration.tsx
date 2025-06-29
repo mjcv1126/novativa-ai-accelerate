@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Clock, User, RefreshCw, ExternalLink, Activity, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import { Calendar, Clock, User, RefreshCw, ExternalLink, Activity, AlertCircle, CheckCircle, XCircle, Zap } from 'lucide-react';
 import { useTidyCal } from '@/hooks/crm/useTidyCal';
 import { TidyCalPollingStatus } from './TidyCalPollingStatus';
+import { TidyCalRealtimeStatus } from './TidyCalRealtimeStatus';
 import { TidyCalSetupButton } from './TidyCalSetupButton';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -198,8 +199,12 @@ export const TidyCalIntegration = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0">
-          <Tabs defaultValue="automation" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
+          <Tabs defaultValue="realtime" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-4">
+              <TabsTrigger value="realtime" className="flex items-center gap-2 text-xs sm:text-sm px-2">
+                <Zap className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">Tiempo Real</span>
+              </TabsTrigger>
               <TabsTrigger value="automation" className="flex items-center gap-2 text-xs sm:text-sm px-2">
                 <Activity className="h-4 w-4 flex-shrink-0" />
                 <span className="truncate">Automática</span>
@@ -209,6 +214,13 @@ export const TidyCalIntegration = () => {
                 <span className="truncate">Manual</span>
               </TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="realtime" className="space-y-4 mt-0">
+              <div className="text-sm text-gray-600 mb-4">
+                <p>Sincronización instantánea mediante WebSockets y webhooks.</p>
+              </div>
+              <TidyCalRealtimeStatus />
+            </TabsContent>
             
             <TabsContent value="automation" className="space-y-4 mt-0">
               <div className="text-sm text-gray-600 mb-4">
