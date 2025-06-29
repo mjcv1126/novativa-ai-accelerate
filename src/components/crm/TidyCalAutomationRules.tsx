@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Plus, Edit, Trash, MoreHorizontal, Calendar, User, Activity } from 'lucide-react';
+import { Plus, Edit, Trash, MoreHorizontal, Calendar, User, Activity, Copy } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { CrmStage } from '@/types/crm';
@@ -153,6 +152,44 @@ export const TidyCalAutomationRules = () => {
       resetForm();
     }
     setIsDialogOpen(true);
+  };
+
+  const handleDuplicateRule = async (rule: TidyCalRule) => {
+    try {
+      const duplicatedRule = {
+        name: `${rule.name} (Copia)`,
+        description: rule.description,
+        trigger_condition: rule.trigger_condition,
+        target_stage_id: rule.target_stage_id,
+        create_activity: rule.create_activity,
+        activity_title: rule.activity_title,
+        activity_description: rule.activity_description,
+        contact_action: rule.contact_action,
+        contact_action_data: rule.contact_action_data,
+        cancel_previous_activity: rule.cancel_previous_activity,
+        is_active: false // Start duplicated rules as inactive
+      };
+
+      const { error } = await supabase
+        .from('tidycal_automation_rules')
+        .insert([duplicatedRule]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Regla duplicada",
+        description: "La regla se ha duplicado correctamente. Se ha creado como inactiva.",
+      });
+
+      await loadRules();
+    } catch (error) {
+      console.error('Error duplicating rule:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo duplicar la regla",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCloseDialog = () => {
@@ -559,6 +596,10 @@ export const TidyCalAutomationRules = () => {
                     <DropdownMenuItem onClick={() => handleOpenDialog(rule)}>
                       <Edit className="h-4 w-4 mr-2" />
                       Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDuplicateRule(rule)}>
+                      <Copy className="h-4 w-4 mr-2" />
+                      Duplicar
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => toggleRuleStatus(rule.id)}>
                       <Switch className="h-4 w-4 mr-2" />
