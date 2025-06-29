@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('TidyCal webhook received:', req.method);
+    console.log('🚀 TidyCal webhook received:', req.method);
 
     if (req.method !== 'POST') {
       return new Response(
@@ -26,14 +26,14 @@ serve(async (req) => {
     }
 
     const payload = await req.json();
-    console.log('Webhook payload:', JSON.stringify(payload, null, 2));
+    console.log('📦 Webhook payload:', JSON.stringify(payload, null, 2));
 
     // Extract booking information from the webhook
     const booking = payload.data || payload;
     const { contact, starts_at, ends_at, booking_type, cancelled_at, questions } = booking;
 
     if (!contact || !contact.email) {
-      console.error('No contact information found in webhook');
+      console.error('❌ No contact information found in webhook');
       return new Response(
         JSON.stringify({ error: 'No contact information found' }),
         { 
@@ -53,6 +53,8 @@ serve(async (req) => {
     // Search for existing contact by email or phone
     let existingContact = null;
     
+    console.log('🔍 Searching for existing contact with email:', contact.email);
+    
     const { data: contactByEmail } = await supabase
       .from('contacts')
       .select('*')
@@ -61,6 +63,7 @@ serve(async (req) => {
 
     if (contactByEmail) {
       existingContact = contactByEmail;
+      console.log('✅ Found existing contact by email:', existingContact.id);
     } else if (contact.phone_number) {
       const { data: contactByPhone } = await supabase
         .from('contacts')
@@ -70,6 +73,7 @@ serve(async (req) => {
       
       if (contactByPhone) {
         existingContact = contactByPhone;
+        console.log('✅ Found existing contact by phone:', existingContact.id);
       }
     }
 
@@ -79,7 +83,7 @@ serve(async (req) => {
       .select('*')
       .eq('is_active', true);
 
-    console.log('Found automation rules:', automationRules?.length || 0);
+    console.log('🔧 Found automation rules:', automationRules?.length || 0);
 
     // Determine trigger condition
     const now = new Date();
@@ -88,62 +92,66 @@ serve(async (req) => {
 
     if (cancelled_at) {
       triggerCondition = 'booking_cancelled';
+      console.log('📋 Trigger: Booking cancelled');
     } else if (payload.event === 'booking.rescheduled') {
       triggerCondition = 'booking_rescheduled';
+      console.log('📋 Trigger: Booking rescheduled');
     } else if (existingContact && bookingStart > now) {
       triggerCondition = 'contact_exists_future_call';
+      console.log('📋 Trigger: Existing contact + future call');
     } else if (existingContact && bookingStart < now) {
       triggerCondition = 'contact_exists_past_call';
+      console.log('📋 Trigger: Existing contact + past call');
     } else if (!existingContact && bookingStart < now) {
       triggerCondition = 'contact_not_exists_past_call';
+      console.log('📋 Trigger: New contact + past call');
     } else if (!existingContact && bookingStart > now) {
       triggerCondition = 'new_contact_future_call';
+      console.log('📋 Trigger: New contact + future call');
     }
 
-    console.log('Trigger condition determined:', triggerCondition);
+    console.log('🎯 Final trigger condition:', triggerCondition);
 
     // Find matching automation rule
     const matchingRule = automationRules?.find(rule => rule.trigger_condition === triggerCondition);
     
     if (!matchingRule) {
-      console.log('No matching automation rule found for trigger:', triggerCondition);
+      console.log('⚠️ No matching automation rule found for trigger:', triggerCondition);
     } else {
-      console.log('Using automation rule:', matchingRule.name);
+      console.log('✅ Using automation rule:', matchingRule.name);
     }
 
     // Extract business info from TidyCal questions
     let businessInfo = '';
     if (questions && questions.length > 0) {
       const businessQuestion = questions.find(q => 
-        q.question.includes('Negocio') || q.question.includes('IA') || q.question.includes('ayudarte')
+        q.question && (
+          q.question.includes('Negocio') || 
+          q.question.includes('negocio') ||
+          q.question.includes('IA') || 
+          q.question.includes('ayudarte') ||
+          q.question.includes('ayudar')
+        )
       );
-      if (businessQuestion) {
+      if (businessQuestion && businessQuestion.answer) {
         businessInfo = businessQuestion.answer;
+        console.log('💼 Business info extracted:', businessInfo.substring(0, 100) + '...');
       }
     }
 
     // Create or update contact
     if (!existingContact) {
-      console.log('No existing contact found, creating new one');
+      console.log('👤 Creating new contact...');
       
       // Parse the name into first and last name
       const nameParts = contact.name.split(' ');
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      // Get target stage from rule or default
-      let targetStageId = null;
+      // Get target stage from rule or default to "Llamada Programada"
+      let targetStageId = 'b9b4d1b9-461e-4fac-bebd-e3af2d527a97'; // Default to Llamada Programada
       if (matchingRule && matchingRule.target_stage_id) {
         targetStageId = matchingRule.target_stage_id;
-      } else {
-        // Default to first stage
-        const { data: firstStage } = await supabase
-          .from('crm_stages')
-          .select('id')
-          .eq('position', 1)
-          .eq('is_active', true)
-          .single();
-        targetStageId = firstStage?.id;
       }
 
       // Prepare notes with business info
@@ -163,13 +171,14 @@ serve(async (req) => {
           country_code: '', // TidyCal doesn't provide this
           country_name: '', // TidyCal doesn't provide this
           stage_id: targetStageId,
-          notes: notes
+          notes: notes,
+          last_contact_date: new Date().toISOString()
         }])
         .select()
         .single();
 
       if (createError) {
-        console.error('Error creating contact:', createError);
+        console.error('❌ Error creating contact:', createError);
         return new Response(
           JSON.stringify({ error: 'Failed to create contact', details: createError }),
           { 
@@ -180,12 +189,15 @@ serve(async (req) => {
       }
 
       existingContact = newContact;
+      console.log('✅ New contact created:', existingContact.id);
     } else if (matchingRule) {
       // Update existing contact
+      console.log('🔄 Updating existing contact...');
       let updateData: any = {};
       
       if (matchingRule.target_stage_id) {
         updateData.stage_id = matchingRule.target_stage_id;
+        console.log('📍 Moving to stage:', matchingRule.target_stage_id);
       }
       
       updateData.last_contact_date = new Date().toISOString();
@@ -193,7 +205,8 @@ serve(async (req) => {
       // Add business info to notes if available
       if (businessInfo && matchingRule.contact_action === 'update') {
         const currentNotes = existingContact.notes || '';
-        updateData.notes = currentNotes + `\n\nActualización TidyCal: ${businessInfo}`;
+        updateData.notes = currentNotes + `\n\nActualización TidyCal (${new Date().toLocaleDateString()}): ${businessInfo}`;
+        console.log('📝 Adding business info to notes');
       }
 
       if (Object.keys(updateData).length > 0) {
@@ -203,15 +216,18 @@ serve(async (req) => {
           .eq('id', existingContact.id);
 
         if (updateError) {
-          console.error('Error updating contact:', updateError);
+          console.error('❌ Error updating contact:', updateError);
+        } else {
+          console.log('✅ Contact updated successfully');
         }
       }
     }
 
-    console.log('Working with contact:', existingContact.id);
+    console.log('👤 Working with contact:', existingContact.id);
 
     // Handle cancellation logic
     if (triggerCondition === 'booking_cancelled' && matchingRule?.cancel_previous_activity) {
+      console.log('❌ Processing booking cancellation...');
       // Cancel previous activities for this booking
       const { data: previousActivities } = await supabase
         .from('contact_activities')
@@ -232,12 +248,13 @@ serve(async (req) => {
             })
             .eq('id', activity.id);
         }
-        console.log(`Cancelled ${previousActivities.length} previous activities`);
+        console.log(`✅ Cancelled ${previousActivities.length} previous activities`);
       }
     }
 
     // Handle rescheduled bookings
     if (triggerCondition === 'booking_rescheduled') {
+      console.log('🔄 Processing booking reschedule...');
       // Update existing activities for this booking
       const { data: existingActivities } = await supabase
         .from('contact_activities')
@@ -259,12 +276,13 @@ serve(async (req) => {
             })
             .eq('id', activity.id);
         }
-        console.log(`Updated ${existingActivities.length} rescheduled activities`);
+        console.log(`✅ Updated ${existingActivities.length} rescheduled activities`);
       }
     }
 
     // Create activity if rule specifies it
     if (matchingRule && matchingRule.create_activity && triggerCondition !== 'booking_rescheduled') {
+      console.log('📅 Creating new activity...');
       const startDate = new Date(starts_at);
       
       let activityData = {
@@ -301,11 +319,26 @@ serve(async (req) => {
         .insert([activityData]);
 
       if (activityError) {
-        console.error('Error creating activity:', activityError);
+        console.error('❌ Error creating activity:', activityError);
       } else {
-        console.log('Activity created successfully');
+        console.log('✅ Activity created successfully');
       }
     }
+
+    // Store processed booking
+    await supabase
+      .from('tidycal_processed_bookings')
+      .upsert([{
+        tidycal_booking_id: booking.id,
+        contact_name: contact.name,
+        contact_email: contact.email,
+        booking_starts_at: starts_at,
+        booking_ends_at: ends_at,
+        contact_id: existingContact.id,
+        sync_status: cancelled_at ? 'cancelled' : 'success'
+      }], {
+        onConflict: 'tidycal_booking_id'
+      });
 
     // Log rule execution
     if (matchingRule) {
@@ -340,11 +373,13 @@ serve(async (req) => {
         }]);
 
       if (stageActivityError) {
-        console.error('Error creating stage change activity:', stageActivityError);
+        console.error('❌ Error creating stage change activity:', stageActivityError);
+      } else {
+        console.log('✅ Stage change activity created');
       }
     }
 
-    console.log('TidyCal webhook processed successfully');
+    console.log('🎉 TidyCal webhook processed successfully');
 
     return new Response(
       JSON.stringify({ 
@@ -352,7 +387,8 @@ serve(async (req) => {
         message: 'Booking processed successfully',
         contact_id: existingContact.id,
         rule_applied: matchingRule?.name || 'No rule matched',
-        trigger_condition: triggerCondition
+        trigger_condition: triggerCondition,
+        business_info_extracted: !!businessInfo
       }),
       { 
         status: 200, 
@@ -361,7 +397,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error processing TidyCal webhook:', error);
+    console.error('💥 Error processing TidyCal webhook:', error);
     return new Response(
       JSON.stringify({ error: 'Internal server error', details: error.message }),
       { 

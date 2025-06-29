@@ -66,20 +66,32 @@ export const BookingsList: React.FC<BookingsListProps> = ({ bookings }) => {
     }
   };
 
+  // Filtrar automáticamente bookings completados y cancelados
+  const activeBookings = bookings.filter(booking => {
+    const status = getBookingStatus(booking);
+    return status !== 'completed' && status !== 'cancelled';
+  });
+
+  console.log('📅 Filtering bookings:', {
+    total: bookings.length,
+    active: activeBookings.length,
+    filtered_out: bookings.length - activeBookings.length
+  });
+
   // Custom function to check if date is in next week or beyond
   const isNextWeekOrBeyond = (date: Date) => {
     const nextWeekStart = startOfWeek(addWeeks(new Date(), 1), { weekStartsOn: 1 });
     return date >= nextWeekStart;
   };
 
-  // Organize bookings by time periods
+  // Organize bookings by time periods (solo bookings activos)
   const organizeBookings = () => {
     const today: TidyCalBooking[] = [];
     const tomorrow: TidyCalBooking[] = [];
     const thisWeek: TidyCalBooking[] = [];
     const nextWeeks: TidyCalBooking[] = [];
 
-    bookings.forEach(booking => {
+    activeBookings.forEach(booking => {
       const bookingDate = new Date(booking.starts_at);
       
       if (isToday(bookingDate)) {
@@ -165,17 +177,29 @@ export const BookingsList: React.FC<BookingsListProps> = ({ bookings }) => {
 
   const organizedBookings = organizeBookings();
 
-  if (bookings.length === 0) {
+  if (activeBookings.length === 0) {
     return (
       <div className="text-center py-12">
         <Phone className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-        <p className="text-gray-500">No hay bookings disponibles</p>
+        <p className="text-gray-500">No hay bookings activos disponibles</p>
+        <p className="text-xs text-gray-400 mt-2">
+          Se ocultan automáticamente las llamadas completadas y canceladas
+        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
+      <div className="bg-blue-50 p-3 rounded-lg">
+        <p className="text-sm text-blue-700">
+          📋 Mostrando {activeBookings.length} bookings activos 
+          {bookings.length > activeBookings.length && 
+            ` (${bookings.length - activeBookings.length} completados/cancelados ocultos)`
+          }
+        </p>
+      </div>
+      
       {renderSection('Hoy', organizedBookings.today, <Clock className="h-5 w-5 text-red-500" />)}
       {renderSection('Mañana', organizedBookings.tomorrow, <Clock className="h-5 w-5 text-orange-500" />)}
       {renderSection('Esta Semana', organizedBookings.thisWeek, <Calendar className="h-5 w-5 text-blue-500" />)}

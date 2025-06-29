@@ -57,6 +57,7 @@ const AdminDashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
+      console.log('🔄 Loading dashboard data...');
       
       // Load contacts stats
       const { data: contacts, error: contactsError } = await supabase
@@ -68,17 +69,18 @@ const AdminDashboard = () => {
         .from('blog_posts')
         .select('id, published');
       
-      // Load activities stats
+      // Load activities stats (solo actividades pendientes/no completadas)
       const { data: activities, error: activitiesError } = await supabase
         .from('contact_activities')
-        .select('id, is_completed, due_date, scheduled_date');
+        .select('id, is_completed, due_date, scheduled_date, status')
+        .eq('is_completed', false); // Solo actividades no completadas
       
-      // Load bookings stats
+      // Load bookings stats from TidyCal processed bookings
       const { data: bookings, error: bookingsError } = await supabase
         .from('tidycal_processed_bookings')
         .select('id, booking_starts_at, sync_status');
       
-      // Load recent activities
+      // Load recent activities (solo no completadas)
       const { data: recentActivitiesData, error: recentError } = await supabase
         .from('contact_activities')
         .select(`
@@ -89,30 +91,56 @@ const AdminDashboard = () => {
           contact_id,
           contacts!inner(first_name, last_name)
         `)
+        .eq('is_completed', false) // Solo actividades no completadas
         .order('created_at', { ascending: false })
         .limit(10);
 
-      if (contactsError) throw contactsError;
-      if (blogsError) throw blogsError;
-      if (activitiesError) throw activitiesError;
-      if (bookingsError) throw bookingsError;
-      if (recentError) throw recentError;
+      if (contactsError) {
+        console.error('Error loading contacts:', contactsError);
+        throw contactsError;
+      }
+      if (blogsError) {
+        console.error('Error loading blogs:', blogsError);
+        throw blogsError;
+      }
+      if (activitiesError) {
+        console.error('Error loading activities:', activitiesError);
+        throw activitiesError;
+      }
+      if (bookingsError) {
+        console.error('Error loading bookings:', bookingsError);
+        throw bookingsError;
+      }
+      if (recentError) {
+        console.error('Error loading recent activities:', recentError);
+        throw recentError;
+      }
+
+      console.log('📊 Dashboard data loaded:', {
+        contacts: contacts?.length || 0,
+        blogs: blogs?.length || 0,
+        activities: activities?.length || 0,
+        bookings: bookings?.length || 0
+      });
 
       // Calculate stats
       const now = new Date();
       const publishedBlogs = blogs?.filter(b => b.published) || [];
       const draftBlogs = blogs?.filter(b => !b.published) || [];
       
-      const completedActivities = activities?.filter(a => a.is_completed) || [];
-      const pendingActivities = activities?.filter(a => !a.is_completed) || [];
       const overdueActivities = activities?.filter(a => {
-        if (a.is_completed) return false;
         const dueDate = a.due_date || a.scheduled_date;
         return dueDate && new Date(dueDate) < now;
       }) || [];
 
-      const futureBookings = bookings?.filter(b => new Date(b.booking_starts_at) > now) || [];
-      const pastBookings = bookings?.filter(b => new Date(b.booking_starts_at) < now) || [];
+      // Filtrar bookings para excluir completados y cancelados
+      const activeBookings = bookings?.filter(b => 
+        b.sync_status !== 'cancelled' && 
+        b.sync_status !== 'completed'
+      ) || [];
+      
+      const futureBookings = activeBookings.filter(b => new Date(b.booking_starts_at) > now) || [];
+      const pastBookings = activeBookings.filter(b => new Date(b.booking_starts_at) < now) || [];
       const cancelledBookings = bookings?.filter(b => b.sync_status === 'cancelled') || [];
 
       setStats({
@@ -121,10 +149,10 @@ const AdminDashboard = () => {
         publishedBlogs: publishedBlogs.length,
         draftBlogs: draftBlogs.length,
         totalActivities: activities?.length || 0,
-        completedActivities: completedActivities.length,
-        pendingActivities: pendingActivities.length,
+        completedActivities: 0, // No mostramos completadas
+        pendingActivities: activities?.length || 0,
         overdueActivities: overdueActivities.length,
-        totalBookings: bookings?.length || 0,
+        totalBookings: activeBookings.length,
         futureBookings: futureBookings.length,
         pastBookings: pastBookings.length,
         cancelledBookings: cancelledBookings.length
@@ -142,7 +170,7 @@ const AdminDashboard = () => {
       setRecentActivities(formattedActivities);
       
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error('❌ Error loading dashboard data:', error);
     } finally {
       setLoading(false);
     }
@@ -197,7 +225,7 @@ const AdminDashboard = () => {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Contactos Totales</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Contactos Totales</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -210,7 +238,7 @@ const AdminDashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Bookings</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Bookings Activos</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -223,20 +251,20 @@ const AdminDashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Actividades</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Actividades Pendientes</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalActivities}</div>
+              <div className="text-2xl font-bold">{stats.pendingActivities}</div>
               <p className="text-xs text-muted-foreground">
-                {stats.pendingActivities} pendientes, {stats.overdueActivities} vencidas
+                {stats.overdueActivities} vencidas
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Blog Posts</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Blog Posts</CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -272,11 +300,11 @@ const AdminDashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Completadas Hoy</CardTitle>
+              <CardTitle className="text-lg">Actividades Pendientes</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-blue-600">{stats.completedActivities}</div>
-              <p className="text-sm text-muted-foreground">Actividades finalizadas</p>
+              <div className="text-3xl font-bold text-blue-600">{stats.pendingActivities}</div>
+              <p className="text-sm text-muted-foreground">Por completar</p>
             </CardContent>
           </Card>
         </div>
