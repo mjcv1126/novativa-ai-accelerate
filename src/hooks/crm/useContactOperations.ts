@@ -27,28 +27,30 @@ export const useContactOperations = () => {
         `)
         .order('created_at', { ascending: false });
 
-      // Apply intelligent search filters
+      // Apply search filters
       if (filters.search && filters.search.trim()) {
         const searchTerm = filters.search.trim();
-        
-        // Búsqueda muy flexible que incluye:
-        // - Coincidencias parciales en cualquier orden
-        // - Búsqueda de números sin formato (solo dígitos)
-        // - Búsqueda fuzzy en todos los campos de texto
         const cleanSearchTerm = searchTerm.replace(/[\s\-\(\)\+]/g, '');
         
-        query = query.or(`
-          first_name.ilike.%${searchTerm}%,
-          last_name.ilike.%${searchTerm}%,
-          email.ilike.%${searchTerm}%,
-          phone.ilike.%${cleanSearchTerm}%,
-          company.ilike.%${searchTerm}%,
-          country_name.ilike.%${searchTerm}%,
-          country_code.ilike.%${searchTerm}%,
-          notes.ilike.%${searchTerm}%,
-          service_of_interest.ilike.%${searchTerm}%,
-          id::text.ilike.${searchTerm}%
-        `.replace(/\s+/g, ''));
+        // Crear múltiples condiciones de búsqueda
+        const searchConditions = [
+          `first_name.ilike.%${searchTerm}%`,
+          `last_name.ilike.%${searchTerm}%`,
+          `email.ilike.%${searchTerm}%`,
+          `phone.ilike.%${cleanSearchTerm}%`,
+          `company.ilike.%${searchTerm}%`,
+          `country_name.ilike.%${searchTerm}%`,
+          `country_code.ilike.%${searchTerm}%`,
+          `notes.ilike.%${searchTerm}%`,
+          `service_of_interest.ilike.%${searchTerm}%`
+        ];
+        
+        // También buscar por ID si parece ser un UUID o parte de uno
+        if (searchTerm.length >= 3) {
+          searchConditions.push(`id.ilike.${searchTerm}%`);
+        }
+        
+        query = query.or(searchConditions.join(','));
       }
 
       if (filters.stage_id) {
@@ -73,7 +75,12 @@ export const useContactOperations = () => {
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error in query:', error);
+        throw error;
+      }
+
+      console.log('Search results:', data?.length || 0, 'contacts found');
 
       // Obtener asignaciones para cada contacto
       const contactsWithAssignments = await Promise.all(
@@ -93,18 +100,13 @@ export const useContactOperations = () => {
         })
       );
 
-      // Si hay un término de búsqueda, hacer búsqueda fuzzy adicional y ordenar por relevancia
+      // Si hay un término de búsqueda, hacer ordenamiento adicional por relevancia
       if (filters.search && filters.search.trim()) {
         const searchTerm = filters.search.toLowerCase().trim();
         
-        // Realizar búsqueda fuzzy adicional en memoria
-        const fuzzyResults = contactsWithAssignments.filter(contact => 
-          isFuzzyMatch(contact, searchTerm)
-        );
-        
-        return fuzzyResults.sort((a, b) => {
-          const scoreA = calculateAdvancedRelevanceScore(a, searchTerm);
-          const scoreB = calculateAdvancedRelevanceScore(b, searchTerm);
+        return contactsWithAssignments.sort((a, b) => {
+          const scoreA = calculateRelevanceScore(a, searchTerm);
+          const scoreB = calculateRelevanceScore(b, searchTerm);
           return scoreB - scoreA; // Orden descendente por relevancia
         });
       }
@@ -121,77 +123,8 @@ export const useContactOperations = () => {
     }
   }, []);
 
-  // Función para búsqueda fuzzy más inteligente
-  const isFuzzyMatch = (contact: ContactWithStage, searchTerm: string): boolean => {
-    const term = searchTerm.toLowerCase();
-    const cleanTerm = term.replace(/[\s\-\(\)\+]/g, '');
-    
-    // Campos de texto para buscar
-    const textFields = [
-      contact.first_name,
-      contact.last_name,
-      contact.email,
-      contact.company,
-      contact.country_name,
-      contact.country_code,
-      contact.notes,
-      contact.service_of_interest
-    ].filter(Boolean).map(field => field?.toLowerCase() || '');
-    
-    // Búsqueda en teléfono (solo números)
-    const cleanPhone = contact.phone?.replace(/[\s\-\(\)\+]/g, '') || '';
-    
-    // Búsqueda por ID (primeros caracteres)
-    const contactId = contact.id.toLowerCase();
-    
-    // 1. Coincidencia exacta en cualquier campo
-    if (textFields.some(field => field.includes(term))) return true;
-    
-    // 2. Coincidencia en teléfono (números limpios)
-    if (cleanPhone.includes(cleanTerm)) return true;
-    
-    // 3. Coincidencia en ID
-    if (contactId.includes(term)) return true;
-    
-    // 4. Búsqueda fuzzy por palabras individuales
-    const words = term.split(/\s+/).filter(word => word.length > 1);
-    if (words.length > 1) {
-      const wordMatches = words.filter(word => 
-        textFields.some(field => field.includes(word)) ||
-        cleanPhone.includes(word.replace(/[\s\-\(\)\+]/g, '')) ||
-        contactId.includes(word)
-      );
-      if (wordMatches.length >= Math.ceil(words.length * 0.6)) return true; // 60% de las palabras deben coincidir
-    }
-    
-    // 5. Búsqueda por similitud de caracteres (para números de teléfono parciales)
-    if (cleanTerm.length >= 4) {
-      // Para teléfonos, buscar subsecuencias de al menos 4 dígitos
-      if (/^\d+$/.test(cleanTerm) && cleanPhone.includes(cleanTerm)) return true;
-      
-      // Para otros campos, buscar similitudes de al menos 3 caracteres
-      if (textFields.some(field => hasSubsequence(field, term, 3))) return true;
-    }
-    
-    return false;
-  };
-
-  // Función para detectar subsecuencias de caracteres
-  const hasSubsequence = (text: string, pattern: string, minLength: number): boolean => {
-    if (pattern.length < minLength) return false;
-    
-    let patternIndex = 0;
-    for (let i = 0; i < text.length && patternIndex < pattern.length; i++) {
-      if (text[i] === pattern[patternIndex]) {
-        patternIndex++;
-      }
-    }
-    
-    return patternIndex >= Math.min(pattern.length, minLength);
-  };
-
-  // Función mejorada para calcular puntuación de relevancia
-  const calculateAdvancedRelevanceScore = (contact: ContactWithStage, searchTerm: string): number => {
+  // Función para calcular puntuación de relevancia
+  const calculateRelevanceScore = (contact: ContactWithStage, searchTerm: string): number => {
     let score = 0;
     const term = searchTerm.toLowerCase();
     const cleanTerm = term.replace(/[\s\-\(\)\+]/g, '');
@@ -224,23 +157,6 @@ export const useContactOperations = () => {
     // Búsqueda por ID
     if (contact.id.toLowerCase().startsWith(term)) score += 50;
     if (contact.id.toLowerCase().includes(term)) score += 25;
-    
-    // Bonus por múltiples coincidencias en el mismo contacto
-    const words = term.split(/\s+/).filter(word => word.length > 1);
-    if (words.length > 1) {
-      const matchingWords = words.filter(word => {
-        const cleanWord = word.replace(/[\s\-\(\)\+]/g, '');
-        return [
-          contact.first_name?.toLowerCase(),
-          contact.last_name?.toLowerCase(),
-          contact.email?.toLowerCase(),
-          contact.company?.toLowerCase()
-        ].some(field => field?.includes(word)) ||
-        cleanPhone.includes(cleanWord);
-      });
-      
-      score += matchingWords.length * 10; // Bonus por cada palabra que coincide
-    }
     
     return score;
   };
