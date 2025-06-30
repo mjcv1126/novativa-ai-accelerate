@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useCRM } from '@/hooks/useCRM';
+import { useCRMRealtime } from '@/hooks/crm/useCRMRealtime';
 import { CRMFilters } from '@/components/crm/CRMFilters';
 import { ListView } from '@/components/crm/ListView';
 import { KanbanView } from '@/components/crm/KanbanView';
@@ -11,8 +12,9 @@ import { AddContactDialog } from '@/components/crm/AddContactDialog';
 import { ExportContactsButton } from '@/components/crm/ExportContactsButton';
 import { Button } from '@/components/ui/button';
 import { ViewMode, ContactWithStage } from '@/types/crm';
-import { List, Kanban, RefreshCw } from 'lucide-react';
+import { List, Kanban, RefreshCw, Wifi } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 const AdminCRM = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('kanban');
@@ -35,6 +37,21 @@ const AdminCRM = () => {
     createActivity,
     deleteContact,
   } = useCRM();
+
+  // Configurar tiempo real
+  useCRMRealtime({
+    onContactUpdate: () => {
+      console.log('🔄 Real-time contact update detected, refreshing...');
+      fetchContacts();
+    },
+    onActivityUpdate: () => {
+      console.log('🔄 Real-time activity update detected');
+      // Si hay un contacto seleccionado, refrescar sus actividades
+      if (selectedContact) {
+        fetchContactActivities(selectedContact.id);
+      }
+    },
+  });
 
   const handleContactView = (contact: ContactWithStage) => {
     setSelectedContact(contact);
@@ -81,9 +98,17 @@ const AdminCRM = () => {
       <div className="space-y-4 max-w-full">
         {/* Header */}
         <div className="flex flex-col gap-3">
-          <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">CRM - Gestión de Contactos</h1>
-            <p className="text-gray-600 text-sm">Administra tus contactos y embudo de ventas</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">CRM - Gestión de Contactos</h1>
+              <p className="text-gray-600 text-sm">Administra tus contactos y embudo de ventas</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge className="bg-green-100 text-green-800 flex items-center gap-1">
+                <Wifi className="h-3 w-3" />
+                <span>Tiempo Real</span>
+              </Badge>
+            </div>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-2">

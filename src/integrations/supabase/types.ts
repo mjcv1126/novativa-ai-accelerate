@@ -202,6 +202,48 @@ export type Database = {
           },
         ]
       }
+      contact_attachments: {
+        Row: {
+          contact_id: string
+          created_at: string | null
+          description: string | null
+          file_id: string
+          id: string
+          uploaded_by_email: string
+        }
+        Insert: {
+          contact_id: string
+          created_at?: string | null
+          description?: string | null
+          file_id: string
+          id?: string
+          uploaded_by_email: string
+        }
+        Update: {
+          contact_id?: string
+          created_at?: string | null
+          description?: string | null
+          file_id?: string
+          id?: string
+          uploaded_by_email?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_attachments_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_attachments_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "uploaded_files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           additional_emails: string[] | null
