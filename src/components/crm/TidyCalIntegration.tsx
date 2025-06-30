@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,6 +37,7 @@ export const TidyCalIntegration = () => {
   const [error, setError] = useState<string | null>(null);
   const [tokenStatus, setTokenStatus] = useState<'unknown' | 'testing' | 'valid' | 'invalid'>('unknown');
   const [syncingBookingId, setSyncingBookingId] = useState<number | null>(null);
+  const [isRealtimeConnected, setIsRealtimeConnected] = useState(false);
   const { getTidyCalBookings, syncBookingToContact } = useTidyCal();
 
   const testTokenConnection = async () => {
@@ -126,6 +126,15 @@ export const TidyCalIntegration = () => {
     } finally {
       setSyncingBookingId(null);
     }
+  };
+
+  const handleRealtimeConnect = () => {
+    // Simulate connection attempt
+    setIsRealtimeConnected(true);
+    toast({
+      title: "Conexión establecida",
+      description: "Sincronización en tiempo real activada",
+    });
   };
 
   useEffect(() => {
@@ -219,7 +228,10 @@ export const TidyCalIntegration = () => {
               <div className="text-sm text-gray-600 mb-4">
                 <p>Sincronización instantánea mediante WebSockets y webhooks.</p>
               </div>
-              <TidyCalRealtimeStatus />
+              <TidyCalRealtimeStatus 
+                isConnected={isRealtimeConnected}
+                onConnect={handleRealtimeConnect}
+              />
             </TabsContent>
             
             <TabsContent value="automation" className="space-y-4 mt-0">
