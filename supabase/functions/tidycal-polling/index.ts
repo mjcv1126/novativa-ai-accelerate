@@ -104,25 +104,24 @@ serve(async (req) => {
     const LLAMADA_PROGRAMADA_STAGE_ID = 'b9b4d1b9-461e-4fac-bebd-e3af2d527a97';
     const LLAMADA_CANCELADA_STAGE_ID = '7af3eb42-610b-4861-9429-85119b1d2693';
 
-    // Process each booking using the same logic as webhook
+    // Process each booking
     for (const booking of bookings) {
       try {
         console.log(`🔄 Processing booking ${booking.id} - ${booking.contact?.name} - ${booking.starts_at} - Cancelled: ${!!booking.cancelled_at}`);
 
-        // Check if booking already processed recently (within last hour to avoid reprocessing)
-        const oneHourAgo = new Date(now.getTime() - (60 * 60 * 1000));
-        const { data: existingBooking } = await supabase
+        // Check if booking already processed to avoid duplicates
+        const { data: existingProcessedBooking } = await supabase
           .from('tidycal_processed_bookings')
           .select('id, processed_at, sync_status')
           .eq('tidycal_booking_id', booking.id)
-          .gte('processed_at', oneHourAgo.toISOString())
           .single();
 
-        if (existingBooking) {
-          console.log(`⏭️ Booking ${booking.id} already processed recently (${existingBooking.sync_status}), skipping`);
-          bookingsSkipped++;
-          continue;
-        }
+        // Check if activity already exists to prevent duplicates
+        const { data: existingActivity } = await supabase
+          .from('contact_activities')
+          .select('*')
+          .eq('tidycal_booking_id', booking.id)
+          .single();
 
         let contactId = null;
         let syncStatus = 'success';
@@ -144,13 +143,7 @@ serve(async (req) => {
               console.log('👤 Found contact for cancelled booking:', contact.id);
               contactId = contact.id;
 
-              // Find and cancel the existing activity
-              const { data: existingActivity } = await supabase
-                .from('contact_activities')
-                .select('*')
-                .eq('tidycal_booking_id', booking.id)
-                .single();
-
+              // Cancel existing activity if it exists
               if (existingActivity) {
                 console.log('📅 Cancelling existing activity:', existingActivity.id);
                 
@@ -166,6 +159,7 @@ serve(async (req) => {
               }
 
               // Move contact to "Llamada cancelada" stage
+              console.log(`🔄 Moving contact ${contact.id} to cancelled stage`);
               await supabase
                 .from('contacts')
                 .update({ 
@@ -175,7 +169,8 @@ serve(async (req) => {
                 })
                 .eq('id', contact.id);
 
-              // Create a follow-up activity
+              // Create a cancellation note activity
+              console.log('📝 Creating cancellation note');
               await supabase
                 .from('contact_activities')
                 .insert([{
@@ -193,7 +188,7 @@ serve(async (req) => {
               console.log('⚠️ Contact not found for cancelled booking');
             }
           } else {
-            // Handle active bookings (same logic as webhook for booking.created)
+            // Handle active bookings
             console.log('📅 Processing active booking:', booking.id);
 
             // Check if contact already exists
@@ -247,13 +242,7 @@ serve(async (req) => {
                 .eq('id', contactId);
             }
 
-            // Create activity if it doesn't exist
-            const { data: existingActivity } = await supabase
-              .from('contact_activities')
-              .select('*')
-              .eq('tidycal_booking_id', booking.id)
-              .single();
-
+            // Create activity only if it doesn't exist (prevent duplicates)
             if (!existingActivity) {
               console.log('📅 Creating activity for booking:', booking.id);
               
@@ -275,6 +264,8 @@ serve(async (req) => {
                 console.error('❌ Error creating activity:', activityError);
                 throw activityError;
               }
+            } else {
+              console.log('⏭️ Activity already exists for booking:', booking.id);
             }
           }
 
