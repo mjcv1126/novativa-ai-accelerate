@@ -39,20 +39,34 @@ export const useTidyCalPolling = () => {
     setLoading(true);
     setAuthError(false);
     try {
-      console.log('🔄 Triggering TidyCal polling...');
+      console.log('🔄 Triggering TidyCal polling function...');
 
+      // Call the tidycal-polling function instead of tidycal-api
       const { data, error } = await supabase.functions.invoke('tidycal-polling');
 
       if (error) {
-        console.error('Polling error:', error);
+        console.error('❌ Polling error:', error);
         throw error;
       }
 
-      console.log('✅ Polling completed:', data);
+      console.log('✅ Polling completed successfully:', data);
+
+      // Show detailed results in toast
+      const results = data.results;
+      let toastMessage = `Procesados: ${results.bookings_processed}`;
+      if (results.cancelled_bookings_found > 0) {
+        toastMessage += `, Cancelados: ${results.cancelled_bookings_found}`;
+      }
+      if (results.bookings_skipped > 0) {
+        toastMessage += `, Omitidos: ${results.bookings_skipped}`;
+      }
+      if (results.bookings_failed > 0) {
+        toastMessage += `, Errores: ${results.bookings_failed}`;
+      }
 
       toast({
         title: "Sincronización completada",
-        description: `Procesados: ${data.results.bookings_processed}, Omitidos: ${data.results.bookings_skipped}`,
+        description: toastMessage,
       });
 
       // Refresh data
@@ -61,10 +75,10 @@ export const useTidyCalPolling = () => {
 
       return data;
     } catch (error) {
-      console.error('Error triggering polling:', error);
+      console.error('❌ Error triggering polling:', error);
       toast({
         title: "Error en sincronización",
-        description: "No se pudo completar la sincronización automática",
+        description: `Error: ${error.message}`,
         variant: "destructive",
       });
       throw error;
