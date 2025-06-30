@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -77,150 +76,165 @@ export default function AdminCRM() {
   };
 
   return (
-    <div className="space-y-4 p-4">
-      {/* Compact Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold text-gray-900 truncate">CRM</h1>
-          <p className="text-sm text-gray-600 truncate">Gestiona tus contactos y oportunidades</p>
+    <div className="flex flex-col h-full">
+      {/* Header Section - Fixed width, left aligned */}
+      <div className="flex-shrink-0 w-full max-w-7xl">
+        {/* Compact Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 mb-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-bold text-gray-900 truncate">CRM</h1>
+            <p className="text-sm text-gray-600 truncate">Gestiona tus contactos y oportunidades</p>
+          </div>
+          
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <TidyCalRealtimeStatus 
+              isConnected={syncStatus.connected}
+              onConnect={triggerManualSync}
+            />
+            <AddContactDialog stages={stages} onContactAdded={fetchContacts} />
+            <ExportContactsButton contacts={contacts} />
+          </div>
         </div>
-        
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <TidyCalRealtimeStatus 
-            isConnected={syncStatus.connected}
-            onConnect={triggerManualSync}
-          />
-          <AddContactDialog stages={stages} onContactAdded={fetchContacts} />
-          <ExportContactsButton contacts={contacts} />
+
+        {/* Compact Statistics */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+          <Card className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground">Contactos</p>
+                <p className="text-lg font-bold">{totalContacts}</p>
+              </div>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </Card>
+
+          <Card className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground">Con Valor</p>
+                <p className="text-lg font-bold text-green-600">{contactsWithValue.length}</p>
+              </div>
+              <TrendingUp className="h-4 w-4 text-green-500" />
+            </div>
+          </Card>
+
+          <Card className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground">Valor Total</p>
+                <p className="text-lg font-bold text-green-600">${totalValue.toFixed(0)}</p>
+              </div>
+              <DollarSign className="h-4 w-4 text-green-500" />
+            </div>
+          </Card>
+
+          <Card className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreference">Sync</p>
+                <p className="text-sm font-semibold">
+                  {syncStatus.connected ? (
+                    <span className="text-green-600">Activo</span>
+                  ) : (
+                    <span className="text-red-600">Inactivo</span>
+                  )}
+                </p>
+              </div>
+              {syncStatus.connected ? (
+                <Wifi className="h-4 w-4 text-green-500" />
+              ) : (
+                <WifiOff className="h-4 w-4 text-red-500" />
+              )}
+            </div>
+          </Card>
         </div>
-      </div>
-
-      {/* Compact Statistics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Card className="p-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Contactos</p>
-              <p className="text-lg font-bold">{totalContacts}</p>
-            </div>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </Card>
-
-        <Card className="p-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Con Valor</p>
-              <p className="text-lg font-bold text-green-600">{contactsWithValue.length}</p>
-            </div>
-            <TrendingUp className="h-4 w-4 text-green-500" />
-          </div>
-        </Card>
-
-        <Card className="p-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Valor Total</p>
-              <p className="text-lg font-bold text-green-600">${totalValue.toFixed(0)}</p>
-            </div>
-            <DollarSign className="h-4 w-4 text-green-500" />
-          </div>
-        </Card>
-
-        <Card className="p-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Sync</p>
-              <p className="text-sm font-semibold">
-                {syncStatus.connected ? (
-                  <span className="text-green-600">Activo</span>
-                ) : (
-                  <span className="text-red-600">Inactivo</span>
-                )}
-              </p>
-            </div>
-            {syncStatus.connected ? (
-              <Wifi className="h-4 w-4 text-green-500" />
-            ) : (
-              <WifiOff className="h-4 w-4 text-red-500" />
-            )}
-          </div>
-        </Card>
       </div>
 
       {/* Main Content Tabs - Only show Stages tab for super_admin */}
-      <Tabs defaultValue="contacts" className="space-y-3">
-        <TabsList className={userRole === 'super_admin' ? 'grid w-full grid-cols-2' : 'grid w-full grid-cols-1'}>
-          <TabsTrigger value="contacts" className="text-sm">Contactos</TabsTrigger>
-          {userRole === 'super_admin' && (
-            <TabsTrigger value="stages" className="text-sm">Etapas</TabsTrigger>
-          )}
-        </TabsList>
-
-        <TabsContent value="contacts" className="space-y-3">
-          {/* Compact Filters */}
-          <CRMFilters 
-            filters={filters} 
-            onFiltersChange={setFilters}
-            stages={stages}
-            contacts={contacts}
-          />
-
-          {/* View Mode Selector */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-              className="text-xs px-3"
-            >
-              <Table className="h-3 w-3 mr-1" />
-              Tabla
-            </Button>
-            <Button
-              variant={viewMode === 'kanban' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('kanban')}
-              className="text-xs px-3"
-            >
-              <LayoutGrid className="h-3 w-3 mr-1" />
-              Kanban
-            </Button>
+      <div className="flex-1 overflow-hidden">
+        <Tabs defaultValue="contacts" className="flex flex-col h-full">
+          <div className="flex-shrink-0">
+            <TabsList className={userRole === 'super_admin' ? 'grid w-full max-w-md grid-cols-2' : 'grid w-full max-w-md grid-cols-1'}>
+              <TabsTrigger value="contacts" className="text-sm">Contactos</TabsTrigger>
+              {userRole === 'super_admin' && (
+                <TabsTrigger value="stages" className="text-sm">Etapas</TabsTrigger>
+              )}
+            </TabsList>
           </div>
 
-          {/* Contact Views */}
-          {loading ? (
-            <div className="text-center py-8">Cargando contactos...</div>
-          ) : viewMode === 'list' ? (
-            <TableView
-              contacts={contacts}
-              stages={stages}
-              onMoveContact={moveContactToStage}
-              onEditContact={handleEditContact}
-              onDeleteContact={deleteContact}
-            />
-          ) : (
-            <KanbanView
-              contacts={contacts}
-              stages={stages}
-              onMoveContact={moveContactToStage}
-              onEditContact={handleEditContact}
-              onDeleteContact={deleteContact}
-            />
-          )}
-        </TabsContent>
+          <TabsContent value="contacts" className="flex-1 flex flex-col space-y-3 mt-3">
+            {/* Filters Section - Fixed width */}
+            <div className="flex-shrink-0 w-full max-w-7xl">
+              <CRMFilters 
+                filters={filters} 
+                onFiltersChange={setFilters}
+                stages={stages}
+                contacts={contacts}
+              />
 
-        {userRole === 'super_admin' && (
-          <TabsContent value="stages" className="space-y-3">
-            <StageManagement
-              stages={stages}
-              onCreateStage={createStage}
-              onUpdateStage={updateStage}
-              onDeleteStage={deleteStage}
-            />
+              {/* View Mode Selector */}
+              <div className="flex items-center gap-2 mt-3">
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="text-xs px-3"
+                >
+                  <Table className="h-3 w-3 mr-1" />
+                  Tabla
+                </Button>
+                <Button
+                  variant={viewMode === 'kanban' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('kanban')}
+                  className="text-xs px-3"
+                >
+                  <LayoutGrid className="h-3 w-3 mr-1" />
+                  Kanban
+                </Button>
+              </div>
+            </div>
+
+            {/* Contact Views - Flexible container */}
+            <div className="flex-1 overflow-hidden">
+              {loading ? (
+                <div className="text-center py-8">Cargando contactos...</div>
+              ) : viewMode === 'list' ? (
+                <div className="h-full overflow-auto">
+                  <TableView
+                    contacts={contacts}
+                    stages={stages}
+                    onMoveContact={moveContactToStage}
+                    onEditContact={handleEditContact}
+                    onDeleteContact={deleteContact}
+                  />
+                </div>
+              ) : (
+                <div className="h-full overflow-auto">
+                  <KanbanView
+                    contacts={contacts}
+                    stages={stages}
+                    onMoveContact={moveContactToStage}
+                    onEditContact={handleEditContact}
+                    onDeleteContact={deleteContact}
+                  />
+                </div>
+              )}
+            </div>
           </TabsContent>
-        )}
-      </Tabs>
+
+          {userRole === 'super_admin' && (
+            <TabsContent value="stages" className="flex-1 overflow-auto">
+              <StageManagement
+                stages={stages}
+                onCreateStage={createStage}
+                onUpdateStage={updateStage}
+                onDeleteStage={deleteStage}
+              />
+            </TabsContent>
+          )}
+        </Tabs>
+      </div>
 
       {/* Dialogs - keep existing code */}
       <ContactDetailDialog

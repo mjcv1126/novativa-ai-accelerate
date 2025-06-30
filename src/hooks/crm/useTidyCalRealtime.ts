@@ -1,6 +1,7 @@
 
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { useTidyCalAutoSync } from './useTidyCalAutoSync';
 
 interface RealtimeMessage {
   type: string;
@@ -30,6 +31,8 @@ export const useTidyCalRealtime = () => {
   const reconnectAttempts = useRef(0);
   const maxReconnectAttempts = 999; // Practically infinite reconnections
   const shouldStayConnected = useRef(true); // Always try to stay connected
+
+  const { syncAllBookings } = useTidyCalAutoSync();
 
   const connect = useCallback(() => {
     if (!shouldStayConnected.current) return;
@@ -210,25 +213,35 @@ export const useTidyCalRealtime = () => {
     }));
   }, []);
 
-  const triggerManualSync = useCallback(() => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+  const triggerManualSync = useCallback(async () => {
+    try {
       setSyncStatus(prev => ({ ...prev, isProcessing: true }));
       
-      wsRef.current.send(JSON.stringify({
-        type: 'trigger_manual_sync'
+      // Usar la nueva sincronización automática
+      await syncAllBookings();
+      
+      setSyncStatus(prev => ({ 
+        ...prev, 
+        isProcessing: false,
+        lastSync: new Date()
       }));
       
-      console.log('🔄 Manual sync triggered');
-    } else {
-      // Force reconnection
-      connect();
+      console.log('🔄 Manual sync completed');
+    } catch (error) {
+      console.error('❌ Manual sync failed:', error);
+      setSyncStatus(prev => ({ ...prev, isProcessing: false }));
       
-      toast({
-        title: "Reconectando...",
-        description: "Reestableciendo conexión permanente",
-      });
+      // Force reconnection if not connected
+      if (!syncStatus.connected) {
+        connect();
+        
+        toast({
+          title: "Reconectando...",
+          description: "Reestableciendo conexión permanente",
+        });
+      }
     }
-  }, [connect]);
+  }, [syncAllBookings, syncStatus.connected, connect]);
 
   // Auto-connect on mount and maintain connection
   useEffect(() => {
