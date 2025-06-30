@@ -1,64 +1,34 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
-
 interface TidyCalSyncButtonProps {
   isConnected: boolean;
   isProcessing: boolean;
   onSync: () => void;
 }
-
-export const TidyCalSyncButton = ({ 
-  isConnected, 
+export const TidyCalSyncButton = ({
+  isConnected,
   isProcessing,
-  onSync 
+  onSync
 }: TidyCalSyncButtonProps) => {
-  return (
-    <>
+  return <>
       <div className="flex items-center gap-2">
-        <Badge 
-          variant={isConnected ? "default" : "destructive"}
-          className={`flex items-center gap-1 ${isConnected ? 'bg-green-500 hover:bg-green-600' : ''}`}
-        >
-          {isConnected ? (
-            <>
-              <Wifi className="h-3 w-3" />
-              TidyCal Conectado
-            </>
-          ) : (
-            <>
-              <WifiOff className="h-3 w-3" />
-              TidyCal Desconectado
-            </>
-          )}
-        </Badge>
         
-        <Button
-          size="sm"
-          variant={isConnected ? "outline" : "default"}
-          onClick={onSync}
-          disabled={isProcessing}
-          className="text-xs"
-        >
-          {isProcessing ? (
-            <>
+        
+        <Button size="sm" variant={isConnected ? "outline" : "default"} onClick={onSync} disabled={isProcessing} className="text-xs">
+          {isProcessing ? <>
               <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
               Sincronizando...
-            </>
-          ) : (
-            <>
+            </> : <>
               <RefreshCw className="h-3 w-3 mr-1" />
               Sincronizar Llamadas
-            </>
-          )}
+            </>}
         </Button>
       </div>
 
       {/* Full screen loading overlay */}
-      {isProcessing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      {isProcessing && <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 flex flex-col items-center gap-4 max-w-sm mx-4">
             <RefreshCw className="h-12 w-12 animate-spin text-blue-500" />
             <div className="text-center">
@@ -69,8 +39,6 @@ export const TidyCalSyncButton = ({
               </p>
             </div>
           </div>
-        </div>
-      )}
-    </>
-  );
+        </div>}
+    </>;
 };
