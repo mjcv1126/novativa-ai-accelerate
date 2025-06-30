@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 
+const LLAMADA_PROGRAMADA_STAGE_ID = 'b9b4d1b9-461e-4fac-bebd-e3af2d527a97';
+
 export const useTidyCalAutoSync = () => {
   const processBookingToContactAndActivity = useCallback(async (booking: any) => {
     try {
@@ -38,15 +40,6 @@ export const useTidyCalAutoSync = () => {
         const firstName = nameParts[0] || '';
         const lastName = nameParts.slice(1).join(' ') || '';
 
-        // Obtener la primera etapa disponible
-        const { data: firstStage } = await supabase
-          .from('crm_stages')
-          .select('id')
-          .eq('is_active', true)
-          .order('position')
-          .limit(1)
-          .single();
-
         const { data: newContact, error: contactError } = await supabase
           .from('contacts')
           .insert([{
@@ -56,7 +49,7 @@ export const useTidyCalAutoSync = () => {
             phone: booking.contact?.phone_number || '',
             country_code: '',
             country_name: '',
-            stage_id: firstStage?.id,
+            stage_id: LLAMADA_PROGRAMADA_STAGE_ID, // Set to "Llamada programada" stage
             notes: `Contacto creado automáticamente desde TidyCal booking #${booking.id}`,
             last_contact_date: new Date().toISOString()
           }])
@@ -74,10 +67,11 @@ export const useTidyCalAutoSync = () => {
         contactId = existingContact.id;
         console.log('✅ Using existing contact:', contactId);
         
-        // Actualizar última fecha de contacto
+        // Actualizar contacto existente y moverlo a "Llamada programada"
         await supabase
           .from('contacts')
           .update({ 
+            stage_id: LLAMADA_PROGRAMADA_STAGE_ID,
             last_contact_date: new Date().toISOString(),
             updated_at: new Date().toISOString()
           })

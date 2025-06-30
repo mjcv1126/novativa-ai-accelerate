@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,7 @@ import { AddContactDialog } from '@/components/crm/AddContactDialog';
 import { StageManagement } from '@/components/crm/StageManagement';
 import { LeadValueDialog } from '@/components/crm/LeadValueDialog';
 import { LossReasonDialog } from '@/components/crm/LossReasonDialog';
-import { TidyCalRealtimeStatus } from '@/components/crm/TidyCalRealtimeStatus';
+import { TidyCalSyncButton } from '@/components/crm/TidyCalSyncButton';
 import { ExportContactsButton } from '@/components/crm/ExportContactsButton';
 import { ViewMode } from '@/types/crm';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
@@ -24,7 +25,7 @@ import { useAdminAuth } from '@/contexts/AdminAuthContext';
 export default function AdminCRM() {
   const [selectedContact, setSelectedContact] = useState(null);
   const [showContactDetail, setShowContactDetail] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [viewMode, setViewMode] = useState<ViewMode>('kanban'); // Changed default to kanban
 
   const { user } = useAdminAuth();
   const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
@@ -87,9 +88,10 @@ export default function AdminCRM() {
           </div>
           
           <div className="flex items-center gap-2 flex-shrink-0">
-            <TidyCalRealtimeStatus 
+            <TidyCalSyncButton 
               isConnected={syncStatus.connected}
-              onConnect={triggerManualSync}
+              isProcessing={syncStatus.isProcessing}
+              onSync={triggerManualSync}
             />
             <AddContactDialog stages={stages} onContactAdded={fetchContacts} />
             <ExportContactsButton contacts={contacts} />
@@ -175,15 +177,6 @@ export default function AdminCRM() {
               {/* View Mode Selector */}
               <div className="flex items-center gap-2 mt-3">
                 <Button
-                  variant={viewMode === 'list' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                  className="text-xs px-3"
-                >
-                  <Table className="h-3 w-3 mr-1" />
-                  Tabla
-                </Button>
-                <Button
                   variant={viewMode === 'kanban' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setViewMode('kanban')}
@@ -192,6 +185,15 @@ export default function AdminCRM() {
                   <LayoutGrid className="h-3 w-3 mr-1" />
                   Kanban
                 </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="text-xs px-3"
+                >
+                  <Table className="h-3 w-3 mr-1" />
+                  Tabla
+                </Button>
               </div>
             </div>
 
@@ -199,9 +201,9 @@ export default function AdminCRM() {
             <div className="flex-1 overflow-hidden">
               {loading ? (
                 <div className="text-center py-8">Cargando contactos...</div>
-              ) : viewMode === 'list' ? (
+              ) : viewMode === 'kanban' ? (
                 <div className="h-full overflow-auto">
-                  <TableView
+                  <KanbanView
                     contacts={contacts}
                     stages={stages}
                     onMoveContact={moveContactToStage}
@@ -211,7 +213,7 @@ export default function AdminCRM() {
                 </div>
               ) : (
                 <div className="h-full overflow-auto">
-                  <KanbanView
+                  <TableView
                     contacts={contacts}
                     stages={stages}
                     onMoveContact={moveContactToStage}
