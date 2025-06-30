@@ -16,7 +16,8 @@ import {
   LogOut,
   ExternalLink,
   Mail,
-  MessageSquare
+  MessageSquare,
+  Heart
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -130,6 +131,12 @@ const AdminSidebar = () => {
       title: 'Email',
       icon: Mail,
       url: 'https://mail.hostinger.com/?_task=mail&_mbox=INBOX',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'Novamedic',
+      icon: Heart,
+      url: 'https://medic.novativa.org/',
       roles: ['admin', 'super_admin']
     }
   ];

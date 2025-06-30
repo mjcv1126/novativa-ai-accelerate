@@ -134,17 +134,35 @@ serve(async (req) => {
               
               console.log(`🔍 Contact not found by email, searching by name: ${firstName} ${lastName}`);
               
-              const { data: contactsByName } = await supabase
+              // Try exact match first
+              let nameQuery = supabase
                 .from('contacts')
-                .select('*')
-                .eq('first_name', firstName)
-                .eq('last_name', lastName);
+                .select('*');
               
+              if (firstName) {
+                nameQuery = nameQuery.ilike('first_name', firstName);
+              }
+              if (lastName) {
+                nameQuery = nameQuery.ilike('last_name', lastName);
+              }
+              
+              const { data: contactsByName } = await nameQuery;
               contact = contactsByName?.[0];
+              
+              // If still not found, try partial matches
+              if (!contact) {
+                console.log(`🔍 Trying partial name matches for: ${booking.contact.name}`);
+                const { data: partialMatches } = await supabase
+                  .from('contacts')
+                  .select('*')
+                  .or(`first_name.ilike.%${firstName}%,last_name.ilike.%${firstName}%,first_name.ilike.%${lastName}%,last_name.ilike.%${lastName}%`);
+                
+                contact = partialMatches?.[0];
+              }
             }
 
             if (contact) {
-              console.log('👤 Found contact for cancelled booking:', contact.id, contact.email);
+              console.log('👤 Found contact for cancelled booking:', contact.id, contact.email, contact.first_name, contact.last_name);
               contactId = contact.id;
 
               // Find and cancel any existing activity with this booking ID
@@ -155,22 +173,27 @@ serve(async (req) => {
 
               if (existingActivities && existingActivities.length > 0) {
                 for (const activity of existingActivities) {
-                  console.log('📅 Cancelling existing activity:', activity.id);
+                  console.log('📅 Cancelling existing activity:', activity.id, 'for booking:', booking.id);
                   
                   await supabase
                     .from('contact_activities')
                     .update({
                       status: 'cancelled',
                       is_completed: false,
-                      description: `${activity.description || ''}\n\n❌ CANCELADA: Cliente canceló la llamada desde TidyCal el ${new Date().toLocaleString()}`
+                      description: `${activity.description || ''}\n\n❌ CANCELADA: Cliente canceló la llamada desde TidyCal el ${new Date(booking.cancelled_at).toLocaleString()}`
                     })
                     .eq('id', activity.id);
+                    
+                  console.log('✅ Activity cancelled successfully');
                 }
+              } else {
+                console.log('⚠️ No activities found for cancelled booking:', booking.id);
               }
 
               // Move contact to "Llamada cancelada" stage
-              console.log(`🔄 Moving contact ${contact.id} (${contact.first_name} ${contact.last_name}) to cancelled stage`);
-              await supabase
+              console.log(`🔄 Moving contact ${contact.id} (${contact.first_name} ${contact.last_name}) to cancelled stage ${LLAMADA_CANCELADA_STAGE_ID}`);
+              
+              const { error: updateError } = await supabase
                 .from('contacts')
                 .update({ 
                   stage_id: LLAMADA_CANCELADA_STAGE_ID,
@@ -179,29 +202,44 @@ serve(async (req) => {
                 })
                 .eq('id', contact.id);
 
+              if (updateError) {
+                console.error('❌ Error updating contact stage:', updateError);
+                throw updateError;
+              }
+
+              console.log('✅ Contact moved to cancelled stage successfully');
+
               // Create a cancellation note activity
               console.log('📝 Creating cancellation note');
-              await supabase
+              const { error: noteError } = await supabase
                 .from('contact_activities')
                 .insert([{
                   contact_id: contact.id,
                   activity_type: 'note',
                   title: 'Llamada cancelada por el cliente',
-                  description: `El cliente ${booking.contact?.name} canceló su llamada programada desde TidyCal.\n\nBooking ID: ${booking.id}\nFecha original: ${booking.starts_at}\nCancelada el: ${new Date().toISOString()}\n\nContacto movido automáticamente a etapa "Llamada cancelada".`,
+                  description: `El cliente ${booking.contact?.name} canceló su llamada programada desde TidyCal.\n\nBooking ID: ${booking.id}\nFecha original: ${booking.starts_at}\nCancelada el: ${new Date(booking.cancelled_at).toLocaleString()}\n\nContacto movido automáticamente a etapa "Llamada cancelada".`,
                   status: 'completed',
                   is_completed: true,
                   completed_at: new Date().toISOString()
                 }]);
 
+              if (noteError) {
+                console.error('❌ Error creating cancellation note:', noteError);
+              } else {
+                console.log('✅ Cancellation note created successfully');
+              }
+
               console.log('✅ Successfully processed booking cancellation');
             } else {
               console.log('⚠️ Contact not found for cancelled booking - Email:', booking.contact?.email, 'Name:', booking.contact?.name);
+              syncStatus = 'warning';
+              errorMessage = 'Contact not found for cancelled booking';
             }
           } else {
             // Handle active bookings
             console.log('📅 Processing active booking:', booking.id);
 
-            // Check if activity already exists to prevent duplicates
+            // Check if activity already exists to prevent duplicates - CRITICAL CHECK
             const { data: existingActivity } = await supabase
               .from('contact_activities')
               .select('*')
@@ -209,7 +247,7 @@ serve(async (req) => {
               .single();
 
             if (existingActivity) {
-              console.log('⏭️ Activity already exists for booking:', booking.id, '- skipping');
+              console.log('⏭️ Activity already exists for booking:', booking.id, '- skipping completely');
               bookingsSkipped++;
               
               // Still update last booking date
@@ -270,7 +308,7 @@ serve(async (req) => {
                 .eq('id', contactId);
             }
 
-            // Create activity (we already checked it doesn't exist)
+            // Create activity (we already verified it doesn't exist)
             console.log('📅 Creating activity for booking:', booking.id);
             
             const { error: activityError } = await supabase
