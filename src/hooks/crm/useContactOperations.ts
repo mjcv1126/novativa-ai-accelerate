@@ -135,6 +135,7 @@ export const useContactOperations = () => {
 
             return {
               ...contact,
+              payment_type: contact.payment_type as 'one_time' | 'recurring' | undefined,
               assignment: assignment || null
             };
           })
@@ -191,6 +192,7 @@ export const useContactOperations = () => {
 
           return {
             ...contact,
+            payment_type: contact.payment_type as 'one_time' | 'recurring' | undefined,
             assignment: assignment || null
           };
         })
