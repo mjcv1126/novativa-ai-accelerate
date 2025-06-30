@@ -1,10 +1,9 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { DatePickerWithRange } from '@/components/ui/date-range-picker';
-import { Calendar, Filter, X } from 'lucide-react';
 import { ActivityWithContact } from '@/hooks/crm/useActivityOperations';
 
 interface ActivitiesFiltersProps {
@@ -18,81 +17,65 @@ interface ActivitiesFiltersProps {
 }
 
 export const ActivitiesFilters = ({ filters, onFiltersChange, activities }: ActivitiesFiltersProps) => {
-  const clearFilters = () => {
-    onFiltersChange({
-      status: '',
-      activityType: '',
-      dateRange: { from: null, to: null }
-    });
-  };
-
-  const hasActiveFilters = filters.status || filters.activityType || filters.dateRange?.from || filters.dateRange?.to;
+  const uniqueStatuses = [...new Set(activities.map(a => a.status).filter(Boolean))];
+  const uniqueTypes = [...new Set(activities.map(a => a.activity_type).filter(Boolean))];
 
   return (
     <Card>
       <CardContent className="p-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            <span className="text-sm font-medium">Filtros:</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Estado</label>
+            <Select
+              value={filters.status}
+              onValueChange={(value) => onFiltersChange({ ...filters, status: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Todos los estados" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los estados</SelectItem>
+                {uniqueStatuses.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status === 'pending' ? 'Pendiente' : 
+                     status === 'completed' ? 'Completada' : 
+                     status === 'cancelled' ? 'Cancelada' : status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <Select
-            value={filters.status}
-            onValueChange={(value) => onFiltersChange({ ...filters, status: value })}
-          >
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
-              <SelectItem value="pending">Pendiente</SelectItem>
-              <SelectItem value="completed">Completada</SelectItem>
-              <SelectItem value="cancelled">Cancelada</SelectItem>
-            </SelectContent>
-          </Select>
+          <div>
+            <label className="text-sm font-medium mb-2 block">Tipo</label>
+            <Select
+              value={filters.activityType}
+              onValueChange={(value) => onFiltersChange({ ...filters, activityType: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Todos los tipos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los tipos</SelectItem>
+                {uniqueTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type === 'call' ? 'Llamada' :
+                     type === 'email' ? 'Email' :
+                     type === 'meeting' ? 'Reunión' :
+                     type === 'reminder' ? 'Recordatorio' : type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <Select
-            value={filters.activityType}
-            onValueChange={(value) => onFiltersChange({ ...filters, activityType: value })}
-          >
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
-              <SelectItem value="call">Llamada</SelectItem>
-              <SelectItem value="email">Email</SelectItem>
-              <SelectItem value="meeting">Reunión</SelectItem>
-              <SelectItem value="reminder">Recordatorio</SelectItem>
-              <SelectItem value="note">Nota</SelectItem>
-              <SelectItem value="status_change">Cambio de Estado</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
+          <div>
+            <label className="text-sm font-medium mb-2 block">Rango de Fechas</label>
             <DatePickerWithRange
-              from={filters.dateRange?.from}
-              to={filters.dateRange?.to}
-              onSelect={(range) => onFiltersChange({ 
-                ...filters, 
-                dateRange: { from: range?.from || null, to: range?.to || null }
-              })}
+              date={filters.dateRange}
+              onDateChange={(range) => onFiltersChange({ ...filters, dateRange: range })}
             />
           </div>
-
-          {hasActiveFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearFilters}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <X className="h-4 w-4 mr-1" />
-              Limpiar filtros
-            </Button>
-          )}
         </div>
       </CardContent>
     </Card>

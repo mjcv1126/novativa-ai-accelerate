@@ -3,7 +3,7 @@ import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, User, Phone, CheckCircle, Circle, AlertTriangle, Edit, X } from 'lucide-react';
+import { Calendar, Clock, User, Phone, CheckCircle, Circle, AlertTriangle, Edit, X, RotateCcw } from 'lucide-react';
 import { formatActivityDate, formatActivityDateTime, isActivityOverdue, isActivityDueSoon } from '@/utils/dateUtils';
 import { ActivityWithContact } from '@/hooks/crm/useActivityOperations';
 
@@ -12,13 +12,15 @@ interface ActivitiesListViewProps {
   onEditActivity: (activity: ActivityWithContact) => void;
   onCompleteActivity: (id: string) => void;
   onCancelActivity: (id: string) => void;
+  onUncompleteActivity?: (id: string) => void;
 }
 
 export const ActivitiesListView = ({ 
   activities, 
   onEditActivity,
   onCompleteActivity, 
-  onCancelActivity
+  onCancelActivity,
+  onUncompleteActivity
 }: ActivitiesListViewProps) => {
   const getActivityTypeColor = (type: string) => {
     const colors = {
@@ -44,12 +46,14 @@ export const ActivitiesListView = ({
     return labels[type as keyof typeof labels] || type;
   };
 
-  // Función para determinar si una actividad puede ser completada/cancelada
+  // Función para determinar si una actividad tiene fecha límite
+  const hasDeadline = (activity: ActivityWithContact) => {
+    return !!(activity.due_date || activity.scheduled_date);
+  };
+
+  // Función para determinar si una actividad puede ser accionada (solo las que tienen fecha límite)
   const canBeActioned = (activity: ActivityWithContact) => {
-    // Solo actividades con fecha límite y de tipos específicos pueden ser accionadas
-    const actionableTypes = ['call', 'email', 'meeting', 'reminder'];
-    return actionableTypes.includes(activity.activity_type) && 
-           (activity.due_date || activity.scheduled_date);
+    return hasDeadline(activity);
   };
 
   return (
@@ -72,6 +76,7 @@ export const ActivitiesListView = ({
             const isOverdue = isActivityOverdue(activity);
             const isDueSoon = isActivityDueSoon(activity);
             const isActionable = canBeActioned(activity);
+            const hasDeadlineDate = hasDeadline(activity);
             
             return (
               <TableRow 
@@ -126,10 +131,14 @@ export const ActivitiesListView = ({
                 </TableCell>
                 
                 <TableCell>
-                  <div className="flex items-center gap-1 text-sm">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    {formatActivityDate(activity)}
-                  </div>
+                  {hasDeadlineDate ? (
+                    <div className="flex items-center gap-1 text-sm">
+                      <Calendar className="h-4 w-4 text-gray-400" />
+                      {formatActivityDate(activity)}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-gray-400">Sin fecha límite</span>
+                  )}
                 </TableCell>
                 
                 <TableCell>
@@ -152,33 +161,53 @@ export const ActivitiesListView = ({
                 <TableCell>
                   <div className="flex items-center gap-2">
                     {/* Botón de editar siempre disponible para actividades programadas */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEditActivity(activity)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
+                    {hasDeadlineDate && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEditActivity(activity)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    )}
                     
-                    {/* Botones de completar/cancelar solo para actividades accionables */}
-                    {isActionable && !activity.is_completed && activity.status !== 'cancelled' && (
+                    {/* Botones de acción solo para actividades con fecha límite */}
+                    {isActionable && (
                       <>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => onCompleteActivity(activity.id)}
-                          className="text-green-600 hover:text-green-700 hover:border-green-300"
-                        >
-                          Completar
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => onCancelActivity(activity.id)}
-                          className="text-red-600 hover:text-red-700 hover:border-red-300"
-                        >
-                          Cancelar
-                        </Button>
+                        {activity.is_completed ? (
+                          // Si está completada, mostrar botón para desmarcar
+                          onUncompleteActivity && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onUncompleteActivity(activity.id)}
+                              className="text-blue-600 hover:text-blue-700 hover:border-blue-300"
+                            >
+                              <RotateCcw className="h-4 w-4 mr-1" />
+                              Reabrir
+                            </Button>
+                          )
+                        ) : activity.status !== 'cancelled' ? (
+                          // Si está pendiente, mostrar botones de completar y cancelar
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onCompleteActivity(activity.id)}
+                              className="text-green-600 hover:text-green-700 hover:border-green-300"
+                            >
+                              Completar
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onCancelActivity(activity.id)}
+                              className="text-red-600 hover:text-red-700 hover:border-red-300"
+                            >
+                              Cancelar
+                            </Button>
+                          </>
+                        ) : null}
                       </>
                     )}
                   </div>

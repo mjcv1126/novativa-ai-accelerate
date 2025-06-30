@@ -18,8 +18,8 @@ export default function AdminActivities() {
   const [selectedActivity, setSelectedActivity] = useState<ActivityWithContact | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [filters, setFilters] = useState({
-    status: '',
-    activityType: '',
+    status: 'all',
+    activityType: 'all',
     dateRange: { from: null, to: null }
   });
 
@@ -62,11 +62,11 @@ export default function AdminActivities() {
   useEffect(() => {
     let filtered = [...activities];
 
-    if (filters.status) {
+    if (filters.status && filters.status !== 'all') {
       filtered = filtered.filter(activity => activity.status === filters.status);
     }
 
-    if (filters.activityType) {
+    if (filters.activityType && filters.activityType !== 'all') {
       filtered = filtered.filter(activity => activity.activity_type === filters.activityType);
     }
 
@@ -107,6 +107,10 @@ export default function AdminActivities() {
     try {
       await markActivityComplete(activityId);
       await loadActivities();
+      toast({
+        title: "Éxito",
+        description: "Actividad marcada como completada",
+      });
     } catch (error) {
       console.error('Error completing activity:', error);
     }
@@ -116,8 +120,34 @@ export default function AdminActivities() {
     try {
       await cancelActivity(activityId);
       await loadActivities();
+      toast({
+        title: "Éxito",
+        description: "Actividad cancelada",
+      });
     } catch (error) {
       console.error('Error cancelling activity:', error);
+    }
+  };
+
+  const handleUncompleteActivity = async (activityId: string) => {
+    try {
+      await updateActivity(activityId, { 
+        is_completed: false,
+        status: 'pending',
+        completed_at: null 
+      });
+      await loadActivities();
+      toast({
+        title: "Éxito",
+        description: "Actividad reabierta",
+      });
+    } catch (error) {
+      console.error('Error uncompleting activity:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo reabrir la actividad",
+        variant: "destructive",
+      });
     }
   };
 
@@ -220,6 +250,7 @@ export default function AdminActivities() {
               onEditActivity={handleEditActivity}
               onCompleteActivity={handleCompleteActivity}
               onCancelActivity={handleCancelActivity}
+              onUncompleteActivity={handleUncompleteActivity}
             />
           )}
         </CardContent>
