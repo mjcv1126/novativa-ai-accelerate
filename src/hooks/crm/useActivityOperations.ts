@@ -13,6 +13,8 @@ export interface ActivityWithContact extends ContactActivity {
     phone: string;
     email?: string;
   };
+  tidycal_booking_id?: number;
+  scheduled_date?: string;
 }
 
 export const useActivityOperations = () => {

@@ -187,7 +187,7 @@ export default function AdminActivities() {
       <ActivitiesFilters 
         filters={filters}
         onFiltersChange={setFilters}
-        activities={activities}
+        activities={filteredActivities}
       />
 
       {/* Activities List */}
