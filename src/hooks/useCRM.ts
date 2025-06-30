@@ -1,11 +1,13 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { ContactWithStage, CrmStage, CrmFilters } from '@/types/crm';
 import { useContactOperations } from './crm/useContactOperations';
 import { useStageOperations } from './crm/useStageOperations';
 import { useActivityOperations } from './crm/useActivityOperations';
+import { toast } from '@/hooks/use-toast';
 
 const CLOSED_WON_STAGE_ID = 'b30755e0-8993-4491-b7c8-d96fe4181221';
-const CLOSED_LOST_STAGE_ID = '550fa40f-fff9-4043-a478-fc10b00ae87b'; // Corrected stage ID
+const CLOSED_LOST_STAGE_ID = '550fa40f-fff9-4043-a478-fc10b00ae87b';
 
 export const useCRM = () => {
   const [contacts, setContacts] = useState<ContactWithStage[]>([]);
@@ -71,12 +73,25 @@ export const useCRM = () => {
 
     console.log('🔄 Moving contact to stage:', { contactId, stageId, stageName: stages.find(s => s.id === stageId)?.name });
 
-    // Verificar si es etapa de Cerrado Ganado y no tiene valor
-    if (stageId === CLOSED_WON_STAGE_ID && !contact.lead_value) {
-      console.log('💰 Showing lead value dialog for Cerrado Ganado');
-      setPendingContactMove({ contactId, stageId, contact });
-      setShowLeadValueDialog(true);
-      return;
+    // Verificar si es etapa de Cerrado Ganado y validar servicio de interés y valor
+    if (stageId === CLOSED_WON_STAGE_ID) {
+      // Verificar si falta servicio de interés
+      if (!contact.service_of_interest) {
+        toast({
+          title: "Servicio de interés requerido",
+          description: "Debe especificar el servicio de interés antes de mover a Cerrado Ganado",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Verificar si falta valor del lead
+      if (!contact.lead_value) {
+        console.log('💰 Showing lead value dialog for Cerrado Ganado');
+        setPendingContactMove({ contactId, stageId, contact });
+        setShowLeadValueDialog(true);
+        return;
+      }
     }
 
     // Verificar si es etapa de Cerrado Perdido

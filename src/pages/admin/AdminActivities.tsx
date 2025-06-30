@@ -34,8 +34,14 @@ export default function AdminActivities() {
     try {
       setLoading(true);
       const data = await fetchAllActivities();
-      setActivities(data);
-      setFilteredActivities(data);
+      
+      // Filtrar solo actividades con deadline (que tienen due_date o scheduled_date)
+      const activitiesWithDeadline = data.filter(activity => 
+        activity.due_date || activity.scheduled_date
+      );
+      
+      setActivities(activitiesWithDeadline);
+      setFilteredActivities(activitiesWithDeadline);
     } catch (error) {
       console.error('Error loading activities:', error);
       toast({
@@ -115,7 +121,7 @@ export default function AdminActivities() {
     }
   };
 
-  // Statistics
+  // Statistics - solo contar actividades con deadline
   const totalActivities = activities.length;
   const pendingActivities = activities.filter(a => a.status === 'pending').length;
   const completedActivities = activities.filter(a => a.status === 'completed').length;
@@ -128,8 +134,8 @@ export default function AdminActivities() {
   return (
     <div className="space-y-6 p-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Actividades</h1>
-        <p className="text-gray-600">Gestiona todas las actividades programadas</p>
+        <h1 className="text-2xl font-bold text-gray-900">Actividades Programadas</h1>
+        <p className="text-gray-600">Gestiona actividades con fecha límite y seguimiento</p>
       </div>
 
       {/* Statistics Cards */}
@@ -195,7 +201,7 @@ export default function AdminActivities() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
-            Actividades ({filteredActivities.length})
+            Actividades Programadas ({filteredActivities.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -203,6 +209,10 @@ export default function AdminActivities() {
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
               <p className="mt-2 text-gray-600">Cargando actividades...</p>
+            </div>
+          ) : filteredActivities.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600">No se encontraron actividades programadas</p>
             </div>
           ) : (
             <ActivitiesListView

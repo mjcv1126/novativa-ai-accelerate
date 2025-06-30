@@ -261,53 +261,68 @@ serve(async (req) => {
       }
     }
 
-    // Handle cancellation logic with enhanced automation
+    // Enhanced cancellation handling
     if (cancelled_at) {
       console.log('❌ Processing booking cancellation with enhanced automation...');
       
-      // Step 1: Find and cancel previous activities for this booking
-      const { data: previousActivities } = await supabase
+      // Step 1: Find and cancel all activities for this booking ID
+      const { data: activitiesToCancel, error: findError } = await supabase
         .from('contact_activities')
         .select('*')
-        .eq('contact_id', contactId)
-        .eq('tidycal_booking_id', booking_id || 0)
-        .eq('is_completed', false);
+        .eq('tidycal_booking_id', booking_id || 0);
 
-      if (previousActivities && previousActivities.length > 0) {
-        for (const activity of previousActivities) {
-          await supabase
+      if (findError) {
+        console.error('❌ Error finding activities to cancel:', findError);
+      } else if (activitiesToCancel && activitiesToCancel.length > 0) {
+        console.log(`🔍 Found ${activitiesToCancel.length} activities to cancel for booking ${booking_id}`);
+        
+        for (const activity of activitiesToCancel) {
+          const { error: cancelError } = await supabase
             .from('contact_activities')
             .update({ 
               is_completed: true,
               status: 'cancelled',
               completed_at: new Date().toISOString(),
-              description: `${activity.description}\n\nCancelada automáticamente desde TidyCal`
+              description: `${activity.description || ''}\n\nCancelada automáticamente desde TidyCal - Booking ID: ${booking_id}`
             })
             .eq('id', activity.id);
+            
+          if (cancelError) {
+            console.error(`❌ Error cancelling activity ${activity.id}:`, cancelError);
+          } else {
+            console.log(`✅ Cancelled activity ${activity.id} for booking ${booking_id}`);
+          }
         }
-        console.log(`✅ Cancelled ${previousActivities.length} previous activities`);
+      } else {
+        console.log(`ℹ️ No activities found to cancel for booking ${booking_id}`);
       }
 
-      // Step 2: Move contact to the specific cancellation stage
-      await supabase
+      // Step 2: Move contact to cancellation stage
+      const { error: moveError } = await supabase
         .from('contacts')
         .update({ 
-          stage_id: '7af3eb42-610b-4861-9429-85119b1d2693',
+          stage_id: '7af3eb42-610b-4861-9429-85119b1d2693', // Specific cancellation stage
           last_contact_date: new Date().toISOString() 
         })
         .eq('id', contactId);
+
+      if (moveError) {
+        console.error('❌ Error moving contact to cancellation stage:', moveError);
+      } else {
+        console.log('✅ Contact moved to cancellation stage');
+      }
 
       // Step 3: Create follow-up activity with 3-day expiration
       const followUpDueDate = new Date();
       followUpDueDate.setDate(followUpDueDate.getDate() + 3);
 
-      await supabase
+      const { error: followUpError } = await supabase
         .from('contact_activities')
         .insert([{
           contact_id: contactId,
           activity_type: 'call',
           title: 'Seguimiento - Reagendar',
-          description: 'Cliente canceló llamada, debe reagendarse. Contactar para reagendar la cita.',
+          description: `Cliente canceló llamada (Booking ID: ${booking_id}). Contactar para reagendar la cita.`,
           due_date: followUpDueDate.toISOString(),
           scheduled_date: followUpDueDate.toISOString().split('T')[0],
           scheduled_time: '09:00',
@@ -316,7 +331,11 @@ serve(async (req) => {
           tidycal_booking_id: booking_id || 0
         }]);
 
-      console.log('✅ Follow-up activity created with 3-day expiration');
+      if (followUpError) {
+        console.error('❌ Error creating follow-up activity:', followUpError);
+      } else {
+        console.log('✅ Follow-up activity created with 3-day expiration');
+      }
     }
 
     // Check for existing activities to prevent duplicates (only for non-cancelled bookings)
@@ -436,8 +455,8 @@ serve(async (req) => {
         activity_type: 'status_change',
         title: cancelled_at ? 'Cambio de etapa por cancelación' : 'Cambio de etapa automático',
         description: cancelled_at ? 
-          `Contacto movido automáticamente a "${targetStage?.name || 'Etapa desconocida'}" por cancelación de llamada desde TidyCal` :
-          `Contacto movido automáticamente a "${targetStage?.name || 'Etapa desconocida'}" desde TidyCal webhook`,
+          `Contacto movido automáticamente a "${targetStage?.name || 'Etapa desconocida'}" por cancelación de llamada desde TidyCal (Booking ID: ${booking_id})` :
+          `Contacto movido automáticamente a "${targetStage?.name || 'Etapa desconocida'}" desde TidyCal webhook (Booking ID: ${booking_id})`,
         is_completed: true,
         status: 'completed',
         completed_at: new Date().toISOString(),

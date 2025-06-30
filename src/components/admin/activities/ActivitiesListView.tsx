@@ -44,6 +44,14 @@ export const ActivitiesListView = ({
     return labels[type as keyof typeof labels] || type;
   };
 
+  // Función para determinar si una actividad puede ser completada/cancelada
+  const canBeActioned = (activity: ActivityWithContact) => {
+    // Solo actividades con fecha límite y de tipos específicos pueden ser accionadas
+    const actionableTypes = ['call', 'email', 'meeting', 'reminder'];
+    return actionableTypes.includes(activity.activity_type) && 
+           (activity.due_date || activity.scheduled_date);
+  };
+
   return (
     <div className="bg-white rounded-lg border">
       <Table>
@@ -63,6 +71,7 @@ export const ActivitiesListView = ({
           {activities.map((activity) => {
             const isOverdue = isActivityOverdue(activity);
             const isDueSoon = isActivityDueSoon(activity);
+            const isActionable = canBeActioned(activity);
             
             return (
               <TableRow 
@@ -142,6 +151,7 @@ export const ActivitiesListView = ({
                 
                 <TableCell>
                   <div className="flex items-center gap-2">
+                    {/* Botón de editar siempre disponible para actividades programadas */}
                     <Button
                       variant="ghost"
                       size="sm"
@@ -149,7 +159,9 @@ export const ActivitiesListView = ({
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
-                    {!activity.is_completed && activity.status !== 'cancelled' && (
+                    
+                    {/* Botones de completar/cancelar solo para actividades accionables */}
+                    {isActionable && !activity.is_completed && activity.status !== 'cancelled' && (
                       <>
                         <Button
                           size="sm"
