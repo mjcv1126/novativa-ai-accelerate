@@ -57,7 +57,7 @@ export const LargeCountdownTimer = ({ targetDate, onExpire, className = '' }: La
         <CardContent className="flex items-center justify-center p-8">
           <div className="text-center">
             <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-red-700 mb-2">¡Tiempo Agotado!</</h3>
+            <h3 className="text-2xl font-bold text-red-700 mb-2">¡Tiempo Agotado!</h3>
             <p className="text-red-600">La oferta ha expirado</p>
           </div>
         </CardContent>
