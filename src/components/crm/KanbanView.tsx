@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 interface KanbanViewProps {
   contacts: ContactWithStage[];
   stages: CrmStage[];
-  onMoveContact: (contactId: string, stageId: string) => void;
+  onMoveContact: (contactId: string, stageId: string) => Promise<void>;
   onEditContact: (contact: ContactWithStage) => void;
   onDeleteContact: (contactId: string) => void;
 }
@@ -83,7 +83,7 @@ export const KanbanView = ({
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                           className={`space-y-3 min-h-[200px] p-2 rounded-lg transition-colors ${
-                            snapshot.isDraggedOver 
+                            snapshot.isDraggingOver 
                               ? 'bg-blue-50 border-2 border-blue-200 border-dashed' 
                               : 'bg-gray-50'
                           }`}
