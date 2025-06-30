@@ -8,32 +8,16 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-
-interface Activity {
-  id: string;
-  title: string;
-  description?: string;
-  activity_type: string;
-  scheduled_date: string;
-  scheduled_time?: string;
-  is_completed: boolean;
-  contact: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    phone: string;
-    email?: string;
-  };
-}
+import { ActivityWithContact } from '@/hooks/crm/useActivityOperations';
 
 interface EditActivityDialogProps {
-  activity: Activity | null;
+  activity: ActivityWithContact | null;
   isOpen: boolean;
   onClose: () => void;
-  onActivityUpdated: () => void;
+  onSave: (activityData: any) => void;
 }
 
-export const EditActivityDialog = ({ activity, isOpen, onClose, onActivityUpdated }: EditActivityDialogProps) => {
+export const EditActivityDialog = ({ activity, isOpen, onClose, onSave }: EditActivityDialogProps) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -49,7 +33,7 @@ export const EditActivityDialog = ({ activity, isOpen, onClose, onActivityUpdate
         title: activity.title,
         description: activity.description || '',
         activity_type: activity.activity_type,
-        scheduled_date: activity.scheduled_date,
+        scheduled_date: activity.scheduled_date || '',
         scheduled_time: activity.scheduled_time || '',
       });
     }
@@ -61,26 +45,15 @@ export const EditActivityDialog = ({ activity, isOpen, onClose, onActivityUpdate
 
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from('contact_activities')
-        .update({
-          title: formData.title,
-          description: formData.description || null,
-          activity_type: formData.activity_type,
-          scheduled_date: formData.scheduled_date,
-          scheduled_time: formData.scheduled_time || null,
-        })
-        .eq('id', activity.id);
+      const updateData = {
+        title: formData.title,
+        description: formData.description || null,
+        activity_type: formData.activity_type,
+        scheduled_date: formData.scheduled_date || null,
+        scheduled_time: formData.scheduled_time || null,
+      };
 
-      if (error) throw error;
-
-      toast({
-        title: "Éxito",
-        description: "Actividad actualizada correctamente",
-      });
-
-      onActivityUpdated();
-      onClose();
+      await onSave(updateData);
     } catch (error) {
       console.error('Error updating activity:', error);
       toast({
@@ -146,7 +119,6 @@ export const EditActivityDialog = ({ activity, isOpen, onClose, onActivityUpdate
                 type="date"
                 value={formData.scheduled_date}
                 onChange={(e) => setFormData({ ...formData, scheduled_date: e.target.value })}
-                required
               />
             </div>
 
