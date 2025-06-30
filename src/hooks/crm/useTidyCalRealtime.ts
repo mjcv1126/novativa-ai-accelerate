@@ -28,9 +28,12 @@ export const useTidyCalRealtime = () => {
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   const pingIntervalRef = useRef<NodeJS.Timeout>();
   const reconnectAttempts = useRef(0);
-  const maxReconnectAttempts = 5;
+  const maxReconnectAttempts = 999; // Practically infinite reconnections
+  const shouldStayConnected = useRef(true); // Always try to stay connected
 
   const connect = useCallback(() => {
+    if (!shouldStayConnected.current) return;
+
     // Clear any existing reconnection timeout
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
@@ -42,24 +45,22 @@ export const useTidyCalRealtime = () => {
     }
 
     try {
-      // Usar el protocolo WebSocket correcto para Supabase Edge Functions
       const wsUrl = `wss://gktrnjjbhqxkbcvonzxv.supabase.co/functions/v1/tidycal-realtime`;
       
-      console.log('🔗 Connecting to TidyCal real-time sync...', wsUrl);
+      console.log('🔗 Connecting to TidyCal real-time sync (permanent connection)...', wsUrl);
       
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 
-      // Set connection timeout
       const connectionTimeout = setTimeout(() => {
         if (ws.readyState === WebSocket.CONNECTING) {
-          console.log('⏰ Connection timeout, closing...');
+          console.log('⏰ Connection timeout, retrying...');
           ws.close();
         }
-      }, 10000); // 10 seconds timeout
+      }, 10000);
 
       ws.onopen = () => {
-        console.log('✅ Connected to TidyCal real-time sync');
+        console.log('✅ TidyCal real-time permanently connected');
         clearTimeout(connectionTimeout);
         reconnectAttempts.current = 0;
         
@@ -74,31 +75,28 @@ export const useTidyCalRealtime = () => {
           type: 'subscribe_sync_updates'
         }));
 
-        // Start ping interval to keep connection alive
+        // Start aggressive ping to maintain connection
         pingIntervalRef.current = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ type: 'ping' }));
           }
-        }, 30000); // Ping every 30 seconds
+        }, 15000); // Ping every 15 seconds to keep connection alive
 
         toast({
-          title: "Conexión establecida",
-          description: "Sincronización en tiempo real activada",
+          title: "Sincronización permanente activada",
+          description: "TidyCal está conectado en tiempo real",
         });
       };
 
       ws.onmessage = (event) => {
         try {
           const message: RealtimeMessage = JSON.parse(event.data);
-          console.log('📨 Real-time message received:', message);
+          console.log('📨 Real-time message:', message);
 
           switch (message.type) {
             case 'connection':
-              console.log('🔗 Connection confirmed');
-              break;
-
             case 'subscription':
-              console.log('📡 Subscribed to updates');
+              console.log('🔗 Connection established and subscribed');
               break;
 
             case 'sync_completed':
@@ -116,64 +114,40 @@ export const useTidyCalRealtime = () => {
               break;
 
             case 'sync_error':
-              console.error('❌ Sync error via real-time:', message.error);
+              console.error('❌ Sync error:', message.error);
               setSyncStatus(prev => ({ ...prev, isProcessing: false }));
-              
-              toast({
-                title: "Error de sincronización",
-                description: message.error || "Error desconocido",
-                variant: "destructive",
-              });
-              break;
-
-            case 'sync_status':
-              if (message.data) {
-                setSyncStatus(prev => ({
-                  ...prev,
-                  lastSync: message.data.sync_completed_at ? new Date(message.data.sync_completed_at) : undefined
-                }));
-              }
               break;
 
             case 'booking_update':
-              // Handle real-time booking updates
               setRealtimeData(prev => [message.data, ...prev.slice(0, 9)]);
               
               toast({
-                title: "Nueva reserva",
+                title: "Nueva reserva sincronizada",
                 description: `${message.data?.contact_name} - ${message.data?.booking_type?.title}`,
               });
               break;
 
             case 'pong':
-              // Connection is alive
-              console.log('🏓 Pong received');
+              console.log('🏓 Connection alive');
               break;
-
-            case 'error':
-              console.error('❌ WebSocket error:', message.message);
-              break;
-
-            default:
-              console.log('❓ Unknown message type:', message.type);
           }
         } catch (error) {
-          console.error('❌ Error parsing real-time message:', error);
+          console.error('❌ Error parsing message:', error);
         }
       };
 
       ws.onerror = (error) => {
-        console.error('❌ WebSocket connection error:', error);
+        console.error('❌ WebSocket error:', error);
         clearTimeout(connectionTimeout);
         setSyncStatus(prev => ({ 
           ...prev, 
           connected: false,
-          connectionError: 'Error de conexión WebSocket'
+          connectionError: 'Error de conexión'
         }));
       };
 
       ws.onclose = (event) => {
-        console.log('🔌 WebSocket connection closed:', event.code, event.reason);
+        console.log('🔌 Connection closed:', event.code, event.reason);
         clearTimeout(connectionTimeout);
         
         if (pingIntervalRef.current) {
@@ -182,40 +156,40 @@ export const useTidyCalRealtime = () => {
         
         setSyncStatus(prev => ({ 
           ...prev, 
-          connected: false,
-          connectionError: event.code !== 1000 ? `Conexión cerrada: ${event.code}` : undefined
+          connected: false
         }));
         
-        // Auto-reconnect with exponential backoff
-        if (reconnectAttempts.current < maxReconnectAttempts) {
-          const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
+        // Always try to reconnect if we should stay connected
+        if (shouldStayConnected.current) {
+          const delay = Math.min(1000 * Math.pow(1.5, Math.min(reconnectAttempts.current, 10)), 30000);
           reconnectAttempts.current++;
           
-          console.log(`🔄 Attempting to reconnect in ${delay}ms (attempt ${reconnectAttempts.current}/${maxReconnectAttempts})`);
+          console.log(`🔄 Auto-reconnecting in ${delay}ms (attempt ${reconnectAttempts.current})`);
           
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
           }, delay);
-        } else {
-          console.log('❌ Max reconnection attempts reached');
-          setSyncStatus(prev => ({ 
-            ...prev, 
-            connectionError: 'Máximo de intentos de reconexión alcanzado'
-          }));
         }
       };
 
     } catch (error) {
-      console.error('❌ Failed to connect to real-time sync:', error);
+      console.error('❌ Failed to connect:', error);
       setSyncStatus(prev => ({ 
         ...prev, 
         connected: false,
-        connectionError: 'Error al inicializar la conexión'
+        connectionError: 'Error al inicializar'
       }));
+      
+      // Retry connection
+      if (shouldStayConnected.current) {
+        reconnectTimeoutRef.current = setTimeout(connect, 5000);
+      }
     }
   }, []);
 
   const disconnect = useCallback(() => {
+    shouldStayConnected.current = false;
+    
     if (wsRef.current) {
       wsRef.current.close(1000, 'Manual disconnect');
       wsRef.current = null;
@@ -229,7 +203,6 @@ export const useTidyCalRealtime = () => {
       clearInterval(pingIntervalRef.current);
     }
     
-    reconnectAttempts.current = 0;
     setSyncStatus(prev => ({ 
       ...prev, 
       connected: false,
@@ -245,30 +218,25 @@ export const useTidyCalRealtime = () => {
         type: 'trigger_manual_sync'
       }));
       
-      console.log('🔄 Manual sync triggered via WebSocket');
+      console.log('🔄 Manual sync triggered');
     } else {
-      // Si no hay conexión, intentar conectar
+      // Force reconnection
       connect();
       
       toast({
-        title: "Conectando...",
-        description: "Intentando establecer conexión en tiempo real",
+        title: "Reconectando...",
+        description: "Reestableciendo conexión permanente",
       });
     }
   }, [connect]);
 
-  const getSyncStatus = useCallback(() => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'get_sync_status'
-      }));
-    }
-  }, []);
-
+  // Auto-connect on mount and maintain connection
   useEffect(() => {
+    shouldStayConnected.current = true;
     connect();
     
     return () => {
+      shouldStayConnected.current = false;
       disconnect();
     };
   }, [connect, disconnect]);
@@ -279,6 +247,5 @@ export const useTidyCalRealtime = () => {
     connect,
     disconnect,
     triggerManualSync,
-    getSyncStatus,
   };
 };

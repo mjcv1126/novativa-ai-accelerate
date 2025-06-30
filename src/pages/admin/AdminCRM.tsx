@@ -1,16 +1,16 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, TrendingUp, DollarSign, Activity, List, LayoutGrid, Wifi, WifiOff } from 'lucide-react';
+import { Users, TrendingUp, DollarSign, Activity, List, LayoutGrid, Wifi, WifiOff, Table } from 'lucide-react';
 import { useCRM } from '@/hooks/useCRM';
 import { useCRMRealtime } from '@/hooks/crm/useCRMRealtime';
 import { useTidyCalRealtime } from '@/hooks/crm/useTidyCalRealtime';
 import { CRMFilters } from '@/components/crm/CRMFilters';
 import { ListView } from '@/components/crm/ListView';
 import { KanbanView } from '@/components/crm/KanbanView';
+import { TableView } from '@/components/crm/TableView';
 import { ContactDetailDialog } from '@/components/crm/ContactDetailDialog';
 import { AddContactDialog } from '@/components/crm/AddContactDialog';
 import { StageManagement } from '@/components/crm/StageManagement';
@@ -56,7 +56,7 @@ export default function AdminCRM() {
     onActivityUpdate: fetchContacts,
   });
 
-  // Estado de TidyCal real-time
+  // Estado de TidyCal real-time (permanent connection)
   const { syncStatus, triggerManualSync } = useTidyCalRealtime();
 
   // Estadísticas
@@ -71,15 +71,15 @@ export default function AdminCRM() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">CRM</h1>
-          <p className="text-gray-600">Gestiona tus contactos y oportunidades de venta</p>
+    <div className="space-y-4 p-4">
+      {/* Compact Header */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl font-bold text-gray-900 truncate">CRM</h1>
+          <p className="text-sm text-gray-600 truncate">Gestiona tus contactos y oportunidades</p>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <TidyCalRealtimeStatus 
             isConnected={syncStatus.connected}
             onConnect={triggerManualSync}
@@ -89,76 +89,68 @@ export default function AdminCRM() {
         </div>
       </div>
 
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Contactos</CardTitle>
+      {/* Compact Statistics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <Card className="p-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">Contactos</p>
+              <p className="text-lg font-bold">{totalContacts}</p>
+            </div>
             <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalContacts}</div>
-            <p className="text-xs text-muted-foreground">
-              {contacts.filter(c => new Date(c.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length} nuevos esta semana
-            </p>
-          </CardContent>
+          </div>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Leads con Valor</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{contactsWithValue.length}</div>
-            <p className="text-xs text-muted-foreground">
-              {Math.round((contactsWithValue.length / totalContacts) * 100)}% del total
-            </p>
-          </CardContent>
+        <Card className="p-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">Con Valor</p>
+              <p className="text-lg font-bold text-green-600">{contactsWithValue.length}</p>
+            </div>
+            <TrendingUp className="h-4 w-4 text-green-500" />
+          </div>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${totalValue.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">
-              Promedio: ${avgValue.toFixed(2)}
-            </p>
-          </CardContent>
+        <Card className="p-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">Valor Total</p>
+              <p className="text-lg font-bold text-green-600">${totalValue.toFixed(0)}</p>
+            </div>
+            <DollarSign className="h-4 w-4 text-green-500" />
+          </div>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sincronización</CardTitle>
+        <Card className="p-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">Sync</p>
+              <p className="text-sm font-semibold">
+                {syncStatus.connected ? (
+                  <span className="text-green-600">Activo</span>
+                ) : (
+                  <span className="text-red-600">Inactivo</span>
+                )}
+              </p>
+            </div>
             {syncStatus.connected ? (
               <Wifi className="h-4 w-4 text-green-500" />
             ) : (
               <WifiOff className="h-4 w-4 text-red-500" />
             )}
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {syncStatus.connected ? 'Activo' : 'Inactivo'}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {syncStatus.lastSync ? `Última: ${syncStatus.lastSync.toLocaleTimeString()}` : 'Sin sincronizar'}
-            </p>
-          </CardContent>
+          </div>
         </Card>
       </div>
 
-      {/* Tabs principales */}
-      <Tabs defaultValue="contacts" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="contacts">Contactos</TabsTrigger>
-          <TabsTrigger value="stages">Etapas</TabsTrigger>
+      {/* Main Content Tabs */}
+      <Tabs defaultValue="contacts" className="space-y-3">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="contacts" className="text-sm">Contactos</TabsTrigger>
+          <TabsTrigger value="stages" className="text-sm">Etapas</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="contacts" className="space-y-4">
-          {/* Filtros */}
+        <TabsContent value="contacts" className="space-y-3">
+          {/* Compact Filters */}
           <CRMFilters 
             filters={filters} 
             onFiltersChange={setFilters}
@@ -166,31 +158,33 @@ export default function AdminCRM() {
             contacts={contacts}
           />
 
-          {/* Selector de vista */}
+          {/* View Mode Selector */}
           <div className="flex items-center gap-2">
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('list')}
+              className="text-xs px-3"
             >
-              <List className="h-4 w-4 mr-2" />
-              Lista
+              <Table className="h-3 w-3 mr-1" />
+              Tabla
             </Button>
             <Button
               variant={viewMode === 'kanban' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('kanban')}
+              className="text-xs px-3"
             >
-              <LayoutGrid className="h-4 w-4 mr-2" />
+              <LayoutGrid className="h-3 w-3 mr-1" />
               Kanban
             </Button>
           </div>
 
-          {/* Vista de contactos */}
+          {/* Contact Views */}
           {loading ? (
             <div className="text-center py-8">Cargando contactos...</div>
           ) : viewMode === 'list' ? (
-            <ListView
+            <TableView
               contacts={contacts}
               stages={stages}
               onMoveContact={moveContactToStage}
@@ -208,7 +202,7 @@ export default function AdminCRM() {
           )}
         </TabsContent>
 
-        <TabsContent value="stages" className="space-y-4">
+        <TabsContent value="stages" className="space-y-3">
           <StageManagement
             stages={stages}
             onCreateStage={createStage}
@@ -218,7 +212,7 @@ export default function AdminCRM() {
         </TabsContent>
       </Tabs>
 
-      {/* Diálogos */}
+      {/* Dialogs - keep existing code */}
       <ContactDetailDialog
         contact={selectedContact}
         isOpen={showContactDetail}

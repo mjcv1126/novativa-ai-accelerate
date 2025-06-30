@@ -1,97 +1,172 @@
+
 import React, { useState, useEffect } from 'react';
-import NovativaLogo from '@/components/shared/NovativaLogo';
-import { useInterval } from '@/hooks/useInterval';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, Calendar, Clock, Star, ArrowRight, Gift } from 'lucide-react';
+import { LargeCountdownTimer } from '@/components/shared/LargeCountdownTimer';
 
-const FormularioConfirmacion = () => {
-  const [countdown, setCountdown] = useState(9);
+export default function FormularioConfirmacion() {
+  const [showSpecialOffer, setShowSpecialOffer] = useState(false);
+  
+  // Set countdown to 24 hours from now
+  const countdownTarget = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-  // Hide Botsify widget on this page
   useEffect(() => {
-    const hideBotsifyWidget = () => {
-      const style = document.createElement('style');
-      style.id = 'hide-botsify-widget';
-      style.textContent = `
-        #webbot-container,
-        #webbot-iframe,
-        .webbot-container,
-        .webbot-iframe,
-        [id*="webbot"],
-        [class*="webbot"],
-        script[src*="chat.novativa.org"] {
-          display: none !important;
-          visibility: hidden !important;
-          opacity: 0 !important;
-          z-index: -9999 !important;
-        }
-      `;
-      document.head.appendChild(style);
-    };
+    // Show special offer after 3 seconds
+    const timer = setTimeout(() => {
+      setShowSpecialOffer(true);
+    }, 3000);
 
-    hideBotsifyWidget();
-
-    return () => {
-      const existingStyle = document.getElementById('hide-botsify-widget');
-      if (existingStyle) {
-        existingStyle.remove();
-      }
-    };
+    return () => clearTimeout(timer);
   }, []);
 
-  // Countdown timer and redirect
-  useInterval(() => {
-    if (countdown > 0) {
-      setCountdown(prev => prev - 1);
-    }
-  }, 1000);
+  const handleCountdownExpire = () => {
+    console.log('Countdown expired - offer ended');
+  };
 
-  useEffect(() => {
-    if (countdown === 0) {
-      window.location.href = 'https://tidycal.com/novativa/demo-gratis';
-    }
-  }, [countdown]);
+  const handleScheduleCall = () => {
+    window.open('https://calendly.com/novativa', '_blank');
+  };
+
+  const handleSpecialOffer = () => {
+    window.open('https://novativa.org/pricing', '_blank');
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl text-center">
-        {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <NovativaLogo size="large" />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-8">
+      <div className="container mx-auto px-4 max-w-4xl">
+        
+        {/* Success Message */}
+        <Card className="mb-8 border-green-200 bg-green-50">
+          <CardContent className="text-center p-8">
+            <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
+            <h1 className="text-3xl font-bold text-green-800 mb-2">
+              ¡Formulario Enviado Exitosamente!
+            </h1>
+            <p className="text-green-700 text-lg">
+              Gracias por tu interés. Nos pondremos en contacto contigo muy pronto.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Large Countdown Timer */}
+        <div className="mb-8">
+          <LargeCountdownTimer 
+            targetDate={countdownTarget}
+            onExpire={handleCountdownExpire}
+            className="w-full"
+          />
         </div>
 
-        {/* Success message */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-gray-100">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-            ¡Tu información ha sido enviada exitosamente!
-          </h1>
-          
-          {/* Highlighted scheduling instruction */}
-          <div className="bg-gradient-to-r from-blue-100 via-purple-50 to-blue-100 border-2 border-blue-300 rounded-xl p-6 mb-8 shadow-md">
-            <div className="flex items-center justify-center mb-3">
-              <div className="bg-blue-500 rounded-full p-2 mr-3">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+        {/* Special Offer Card */}
+        {showSpecialOffer && (
+          <Card className="mb-8 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 animate-fade-in">
+            <CardHeader className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Gift className="h-8 w-8 text-purple-600" />
+                <CardTitle className="text-2xl text-purple-800">
+                  ¡Oferta Especial Solo Por Hoy!
+                </CardTitle>
               </div>
-              <span className="text-blue-600 font-bold text-sm uppercase tracking-wide">Siguiente paso</span>
+              <p className="text-purple-700">
+                Como acabas de completar el formulario, tienes acceso a un descuento exclusivo
+              </p>
+            </CardHeader>
+            <CardContent className="text-center">
+              <div className="bg-white rounded-lg p-6 mb-6 border-2 border-purple-200">
+                <div className="text-6xl font-bold text-purple-600 mb-2">50%</div>
+                <div className="text-xl font-semibold text-purple-800 mb-2">DE DESCUENTO</div>
+                <div className="text-purple-700">En tu primer mes de cualquier plan</div>
+              </div>
+              
+              <Button 
+                onClick={handleSpecialOffer}
+                size="lg"
+                className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-8 py-4 animate-pulse"
+              >
+                <Star className="h-5 w-5 mr-2" />
+                Aprovechar Oferta Ahora
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </Button>
+              
+              <p className="text-sm text-purple-600 mt-4">
+                * Válido solo durante las próximas 24 horas
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Next Steps */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="text-center text-2xl text-gray-800">
+              ¿Qué Sigue Ahora?
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="text-center">
+                <Calendar className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  1. Agenda una Llamada
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Reserva 30 minutos para una consulta personalizada gratuita
+                </p>
+                <Button 
+                  onClick={handleScheduleCall}
+                  variant="outline" 
+                  className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Agendar Ahora
+                </Button>
+              </div>
+              
+              <div className="text-center">
+                <Clock className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  2. Respuesta Rápida
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Te contactaremos en las próximas 2-4 horas hábiles
+                </p>
+                <div className="text-orange-600 font-semibold">
+                  ⏱️ Tiempo de respuesta promedio: 2 horas
+                </div>
+              </div>
             </div>
-            <p className="text-xl font-bold text-gray-800 leading-relaxed">
-              Ahora solo debes agendar tu videollamada en la fecha y hora de tu preferencia.
+          </CardContent>
+        </Card>
+
+        {/* Additional Information */}
+        <Card className="bg-gray-50">
+          <CardContent className="text-center p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Mientras Esperas...
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Explora nuestros casos de éxito y descubre cómo hemos ayudado a otras empresas
             </p>
-            <div className="mt-3 text-blue-600 font-medium">
-              📅 ¡Es muy importante que completes este paso!
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button 
+                variant="ghost" 
+                onClick={() => window.open('https://novativa.org/services', '_blank')}
+                className="text-blue-600 hover:bg-blue-50"
+              >
+                Ver Servicios
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => window.open('https://novativa.org/pricing', '_blank')}
+                className="text-green-600 hover:bg-green-50"
+              >
+                Ver Precios
+              </Button>
             </div>
-          </div>
-          
-          {/* Countdown */}
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <p className="text-gray-700 font-medium">
-              Serás redireccionado en {countdown} segundos
-            </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
-};
-
-export default FormularioConfirmacion;
+}

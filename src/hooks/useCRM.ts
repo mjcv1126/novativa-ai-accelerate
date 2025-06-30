@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { ContactWithStage, CrmStage, CrmFilters } from '@/types/crm';
 import { useContactOperations } from './crm/useContactOperations';
@@ -6,7 +5,7 @@ import { useStageOperations } from './crm/useStageOperations';
 import { useActivityOperations } from './crm/useActivityOperations';
 
 const CLOSED_WON_STAGE_ID = 'b30755e0-8993-4491-b7c8-d96fe4181221';
-const CLOSED_LOST_STAGE_ID = '7af3eb42-610b-4861-9429-85119b1d2693';
+const CLOSED_LOST_STAGE_ID = '550fa40f-fff9-4043-a478-fc10b00ae87b'; // Corrected stage ID
 
 export const useCRM = () => {
   const [contacts, setContacts] = useState<ContactWithStage[]>([]);
@@ -70,8 +69,11 @@ export const useCRM = () => {
     const contact = contacts.find(c => c.id === contactId);
     if (!contact) return;
 
+    console.log('🔄 Moving contact to stage:', { contactId, stageId, stageName: stages.find(s => s.id === stageId)?.name });
+
     // Verificar si es etapa de Cerrado Ganado y no tiene valor
     if (stageId === CLOSED_WON_STAGE_ID && !contact.lead_value) {
+      console.log('💰 Showing lead value dialog for Cerrado Ganado');
       setPendingContactMove({ contactId, stageId, contact });
       setShowLeadValueDialog(true);
       return;
@@ -79,6 +81,7 @@ export const useCRM = () => {
 
     // Verificar si es etapa de Cerrado Perdido
     if (stageId === CLOSED_LOST_STAGE_ID) {
+      console.log('❌ Showing loss reason dialog for Cerrado Perdido');
       setPendingContactMove({ contactId, stageId, contact });
       setShowLossReasonDialog(true);
       return;
@@ -87,7 +90,7 @@ export const useCRM = () => {
     // Mover directamente si no requiere información adicional
     await moveContactToStage(contactId, stageId);
     await loadContacts();
-  }, [contacts, moveContactToStage, loadContacts]);
+  }, [contacts, stages, moveContactToStage, loadContacts]);
 
   const handleSaveLeadValue = useCallback(async (leadValue: number, currency: string, paymentType: string) => {
     if (!pendingContactMove) return;
@@ -113,6 +116,8 @@ export const useCRM = () => {
     if (!pendingContactMove) return;
 
     try {
+      console.log('💾 Saving loss reason and moving to Cerrado Perdido:', reason);
+      
       // Actualizar el contacto con el motivo de pérdida
       await updateContact(pendingContactMove.contactId, {
         loss_reason: reason
