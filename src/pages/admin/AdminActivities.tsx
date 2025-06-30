@@ -15,7 +15,7 @@ export default function AdminActivities() {
   const [activities, setActivities] = useState<ActivityWithContact[]>([]);
   const [filteredActivities, setFilteredActivities] = useState<ActivityWithContact[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedActivity, setSelectedActivity] = useState<ContactActivity | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<ActivityWithContact | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [filters, setFilters] = useState({
     status: '',
