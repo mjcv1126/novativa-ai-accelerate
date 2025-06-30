@@ -84,14 +84,6 @@ serve(async (req) => {
       }
     }
 
-    // Get automation rules
-    const { data: automationRules } = await supabase
-      .from('tidycal_automation_rules')
-      .select('*')
-      .eq('is_active', true);
-
-    console.log('🔧 Found automation rules:', automationRules?.length || 0);
-
     // Determine trigger condition and target stage
     const now = new Date();
     const bookingStart = new Date(starts_at);
@@ -314,8 +306,8 @@ serve(async (req) => {
         .insert([{
           contact_id: contactId,
           activity_type: 'call',
-          title: 'Seguimiento',
-          description: 'Cliente canceló llamada debe reprogramarse. Contactar para reagendar la cita.',
+          title: 'Seguimiento - Reagendar',
+          description: 'Cliente canceló llamada, debe reagendarse. Contactar para reagendar la cita.',
           due_date: followUpDueDate.toISOString(),
           scheduled_date: followUpDueDate.toISOString().split('T')[0],
           scheduled_time: '09:00',
@@ -378,7 +370,7 @@ serve(async (req) => {
       let activityData = {
         contact_id: contactId,
         activity_type: 'call',
-        title: `Llamada programada desde TidyCal`,
+        title: `${booking_type?.name || 'Llamada'} desde TidyCal`,
         description: `Booking ID: ${booking_id || 'N/A'}\nContacto: ${contact.name}\nEmail: ${contact.email}${businessInfo ? `\n\nInfo del negocio: ${businessInfo}` : ''}`,
         tidycal_booking_id: booking_id || 0,
         tidycal_booking_reference: `${booking_id || 'N/A'}`,
@@ -447,6 +439,8 @@ serve(async (req) => {
           `Contacto movido automáticamente a "${targetStage?.name || 'Etapa desconocida'}" por cancelación de llamada desde TidyCal` :
           `Contacto movido automáticamente a "${targetStage?.name || 'Etapa desconocida'}" desde TidyCal webhook`,
         is_completed: true,
+        status: 'completed',
+        completed_at: new Date().toISOString(),
         tidycal_booking_id: booking_id || 0
       }]);
 

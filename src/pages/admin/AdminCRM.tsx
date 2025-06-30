@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,11 +20,16 @@ import { LossReasonDialog } from '@/components/crm/LossReasonDialog';
 import { TidyCalRealtimeStatus } from '@/components/crm/TidyCalRealtimeStatus';
 import { ExportContactsButton } from '@/components/crm/ExportContactsButton';
 import { ViewMode } from '@/types/crm';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 export default function AdminCRM() {
   const [selectedContact, setSelectedContact] = useState(null);
   const [showContactDetail, setShowContactDetail] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
+
+  const { user } = useAdminAuth();
+  const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
+  const userRole = currentUser?.role || 'admin';
 
   const {
     contacts,
@@ -142,11 +148,13 @@ export default function AdminCRM() {
         </Card>
       </div>
 
-      {/* Main Content Tabs */}
+      {/* Main Content Tabs - Only show Stages tab for super_admin */}
       <Tabs defaultValue="contacts" className="space-y-3">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className={userRole === 'super_admin' ? 'grid w-full grid-cols-2' : 'grid w-full grid-cols-1'}>
           <TabsTrigger value="contacts" className="text-sm">Contactos</TabsTrigger>
-          <TabsTrigger value="stages" className="text-sm">Etapas</TabsTrigger>
+          {userRole === 'super_admin' && (
+            <TabsTrigger value="stages" className="text-sm">Etapas</TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="contacts" className="space-y-3">
@@ -202,14 +210,16 @@ export default function AdminCRM() {
           )}
         </TabsContent>
 
-        <TabsContent value="stages" className="space-y-3">
-          <StageManagement
-            stages={stages}
-            onCreateStage={createStage}
-            onUpdateStage={updateStage}
-            onDeleteStage={deleteStage}
-          />
-        </TabsContent>
+        {userRole === 'super_admin' && (
+          <TabsContent value="stages" className="space-y-3">
+            <StageManagement
+              stages={stages}
+              onCreateStage={createStage}
+              onUpdateStage={updateStage}
+              onDeleteStage={deleteStage}
+            />
+          </TabsContent>
+        )}
       </Tabs>
 
       {/* Dialogs - keep existing code */}

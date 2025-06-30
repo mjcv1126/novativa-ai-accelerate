@@ -122,30 +122,28 @@ serve(async (req) => {
           continue;
         }
 
-        // Process the booking using existing webhook logic
-        const webhookResponse = await fetch(`${supabaseUrl}/functions/v1/tidycal-webhook`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseServiceKey}`,
-          },
-          body: JSON.stringify(booking)
-        });
-
+        // Process the booking using the webhook logic directly
         let contactId = null;
         let syncStatus = 'success';
         let errorMessage = null;
 
-        if (webhookResponse.ok) {
-          const webhookResult = await webhookResponse.json();
-          contactId = webhookResult.contact_id;
+        try {
+          // Call the webhook function directly instead of making HTTP request
+          const webhookResponse = await supabase.functions.invoke('tidycal-webhook', {
+            body: booking
+          });
+
+          if (webhookResponse.error) {
+            throw new Error(`Webhook error: ${JSON.stringify(webhookResponse.error)}`);
+          }
+
+          contactId = webhookResponse.data?.contact_id;
           console.log(`✅ Booking ${booking.id} processed successfully, contact: ${contactId}`);
           bookingsProcessed++;
-        } else {
-          const errorText = await webhookResponse.text();
-          console.error(`❌ Failed to process booking ${booking.id}:`, errorText);
+        } catch (error) {
+          console.error(`❌ Failed to process booking ${booking.id}:`, error);
           syncStatus = 'error';
-          errorMessage = errorText;
+          errorMessage = error.message;
           bookingsFailed++;
         }
 

@@ -69,7 +69,7 @@ const AdminSidebar = () => {
       title: 'Automatizaciones',
       icon: Zap,
       path: '/admin/automations',
-      roles: ['admin', 'super_admin']
+      roles: ['super_admin'] // Only super_admin can see this
     },
     {
       title: 'Usuarios',
