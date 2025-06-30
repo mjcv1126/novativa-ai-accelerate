@@ -99,26 +99,9 @@ export const useTidyCalAutoSync = () => {
         tidycal_booking_id: booking.id,
         tidycal_booking_reference: `${booking.id}`,
         is_completed: isPast,
-        status: isPast ? 'completed' : 'pending'
+        status: isPast ? 'completed' : 'pending',
+        due_date: booking.starts_at
       };
-
-      // Agregar información de programación para llamadas futuras
-      if (!isPast) {
-        activityData = {
-          ...activityData,
-          scheduled_date: startDate.toISOString().split('T')[0],
-          scheduled_time: startDate.toTimeString().split(' ')[0].substring(0, 5),
-          due_date: booking.starts_at
-        };
-      }
-
-      // Agregar fecha de completado para llamadas pasadas
-      if (isPast) {
-        activityData = {
-          ...activityData,
-          completed_at: new Date().toISOString()
-        };
-      }
 
       const { error: activityError } = await supabase
         .from('contact_activities')

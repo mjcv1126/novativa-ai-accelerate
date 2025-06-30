@@ -18,8 +18,8 @@ export const TidyCalRealtimeStatus = ({
   return (
     <div className="flex items-center gap-2">
       <Badge 
-        variant={isConnected ? "success" : "destructive"}
-        className="flex items-center gap-1"
+        variant={isConnected ? "default" : "destructive"}
+        className={`flex items-center gap-1 ${isConnected ? 'bg-green-500 hover:bg-green-600' : ''}`}
       >
         {isConnected ? (
           <>
