@@ -4,23 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, CheckCircle, AlertCircle, Phone, Mail, MessageSquare, FileText, Users, X } from 'lucide-react';
-import { useActivityOperations } from '@/hooks/crm/useActivityOperations';
+import { useActivityOperations, ActivityWithContact } from '@/hooks/crm/useActivityOperations';
 import { ActivitiesFilters } from '@/components/admin/activities/ActivitiesFilters';
 import { ActivitiesListView } from '@/components/admin/activities/ActivitiesListView';
 import { EditActivityDialog } from '@/components/admin/activities/EditActivityDialog';
 import { ContactActivity } from '@/types/crm';
 import { toast } from '@/hooks/use-toast';
-
-// Extended activity type that includes contact information for the list view
-interface ActivityWithContact extends ContactActivity {
-  contact: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    phone: string;
-    email?: string;
-  };
-}
 
 export default function AdminActivities() {
   const [activities, setActivities] = useState<ActivityWithContact[]>([]);
@@ -45,20 +34,8 @@ export default function AdminActivities() {
     try {
       setLoading(true);
       const data = await fetchAllActivities();
-      // Transform the data to ensure it has the contact property
-      const activitiesWithContact = data.map(activity => ({
-        ...activity,
-        contact: activity.contact || {
-          id: '',
-          first_name: '',
-          last_name: '',
-          phone: '',
-          email: ''
-        }
-      })) as ActivityWithContact[];
-      
-      setActivities(activitiesWithContact);
-      setFilteredActivities(activitiesWithContact);
+      setActivities(data);
+      setFilteredActivities(data);
     } catch (error) {
       console.error('Error loading activities:', error);
       toast({

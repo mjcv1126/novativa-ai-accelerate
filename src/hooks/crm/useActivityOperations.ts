@@ -4,6 +4,17 @@ import { supabase } from '@/integrations/supabase/client';
 import { ContactActivity } from '@/types/crm';
 import { toast } from '@/components/ui/use-toast';
 
+// Extended type that includes contact information
+export interface ActivityWithContact extends ContactActivity {
+  contact: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    phone: string;
+    email?: string;
+  };
+}
+
 export const useActivityOperations = () => {
   const fetchContactActivities = useCallback(async (contactId: string): Promise<ContactActivity[]> => {
     try {
@@ -26,7 +37,7 @@ export const useActivityOperations = () => {
     }
   }, []);
 
-  const fetchAllActivities = useCallback(async (): Promise<ContactActivity[]> => {
+  const fetchAllActivities = useCallback(async (): Promise<ActivityWithContact[]> => {
     try {
       const { data, error } = await supabase
         .from('contact_activities')
@@ -47,8 +58,15 @@ export const useActivityOperations = () => {
       return (data || []).map(activity => ({
         ...activity,
         activity_type: activity.activity_type as ContactActivity['activity_type'],
-        status: (activity.status || 'pending') as ContactActivity['status']
-      }));
+        status: (activity.status || 'pending') as ContactActivity['status'],
+        contact: activity.contact || {
+          id: '',
+          first_name: '',
+          last_name: '',
+          phone: '',
+          email: ''
+        }
+      })) as ActivityWithContact[];
     } catch (error) {
       console.error('Error fetching all activities:', error);
       return [];

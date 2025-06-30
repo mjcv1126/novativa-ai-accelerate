@@ -5,32 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, User, Phone, CheckCircle, Circle, AlertTriangle, Edit, X } from 'lucide-react';
 import { formatActivityDate, formatActivityDateTime, isActivityOverdue, isActivityDueSoon } from '@/utils/dateUtils';
-
-interface Activity {
-  id: string;
-  title: string;
-  description?: string;
-  activity_type: string;
-  scheduled_date?: string;
-  scheduled_time?: string;
-  due_date?: string;
-  is_completed: boolean;
-  status?: string;
-  created_at: string;
-  tidycal_booking_id?: number;
-  tidycal_booking_reference?: string;
-  contact: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    phone: string;
-    email?: string;
-  };
-}
+import { ActivityWithContact } from '@/hooks/crm/useActivityOperations';
 
 interface ActivitiesListViewProps {
-  activities: Activity[];
-  onEditActivity: (activity: Activity) => void;
+  activities: ActivityWithContact[];
+  onEditActivity: (activity: ActivityWithContact) => void;
   onCompleteActivity: (id: string) => void;
   onCancelActivity: (id: string) => void;
 }
