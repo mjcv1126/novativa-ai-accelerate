@@ -11,7 +11,7 @@ interface Activity {
   title: string;
   description?: string;
   activity_type: string;
-  scheduled_date: string;
+  scheduled_date?: string;
   scheduled_time?: string;
   due_date?: string;
   is_completed: boolean;
@@ -30,16 +30,16 @@ interface Activity {
 
 interface ActivitiesListViewProps {
   activities: Activity[];
-  onMarkComplete: (id: string) => void;
-  onCancelActivity: (id: string) => void;
   onEditActivity: (activity: Activity) => void;
+  onCompleteActivity: (id: string) => void;
+  onCancelActivity: (id: string) => void;
 }
 
 export const ActivitiesListView = ({ 
   activities, 
-  onMarkComplete, 
-  onCancelActivity, 
-  onEditActivity
+  onEditActivity,
+  onCompleteActivity, 
+  onCancelActivity
 }: ActivitiesListViewProps) => {
   const getActivityTypeColor = (type: string) => {
     const colors = {
@@ -175,7 +175,7 @@ export const ActivitiesListView = ({
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => onMarkComplete(activity.id)}
+                          onClick={() => onCompleteActivity(activity.id)}
                           className="text-green-600 hover:text-green-700 hover:border-green-300"
                         >
                           Completar

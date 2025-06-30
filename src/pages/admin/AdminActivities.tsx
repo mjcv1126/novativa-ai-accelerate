@@ -11,9 +11,20 @@ import { EditActivityDialog } from '@/components/admin/activities/EditActivityDi
 import { ContactActivity } from '@/types/crm';
 import { toast } from '@/hooks/use-toast';
 
+// Extended activity type that includes contact information for the list view
+interface ActivityWithContact extends ContactActivity {
+  contact: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    phone: string;
+    email?: string;
+  };
+}
+
 export default function AdminActivities() {
-  const [activities, setActivities] = useState<ContactActivity[]>([]);
-  const [filteredActivities, setFilteredActivities] = useState<ContactActivity[]>([]);
+  const [activities, setActivities] = useState<ActivityWithContact[]>([]);
+  const [filteredActivities, setFilteredActivities] = useState<ActivityWithContact[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedActivity, setSelectedActivity] = useState<ContactActivity | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -34,8 +45,20 @@ export default function AdminActivities() {
     try {
       setLoading(true);
       const data = await fetchAllActivities();
-      setActivities(data);
-      setFilteredActivities(data);
+      // Transform the data to ensure it has the contact property
+      const activitiesWithContact = data.map(activity => ({
+        ...activity,
+        contact: activity.contact || {
+          id: '',
+          first_name: '',
+          last_name: '',
+          phone: '',
+          email: ''
+        }
+      })) as ActivityWithContact[];
+      
+      setActivities(activitiesWithContact);
+      setFilteredActivities(activitiesWithContact);
     } catch (error) {
       console.error('Error loading activities:', error);
       toast({
@@ -79,7 +102,7 @@ export default function AdminActivities() {
     setFilteredActivities(filtered);
   }, [activities, filters]);
 
-  const handleEditActivity = (activity: ContactActivity) => {
+  const handleEditActivity = (activity: ActivityWithContact) => {
     setSelectedActivity(activity);
     setShowEditDialog(true);
   };
