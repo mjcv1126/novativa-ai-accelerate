@@ -257,7 +257,11 @@ export type Database = {
           id: string
           last_contact_date: string | null
           last_name: string
+          lead_value: number | null
+          lead_value_currency: string | null
+          loss_reason: string | null
           notes: string | null
+          payment_type: string | null
           phone: string
           service_of_interest: string | null
           stage_id: string | null
@@ -275,7 +279,11 @@ export type Database = {
           id?: string
           last_contact_date?: string | null
           last_name: string
+          lead_value?: number | null
+          lead_value_currency?: string | null
+          loss_reason?: string | null
           notes?: string | null
+          payment_type?: string | null
           phone: string
           service_of_interest?: string | null
           stage_id?: string | null
@@ -293,7 +301,11 @@ export type Database = {
           id?: string
           last_contact_date?: string | null
           last_name?: string
+          lead_value?: number | null
+          lead_value_currency?: string | null
+          loss_reason?: string | null
           notes?: string | null
+          payment_type?: string | null
           phone?: string
           service_of_interest?: string | null
           stage_id?: string | null

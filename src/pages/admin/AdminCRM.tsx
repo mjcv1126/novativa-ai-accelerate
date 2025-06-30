@@ -1,25 +1,29 @@
 
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Users, TrendingUp, DollarSign, Activity, List, LayoutGrid, Wifi, WifiOff } from 'lucide-react';
 import { useCRM } from '@/hooks/useCRM';
 import { useCRMRealtime } from '@/hooks/crm/useCRMRealtime';
+import { useTidyCalRealtime } from '@/hooks/crm/useTidyCalRealtime';
 import { CRMFilters } from '@/components/crm/CRMFilters';
 import { ListView } from '@/components/crm/ListView';
 import { KanbanView } from '@/components/crm/KanbanView';
 import { ContactDetailDialog } from '@/components/crm/ContactDetailDialog';
-import { StageManagement } from '@/components/crm/StageManagement';
 import { AddContactDialog } from '@/components/crm/AddContactDialog';
+import { StageManagement } from '@/components/crm/StageManagement';
+import { LeadValueDialog } from '@/components/crm/LeadValueDialog';
+import { LossReasonDialog } from '@/components/crm/LossReasonDialog';
+import { TidyCalRealtimeStatus } from '@/components/crm/TidyCalRealtimeStatus';
 import { ExportContactsButton } from '@/components/crm/ExportContactsButton';
-import { Button } from '@/components/ui/button';
-import { ViewMode, ContactWithStage } from '@/types/crm';
-import { List, Kanban, RefreshCw, Wifi } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { ViewMode } from '@/types/crm';
 
-const AdminCRM = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>('kanban');
-  const [selectedContact, setSelectedContact] = useState<ContactWithStage | null>(null);
-  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+export default function AdminCRM() {
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [showContactDetail, setShowContactDetail] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   const {
     contacts,
@@ -36,221 +40,211 @@ const AdminCRM = () => {
     moveContactToStage,
     createActivity,
     deleteContact,
+    // Diálogos
+    showLeadValueDialog,
+    setShowLeadValueDialog,
+    showLossReasonDialog,
+    setShowLossReasonDialog,
+    pendingContactMove,
+    handleSaveLeadValue,
+    handleSaveLossReason,
   } = useCRM();
 
-  // Configurar tiempo real
+  // Configurar real-time updates
   useCRMRealtime({
-    onContactUpdate: () => {
-      console.log('🔄 Real-time contact update detected, refreshing...');
-      fetchContacts();
-    },
-    onActivityUpdate: () => {
-      console.log('🔄 Real-time activity update detected');
-      // Si hay un contacto seleccionado, refrescar sus actividades
-      if (selectedContact) {
-        fetchContactActivities(selectedContact.id);
-      }
-    },
+    onContactUpdate: fetchContacts,
+    onActivityUpdate: fetchContacts,
   });
 
-  const handleContactView = (contact: ContactWithStage) => {
-    setSelectedContact(contact);
-    setIsDetailDialogOpen(true);
-  };
+  // Estado de TidyCal real-time
+  const { syncStatus, triggerManualSync } = useTidyCalRealtime();
 
-  const handleContactEdit = (contact: ContactWithStage) => {
-    setSelectedContact(contact);
-    setIsDetailDialogOpen(true);
-  };
-
-  const handleContactDelete = async (id: string) => {
-    if (confirm('¿Estás seguro de que quieres eliminar este contacto?')) {
-      await deleteContact(id);
-    }
-  };
-
-  const handleContactUpdate = (id: string, updates: Partial<ContactWithStage>) => {
-    updateContact(id, updates);
-  };
-
-  const handleCloseDetailDialog = () => {
-    setIsDetailDialogOpen(false);
-    setSelectedContact(null);
-  };
-
-  const handleContactAdded = () => {
-    fetchContacts();
-  };
-
-  // Stats
+  // Estadísticas
   const totalContacts = contacts.length;
-  const contactsByStage = stages.map(stage => ({
-    ...stage,
-    count: contacts.filter(contact => contact.stage_id === stage.id).length
-  }));
+  const contactsWithValue = contacts.filter(c => c.lead_value && c.lead_value > 0);
+  const totalValue = contactsWithValue.reduce((sum, c) => sum + (c.lead_value || 0), 0);
+  const avgValue = contactsWithValue.length > 0 ? totalValue / contactsWithValue.length : 0;
+
+  const handleEditContact = (contact) => {
+    setSelectedContact(contact);
+    setShowContactDetail(true);
+  };
 
   return (
-    <>
-      <Helmet>
-        <title>CRM | Panel Admin Novativa</title>
-      </Helmet>
-      
-      <div className="space-y-4 max-w-full">
-        {/* Header */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">CRM - Gestión de Contactos</h1>
-              <p className="text-gray-600 text-sm">Administra tus contactos y embudo de ventas</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge className="bg-green-100 text-green-800 flex items-center gap-1">
-                <Wifi className="h-3 w-3" />
-                <span>Tiempo Real</span>
-              </Badge>
-            </div>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-2">
-            <AddContactDialog 
-              stages={stages}
-              onContactAdded={handleContactAdded}
-            />
-            
-            <StageManagement
-              stages={stages}
-              onCreateStage={createStage}
-              onUpdateStage={updateStage}
-              onDeleteStage={deleteStage}
-            />
-
-            <ExportContactsButton contacts={contacts} />
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => fetchContacts()}
-              disabled={loading}
-              className="flex-shrink-0"
-            >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-            </Button>
-          </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">CRM</h1>
+          <p className="text-gray-600">Gestiona tus contactos y oportunidades de venta</p>
         </div>
-
-        {/* Stats Cards - Left aligned with fixed width */}
-        <div className="space-y-4">
-          {/* Stats Cards - Fixed width grid starting from left */}
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            <Card className="w-32 sm:w-36 lg:w-40">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
-                  Total Contactos
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold">{totalContacts}</div>
-              </CardContent>
-            </Card>
-            
-            {contactsByStage.slice(0, 3).map((stage) => (
-              <Card key={stage.id} className="w-32 sm:w-36 lg:w-40">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 flex items-center gap-1">
-                    <div 
-                      className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" 
-                      style={{ backgroundColor: stage.color }}
-                    />
-                    <span className="truncate">{stage.name}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="text-lg sm:text-xl lg:text-2xl font-bold">{stage.count}</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+        
+        <div className="flex items-center gap-2">
+          <TidyCalRealtimeStatus 
+            isConnected={syncStatus.connected}
+            onConnect={triggerManualSync}
+          />
+          <AddContactDialog stages={stages} onContactAdded={fetchContacts} />
+          <ExportContactsButton contacts={contacts} />
         </div>
+      </div>
 
-        {/* Filters - Left aligned */}
-        <div className="space-y-4">
-          <CRMFilters
-            filters={filters}
+      {/* Estadísticas */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Contactos</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalContacts}</div>
+            <p className="text-xs text-muted-foreground">
+              {contacts.filter(c => new Date(c.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length} nuevos esta semana
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Leads con Valor</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{contactsWithValue.length}</div>
+            <p className="text-xs text-muted-foreground">
+              {Math.round((contactsWithValue.length / totalContacts) * 100)}% del total
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${totalValue.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground">
+              Promedio: ${avgValue.toFixed(2)}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Sincronización</CardTitle>
+            {syncStatus.connected ? (
+              <Wifi className="h-4 w-4 text-green-500" />
+            ) : (
+              <WifiOff className="h-4 w-4 text-red-500" />
+            )}
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {syncStatus.connected ? 'Activo' : 'Inactivo'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {syncStatus.lastSync ? `Última: ${syncStatus.lastSync.toLocaleTimeString()}` : 'Sin sincronizar'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tabs principales */}
+      <Tabs defaultValue="contacts" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="contacts">Contactos</TabsTrigger>
+          <TabsTrigger value="stages">Etapas</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="contacts" className="space-y-4">
+          {/* Filtros */}
+          <CRMFilters 
+            filters={filters} 
             onFiltersChange={setFilters}
             stages={stages}
             contacts={contacts}
           />
-        </div>
 
-        {/* View Toggle */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Selector de vista */}
+          <div className="flex items-center gap-2">
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('list')}
-              className="flex items-center gap-2 flex-1 sm:flex-initial"
             >
-              <List className="h-4 w-4" />
-              <span>Lista</span>
+              <List className="h-4 w-4 mr-2" />
+              Lista
             </Button>
             <Button
               variant={viewMode === 'kanban' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('kanban')}
-              className="flex items-center gap-2 flex-1 sm:flex-initial"
             >
-              <Kanban className="h-4 w-4" />
-              <span>Kanban</span>
+              <LayoutGrid className="h-4 w-4 mr-2" />
+              Kanban
             </Button>
           </div>
 
-          <div className="text-sm text-gray-500 w-full sm:w-auto text-left sm:text-right">
-            {loading ? 'Cargando...' : `${contacts.length} contactos`}
-          </div>
-        </div>
+          {/* Vista de contactos */}
+          {loading ? (
+            <div className="text-center py-8">Cargando contactos...</div>
+          ) : viewMode === 'list' ? (
+            <ListView
+              contacts={contacts}
+              stages={stages}
+              onMoveContact={moveContactToStage}
+              onEditContact={handleEditContact}
+              onDeleteContact={deleteContact}
+            />
+          ) : (
+            <KanbanView
+              contacts={contacts}
+              stages={stages}
+              onMoveContact={moveContactToStage}
+              onEditContact={handleEditContact}
+              onDeleteContact={deleteContact}
+            />
+          )}
+        </TabsContent>
 
-        {/* Main Content */}
-        {loading ? (
-          <div className="text-center py-12">
-            <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-400" />
-            <p className="text-gray-500">Cargando contactos...</p>
-          </div>
-        ) : (
-          <>
-            {viewMode === 'list' ? (
-              <ListView
-                contacts={contacts}
-                onContactEdit={handleContactEdit}
-                onContactView={handleContactView}
-                onContactDelete={handleContactDelete}
-              />
-            ) : (
-              <KanbanView
-                contacts={contacts}
-                stages={stages}
-                onContactEdit={handleContactEdit}
-                onContactView={handleContactView}
-                onContactDelete={handleContactDelete}
-                onContactMove={moveContactToStage}
-              />
-            )}
-          </>
-        )}
+        <TabsContent value="stages" className="space-y-4">
+          <StageManagement
+            stages={stages}
+            onCreateStage={createStage}
+            onUpdateStage={updateStage}
+            onDeleteStage={deleteStage}
+          />
+        </TabsContent>
+      </Tabs>
 
-        {/* Contact Detail Dialog */}
-        <ContactDetailDialog
-          contact={selectedContact}
-          isOpen={isDetailDialogOpen}
-          onClose={handleCloseDetailDialog}
-          stages={stages}
-          onUpdate={handleContactUpdate}
-          onCreateActivity={createActivity}
-          fetchActivities={fetchContactActivities}
-        />
-      </div>
-    </>
+      {/* Diálogos */}
+      <ContactDetailDialog
+        contact={selectedContact}
+        isOpen={showContactDetail}
+        onClose={() => {
+          setShowContactDetail(false);
+          setSelectedContact(null);
+        }}
+        stages={stages}
+        onUpdate={updateContact}
+        onCreateActivity={createActivity}
+        fetchActivities={fetchContactActivities}
+      />
+
+      <LeadValueDialog
+        isOpen={showLeadValueDialog}
+        onClose={() => setShowLeadValueDialog(false)}
+        onSave={handleSaveLeadValue}
+        contactName={pendingContactMove ? `${pendingContactMove.contact.first_name} ${pendingContactMove.contact.last_name}` : ''}
+      />
+
+      <LossReasonDialog
+        isOpen={showLossReasonDialog}
+        onClose={() => setShowLossReasonDialog(false)}  
+        onSave={handleSaveLossReason}
+        contactName={pendingContactMove ? `${pendingContactMove.contact.first_name} ${pendingContactMove.contact.last_name}` : ''}
+      />
+    </div>
   );
-};
-
-export default AdminCRM;
+}

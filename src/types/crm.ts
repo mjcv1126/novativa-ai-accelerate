@@ -25,6 +25,10 @@ export interface Contact {
   last_contact_date?: string;
   additional_phones?: string[];
   additional_emails?: string[];
+  lead_value?: number;
+  lead_value_currency?: string;
+  payment_type?: 'one_time' | 'recurring';
+  loss_reason?: string;
   created_at: string;
   updated_at?: string;
 }

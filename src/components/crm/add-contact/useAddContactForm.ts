@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import { ContactWithStage } from '@/types/crm';
 import { countries } from '@/components/schedule/countryData';
 
@@ -21,7 +21,10 @@ export const useAddContactForm = (onContactAdded: () => void) => {
     notes: '',
     secondary_phone: '',
     secondary_country_code: '506',
-    secondary_email: ''
+    secondary_email: '',
+    lead_value: '',
+    lead_value_currency: 'USD',
+    payment_type: ''
   });
 
   const selectedCountry = countries.find(c => c.code === formData.country_code);
@@ -44,7 +47,10 @@ export const useAddContactForm = (onContactAdded: () => void) => {
       notes: '',
       secondary_phone: '',
       secondary_country_code: '506',
-      secondary_email: ''
+      secondary_email: '',
+      lead_value: '',
+      lead_value_currency: 'USD',
+      payment_type: ''
     });
   };
 
@@ -97,7 +103,10 @@ export const useAddContactForm = (onContactAdded: () => void) => {
           stage_id: formData.stage_id || null,
           notes: formData.notes || null,
           additional_phones: additionalPhones.length > 0 ? additionalPhones : null,
-          additional_emails: additionalEmails.length > 0 ? additionalEmails : null
+          additional_emails: additionalEmails.length > 0 ? additionalEmails : null,
+          lead_value: formData.lead_value ? parseFloat(formData.lead_value) : null,
+          lead_value_currency: formData.lead_value_currency || 'USD',
+          payment_type: formData.payment_type || null
         }]);
 
       if (error) throw error;

@@ -1,171 +1,200 @@
 
-import React from 'react';
-import { ContactWithStage } from '@/types/crm';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useMemo } from 'react';
+import { ContactWithStage, CrmStage } from '@/types/crm';
+import { ContactCard } from './ContactCard';
 import { Button } from '@/components/ui/button';
-import { User, Phone, Mail, Building, Calendar, Edit, Eye, Trash2 } from 'lucide-react';
+import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface ListViewProps {
   contacts: ContactWithStage[];
-  onContactEdit: (contact: ContactWithStage) => void;
-  onContactView: (contact: ContactWithStage) => void;
-  onContactDelete: (id: string) => void;
+  stages: CrmStage[];
+  onMoveContact: (contactId: string, stageId: string) => void;
+  onEditContact: (contact: ContactWithStage) => void;
+  onDeleteContact: (contactId: string) => void;
 }
+
+type SortField = 'name' | 'email' | 'phone' | 'company' | 'country' | 'stage' | 'created' | 'lead_value';
+type SortDirection = 'asc' | 'desc';
 
 export const ListView = ({ 
   contacts, 
-  onContactEdit, 
-  onContactView, 
-  onContactDelete 
+  stages, 
+  onMoveContact, 
+  onEditContact, 
+  onDeleteContact 
 }: ListViewProps) => {
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+  const [sortField, setSortField] = useState<SortField>('created');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
   };
 
-  if (contacts.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">No se encontraron contactos</p>
-      </div>
-    );
-  }
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) return <ArrowUpDown className="h-4 w-4" />;
+    return sortDirection === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
+  };
+
+  const sortedContacts = useMemo(() => {
+    return [...contacts].sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      switch (sortField) {
+        case 'name':
+          aValue = `${a.first_name} ${a.last_name}`.toLowerCase();
+          bValue = `${b.first_name} ${b.last_name}`.toLowerCase();
+          break;
+        case 'email':
+          aValue = a.email?.toLowerCase() || '';
+          bValue = b.email?.toLowerCase() || '';
+          break;
+        case 'phone':
+          aValue = a.phone || '';
+          bValue = b.phone || '';
+          break;
+        case 'company':
+          aValue = a.company?.toLowerCase() || '';
+          bValue = b.company?.toLowerCase() || '';
+          break;
+        case 'country':
+          aValue = a.country_name?.toLowerCase() || '';
+          bValue = b.country_name?.toLowerCase() || '';
+          break;
+        case 'stage':
+          aValue = a.stage?.name?.toLowerCase() || '';
+          bValue = b.stage?.name?.toLowerCase() || '';
+          break;
+        case 'lead_value':
+          aValue = a.lead_value || 0;
+          bValue = b.lead_value || 0;
+          break;
+        case 'created':
+        default:
+          aValue = new Date(a.created_at);
+          bValue = new Date(b.created_at);
+          break;
+      }
+
+      if (sortDirection === 'asc') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+  }, [contacts, sortField, sortDirection]);
 
   return (
-    <div className="bg-white rounded-lg border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Nombre</TableHead>
-            <TableHead>Teléfono</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Empresa</TableHead>
-            <TableHead>País</TableHead>
-            <TableHead>Etapa</TableHead>
-            <TableHead>Último Contacto</TableHead>
-            <TableHead>Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {contacts.map((contact) => (
-            <TableRow key={contact.id} className="hover:bg-gray-50">
-              <TableCell>
-                <div className="text-xs text-gray-400 font-mono">
-                  {contact.id.slice(0, 8)}...
-                </div>
-              </TableCell>
-              
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-gray-400" />
-                  <span className="font-medium">
-                    {contact.first_name} {contact.last_name}
-                  </span>
-                </div>
-              </TableCell>
-              
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-gray-400" />
-                  <div>
-                    <span>{contact.phone}</span>
-                    {contact.additional_phones && contact.additional_phones.length > 0 && (
-                      <div className="text-xs text-gray-500">
-                        +{contact.additional_phones.length} adicional(es)
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </TableCell>
-              
-              <TableCell>
-                {contact.email ? (
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-gray-400" />
-                    <span className="truncate max-w-xs">{contact.email}</span>
-                  </div>
-                ) : (
-                  <span className="text-gray-400">-</span>
-                )}
-              </TableCell>
-              
-              <TableCell>
-                {contact.company ? (
-                  <div className="flex items-center gap-2">
-                    <Building className="h-4 w-4 text-gray-400" />
-                    <span className="truncate max-w-xs">{contact.company}</span>
-                  </div>
-                ) : (
-                  <span className="text-gray-400">-</span>
-                )}
-              </TableCell>
-              
-              <TableCell>
-                <span>{contact.country_name}</span>
-              </TableCell>
-              
-              <TableCell>
-                {contact.stage ? (
-                  <Badge 
-                    className="text-xs"
-                    style={{ 
-                      backgroundColor: contact.stage.color + '20',
-                      color: contact.stage.color,
-                      border: `1px solid ${contact.stage.color}40`
-                    }}
-                  >
-                    {contact.stage.name}
-                  </Badge>
-                ) : (
-                  <span className="text-gray-400">Sin etapa</span>
-                )}
-              </TableCell>
-              
-              <TableCell>
-                <div className="flex items-center gap-1 text-sm">
-                  <Calendar className="h-4 w-4 text-gray-400" />
-                  {formatDate(contact.last_contact_date)}
-                </div>
-              </TableCell>
-              
-              <TableCell>
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onContactView(contact)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onContactEdit(contact)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onContactDelete(contact.id)}
-                    className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="space-y-4">
+      {/* Header con controles de ordenamiento */}
+      <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={sortField === 'name' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleSort('name')}
+            className="flex items-center gap-2"
+          >
+            Nombre
+            {getSortIcon('name')}
+          </Button>
+          
+          <Button
+            variant={sortField === 'email' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleSort('email')}
+            className="flex items-center gap-2"
+          >
+            Email
+            {getSortIcon('email')}
+          </Button>
+          
+          <Button
+            variant={sortField === 'phone' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleSort('phone')}
+            className="flex items-center gap-2"
+          >
+            Teléfono
+            {getSortIcon('phone')}
+          </Button>
+          
+          <Button
+            variant={sortField === 'company' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleSort('company')}
+            className="flex items-center gap-2"
+          >
+            Empresa
+            {getSortIcon('company')}
+          </Button>
+          
+          <Button
+            variant={sortField === 'country' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleSort('country')}
+            className="flex items-center gap-2"
+          >
+            País
+            {getSortIcon('country')}
+          </Button>
+          
+          <Button
+            variant={sortField === 'stage' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleSort('stage')}
+            className="flex items-center gap-2"
+          >
+            Etapa
+            {getSortIcon('stage')}
+          </Button>
+          
+          <Button
+            variant={sortField === 'lead_value' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleSort('lead_value')}
+            className="flex items-center gap-2"
+          >
+            Valor
+            {getSortIcon('lead_value')}
+          </Button>
+          
+          <Button
+            variant={sortField === 'created' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleSort('created')}
+            className="flex items-center gap-2"
+          >
+            Fecha
+            {getSortIcon('created')}
+          </Button>
+        </div>
+      </div>
+
+      {/* Lista de contactos */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sortedContacts.map((contact) => (
+          <ContactCard
+            key={contact.id}
+            contact={contact}
+            stages={stages}
+            onMoveContact={onMoveContact}
+            onEditContact={onEditContact}
+            onDeleteContact={onDeleteContact}
+          />
+        ))}
+      </div>
+
+      {sortedContacts.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          No se encontraron contactos
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
+
 import { useCallback, useEffect, useState, useRef } from 'react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface RealtimeMessage {
   type: string;
@@ -41,7 +42,7 @@ export const useTidyCalRealtime = () => {
     }
 
     try {
-      // Use the correct WebSocket URL for the Supabase edge function
+      // Usar el protocolo WebSocket correcto para Supabase Edge Functions
       const wsUrl = `wss://gktrnjjbhqxkbcvonzxv.supabase.co/functions/v1/tidycal-realtime`;
       
       console.log('🔗 Connecting to TidyCal real-time sync...', wsUrl);
@@ -246,13 +247,15 @@ export const useTidyCalRealtime = () => {
       
       console.log('🔄 Manual sync triggered via WebSocket');
     } else {
+      // Si no hay conexión, intentar conectar
+      connect();
+      
       toast({
-        title: "Error de conexión",
-        description: "No hay conexión en tiempo real activa",
-        variant: "destructive",
+        title: "Conectando...",
+        description: "Intentando establecer conexión en tiempo real",
       });
     }
-  }, []);
+  }, [connect]);
 
   const getSyncStatus = useCallback(() => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {

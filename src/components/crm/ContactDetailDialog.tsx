@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -10,11 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ContactWithStage, CrmStage, ContactActivity } from '@/types/crm';
-import { User, Phone, Mail, Building, Globe, Calendar, MessageSquare, Paperclip, Activity } from 'lucide-react';
+import { User, Phone, Mail, Building, Globe, Calendar, MessageSquare, Paperclip, Activity, DollarSign } from 'lucide-react';
 import { ContactAttachments } from './ContactAttachments';
 import { ActivityTimeline } from './ActivityTimeline';
 import { useActivityOperations } from '@/hooks/crm/useActivityOperations';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface ContactDetailDialogProps {
   contact: ContactWithStage | null;
@@ -36,6 +35,7 @@ export const ContactDetailDialog = ({
   fetchActivities,
 }: ContactDetailDialogProps) => {
   const [editMode, setEditMode] = useState(false);
+  const [activeTab, setActiveTab] = useState('details');
   const [formData, setFormData] = useState<Partial<ContactWithStage>>({});
   const [activities, setActivities] = useState<ContactActivity[]>([]);
   const [newActivity, setNewActivity] = useState({
@@ -102,6 +102,9 @@ export const ContactDetailDialog = ({
       // Reload activities
       await loadActivities();
 
+      // Cambiar automáticamente a la pestaña de timeline
+      setActiveTab('timeline');
+
       toast({
         title: "Éxito",
         description: "Actividad creada correctamente",
@@ -125,6 +128,15 @@ export const ContactDetailDialog = ({
     }
   };
 
+  const formatCurrency = (value: number, currency: string) => {
+    const symbols: { [key: string]: string } = {
+      USD: '$',
+      EUR: '€',
+      CRC: '₡'
+    };
+    return `${symbols[currency] || currency} ${value.toFixed(2)}`;
+  };
+
   if (!contact) return null;
 
   return (
@@ -139,10 +151,16 @@ export const ContactDetailDialog = ({
                 {contact.stage.name}
               </Badge>
             )}
+            {contact.lead_value && (
+              <Badge variant="outline" className="flex items-center gap-1">
+                <DollarSign className="h-3 w-3" />
+                {formatCurrency(contact.lead_value, contact.lead_value_currency || 'USD')}
+              </Badge>
+            )}
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="details" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="details">Detalles</TabsTrigger>
             <TabsTrigger value="activities">Actividades</TabsTrigger>
@@ -256,6 +274,54 @@ export const ContactDetailDialog = ({
                     )}
                   </div>
 
+                  {/* Campos de valor del lead */}
+                  <div>
+                    <Label>Valor del Lead</Label>
+                    {editMode ? (
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={formData.lead_value || ''}
+                        onChange={(e) => setFormData({ ...formData, lead_value: parseFloat(e.target.value) || undefined })}
+                      />
+                    ) : (
+                      <div className="flex items-center gap-2 mt-1">
+                        <DollarSign className="h-4 w-4" />
+                        <span>
+                          {contact.lead_value 
+                            ? formatCurrency(contact.lead_value, contact.lead_value_currency || 'USD')
+                            : 'No definido'
+                          }
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label>Tipo de Pago</Label>
+                    {editMode ? (
+                      <Select
+                        value={formData.payment_type || ''}
+                        onValueChange={(value) => setFormData({ ...formData, payment_type: value as 'one_time' | 'recurring' })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="one_time">Pago Único</SelectItem>
+                          <SelectItem value="recurring">Pago Recurrente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="mt-1">
+                        <span>
+                          {contact.payment_type === 'one_time' ? 'Pago Único' :
+                           contact.payment_type === 'recurring' ? 'Pago Recurrente' : 'No definido'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="md:col-span-2">
                     <Label>Etapa</Label>
                     {editMode ? (
@@ -299,6 +365,16 @@ export const ContactDetailDialog = ({
                       </div>
                     )}
                   </div>
+
+                  {/* Mostrar motivo de pérdida si existe */}
+                  {contact.loss_reason && (
+                    <div className="md:col-span-2">
+                      <Label>Motivo de Pérdida</Label>
+                      <div className="mt-1 p-2 bg-red-50 border border-red-200 rounded">
+                        <span className="text-red-800">{contact.loss_reason}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {editMode && (

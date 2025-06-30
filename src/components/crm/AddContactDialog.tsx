@@ -9,8 +9,9 @@ import { ContactFormFields } from './add-contact/ContactFormFields';
 import { EmailFields } from './add-contact/EmailFields';
 import { PhoneFields } from './add-contact/PhoneFields';
 import { StageAndNotesFields } from './add-contact/StageAndNotesFields';
+import { LeadValueFields } from './add-contact/LeadValueFields';
 import { useAddContactForm } from './add-contact/useAddContactForm';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface AddContactDialogProps {
   stages: CrmStage[];
@@ -75,6 +76,11 @@ export const AddContactDialog = ({ stages, onContactAdded }: AddContactDialogPro
               onFormDataChange={updateFormData}
               selectedCountry={selectedCountry}
               selectedSecondaryCountry={selectedSecondaryCountry}
+            />
+
+            <LeadValueFields
+              formData={formData}
+              onFormDataChange={updateFormData}
             />
 
             <StageAndNotesFields
