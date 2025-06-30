@@ -13,7 +13,10 @@ import {
   Calendar,
   CalendarCheck,
   Zap,
-  LogOut
+  LogOut,
+  ExternalLink,
+  Mail,
+  MessageSquare
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -109,10 +112,37 @@ const AdminSidebar = () => {
     }
   ];
 
+  // Enlaces externos disponibles para todos los usuarios admin
+  const externalLinks = [
+    {
+      title: 'NovaChannel',
+      icon: MessageSquare,
+      url: 'https://chat.novativa.org/login',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'TidyCal',
+      icon: CalendarCheck,
+      url: 'https://tidycal.com/dashboard/booking-types',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'Email',
+      icon: Mail,
+      url: 'https://mail.hostinger.com/?_task=mail&_mbox=INBOX',
+      roles: ['admin', 'super_admin']
+    }
+  ];
+
   // Filtrar elementos del menú según el rol del usuario
   const menuItems = allMenuItems.filter(item => item.roles.includes(userRole));
+  const filteredExternalLinks = externalLinks.filter(item => item.roles.includes(userRole));
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleExternalLinkClick = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -154,6 +184,31 @@ const AdminSidebar = () => {
                         <Icon className="h-4 w-4" />
                         <span>{item.title}</span>
                       </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Enlaces Externos */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Enlaces Externos</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {filteredExternalLinks.map((link) => {
+                const Icon = link.icon;
+                
+                return (
+                  <SidebarMenuItem key={link.url}>
+                    <SidebarMenuButton 
+                      onClick={() => handleExternalLinkClick(link.url)}
+                      tooltip={state === "collapsed" ? link.title : undefined}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{link.title}</span>
+                      <ExternalLink className="h-3 w-3 ml-auto opacity-60" />
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );

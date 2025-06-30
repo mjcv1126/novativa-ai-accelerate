@@ -107,21 +107,7 @@ serve(async (req) => {
     // Process each booking
     for (const booking of bookings) {
       try {
-        console.log(`🔄 Processing booking ${booking.id} - ${booking.contact?.name} - ${booking.starts_at} - Cancelled: ${!!booking.cancelled_at}`);
-
-        // Check if booking already processed to avoid duplicates
-        const { data: existingProcessedBooking } = await supabase
-          .from('tidycal_processed_bookings')
-          .select('id, processed_at, sync_status')
-          .eq('tidycal_booking_id', booking.id)
-          .single();
-
-        // Check if activity already exists to prevent duplicates
-        const { data: existingActivity } = await supabase
-          .from('contact_activities')
-          .select('*')
-          .eq('tidycal_booking_id', booking.id)
-          .single();
+        console.log(`🔄 Processing booking ${booking.id} - ${booking.contact?.name} - ${booking.starts_at} - Email: ${booking.contact?.email} - Cancelled: ${!!booking.cancelled_at}`);
 
         let contactId = null;
         let syncStatus = 'success';
@@ -132,34 +118,58 @@ serve(async (req) => {
           if (booking.cancelled_at) {
             console.log('❌ Processing cancelled booking:', booking.id);
 
-            // Find the contact by email
-            const { data: contact } = await supabase
+            // Find the contact by email - Search more thoroughly
+            const { data: contacts } = await supabase
               .from('contacts')
               .select('*')
-              .eq('email', booking.contact?.email)
-              .single();
+              .eq('email', booking.contact?.email);
+
+            let contact = contacts?.[0];
+
+            // If not found by email, try by name (fallback for existing contacts)
+            if (!contact && booking.contact?.name) {
+              const nameParts = booking.contact.name.split(' ');
+              const firstName = nameParts[0];
+              const lastName = nameParts.slice(1).join(' ');
+              
+              console.log(`🔍 Contact not found by email, searching by name: ${firstName} ${lastName}`);
+              
+              const { data: contactsByName } = await supabase
+                .from('contacts')
+                .select('*')
+                .eq('first_name', firstName)
+                .eq('last_name', lastName);
+              
+              contact = contactsByName?.[0];
+            }
 
             if (contact) {
-              console.log('👤 Found contact for cancelled booking:', contact.id);
+              console.log('👤 Found contact for cancelled booking:', contact.id, contact.email);
               contactId = contact.id;
 
-              // Cancel existing activity if it exists
-              if (existingActivity) {
-                console.log('📅 Cancelling existing activity:', existingActivity.id);
-                
-                // Cancel the activity
-                await supabase
-                  .from('contact_activities')
-                  .update({
-                    status: 'cancelled',
-                    is_completed: false,
-                    description: `${existingActivity.description}\n\n❌ CANCELADA: Cliente canceló la llamada desde TidyCal el ${new Date().toLocaleString()}`
-                  })
-                  .eq('id', existingActivity.id);
+              // Find and cancel any existing activity with this booking ID
+              const { data: existingActivities } = await supabase
+                .from('contact_activities')
+                .select('*')
+                .eq('tidycal_booking_id', booking.id);
+
+              if (existingActivities && existingActivities.length > 0) {
+                for (const activity of existingActivities) {
+                  console.log('📅 Cancelling existing activity:', activity.id);
+                  
+                  await supabase
+                    .from('contact_activities')
+                    .update({
+                      status: 'cancelled',
+                      is_completed: false,
+                      description: `${activity.description || ''}\n\n❌ CANCELADA: Cliente canceló la llamada desde TidyCal el ${new Date().toLocaleString()}`
+                    })
+                    .eq('id', activity.id);
+                }
               }
 
               // Move contact to "Llamada cancelada" stage
-              console.log(`🔄 Moving contact ${contact.id} to cancelled stage`);
+              console.log(`🔄 Moving contact ${contact.id} (${contact.first_name} ${contact.last_name}) to cancelled stage`);
               await supabase
                 .from('contacts')
                 .update({ 
@@ -185,11 +195,29 @@ serve(async (req) => {
 
               console.log('✅ Successfully processed booking cancellation');
             } else {
-              console.log('⚠️ Contact not found for cancelled booking');
+              console.log('⚠️ Contact not found for cancelled booking - Email:', booking.contact?.email, 'Name:', booking.contact?.name);
             }
           } else {
             // Handle active bookings
             console.log('📅 Processing active booking:', booking.id);
+
+            // Check if activity already exists to prevent duplicates
+            const { data: existingActivity } = await supabase
+              .from('contact_activities')
+              .select('*')
+              .eq('tidycal_booking_id', booking.id)
+              .single();
+
+            if (existingActivity) {
+              console.log('⏭️ Activity already exists for booking:', booking.id, '- skipping');
+              bookingsSkipped++;
+              
+              // Still update last booking date
+              if (!lastBookingDate || new Date(booking.starts_at) > new Date(lastBookingDate)) {
+                lastBookingDate = booking.starts_at;
+              }
+              continue;
+            }
 
             // Check if contact already exists
             const { data: existingContact } = await supabase
@@ -242,30 +270,26 @@ serve(async (req) => {
                 .eq('id', contactId);
             }
 
-            // Create activity only if it doesn't exist (prevent duplicates)
-            if (!existingActivity) {
-              console.log('📅 Creating activity for booking:', booking.id);
-              
-              const { error: activityError } = await supabase
-                .from('contact_activities')
-                .insert([{
-                  contact_id: contactId,
-                  activity_type: 'call',
-                  title: `${booking.booking_type?.name || 'Llamada'} desde TidyCal`,
-                  description: `Booking ID: ${booking.id}\nContacto: ${booking.contact?.name}\nEmail: ${booking.contact?.email}`,
-                  tidycal_booking_id: booking.id,
-                  tidycal_booking_reference: `${booking.id}`,
-                  is_completed: false,
-                  status: 'pending',
-                  due_date: booking.starts_at
-                }]);
+            // Create activity (we already checked it doesn't exist)
+            console.log('📅 Creating activity for booking:', booking.id);
+            
+            const { error: activityError } = await supabase
+              .from('contact_activities')
+              .insert([{
+                contact_id: contactId,
+                activity_type: 'call',
+                title: `${booking.booking_type?.name || 'Llamada'} desde TidyCal`,
+                description: `Booking ID: ${booking.id}\nContacto: ${booking.contact?.name}\nEmail: ${booking.contact?.email}`,
+                tidycal_booking_id: booking.id,
+                tidycal_booking_reference: `${booking.id}`,
+                is_completed: false,
+                status: 'pending',
+                due_date: booking.starts_at
+              }]);
 
-              if (activityError) {
-                console.error('❌ Error creating activity:', activityError);
-                throw activityError;
-              }
-            } else {
-              console.log('⏭️ Activity already exists for booking:', booking.id);
+            if (activityError) {
+              console.error('❌ Error creating activity:', activityError);
+              throw activityError;
             }
           }
 
