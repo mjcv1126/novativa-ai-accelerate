@@ -36,7 +36,7 @@ export const ActivitiesFilters = ({ filters, onFiltersChange, activities }: Acti
               <SelectContent>
                 <SelectItem value="all">Todos los estados</SelectItem>
                 {uniqueStatuses.map((status) => (
-                  <SelectItem key={status} value={status}>
+                  <SelectItem key={status} value={status || 'unknown'}>
                     {status === 'pending' ? 'Pendiente' : 
                      status === 'completed' ? 'Completada' : 
                      status === 'cancelled' ? 'Cancelada' : status}
@@ -58,7 +58,7 @@ export const ActivitiesFilters = ({ filters, onFiltersChange, activities }: Acti
               <SelectContent>
                 <SelectItem value="all">Todos los tipos</SelectItem>
                 {uniqueTypes.map((type) => (
-                  <SelectItem key={type} value={type}>
+                  <SelectItem key={type} value={type || 'unknown'}>
                     {type === 'call' ? 'Llamada' :
                      type === 'email' ? 'Email' :
                      type === 'meeting' ? 'Reunión' :
@@ -72,8 +72,9 @@ export const ActivitiesFilters = ({ filters, onFiltersChange, activities }: Acti
           <div>
             <label className="text-sm font-medium mb-2 block">Rango de Fechas</label>
             <DatePickerWithRange
-              date={filters.dateRange}
-              onDateChange={(range) => onFiltersChange({ ...filters, dateRange: range })}
+              from={filters.dateRange.from}
+              to={filters.dateRange.to}
+              onSelect={(range) => onFiltersChange({ ...filters, dateRange: range || { from: null, to: null } })}
             />
           </div>
         </div>
