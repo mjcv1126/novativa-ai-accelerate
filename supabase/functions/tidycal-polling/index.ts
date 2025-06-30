@@ -44,44 +44,25 @@ serve(async (req) => {
 
     console.log('📝 Sync log created:', syncLog.id);
 
-    // Calculate time range - get all bookings from 7 days ago to 30 days in the future
+    // Calculate extended time range to catch all bookings
     const now = new Date();
-    const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
-    const thirtyDaysFromNow = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
+    const sixtyDaysAgo = new Date(now.getTime() - (60 * 24 * 60 * 60 * 1000));
+    const sixtyDaysFromNow = new Date(now.getTime() + (60 * 24 * 60 * 60 * 1000));
 
-    // Get the last successful sync time to be more efficient
-    const { data: lastSync } = await supabase
-      .from('tidycal_sync_logs')
-      .select('sync_completed_at, last_booking_date')
-      .eq('status', 'completed')
-      .order('sync_completed_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    let startTime = sevenDaysAgo;
-    if (lastSync?.last_booking_date) {
-      // Start from the last booking date minus 1 hour for safety
-      const lastBookingTime = new Date(lastSync.last_booking_date);
-      lastBookingTime.setHours(lastBookingTime.getHours() - 1);
-      startTime = lastBookingTime;
-      console.log('📅 Using incremental sync from:', startTime.toISOString());
-    } else {
-      console.log('📅 Full sync from:', startTime.toISOString());
-    }
-
-    // Fetch bookings from TidyCal
+    // Fetch ALL bookings from TidyCal including cancelled ones
     const tidyCalHeaders = {
       'Authorization': `Bearer ${tidyCalToken}`,
       'Content-Type': 'application/json',
     };
 
     const queryParams = new URLSearchParams({
-      starts_at: startTime.toISOString(),
-      ends_at: thirtyDaysFromNow.toISOString(),
+      starts_at: sixtyDaysAgo.toISOString(),
+      ends_at: sixtyDaysFromNow.toISOString(),
+      // Don't filter by status - get ALL bookings
     });
 
     const tidyCalUrl = `https://tidycal.com/api/bookings?${queryParams.toString()}`;
-    console.log('🔍 Fetching bookings from TidyCal:', tidyCalUrl);
+    console.log('🔍 Fetching ALL bookings from TidyCal (including cancelled):', tidyCalUrl);
 
     const response = await fetch(tidyCalUrl, { headers: tidyCalHeaders });
 
@@ -94,7 +75,7 @@ serve(async (req) => {
     const tidyCalData = await response.json();
     const bookings = tidyCalData.data || [];
 
-    console.log(`📊 Found ${bookings.length} bookings from TidyCal`);
+    console.log(`📊 Found ${bookings.length} bookings from TidyCal (including cancelled)`);
 
     let bookingsProcessed = 0;
     let bookingsSkipped = 0;
@@ -104,167 +85,172 @@ serve(async (req) => {
     const LLAMADA_PROGRAMADA_STAGE_ID = 'b9b4d1b9-461e-4fac-bebd-e3af2d527a97';
     const LLAMADA_CANCELADA_STAGE_ID = '7af3eb42-610b-4861-9429-85119b1d2693';
 
+    // Helper function to find contact by multiple fields
+    async function findContactByBooking(booking) {
+      console.log(`🔍 Searching for contact - Email: ${booking.contact?.email}, Phone: ${booking.contact?.phone_number}, Name: ${booking.contact?.name}`);
+      
+      let contact = null;
+
+      // 1. Search by email first
+      if (booking.contact?.email) {
+        const { data: contactsByEmail } = await supabase
+          .from('contacts')
+          .select('*')
+          .or(`email.eq.${booking.contact.email},additional_emails.cs.{"${booking.contact.email}"}`);
+        
+        if (contactsByEmail && contactsByEmail.length > 0) {
+          contact = contactsByEmail[0];
+          console.log('✅ Found contact by email:', contact.id);
+          return contact;
+        }
+      }
+
+      // 2. Search by phone
+      if (booking.contact?.phone_number) {
+        const cleanPhone = booking.contact.phone_number.replace(/\D/g, '');
+        const { data: contactsByPhone } = await supabase
+          .from('contacts')
+          .select('*')
+          .or(`phone.ilike.%${cleanPhone}%,additional_phones.cs.{"${booking.contact.phone_number}"}`);
+        
+        if (contactsByPhone && contactsByPhone.length > 0) {
+          contact = contactsByPhone[0];
+          console.log('✅ Found contact by phone:', contact.id);
+          return contact;
+        }
+      }
+
+      // 3. Search by booking ID in activities
+      const { data: activitiesWithBooking } = await supabase
+        .from('contact_activities')
+        .select('contact_id, contacts(*)')
+        .eq('tidycal_booking_id', booking.id);
+      
+      if (activitiesWithBooking && activitiesWithBooking.length > 0) {
+        contact = activitiesWithBooking[0].contacts;
+        console.log('✅ Found contact by booking ID in activities:', contact?.id);
+        return contact;
+      }
+
+      // 4. Search by name as last resort
+      if (booking.contact?.name) {
+        const nameParts = booking.contact.name.split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ');
+        
+        if (firstName) {
+          const { data: contactsByName } = await supabase
+            .from('contacts')
+            .select('*')
+            .or(`first_name.ilike.%${firstName}%,last_name.ilike.%${firstName}%${lastName ? `,first_name.ilike.%${lastName}%,last_name.ilike.%${lastName}%` : ''}`);
+          
+          if (contactsByName && contactsByName.length > 0) {
+            contact = contactsByName[0];
+            console.log('✅ Found contact by name:', contact.id);
+            return contact;
+          }
+        }
+      }
+
+      console.log('❌ No contact found for booking:', booking.id);
+      return null;
+    }
+
     // Process each booking
     for (const booking of bookings) {
       try {
-        console.log(`🔄 Processing booking ${booking.id} - ${booking.contact?.name} - ${booking.starts_at} - Email: ${booking.contact?.email} - Cancelled: ${!!booking.cancelled_at}`);
+        console.log(`🔄 Processing booking ${booking.id} - ${booking.contact?.name} - ${booking.starts_at} - Cancelled: ${!!booking.cancelled_at}`);
 
         let contactId = null;
         let syncStatus = 'success';
         let errorMessage = null;
 
-        try {
-          // Handle cancelled bookings
-          if (booking.cancelled_at) {
-            console.log('❌ Processing cancelled booking:', booking.id);
+        // Handle cancelled bookings (priority flow)
+        if (booking.cancelled_at) {
+          console.log('❌ Processing CANCELLED booking:', booking.id);
 
-            // Find the contact by email - Search more thoroughly
-            const { data: contacts } = await supabase
-              .from('contacts')
-              .select('*')
-              .eq('email', booking.contact?.email);
+          const contact = await findContactByBooking(booking);
 
-            let contact = contacts?.[0];
+          if (contact) {
+            console.log('👤 Found contact for cancelled booking:', contact.id, contact.email, contact.first_name, contact.last_name);
+            contactId = contact.id;
 
-            // If not found by email, try by name (fallback for existing contacts)
-            if (!contact && booking.contact?.name) {
-              const nameParts = booking.contact.name.split(' ');
-              const firstName = nameParts[0];
-              const lastName = nameParts.slice(1).join(' ');
-              
-              console.log(`🔍 Contact not found by email, searching by name: ${firstName} ${lastName}`);
-              
-              // Try exact match first
-              let nameQuery = supabase
-                .from('contacts')
-                .select('*');
-              
-              if (firstName) {
-                nameQuery = nameQuery.ilike('first_name', firstName);
-              }
-              if (lastName) {
-                nameQuery = nameQuery.ilike('last_name', lastName);
-              }
-              
-              const { data: contactsByName } = await nameQuery;
-              contact = contactsByName?.[0];
-              
-              // If still not found, try partial matches
-              if (!contact) {
-                console.log(`🔍 Trying partial name matches for: ${booking.contact.name}`);
-                const { data: partialMatches } = await supabase
-                  .from('contacts')
-                  .select('*')
-                  .or(`first_name.ilike.%${firstName}%,last_name.ilike.%${firstName}%,first_name.ilike.%${lastName}%,last_name.ilike.%${lastName}%`);
-                
-                contact = partialMatches?.[0];
-              }
-            }
-
-            if (contact) {
-              console.log('👤 Found contact for cancelled booking:', contact.id, contact.email, contact.first_name, contact.last_name);
-              contactId = contact.id;
-
-              // Find and cancel any existing activity with this booking ID
-              const { data: existingActivities } = await supabase
-                .from('contact_activities')
-                .select('*')
-                .eq('tidycal_booking_id', booking.id);
-
-              if (existingActivities && existingActivities.length > 0) {
-                for (const activity of existingActivities) {
-                  console.log('📅 Cancelling existing activity:', activity.id, 'for booking:', booking.id);
-                  
-                  await supabase
-                    .from('contact_activities')
-                    .update({
-                      status: 'cancelled',
-                      is_completed: false,
-                      description: `${activity.description || ''}\n\n❌ CANCELADA: Cliente canceló la llamada desde TidyCal el ${new Date(booking.cancelled_at).toLocaleString()}`
-                    })
-                    .eq('id', activity.id);
-                    
-                  console.log('✅ Activity cancelled successfully');
-                }
-              } else {
-                console.log('⚠️ No activities found for cancelled booking:', booking.id);
-              }
-
-              // Move contact to "Llamada cancelada" stage
-              console.log(`🔄 Moving contact ${contact.id} (${contact.first_name} ${contact.last_name}) to cancelled stage ${LLAMADA_CANCELADA_STAGE_ID}`);
-              
-              const { error: updateError } = await supabase
-                .from('contacts')
-                .update({ 
-                  stage_id: LLAMADA_CANCELADA_STAGE_ID,
-                  last_contact_date: new Date().toISOString(),
-                  updated_at: new Date().toISOString()
-                })
-                .eq('id', contact.id);
-
-              if (updateError) {
-                console.error('❌ Error updating contact stage:', updateError);
-                throw updateError;
-              }
-
-              console.log('✅ Contact moved to cancelled stage successfully');
-
-              // Create a cancellation note activity
-              console.log('📝 Creating cancellation note');
-              const { error: noteError } = await supabase
-                .from('contact_activities')
-                .insert([{
-                  contact_id: contact.id,
-                  activity_type: 'note',
-                  title: 'Llamada cancelada por el cliente',
-                  description: `El cliente ${booking.contact?.name} canceló su llamada programada desde TidyCal.\n\nBooking ID: ${booking.id}\nFecha original: ${booking.starts_at}\nCancelada el: ${new Date(booking.cancelled_at).toLocaleString()}\n\nContacto movido automáticamente a etapa "Llamada cancelada".`,
-                  status: 'completed',
-                  is_completed: true,
-                  completed_at: new Date().toISOString()
-                }]);
-
-              if (noteError) {
-                console.error('❌ Error creating cancellation note:', noteError);
-              } else {
-                console.log('✅ Cancellation note created successfully');
-              }
-
-              console.log('✅ Successfully processed booking cancellation');
-            } else {
-              console.log('⚠️ Contact not found for cancelled booking - Email:', booking.contact?.email, 'Name:', booking.contact?.name);
-              syncStatus = 'warning';
-              errorMessage = 'Contact not found for cancelled booking';
-            }
-          } else {
-            // Handle active bookings
-            console.log('📅 Processing active booking:', booking.id);
-
-            // Check if activity already exists to prevent duplicates - CRITICAL CHECK
-            const { data: existingActivity } = await supabase
+            // 1. Cancel ALL activities linked to this booking ID
+            console.log('📅 Cancelling activities for booking:', booking.id);
+            const { data: existingActivities } = await supabase
               .from('contact_activities')
               .select('*')
-              .eq('tidycal_booking_id', booking.id)
-              .single();
+              .eq('tidycal_booking_id', booking.id);
 
-            if (existingActivity) {
-              console.log('⏭️ Activity already exists for booking:', booking.id, '- skipping completely');
-              bookingsSkipped++;
-              
-              // Still update last booking date
-              if (!lastBookingDate || new Date(booking.starts_at) > new Date(lastBookingDate)) {
-                lastBookingDate = booking.starts_at;
+            if (existingActivities && existingActivities.length > 0) {
+              for (const activity of existingActivities) {
+                await supabase
+                  .from('contact_activities')
+                  .update({
+                    status: 'cancelled',
+                    is_completed: false,
+                  })
+                  .eq('id', activity.id);
+                
+                console.log('✅ Activity cancelled:', activity.id);
               }
-              continue;
             }
 
-            // Check if contact already exists
-            const { data: existingContact } = await supabase
+            // 2. Move contact to "Llamada cancelada" stage
+            console.log(`🔄 Moving contact to cancelled stage: ${LLAMADA_CANCELADA_STAGE_ID}`);
+            
+            await supabase
               .from('contacts')
-              .select('*')
-              .eq('email', booking.contact?.email)
-              .single();
+              .update({ 
+                stage_id: LLAMADA_CANCELADA_STAGE_ID,
+                last_contact_date: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', contact.id);
 
-            if (!existingContact) {
+            console.log('✅ Contact moved to cancelled stage');
+
+            // 3. Create cancellation note (without due date)
+            console.log('📝 Creating cancellation note');
+            await supabase
+              .from('contact_activities')
+              .insert([{
+                contact_id: contact.id,
+                activity_type: 'note',
+                title: 'Cliente canceló llamada vía TidyCal',
+                description: `Booking ID: ${booking.id}\nFecha original: ${new Date(booking.starts_at).toLocaleString()}\nCancelado el: ${new Date(booking.cancelled_at).toLocaleString()}`,
+                status: 'completed',
+                is_completed: true,
+                completed_at: new Date().toISOString()
+              }]);
+
+            console.log('✅ Cancellation note created');
+          } else {
+            console.log('⚠️ Contact not found for cancelled booking:', booking.id);
+            syncStatus = 'warning';
+            errorMessage = 'Contact not found for cancelled booking';
+          }
+
+          bookingsProcessed++;
+        } else {
+          // Handle active bookings
+          console.log('📅 Processing active booking:', booking.id);
+
+          // Check if activity already exists to prevent duplicates
+          const { data: existingActivity } = await supabase
+            .from('contact_activities')
+            .select('*')
+            .eq('tidycal_booking_id', booking.id)
+            .single();
+
+          if (existingActivity) {
+            console.log('⏭️ Activity already exists for booking:', booking.id, '- skipping');
+            bookingsSkipped++;
+          } else {
+            // Find or create contact
+            let contact = await findContactByBooking(booking);
+
+            if (!contact) {
               console.log('👤 Creating new contact for booking:', booking.id);
               
               const nameParts = booking.contact?.name?.split(' ') || ['', ''];
@@ -292,26 +278,25 @@ serve(async (req) => {
                 throw contactError;
               }
 
-              contactId = newContact.id;
-            } else {
-              contactId = existingContact.id;
-              console.log('✅ Using existing contact:', contactId);
-              
-              // Move contact to "Llamada programada" stage
-              await supabase
-                .from('contacts')
-                .update({ 
-                  stage_id: LLAMADA_PROGRAMADA_STAGE_ID,
-                  last_contact_date: new Date().toISOString(),
-                  updated_at: new Date().toISOString()
-                })
-                .eq('id', contactId);
+              contact = newContact;
             }
 
-            // Create activity (we already verified it doesn't exist)
-            console.log('📅 Creating activity for booking:', booking.id);
+            contactId = contact.id;
             
-            const { error: activityError } = await supabase
+            // Move existing contact to "Llamada programada" stage
+            await supabase
+              .from('contacts')
+              .update({ 
+                stage_id: LLAMADA_PROGRAMADA_STAGE_ID,
+                last_contact_date: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', contactId);
+
+            // Create activity for active booking
+            console.log('📅 Creating activity for active booking:', booking.id);
+            
+            await supabase
               .from('contact_activities')
               .insert([{
                 contact_id: contactId,
@@ -325,22 +310,12 @@ serve(async (req) => {
                 due_date: booking.starts_at
               }]);
 
-            if (activityError) {
-              console.error('❌ Error creating activity:', activityError);
-              throw activityError;
-            }
+            console.log('✅ Activity created for active booking');
+            bookingsProcessed++;
           }
-
-          console.log('✅ Successfully processed booking:', booking.id);
-          bookingsProcessed++;
-        } catch (error) {
-          console.error(`❌ Failed to process booking ${booking.id}:`, error);
-          syncStatus = 'error';
-          errorMessage = error.message;
-          bookingsFailed++;
         }
 
-        // Record the processed booking (upsert to handle duplicates)
+        // Record the processed booking
         await supabase
           .from('tidycal_processed_bookings')
           .upsert([{
@@ -366,7 +341,7 @@ serve(async (req) => {
         console.error(`💥 Error processing booking ${booking.id}:`, error);
         bookingsFailed++;
 
-        // Still record the failed booking
+        // Record the failed booking
         try {
           await supabase
             .from('tidycal_processed_bookings')
@@ -411,7 +386,6 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         message: 'TidyCal polling completed',
-        sync_type: lastSync?.last_booking_date ? 'incremental' : 'full',
         results: {
           bookings_found: bookings.length,
           bookings_processed: bookingsProcessed,
@@ -427,7 +401,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('💥 TidyCal polling error:', error);
 
-    // Try to update sync log with error if we have one
+    // Try to update sync log with error
     try {
       const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
       const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
