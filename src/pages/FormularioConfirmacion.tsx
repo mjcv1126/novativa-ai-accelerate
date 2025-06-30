@@ -12,7 +12,7 @@ const FormularioConfirmacion = () => {
         if (prev <= 1) {
           clearInterval(timer);
           // Redirect to TidyCal scheduling
-          window.location.href = 'https://novativa.tidycal.com/nicolas/15-minute-meeting';
+          window.location.href = 'https://tidycal.com/novativa/demo-gratis';
           return 0;
         }
         return prev - 1;
@@ -66,7 +66,7 @@ const FormularioConfirmacion = () => {
           <div className="text-sm text-gray-500">
             ¿No quieres esperar?{' '}
             <a 
-              href="https://novativa.tidycal.com/nicolas/15-minute-meeting"
+              href="https://tidycal.com/novativa/demo-gratis"
               className="text-blue-600 hover:text-blue-700 font-medium underline"
             >
               Haz clic aquí para agendar ahora

@@ -18,7 +18,7 @@ export default function AdminActivities() {
   const [selectedActivity, setSelectedActivity] = useState<ActivityWithContact | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [filters, setFilters] = useState({
-    status: 'all',
+    status: 'pending', // Filtro automático para solo mostrar pendientes
     activityType: 'all',
     dateRange: { from: null, to: null }
   });
@@ -36,8 +36,11 @@ export default function AdminActivities() {
       const data = await fetchAllActivities();
       
       // Filtrar solo actividades con deadline (que tienen due_date o scheduled_date)
+      // Y excluir actividades completadas y canceladas
       const activitiesWithDeadline = data.filter(activity => 
-        activity.due_date || activity.scheduled_date
+        (activity.due_date || activity.scheduled_date) &&
+        activity.status === 'pending' &&
+        !activity.is_completed
       );
       
       setActivities(activitiesWithDeadline);
@@ -62,6 +65,7 @@ export default function AdminActivities() {
   useEffect(() => {
     let filtered = [...activities];
 
+    // El filtro de estado ahora es fijo en 'pending', pero mantenemos la lógica por compatibilidad
     if (filters.status && filters.status !== 'all') {
       filtered = filtered.filter(activity => activity.status === filters.status);
     }
@@ -151,10 +155,9 @@ export default function AdminActivities() {
     }
   };
 
-  // Statistics - solo contar actividades con deadline
+  // Statistics - solo contar actividades pendientes con deadline
   const totalActivities = activities.length;
   const pendingActivities = activities.filter(a => a.status === 'pending').length;
-  const completedActivities = activities.filter(a => a.status === 'completed').length;
   const overdueActivities = activities.filter(a => 
     a.status === 'pending' && 
     a.due_date && 
@@ -164,17 +167,17 @@ export default function AdminActivities() {
   return (
     <div className="space-y-6 p-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Actividades Programadas</h1>
-        <p className="text-gray-600">Gestiona actividades con fecha límite y seguimiento</p>
+        <h1 className="text-2xl font-bold text-gray-900">Actividades Pendientes</h1>
+        <p className="text-gray-600">Gestiona actividades pendientes con fecha límite</p>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total</p>
+                <p className="text-sm text-muted-foreground">Total Pendientes</p>
                 <p className="text-2xl font-bold">{totalActivities}</p>
               </div>
               <Calendar className="h-5 w-5 text-muted-foreground" />
@@ -186,22 +189,10 @@ export default function AdminActivities() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Pendientes</p>
+                <p className="text-sm text-muted-foreground">Por Vencer</p>
                 <p className="text-2xl font-bold text-yellow-600">{pendingActivities}</p>
               </div>
               <Clock className="h-5 w-5 text-yellow-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Completadas</p>
-                <p className="text-2xl font-bold text-green-600">{completedActivities}</p>
-              </div>
-              <CheckCircle className="h-5 w-5 text-green-500" />
             </div>
           </CardContent>
         </Card>
@@ -231,7 +222,7 @@ export default function AdminActivities() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
-            Actividades Programadas ({filteredActivities.length})
+            Actividades Pendientes ({filteredActivities.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -242,7 +233,7 @@ export default function AdminActivities() {
             </div>
           ) : filteredActivities.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-600">No se encontraron actividades programadas</p>
+              <p className="text-gray-600">No se encontraron actividades pendientes</p>
             </div>
           ) : (
             <ActivitiesListView
