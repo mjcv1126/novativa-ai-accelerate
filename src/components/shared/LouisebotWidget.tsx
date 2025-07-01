@@ -14,6 +14,12 @@ const LouisebotWidget = () => {
       return;
     }
 
+    // Don't load widget on blog pages containing "novamedic"
+    if (location.pathname.includes('/blog/') && location.pathname.includes('novamedic')) {
+      console.log('LOUISEBOT-WIDGET: Skipping widget load on NovaMedic blog page');
+      return;
+    }
+
     if (hasLoaded.current) {
       console.log('LOUISEBOT-WIDGET: Widget already loaded, skipping...');
       return;
