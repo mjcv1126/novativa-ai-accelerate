@@ -84,7 +84,9 @@ export const adminAuthService = {
         return { data: userSession, error: null };
       }
       
-      return result;
+      if (result.error) {
+        return result;
+      }
 
       console.log('adminAuthService.login - Invalid credentials');
       return { data: null, error: { message: 'Credenciales incorrectas' } };
@@ -110,9 +112,20 @@ export const adminAuthService = {
   checkSession: async () => {
     console.log('adminAuthService.checkSession - Starting session check');
     try {
-      // NO autorizar automáticamente desde localStorage
-      // Solo verificar si hay una sesión activa válida
+      // Verificar localStorage primero (para usuarios mock/locales)
+      const storedUser = localStorage.getItem('admin_user');
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser);
+          console.log('adminAuthService.checkSession - Found stored user:', user);
+          return { data: { session: { user } }, error: null };
+        } catch (parseError) {
+          console.error('adminAuthService.checkSession - Parse error:', parseError);
+          localStorage.removeItem('admin_user');
+        }
+      }
       
+      // Verificar sesión de Supabase
       console.log('adminAuthService.checkSession - Checking Supabase session');
       const result = await supabase.auth.getSession();
       console.log('adminAuthService.checkSession - Supabase result:', result);
@@ -127,8 +140,6 @@ export const adminAuthService = {
         return { data: { session: { user: userSession } }, error: null };
       }
       
-      // Limpiar localStorage si no hay sesión válida
-      localStorage.removeItem('admin_user');
       console.log('adminAuthService.checkSession - No session found');
       return { data: { session: null }, error: null };
     } catch (error) {

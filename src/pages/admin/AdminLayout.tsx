@@ -17,6 +17,7 @@ import AdminAutomations from './AdminAutomations';
 import AdminUsers from './AdminUsers';
 import AdminCustomCSS from './AdminCustomCSS';
 import AdminScripts from './AdminScripts';
+import AdminProducts from './AdminProducts';
 import FileUpload from '../FileUpload';
 import TranscriptionPage from '../TranscriptionPage';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
@@ -68,6 +69,7 @@ const AdminLayout = () => {
               <Route path="invoices/:id/edit" element={<ProtectedRoute><AdminCreateInvoice /></ProtectedRoute>} />
               <Route path="invoices/:id/view" element={<ProtectedRoute><AdminInvoiceView /></ProtectedRoute>} />
               <Route path="invoices/settings" element={<ProtectedRoute><AdminInvoiceSettings /></ProtectedRoute>} />
+              <Route path="products" element={<ProtectedRoute><AdminProducts /></ProtectedRoute>} />
               <Route path="automations" element={<ProtectedRoute><AdminAutomations /></ProtectedRoute>} />
               <Route 
                 path="users" 
