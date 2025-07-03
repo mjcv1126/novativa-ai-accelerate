@@ -29,6 +29,7 @@ export interface Contact {
   lead_value_currency?: string;
   payment_type?: 'one_time' | 'recurring';
   loss_reason?: string;
+  rtn?: string;
   created_at: string;
   updated_at?: string;
 }

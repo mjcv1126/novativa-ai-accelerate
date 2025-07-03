@@ -2,6 +2,8 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { countries } from '@/components/schedule/countryData';
 
 interface ContactFormFieldsProps {
   formData: {
@@ -9,6 +11,7 @@ interface ContactFormFieldsProps {
     last_name: string;
     company: string;
     country_name: string;
+    rtn: string;
   };
   onFormDataChange: (updates: Partial<ContactFormFieldsProps['formData']>) => void;
   selectedCountry?: { name: string };
@@ -49,12 +52,36 @@ export const ContactFormFields = ({ formData, onFormDataChange, selectedCountry 
         </div>
         <div>
           <Label htmlFor="country_name">País *</Label>
+          <Select
+            value={formData.country_name}
+            onValueChange={(value) => onFormDataChange({ country_name: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecciona un país" />
+            </SelectTrigger>
+            <SelectContent>
+              {countries.map((country) => (
+                <SelectItem key={country.name} value={country.name}>
+                  {country.flag} {country.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="rtn">RTN (Opcional)</Label>
           <Input
-            id="country_name"
-            value={selectedCountry?.name || formData.country_name}
-            onChange={(e) => onFormDataChange({ country_name: e.target.value })}
-            placeholder="Se llenará automáticamente"
+            id="rtn"
+            value={formData.rtn}
+            onChange={(e) => onFormDataChange({ rtn: e.target.value })}
+            placeholder="Ej: 08011988123456"
           />
+        </div>
+        <div>
+          {/* Espacio reservado para futuros campos */}
         </div>
       </div>
     </>
