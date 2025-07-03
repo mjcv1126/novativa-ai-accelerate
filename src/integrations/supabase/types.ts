@@ -263,6 +263,7 @@ export type Database = {
           notes: string | null
           payment_type: string | null
           phone: string
+          rtn: string | null
           service_of_interest: string | null
           stage_id: string | null
           updated_at: string | null
@@ -285,6 +286,7 @@ export type Database = {
           notes?: string | null
           payment_type?: string | null
           phone: string
+          rtn?: string | null
           service_of_interest?: string | null
           stage_id?: string | null
           updated_at?: string | null
@@ -307,6 +309,7 @@ export type Database = {
           notes?: string | null
           payment_type?: string | null
           phone?: string
+          rtn?: string | null
           service_of_interest?: string | null
           stage_id?: string | null
           updated_at?: string | null
