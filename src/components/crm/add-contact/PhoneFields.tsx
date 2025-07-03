@@ -2,7 +2,7 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SearchableSelect } from '@/components/ui/searchable-select';
 import { countries } from '@/components/schedule/countryData';
 
 interface PhoneFieldsProps {
@@ -30,24 +30,16 @@ export const PhoneFields = ({
         <Label>Teléfono Principal *</Label>
         <div className="flex gap-2">
           <div className="w-[140px]">
-            <Select 
-              value={formData.country_code} 
+            <SearchableSelect
+              options={countries.map((country) => ({
+                value: country.code,
+                label: `${country.flag} +${country.code}`,
+              }))}
+              value={formData.country_code}
               onValueChange={(value) => onFormDataChange({ country_code: value })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="max-h-[280px]">
-                {countries.map((country) => (
-                  <SelectItem key={`primary-${country.code}-${country.name}`} value={country.code}>
-                    <span className="flex items-center gap-2">
-                      <span>{country.flag}</span>
-                      <span>+{country.code}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              placeholder="Código"
+              emptyText="No encontrado"
+            />
           </div>
           <div className="flex-1">
             <Input
@@ -66,24 +58,16 @@ export const PhoneFields = ({
         <Label>Teléfono Secundario</Label>
         <div className="flex gap-2">
           <div className="w-[140px]">
-            <Select 
-              value={formData.secondary_country_code} 
+            <SearchableSelect
+              options={countries.map((country) => ({
+                value: country.code,
+                label: `${country.flag} +${country.code}`,
+              }))}
+              value={formData.secondary_country_code}
               onValueChange={(value) => onFormDataChange({ secondary_country_code: value })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="max-h-[280px]">
-                {countries.map((country) => (
-                  <SelectItem key={`secondary-${country.code}-${country.name}`} value={country.code}>
-                    <span className="flex items-center gap-2">
-                      <span>{country.flag}</span>
-                      <span>+{country.code}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              placeholder="Código"
+              emptyText="No encontrado"
+            />
           </div>
           <div className="flex-1">
             <Input

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SearchableSelect } from '@/components/ui/searchable-select';
 import { countries } from '@/components/schedule/countryData';
 
 interface ContactFormFieldsProps {
@@ -52,21 +52,16 @@ export const ContactFormFields = ({ formData, onFormDataChange, selectedCountry 
         </div>
         <div>
           <Label htmlFor="country_name">País *</Label>
-          <Select
+          <SearchableSelect
+            options={countries.map((country) => ({
+              value: country.name,
+              label: `${country.flag} ${country.name}`,
+            }))}
             value={formData.country_name}
             onValueChange={(value) => onFormDataChange({ country_name: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecciona un país" />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.name} value={country.name}>
-                  {country.flag} {country.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            placeholder="Selecciona un país"
+            emptyText="No se encontraron países"
+          />
         </div>
       </div>
 

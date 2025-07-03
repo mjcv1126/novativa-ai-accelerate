@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SearchableSelect } from '@/components/ui/searchable-select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -270,18 +270,15 @@ const AdminCreateInvoice = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="contact">Cliente del CRM</Label>
-                <Select onValueChange={handleContactSelect}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar cliente del CRM" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {contacts.map((contact) => (
-                      <SelectItem key={contact.id} value={contact.id}>
-                        {contact.first_name} {contact.last_name} - {contact.phone}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <SearchableSelect
+                  options={contacts.map((contact) => ({
+                    value: contact.id,
+                    label: `${contact.first_name} ${contact.last_name} - ${contact.phone}`,
+                  }))}
+                  onValueChange={handleContactSelect}
+                  placeholder="Seleccionar cliente del CRM"
+                  emptyText="No se encontraron clientes"
+                />
               </div>
               <div>
                 <Label htmlFor="contact_name">Nombre del Cliente *</Label>
@@ -356,15 +353,15 @@ const AdminCreateInvoice = () => {
               </div>
               <div>
                 <Label htmlFor="currency">Moneda</Label>
-                <Select value={formData.currency} onValueChange={(value) => setFormData({...formData, currency: value})}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="HNL">HNL (Lempiras)</SelectItem>
-                    <SelectItem value="USD">USD (Dólares)</SelectItem>
-                  </SelectContent>
-                </Select>
+                <SearchableSelect
+                  options={[
+                    { value: "HNL", label: "HNL (Lempiras)" },
+                    { value: "USD", label: "USD (Dólares)" }
+                  ]}
+                  value={formData.currency}
+                  onValueChange={(value) => setFormData({...formData, currency: value})}
+                  placeholder="Seleccionar moneda"
+                />
               </div>
             </div>
             <div>
@@ -410,18 +407,15 @@ const AdminCreateInvoice = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="lg:col-span-2">
                       <Label>Producto/Servicio</Label>
-                      <Select onValueChange={(value) => handleProductSelect(index, value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar producto" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {products.map((product) => (
-                            <SelectItem key={product.id} value={product.id}>
-                              {product.name} - {product.type === 'service' ? 'Servicio' : 'Producto'}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <SearchableSelect
+                        options={products.map((product) => ({
+                          value: product.id,
+                          label: `${product.name} - ${product.type === 'service' ? 'Servicio' : 'Producto'}`,
+                        }))}
+                        onValueChange={(value) => handleProductSelect(index, value)}
+                        placeholder="Seleccionar producto"
+                        emptyText="No se encontraron productos"
+                      />
                       <Input
                         className="mt-2"
                         placeholder="Nombre del producto/servicio"
