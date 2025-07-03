@@ -129,14 +129,14 @@ const AdminInvoices = () => {
             </div>
             <div>
               <Select 
-                value={filters.status || ''} 
-                onValueChange={(value) => setFilters({...filters, status: value || undefined})}
+                value={filters.status || 'all'} 
+                onValueChange={(value) => setFilters({...filters, status: value === 'all' ? undefined : value})}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Estado" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="all">Todos</SelectItem>
                   <SelectItem value="draft">Borrador</SelectItem>
                   <SelectItem value="pending">Pendiente</SelectItem>
                   <SelectItem value="paid">Pagada</SelectItem>
@@ -147,14 +147,14 @@ const AdminInvoices = () => {
             </div>
             <div>
               <Select 
-                value={filters.type || ''} 
-                onValueChange={(value) => setFilters({...filters, type: value as 'invoice' | 'proforma' || undefined})}
+                value={filters.type || 'all'} 
+                onValueChange={(value) => setFilters({...filters, type: value === 'all' ? undefined : value as 'invoice' | 'proforma'})}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="all">Todos</SelectItem>
                   <SelectItem value="invoice">Facturas</SelectItem>
                   <SelectItem value="proforma">Proformas</SelectItem>
                 </SelectContent>

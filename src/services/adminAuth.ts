@@ -1,22 +1,9 @@
 
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
 // Credenciales de administrador por defecto
 const ADMIN_EMAIL = 'soporte@novativa.org';
 const ADMIN_PASSWORD = 'Novativa2025$';
-
-// Configuración de Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://gktrnjjbhqxkbcvonzxv.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdHJuampiaHF4a2Jjdm9uenh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1OTIyMTEsImV4cCI6MjA2MTE2ODIxMX0.emSsCTQYloww4wrKZXQrro-5oAyJbMQ-3DLj0z8LD7Q';
-
-let supabaseClient: any = null;
-
-try {
-  supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
-  console.log('adminAuth - Supabase client created successfully');
-} catch (error) {
-  console.error('adminAuth - Failed to create Supabase client:', error);
-}
 
 // Inicializar usuarios locales con dcuellar
 const initializeLocalUsers = () => {
@@ -83,23 +70,21 @@ export const adminAuthService = {
       }
 
       // Intentar con Supabase si está disponible
-      if (supabaseClient) {
-        console.log('adminAuthService.login - Trying Supabase auth');
-        const result = await supabaseClient.auth.signInWithPassword({ email, password });
-        console.log('adminAuthService.login - Supabase result:', result);
-        
-        if (result.data?.user) {
-          const userSession = {
-            id: result.data.user.id,
-            email: result.data.user.email,
-            role: 'admin'
-          };
-          localStorage.setItem('admin_user', JSON.stringify(userSession));
-          return { data: userSession, error: null };
-        }
-        
-        return result;
+      console.log('adminAuthService.login - Trying Supabase auth');
+      const result = await supabase.auth.signInWithPassword({ email, password });
+      console.log('adminAuthService.login - Supabase result:', result);
+      
+      if (result.data?.user) {
+        const userSession = {
+          id: result.data.user.id,
+          email: result.data.user.email,
+          role: 'admin'
+        };
+        localStorage.setItem('admin_user', JSON.stringify(userSession));
+        return { data: userSession, error: null };
       }
+      
+      return result;
 
       console.log('adminAuthService.login - Invalid credentials');
       return { data: null, error: { message: 'Credenciales incorrectas' } };
@@ -112,9 +97,7 @@ export const adminAuthService = {
   logout: async () => {
     console.log('adminAuthService.logout - Starting logout');
     try {
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
-      }
+      await supabase.auth.signOut();
       localStorage.removeItem('admin_user');
       console.log('adminAuthService.logout - Logout successful');
       return { error: null };
@@ -130,63 +113,45 @@ export const adminAuthService = {
       // NO autorizar automáticamente desde localStorage
       // Solo verificar si hay una sesión activa válida
       
-      // Si hay Supabase disponible, revisar sesión
-      if (supabaseClient) {
-        console.log('adminAuthService.checkSession - Checking Supabase session');
-        const result = await supabaseClient.auth.getSession();
-        console.log('adminAuthService.checkSession - Supabase result:', result);
-        
-        if (result.data?.session?.user) {
-          const userSession = {
-            id: result.data.session.user.id,
-            email: result.data.session.user.email,
-            role: 'admin'
-          };
-          localStorage.setItem('admin_user', JSON.stringify(userSession));
-          return { data: { session: { user: userSession } }, error: null };
-        }
-        
-        return result;
+      console.log('adminAuthService.checkSession - Checking Supabase session');
+      const result = await supabase.auth.getSession();
+      console.log('adminAuthService.checkSession - Supabase result:', result);
+      
+      if (result.data?.session?.user) {
+        const userSession = {
+          id: result.data.session.user.id,
+          email: result.data.session.user.email,
+          role: 'admin'
+        };
+        localStorage.setItem('admin_user', JSON.stringify(userSession));
+        return { data: { session: { user: userSession } }, error: null };
       }
       
+      // Limpiar localStorage si no hay sesión válida
+      localStorage.removeItem('admin_user');
       console.log('adminAuthService.checkSession - No session found');
       return { data: { session: null }, error: null };
     } catch (error) {
       console.error('adminAuthService.checkSession - Error:', error);
+      localStorage.removeItem('admin_user');
       return { data: { session: null }, error };
     }
   },
 
   resetPassword: async (email: string) => {
     console.log('adminAuthService.resetPassword - Email:', email);
-    if (!supabaseClient) {
-      return email === ADMIN_EMAIL
-        ? { error: null }
-        : { error: { message: 'Email no encontrado' } };
-    }
-
-    return await supabaseClient.auth.resetPasswordForEmail(email, {
+    return await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/admin/login`,
     });
   },
 
   verifyResetCode: async (email: string, code: string) => {
     console.log('adminAuthService.verifyResetCode - Email:', email, 'Code:', code);
-    if (!supabaseClient) {
-      return email === ADMIN_EMAIL && code === '123456'
-        ? { error: null }
-        : { error: { message: 'Código inválido' } };
-    }
     return { error: null };
   },
 
   updatePassword: async (email: string, code: string, newPassword: string) => {
     console.log('adminAuthService.updatePassword - Email:', email);
-    if (!supabaseClient) {
-      return email === ADMIN_EMAIL && code === '123456'
-        ? { error: null }
-        : { error: { message: 'No se pudo actualizar la contraseña' } };
-    }
-    return await supabaseClient.auth.updateUser({ password: newPassword });
+    return await supabase.auth.updateUser({ password: newPassword });
   }
 };
