@@ -127,25 +127,8 @@ export const adminAuthService = {
   checkSession: async () => {
     console.log('adminAuthService.checkSession - Starting session check');
     try {
-      // Primero revisar localStorage
-      const storedUser = localStorage.getItem('admin_user');
-      if (storedUser) {
-        try {
-          const user = JSON.parse(storedUser);
-          console.log('adminAuthService.checkSession - Found user in localStorage:', user);
-          
-          // Verificar que el usuario es válido
-          if (user.id && user.email && user.role) {
-            return { data: { session: { user } }, error: null };
-          } else {
-            console.log('adminAuthService.checkSession - Invalid user data, removing');
-            localStorage.removeItem('admin_user');
-          }
-        } catch (parseError) {
-          console.error('adminAuthService.checkSession - Error parsing stored user:', parseError);
-          localStorage.removeItem('admin_user');
-        }
-      }
+      // NO autorizar automáticamente desde localStorage
+      // Solo verificar si hay una sesión activa válida
       
       // Si hay Supabase disponible, revisar sesión
       if (supabaseClient) {
