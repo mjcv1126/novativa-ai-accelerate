@@ -11,6 +11,8 @@ import AdminBookings from './AdminBookings';
 import AdminActivities from './AdminActivities';
 import AdminInvoices from './AdminInvoices';
 import AdminCreateInvoice from './AdminCreateInvoice';
+import AdminInvoiceView from './AdminInvoiceView';
+import AdminInvoiceSettings from './AdminInvoiceSettings';
 import AdminAutomations from './AdminAutomations';
 import AdminUsers from './AdminUsers';
 import AdminCustomCSS from './AdminCustomCSS';
@@ -54,17 +56,19 @@ const AdminLayout = () => {
           </header>
           <main className="flex-1 p-4 lg:p-6 overflow-auto">
             <Routes>
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="blog" element={<AdminBlog />} />
-              <Route path="blog/new" element={<AdminBlogEdit />} />
-              <Route path="blog/edit/:id" element={<AdminBlogEdit />} />
-              <Route path="crm" element={<AdminCRM />} />
-              <Route path="bookings" element={<AdminBookings />} />
-              <Route path="activities" element={<AdminActivities />} />
-              <Route path="invoices" element={<AdminInvoices />} />
-              <Route path="invoices/create" element={<AdminCreateInvoice />} />
-              <Route path="invoices/:id/edit" element={<AdminCreateInvoice />} />
-              <Route path="automations" element={<AdminAutomations />} />
+              <Route path="dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="blog" element={<ProtectedRoute><AdminBlog /></ProtectedRoute>} />
+              <Route path="blog/new" element={<ProtectedRoute><AdminBlogEdit /></ProtectedRoute>} />
+              <Route path="blog/edit/:id" element={<ProtectedRoute><AdminBlogEdit /></ProtectedRoute>} />
+              <Route path="crm" element={<ProtectedRoute><AdminCRM /></ProtectedRoute>} />
+              <Route path="bookings" element={<ProtectedRoute><AdminBookings /></ProtectedRoute>} />
+              <Route path="activities" element={<ProtectedRoute><AdminActivities /></ProtectedRoute>} />
+              <Route path="invoices" element={<ProtectedRoute><AdminInvoices /></ProtectedRoute>} />
+              <Route path="invoices/create" element={<ProtectedRoute><AdminCreateInvoice /></ProtectedRoute>} />
+              <Route path="invoices/:id/edit" element={<ProtectedRoute><AdminCreateInvoice /></ProtectedRoute>} />
+              <Route path="invoices/:id/view" element={<ProtectedRoute><AdminInvoiceView /></ProtectedRoute>} />
+              <Route path="invoices/settings" element={<ProtectedRoute><AdminInvoiceSettings /></ProtectedRoute>} />
+              <Route path="automations" element={<ProtectedRoute><AdminAutomations /></ProtectedRoute>} />
               <Route 
                 path="users" 
                 element={
@@ -81,7 +85,7 @@ const AdminLayout = () => {
                   </ProtectedRoute>
                 } 
               />
-              <Route path="transcription" element={<TranscriptionPage />} />
+              <Route path="transcription" element={<ProtectedRoute><TranscriptionPage /></ProtectedRoute>} />
               <Route 
                 path="scripts" 
                 element={

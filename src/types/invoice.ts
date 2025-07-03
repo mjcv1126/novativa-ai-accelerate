@@ -58,6 +58,7 @@ export interface InvoiceSettings {
   company_phone?: string;
   company_email?: string;
   company_logo_url?: string;
+  company_settings?: Record<string, any>;
   isv_rate: number;
   default_currency: string;
   default_country: string;

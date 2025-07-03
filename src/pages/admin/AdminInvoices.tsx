@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Search, Filter, FileText, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, Filter, FileText, Eye, Edit, Trash2, Settings } from 'lucide-react';
 import { invoiceService } from '@/services/invoiceService';
 import { formatDate } from '@/utils/dateUtils';
 import type { Invoice, InvoiceFilters } from '@/types/invoice';
@@ -97,10 +97,19 @@ const AdminInvoices = () => {
           <h1 className="text-3xl font-bold">Sistema de Facturación</h1>
           <p className="text-gray-600">Gestiona facturas y proformas integradas con el CRM</p>
         </div>
-        <Button onClick={() => navigate('/admin/invoices/create')} className="bg-novativa-teal hover:bg-novativa-lightTeal">
-          <Plus className="h-4 w-4 mr-2" />
-          Nueva Factura
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/admin/invoices/settings')}
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Configuración
+          </Button>
+          <Button onClick={() => navigate('/admin/invoices/create')} className="bg-novativa-teal hover:bg-novativa-lightTeal">
+            <Plus className="h-4 w-4 mr-2" />
+            Nueva Factura
+          </Button>
+        </div>
       </div>
 
       {/* Filtros */}

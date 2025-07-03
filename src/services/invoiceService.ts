@@ -52,22 +52,65 @@ export const invoiceService = {
       .from('invoice_settings')
       .select('*')
       .limit(1)
-      .single();
+      .maybeSingle();
     
     if (error) throw error;
+    
+    // Si no hay configuración, crear una por defecto
+    if (!data) {
+      const defaultSettings = {
+        company_name: 'Novativa',
+        company_email: 'soporte@novativa.org',
+        isv_rate: 0.15,
+        default_currency: 'HNL',
+        default_country: 'Honduras',
+        invoice_prefix: 'INV',
+        proforma_prefix: 'PRF',
+        next_invoice_number: 1,
+        next_proforma_number: 1
+      };
+      
+      const { data: newData, error: insertError } = await supabase
+        .from('invoice_settings')
+        .insert(defaultSettings)
+        .select()
+        .single();
+      
+      if (insertError) throw insertError;
+      return newData as InvoiceSettings;
+    }
+    
     return data as InvoiceSettings;
   },
 
   async updateSettings(settings: Partial<InvoiceSettings>) {
-    const { data, error } = await supabase
-      .from('invoice_settings')
-      .update(settings)
-      .eq('id', (await this.getSettings()).id)
-      .select()
-      .single();
-    
-    if (error) throw error;
-    return data as InvoiceSettings;
+    try {
+      // Primero obtener el ID de configuración existente
+      const existingSettings = await this.getSettings();
+      
+      const { data, error } = await supabase
+        .from('invoice_settings')
+        .update(settings)
+        .eq('id', existingSettings.id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data as InvoiceSettings;
+    } catch (error: any) {
+      // Si no existe configuración, crear una nueva
+      if (error.message?.includes('No rows')) {
+        const { data, error: insertError } = await supabase
+          .from('invoice_settings')
+          .insert(settings)
+          .select()
+          .single();
+        
+        if (insertError) throw insertError;
+        return data as InvoiceSettings;
+      }
+      throw error;
+    }
   },
 
   // Facturas
