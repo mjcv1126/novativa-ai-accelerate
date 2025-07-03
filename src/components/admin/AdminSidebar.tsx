@@ -17,7 +17,8 @@ import {
   ExternalLink,
   Mail,
   MessageSquare,
-  Heart
+  Heart,
+  Receipt
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -67,6 +68,12 @@ const AdminSidebar = () => {
       title: 'Actividades',
       icon: Calendar,
       path: '/admin/activities',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'Facturación',
+      icon: Receipt,
+      path: '/admin/invoices',
       roles: ['admin', 'super_admin']
     },
     {

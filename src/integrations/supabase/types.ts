@@ -354,6 +354,239 @@ export type Database = {
         }
         Relationships: []
       }
+      invoice_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          has_isv: boolean
+          id: string
+          invoice_id: string
+          isv_amount: number
+          product_id: string | null
+          product_name: string
+          quantity: number
+          subtotal: number
+          total: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          has_isv?: boolean
+          id?: string
+          invoice_id: string
+          isv_amount?: number
+          product_id?: string | null
+          product_name: string
+          quantity?: number
+          subtotal?: number
+          total?: number
+          unit_price?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          has_isv?: boolean
+          id?: string
+          invoice_id?: string
+          isv_amount?: number
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          subtotal?: number
+          total?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "invoice_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_products: {
+        Row: {
+          created_at: string
+          description: string | null
+          has_isv: boolean
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          has_isv?: boolean
+          id?: string
+          is_active?: boolean
+          name: string
+          price?: number
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          has_isv?: boolean
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      invoice_settings: {
+        Row: {
+          company_address: string | null
+          company_email: string | null
+          company_logo_url: string | null
+          company_name: string
+          company_phone: string | null
+          company_rtn: string | null
+          created_at: string
+          default_country: string
+          default_currency: string
+          id: string
+          invoice_prefix: string
+          isv_rate: number
+          next_invoice_number: number
+          next_proforma_number: number
+          proforma_prefix: string
+          updated_at: string
+        }
+        Insert: {
+          company_address?: string | null
+          company_email?: string | null
+          company_logo_url?: string | null
+          company_name?: string
+          company_phone?: string | null
+          company_rtn?: string | null
+          created_at?: string
+          default_country?: string
+          default_currency?: string
+          id?: string
+          invoice_prefix?: string
+          isv_rate?: number
+          next_invoice_number?: number
+          next_proforma_number?: number
+          proforma_prefix?: string
+          updated_at?: string
+        }
+        Update: {
+          company_address?: string | null
+          company_email?: string | null
+          company_logo_url?: string | null
+          company_name?: string
+          company_phone?: string | null
+          company_rtn?: string | null
+          created_at?: string
+          default_country?: string
+          default_currency?: string
+          id?: string
+          invoice_prefix?: string
+          isv_rate?: number
+          next_invoice_number?: number
+          next_proforma_number?: number
+          proforma_prefix?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          company_settings: Json | null
+          contact_address: string | null
+          contact_email: string | null
+          contact_id: string | null
+          contact_name: string
+          contact_phone: string | null
+          contact_rtn: string | null
+          country: string
+          created_at: string
+          currency: string
+          due_date: string | null
+          id: string
+          invoice_date: string
+          invoice_number: string
+          invoice_type: string
+          isv_amount: number
+          notes: string | null
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          company_settings?: Json | null
+          contact_address?: string | null
+          contact_email?: string | null
+          contact_id?: string | null
+          contact_name: string
+          contact_phone?: string | null
+          contact_rtn?: string | null
+          country?: string
+          created_at?: string
+          currency?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string
+          invoice_number: string
+          invoice_type?: string
+          isv_amount?: number
+          notes?: string | null
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          company_settings?: Json | null
+          contact_address?: string | null
+          contact_email?: string | null
+          contact_id?: string | null
+          contact_name?: string
+          contact_phone?: string | null
+          contact_rtn?: string | null
+          country?: string
+          created_at?: string
+          currency?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          invoice_type?: string
+          isv_amount?: number
+          notes?: string | null
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_assignments: {
         Row: {
           assigned_at: string
@@ -623,6 +856,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_invoice_number: {
+        Args: { invoice_type?: string }
+        Returns: string
+      }
       get_latest_assignment: {
         Args: { contact_uuid: string }
         Returns: {

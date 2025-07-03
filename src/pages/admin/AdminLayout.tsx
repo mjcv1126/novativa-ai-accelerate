@@ -9,6 +9,8 @@ import AdminBlogEdit from './AdminBlogEdit';
 import AdminCRM from './AdminCRM';
 import AdminBookings from './AdminBookings';
 import AdminActivities from './AdminActivities';
+import AdminInvoices from './AdminInvoices';
+import AdminCreateInvoice from './AdminCreateInvoice';
 import AdminAutomations from './AdminAutomations';
 import AdminUsers from './AdminUsers';
 import AdminCustomCSS from './AdminCustomCSS';
@@ -59,6 +61,9 @@ const AdminLayout = () => {
               <Route path="crm" element={<AdminCRM />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="activities" element={<AdminActivities />} />
+              <Route path="invoices" element={<AdminInvoices />} />
+              <Route path="invoices/create" element={<AdminCreateInvoice />} />
+              <Route path="invoices/:id/edit" element={<AdminCreateInvoice />} />
               <Route path="automations" element={<AdminAutomations />} />
               <Route 
                 path="users" 
