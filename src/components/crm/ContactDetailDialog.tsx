@@ -259,20 +259,35 @@ export const ContactDetailDialog = ({
                     )}
                   </div>
 
-                  <div>
-                    <Label>País</Label>
-                    {editMode ? (
-                      <Input
-                        value={formData.country_name || ''}
-                        onChange={(e) => setFormData({ ...formData, country_name: e.target.value })}
-                      />
-                    ) : (
-                      <div className="flex items-center gap-2 mt-1">
-                        <Globe className="h-4 w-4" />
-                        <span>{contact.country_name}</span>
-                      </div>
-                    )}
-                  </div>
+                   <div>
+                     <Label>País</Label>
+                     {editMode ? (
+                       <Input
+                         value={formData.country_name || ''}
+                         onChange={(e) => setFormData({ ...formData, country_name: e.target.value })}
+                       />
+                     ) : (
+                       <div className="flex items-center gap-2 mt-1">
+                         <Globe className="h-4 w-4" />
+                         <span>{contact.country_name}</span>
+                       </div>
+                     )}
+                   </div>
+
+                   <div>
+                     <Label>RTN</Label>
+                     {editMode ? (
+                       <Input
+                         value={formData.rtn || ''}
+                         onChange={(e) => setFormData({ ...formData, rtn: e.target.value })}
+                         placeholder="Ej: 08011988123456"
+                       />
+                     ) : (
+                       <div className="flex items-center gap-2 mt-1">
+                         <span>{contact.rtn || 'No disponible'}</span>
+                       </div>
+                     )}
+                   </div>
 
                   {/* Campos de valor del lead */}
                   <div>

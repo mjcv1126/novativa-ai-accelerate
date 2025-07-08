@@ -165,6 +165,7 @@ export const TableView = ({
                 {getSortIcon('company')}
               </Button>
             </TableHead>
+            <TableHead>RTN</TableHead>
             <TableHead>
               <Button
                 variant="ghost"
@@ -221,9 +222,12 @@ export const TableView = ({
                   <div className="text-xs text-gray-500">+{contact.additional_phones.length} más</div>
                 )}
               </TableCell>
-              <TableCell>
-                <div className="text-sm">{contact.company || '-'}</div>
-              </TableCell>
+               <TableCell>
+                 <div className="text-sm">{contact.company || '-'}</div>
+               </TableCell>
+               <TableCell>
+                 <div className="text-sm">{contact.rtn || '-'}</div>
+               </TableCell>
               <TableCell>
                 {contact.stage && (
                   <Badge 

@@ -112,9 +112,17 @@ export const ContactCard = ({ contact, stages, onMoveContact, onEditContact, onD
               <Phone className="h-3 w-3 flex-shrink-0" />
               <span className="truncate">+{contact.additional_phones.length} tel. adicional(es)</span>
             </div>
-          )}
+           )}
 
-          {/* Lead Value */}
+           {/* RTN */}
+           {contact.rtn && (
+             <div className="flex items-center gap-2 text-xs text-gray-600">
+               <span className="font-medium">RTN:</span>
+               <span className="truncate">{contact.rtn}</span>
+             </div>
+           )}
+
+           {/* Lead Value */}
           {contact.lead_value && contact.lead_value > 0 && (
             <div className="flex items-center gap-2 text-xs text-green-600 font-medium">
               <DollarSign className="h-3 w-3 flex-shrink-0" />
