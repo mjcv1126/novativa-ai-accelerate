@@ -271,12 +271,17 @@ export const useContactOperations = () => {
     try {
       const currentUserEmail = getCurrentUserEmail();
       
-      // Limpiar campos de arrays vacíos
+      // Limpiar campos de arrays vacíos y remover campos que no pertenecen a la tabla contacts
       const cleanUpdates = {
         ...updates,
         additional_phones: updates.additional_phones?.filter(phone => phone && phone.trim()) || null,
         additional_emails: updates.additional_emails?.filter(email => email && email.trim()) || null
       };
+      
+      // Remover campos que no pertenecen a la tabla contacts
+      delete (cleanUpdates as any).stage;
+      delete (cleanUpdates as any).assignment;
+      delete (cleanUpdates as any).activities;
       
       // Primero actualizar el contacto
       const { error } = await supabase
