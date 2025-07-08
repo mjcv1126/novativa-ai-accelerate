@@ -109,9 +109,10 @@ const AdminCreateInvoice = () => {
         ...formData,
         contact_id: contactId,
         contact_name: `${contact.first_name} ${contact.last_name}`,
+        contact_rtn: contact.rtn,
         contact_email: contact.email,
         contact_phone: contact.phone,
-        contact_address: `${contact.country_name}`
+        contact_address: contact.address || contact.country_name
       });
     }
   };

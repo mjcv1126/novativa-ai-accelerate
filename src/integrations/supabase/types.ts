@@ -253,6 +253,7 @@ export type Database = {
         Row: {
           additional_emails: string[] | null
           additional_phones: string[] | null
+          address: string | null
           company: string | null
           country_code: string
           country_name: string
@@ -276,6 +277,7 @@ export type Database = {
         Insert: {
           additional_emails?: string[] | null
           additional_phones?: string[] | null
+          address?: string | null
           company?: string | null
           country_code: string
           country_name: string
@@ -299,6 +301,7 @@ export type Database = {
         Update: {
           additional_emails?: string[] | null
           additional_phones?: string[] | null
+          address?: string | null
           company?: string | null
           country_code?: string
           country_name?: string

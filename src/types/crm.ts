@@ -30,6 +30,7 @@ export interface Contact {
   payment_type?: 'one_time' | 'recurring';
   loss_reason?: string;
   rtn?: string;
+  address?: string;
   created_at: string;
   updated_at?: string;
 }

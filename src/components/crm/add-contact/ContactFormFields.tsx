@@ -12,6 +12,7 @@ interface ContactFormFieldsProps {
     company: string;
     country_name: string;
     rtn: string;
+    address: string;
   };
   onFormDataChange: (updates: Partial<ContactFormFieldsProps['formData']>) => void;
   selectedCountry?: { name: string };
@@ -76,7 +77,13 @@ export const ContactFormFields = ({ formData, onFormDataChange, selectedCountry 
           />
         </div>
         <div>
-          {/* Espacio reservado para futuros campos */}
+          <Label htmlFor="address">Dirección</Label>
+          <Input
+            id="address"
+            value={formData.address}
+            onChange={(e) => onFormDataChange({ address: e.target.value })}
+            placeholder="Dirección completa"
+          />
         </div>
       </div>
     </>

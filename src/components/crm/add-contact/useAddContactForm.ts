@@ -26,7 +26,8 @@ export const useAddContactForm = (onContactAdded: () => void) => {
     lead_value_currency: 'USD',
     payment_type: '',
     service_of_interest: '',
-    rtn: ''
+    rtn: '',
+    address: ''
   });
 
   const selectedCountry = countries.find(c => c.code === formData.country_code);
@@ -54,7 +55,8 @@ export const useAddContactForm = (onContactAdded: () => void) => {
       lead_value_currency: 'USD',
       payment_type: '',
       service_of_interest: '',
-      rtn: ''
+      rtn: '',
+      address: ''
     });
   };
 
@@ -112,7 +114,8 @@ export const useAddContactForm = (onContactAdded: () => void) => {
           lead_value_currency: formData.lead_value_currency || 'USD',
           payment_type: formData.payment_type || null,
           service_of_interest: formData.service_of_interest || null,
-          rtn: formData.rtn || null
+          rtn: formData.rtn || null,
+          address: formData.address || null
         }]);
 
       if (error) throw error;
