@@ -9,6 +9,8 @@ import { invoiceService } from '@/services/invoiceService';
 import { useToast } from '@/hooks/use-toast';
 import { formatDate } from '@/utils/dateUtils';
 import type { Invoice } from '@/types/invoice';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const AdminInvoiceView = () => {
   const { id } = useParams();
@@ -59,6 +61,124 @@ const AdminInvoiceView = () => {
       <Badge variant="default">Factura</Badge>;
   };
 
+  const handleDownloadPDF = async () => {
+    try {
+      const element = document.getElementById('invoice-content');
+      if (!element) return;
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`${invoice.invoice_number}.pdf`);
+      
+      toast({
+        title: "Éxito",
+        description: "PDF descargado correctamente",
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo generar el PDF",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePrint = () => {
+    const element = document.getElementById('invoice-content');
+    if (!element) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${invoice.invoice_number}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+            .bg-teal-700 { background-color: #0f766e !important; color: white !important; }
+            .bg-red-600 { background-color: #dc2626 !important; color: white !important; }
+            .text-novativa-teal { color: #0f766e !important; }
+            .border { border: 1px solid #d1d5db; }
+            .border-gray-300 { border-color: #d1d5db; }
+            .font-bold { font-weight: bold; }
+            .font-semibold { font-weight: 600; }
+            .text-sm { font-size: 0.875rem; }
+            .text-xl { font-size: 1.25rem; }
+            .text-lg { font-size: 1.125rem; }
+            .text-gray-600 { color: #4b5563; }
+            .text-gray-700 { color: #374151; }
+            .mb-2 { margin-bottom: 0.5rem; }
+            .mb-4 { margin-bottom: 1rem; }
+            .mb-8 { margin-bottom: 2rem; }
+            .px-4 { padding-left: 1rem; padding-right: 1rem; }
+            .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+            .pl-4 { padding-left: 1rem; }
+            .text-center { text-align: center; }
+            .text-left { text-align: left; }
+            .text-right { text-align: right; }
+            .rounded { border-radius: 0.25rem; }
+            .grid { display: grid; }
+            .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .gap-4 { gap: 1rem; }
+            .flex { display: flex; }
+            .items-center { align-items: center; }
+            .items-start { align-items: flex-start; }
+            .justify-between { justify-content: space-between; }
+            .justify-end { justify-content: flex-end; }
+            .w-80 { width: 20rem; }
+            .w-full { width: 100%; }
+            .border-l-4 { border-left-width: 4px; }
+            table { border-collapse: collapse; }
+            .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+            @media print {
+              body { margin: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          ${element.innerHTML}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -101,11 +221,11 @@ const AdminInvoiceView = () => {
             <Edit className="h-4 w-4 mr-2" />
             Editar
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleDownloadPDF}>
             <Download className="h-4 w-4 mr-2" />
             Descargar PDF
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={handlePrint}>
             <Printer className="h-4 w-4 mr-2" />
             Imprimir
           </Button>
@@ -113,7 +233,7 @@ const AdminInvoiceView = () => {
       </div>
 
       {/* Vista Previa Estilo SAR */}
-      <div className="bg-white p-8 border rounded-lg shadow-sm">
+      <div id="invoice-content" className="bg-white p-8 border rounded-lg shadow-sm">
         {/* Header con Logo y Datos de la Empresa */}
         <div className="flex justify-between items-start mb-8">
           <div className="flex items-center gap-4">
@@ -217,10 +337,16 @@ const AdminInvoiceView = () => {
         </div>
 
         {/* Información Fiscal */}
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-gray-600 mb-8">
           <div>CAI: {invoice.company_settings?.cai || '26D174-BF2409-E904E0-63BE03-0909C5-B3'}</div>
           <div>Fecha Límite de Emisión: {invoice.company_settings?.fecha_limite_emision || '13/11/2025'}</div>
           <div>Rango Autorizado: {invoice.company_settings?.rango_autorizado || '000-002-01-00002001 - 000-002-01-00002055'}</div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center py-4 text-white rounded" style={{ backgroundColor: '#034c51' }}>
+          <div className="font-bold text-sm">Novativa: Agencia IA & Automatización</div>
+          <div className="text-sm">www.novativa.org</div>
         </div>
       </div>
 
