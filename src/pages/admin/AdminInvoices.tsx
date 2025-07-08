@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Search, Filter, FileText, Eye, Edit, Trash2, Settings } from 'lucide-react';
+import { Plus, Search, Filter, FileText, Eye, Edit, Ban, Settings } from 'lucide-react';
 import { invoiceService } from '@/services/invoiceService';
 import { formatDate } from '@/utils/dateUtils';
 import type { Invoice, InvoiceFilters } from '@/types/invoice';
@@ -40,21 +40,23 @@ const AdminInvoices = () => {
     }
   };
 
-  const handleDeleteInvoice = async (id: string) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar esta factura?')) return;
+  const handleCancelInvoice = async (id: string) => {
+    if (!confirm('¿Estás seguro de que quieres anular esta factura?')) return;
     
     try {
-      await invoiceService.deleteInvoice(id);
-      setInvoices(invoices.filter(inv => inv.id !== id));
+      await invoiceService.updateInvoiceStatus(id, 'cancelled');
+      setInvoices(invoices.map(inv => 
+        inv.id === id ? { ...inv, status: 'cancelled' } : inv
+      ));
       toast({
         title: "Éxito",
-        description: "Factura eliminada correctamente",
+        description: "Factura anulada correctamente",
       });
     } catch (error) {
-      console.error('Error deleting invoice:', error);
+      console.error('Error cancelling invoice:', error);
       toast({
         title: "Error",
-        description: "No se pudo eliminar la factura",
+        description: "No se pudo anular la factura",
         variant: "destructive",
       });
     }
@@ -213,13 +215,16 @@ const AdminInvoices = () => {
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteInvoice(invoice.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      {invoice.status !== 'cancelled' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCancelInvoice(invoice.id)}
+                          title="Anular factura"
+                        >
+                          <Ban className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
