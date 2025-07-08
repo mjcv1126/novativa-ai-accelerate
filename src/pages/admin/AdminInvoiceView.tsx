@@ -237,7 +237,7 @@ const AdminInvoiceView = () => {
         {/* Header con Logo y Datos de la Empresa */}
         <div className="flex justify-between items-start mb-8">
           <div className="flex items-center gap-4">
-            <div className="text-2xl font-bold text-novativa-teal">Novativa</div>
+            <img src="/lovable-uploads/30fe3708-ade1-4b7c-b66f-f075e5ad17b6.png" alt="Novativa" className="h-12" />
             <div className="text-sm">
               <div className="font-medium">Marlon Jose Caballero Velasquez</div>
               <div>RTN: {invoice.company_settings?.company_rtn || '05121996012974'}</div>
