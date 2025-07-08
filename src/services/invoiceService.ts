@@ -292,5 +292,44 @@ export const invoiceService = {
     
     if (error) throw error;
     return data as Invoice;
+  },
+
+  async duplicateInvoice(originalInvoiceId: string) {
+    try {
+      // Obtener la factura original con sus items
+      const originalInvoice = await this.getInvoice(originalInvoiceId);
+      
+      // Generar nuevo número de factura del mismo tipo
+      const invoice_number = await this.generateInvoiceNumber(originalInvoice.invoice_type as 'invoice' | 'proforma');
+      
+      // Crear nueva factura duplicada
+      const duplicatedInvoiceData = {
+        contact_id: originalInvoice.contact_id,
+        contact_name: originalInvoice.contact_name,
+        contact_rtn: originalInvoice.contact_rtn,
+        contact_email: originalInvoice.contact_email,
+        contact_phone: originalInvoice.contact_phone,
+        contact_address: originalInvoice.contact_address,
+        invoice_date: new Date().toISOString().split('T')[0], // Fecha actual
+        due_date: originalInvoice.due_date,
+        invoice_type: originalInvoice.invoice_type as 'invoice' | 'proforma',
+        currency: originalInvoice.currency,
+        country: originalInvoice.country,
+        notes: originalInvoice.notes,
+        items: originalInvoice.items?.map(item => ({
+          product_id: item.product_id,
+          product_name: item.product_name,
+          description: item.description,
+          quantity: item.quantity,
+          unit_price: item.unit_price,
+          has_isv: item.has_isv
+        })) || []
+      };
+
+      return await this.createInvoice(duplicatedInvoiceData);
+    } catch (error) {
+      console.error('Error duplicating invoice:', error);
+      throw error;
+    }
   }
 };

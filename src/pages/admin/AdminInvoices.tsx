@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Search, Filter, FileText, Eye, Edit, Ban, Settings } from 'lucide-react';
+import { Plus, Search, Filter, FileText, Eye, Edit, Ban, Settings, Copy } from 'lucide-react';
 import { invoiceService } from '@/services/invoiceService';
 import { formatDate } from '@/utils/dateUtils';
 import type { Invoice, InvoiceFilters } from '@/types/invoice';
@@ -57,6 +57,28 @@ const AdminInvoices = () => {
       toast({
         title: "Error",
         description: "No se pudo anular la factura",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDuplicateInvoice = async (id: string) => {
+    if (!confirm('¿Deseas duplicar esta factura?')) return;
+    
+    try {
+      const duplicatedInvoice = await invoiceService.duplicateInvoice(id);
+      await loadInvoices(); // Recargar la lista para mostrar la nueva factura
+      toast({
+        title: "Éxito",
+        description: "Factura duplicada correctamente",
+      });
+      // Navegar a la nueva factura duplicada
+      navigate(`/admin/invoices/${duplicatedInvoice.id}/edit`);
+    } catch (error) {
+      console.error('Error duplicating invoice:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo duplicar la factura",
         variant: "destructive",
       });
     }
@@ -214,6 +236,14 @@ const AdminInvoices = () => {
                         onClick={() => navigate(`/admin/invoices/${invoice.id}/edit`)}
                       >
                         <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDuplicateInvoice(invoice.id)}
+                        title="Duplicar factura"
+                      >
+                        <Copy className="h-4 w-4" />
                       </Button>
                       {invoice.status !== 'cancelled' && (
                         <Button
