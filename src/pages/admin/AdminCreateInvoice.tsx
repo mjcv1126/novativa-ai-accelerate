@@ -8,7 +8,12 @@ import { SearchableSelect } from '@/components/ui/searchable-select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Save, ArrowLeft, Trash2, Search } from 'lucide-react';
+import { Plus, Save, ArrowLeft, Trash2, Search, CalendarIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 import { invoiceService } from '@/services/invoiceService';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -225,6 +230,41 @@ const AdminCreateInvoice = () => {
 
   const totals = calculateTotals();
 
+  // Componente DatePicker personalizado
+  const DatePicker = ({ date, onDateChange, placeholder, required = false }: {
+    date?: Date;
+    onDateChange: (date: Date | undefined) => void;
+    placeholder: string;
+    required?: boolean;
+  }) => {
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className={cn(
+              "w-full justify-start text-left font-normal",
+              !date && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date ? format(date, "dd/MM/yyyy", { locale: es }) : <span>{placeholder}</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={onDateChange}
+            initialFocus
+            className="p-3 pointer-events-auto"
+            locale={es}
+          />
+        </PopoverContent>
+      </Popover>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -335,21 +375,19 @@ const AdminCreateInvoice = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="invoice_date">Fecha *</Label>
-                <Input
-                  id="invoice_date"
-                  type="date"
-                  value={formData.invoice_date}
-                  onChange={(e) => setFormData({...formData, invoice_date: e.target.value})}
+                <DatePicker
+                  date={formData.invoice_date ? new Date(formData.invoice_date) : new Date()}
+                  onDateChange={(date) => setFormData({...formData, invoice_date: date ? date.toISOString().split('T')[0] : ''})}
+                  placeholder="Seleccionar fecha"
                   required
                 />
               </div>
               <div>
                 <Label htmlFor="due_date">Fecha de Vencimiento</Label>
-                <Input
-                  id="due_date"
-                  type="date"
-                  value={formData.due_date || ''}
-                  onChange={(e) => setFormData({...formData, due_date: e.target.value})}
+                <DatePicker
+                  date={formData.due_date ? new Date(formData.due_date) : undefined}
+                  onDateChange={(date) => setFormData({...formData, due_date: date ? date.toISOString().split('T')[0] : ''})}
+                  placeholder="Seleccionar fecha de vencimiento"
                 />
               </div>
               <div>
