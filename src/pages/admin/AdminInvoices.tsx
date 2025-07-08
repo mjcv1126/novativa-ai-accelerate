@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Search, Filter, FileText, Eye, Edit, Ban, Settings, Copy } from 'lucide-react';
+import { Plus, Search, Filter, FileText, Eye, Edit, Ban, Settings, Copy, CheckCircle } from 'lucide-react';
 import { invoiceService } from '@/services/invoiceService';
 import { formatDate } from '@/utils/dateUtils';
 import type { Invoice, InvoiceFilters } from '@/types/invoice';
@@ -79,6 +79,28 @@ const AdminInvoices = () => {
       toast({
         title: "Error",
         description: "No se pudo duplicar la factura",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleMarkAsPaid = async (id: string) => {
+    if (!confirm('¿Marcar esta factura como pagada?')) return;
+    
+    try {
+      await invoiceService.updateInvoiceStatus(id, 'paid');
+      setInvoices(invoices.map(inv => 
+        inv.id === id ? { ...inv, status: 'paid' } : inv
+      ));
+      toast({
+        title: "Éxito",
+        description: "Factura marcada como pagada",
+      });
+    } catch (error) {
+      console.error('Error marking invoice as paid:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo marcar la factura como pagada",
         variant: "destructive",
       });
     }
@@ -245,6 +267,17 @@ const AdminInvoices = () => {
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
+                      {invoice.status === 'pending' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleMarkAsPaid(invoice.id)}
+                          title="Marcar como pagada"
+                          className="text-green-600 border-green-600 hover:bg-green-50"
+                        >
+                          <CheckCircle className="h-4 w-4" />
+                        </Button>
+                      )}
                       {invoice.status !== 'cancelled' && (
                         <Button
                           variant="outline"

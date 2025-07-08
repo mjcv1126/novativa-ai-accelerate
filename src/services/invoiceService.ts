@@ -226,6 +226,7 @@ export const invoiceService = {
           currency: invoiceData.currency,
           country: invoiceData.country,
           notes: invoiceData.notes,
+          status: 'pending', // Estado por defecto: pendiente
           subtotal,
           isv_amount,
           total,
