@@ -263,15 +263,80 @@ export const invoiceService = {
   },
 
   async updateInvoice(id: string, invoiceData: Partial<InvoiceFormData>) {
-    const { data, error } = await supabase
-      .from('invoices')
-      .update(invoiceData)
-      .eq('id', id)
-      .select()
-      .single();
-    
-    if (error) throw error;
-    return data as Invoice;
+    try {
+      // Separar items del resto de datos
+      const { items, ...restData } = invoiceData;
+      
+      // Crear objeto de actualización con los campos de la base de datos
+      let invoiceUpdateData: any = { ...restData };
+      
+      // Si hay items, calcular totales
+      if (items && items.length > 0) {
+        const settings = await this.getSettings();
+        let subtotal = 0;
+        let isv_amount = 0;
+
+        const processedItems = items.map(item => {
+          const itemSubtotal = item.quantity * item.unit_price;
+          const itemIsv = item.has_isv ? itemSubtotal * settings.isv_rate : 0;
+          const itemTotal = itemSubtotal + itemIsv;
+
+          subtotal += itemSubtotal;
+          isv_amount += itemIsv;
+
+          return {
+            product_id: item.product_id,
+            product_name: item.product_name,
+            description: item.description,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            has_isv: item.has_isv,
+            subtotal: itemSubtotal,
+            isv_amount: itemIsv,
+            total: itemTotal
+          };
+        });
+
+        const total = subtotal + isv_amount;
+
+        // Actualizar totales en los datos de la factura
+        invoiceUpdateData.subtotal = subtotal;
+        invoiceUpdateData.isv_amount = isv_amount;
+        invoiceUpdateData.total = total;
+
+        // Eliminar items existentes
+        await supabase
+          .from('invoice_items')
+          .delete()
+          .eq('invoice_id', id);
+
+        // Insertar nuevos items
+        const itemsWithInvoiceId = processedItems.map(item => ({
+          ...item,
+          invoice_id: id
+        }));
+
+        const { error: itemsError } = await supabase
+          .from('invoice_items')
+          .insert(itemsWithInvoiceId);
+
+        if (itemsError) throw itemsError;
+      }
+
+      // Actualizar la factura
+      const { data, error } = await supabase
+        .from('invoices')
+        .update(invoiceUpdateData)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data as Invoice;
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      throw error;
+    }
   },
 
   async deleteInvoice(id: string) {
