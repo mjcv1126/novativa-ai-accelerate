@@ -300,10 +300,7 @@ export const invoiceService = {
       // Obtener la factura original con sus items
       const originalInvoice = await this.getInvoice(originalInvoiceId);
       
-      // Generar nuevo número de factura del mismo tipo
-      const invoice_number = await this.generateInvoiceNumber(originalInvoice.invoice_type as 'invoice' | 'proforma');
-      
-      // Crear nueva factura duplicada
+      // Crear nueva factura duplicada (createInvoice generará el número automáticamente)
       const duplicatedInvoiceData = {
         contact_id: originalInvoice.contact_id,
         contact_name: originalInvoice.contact_name,
