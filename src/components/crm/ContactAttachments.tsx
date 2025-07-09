@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Paperclip, Upload, Trash2, Eye, Download } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { useFileUpload } from '@/hooks/useFileUpload';
 
 interface ContactAttachment {
   id: string;
@@ -34,9 +35,9 @@ interface ContactAttachmentsProps {
 export const ContactAttachments = ({ contactId }: ContactAttachmentsProps) => {
   const [attachments, setAttachments] = useState<ContactAttachment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [description, setDescription] = useState('');
+  const { uploadFile, uploading } = useFileUpload();
 
   const loadAttachments = async () => {
     try {
@@ -75,68 +76,66 @@ export const ContactAttachments = ({ contactId }: ContactAttachmentsProps) => {
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      console.log('No file selected');
+      return;
+    }
 
-    setUploading(true);
+    console.log('Starting file upload for contact:', contactId);
+    console.log('File details:', { name: file.name, size: file.size, type: file.type });
 
     try {
-      // Crear FormData para enviar el archivo
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('name', file.name);
-      formData.append('description', description || '');
-
-      // Subir archivo usando fetch directamente
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+      // Usar el hook useFileUpload para subir el archivo
+      const success = await uploadFile({
+        name: file.name,
+        description: description || '',
+        file: file,
       });
 
-      if (!response.ok) {
-        // Si no existe el endpoint, crear el archivo en uploaded_files directamente
-        const fileReader = new FileReader();
-        fileReader.onload = async (e) => {
-          const arrayBuffer = e.target?.result as ArrayBuffer;
-          const uint8Array = new Uint8Array(arrayBuffer);
-          
-          // Crear entrada en uploaded_files
-          const { data: uploadedFile, error: uploadError } = await supabase
-            .from('uploaded_files')
-            .insert([{
-              name: file.name,
-              file_name: file.name,
-              file_path: `/uploads/${file.name}`,
-              file_type: file.type,
-              file_size: file.size,
-            }])
-            .select()
-            .single();
+      console.log('Upload result:', success);
 
-          if (uploadError) throw uploadError;
+      if (success) {
+        // Obtener el archivo recién subido para crear la relación
+        const { data: uploadedFiles, error: fetchError } = await supabase
+          .from('uploaded_files')
+          .select('*')
+          .eq('file_name', file.name)
+          .order('created_at', { ascending: false })
+          .limit(1);
 
+        if (fetchError) {
+          console.error('Error fetching uploaded file:', fetchError);
+          throw fetchError;
+        }
+
+        console.log('Found uploaded files:', uploadedFiles);
+
+        if (uploadedFiles && uploadedFiles.length > 0) {
           // Crear entrada en contact_attachments
           const { error: attachError } = await supabase
             .from('contact_attachments')
             .insert([{
               contact_id: contactId,
-              file_id: uploadedFile.id,
+              file_id: uploadedFiles[0].id,
               uploaded_by_email: 'usuario@novativa.org', // Obtener del contexto
               description: description || null,
             }]);
 
-          if (attachError) throw attachError;
+          if (attachError) {
+            console.error('Error creating contact attachment:', attachError);
+            throw attachError;
+          }
 
-          toast({
-            title: "Éxito",
-            description: "Archivo subido correctamente",
-          });
+          console.log('Contact attachment created successfully');
 
+          // Limpiar el formulario y recargar adjuntos
           setFile(null);
           setDescription('');
+          // Limpiar el input de archivo
+          const fileInput = document.getElementById('file') as HTMLInputElement;
+          if (fileInput) fileInput.value = '';
           loadAttachments();
-        };
-
-        fileReader.readAsArrayBuffer(file);
+        }
       }
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -145,8 +144,6 @@ export const ContactAttachments = ({ contactId }: ContactAttachmentsProps) => {
         description: "No se pudo subir el archivo",
         variant: "destructive",
       });
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -273,7 +270,12 @@ export const ContactAttachments = ({ contactId }: ContactAttachmentsProps) => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(attachment.uploaded_files.file_path, '_blank')}
+                    onClick={() => {
+                      const { data } = supabase.storage
+                        .from('user-uploads')
+                        .getPublicUrl(attachment.uploaded_files.file_path);
+                      window.open(data.publicUrl, '_blank');
+                    }}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
