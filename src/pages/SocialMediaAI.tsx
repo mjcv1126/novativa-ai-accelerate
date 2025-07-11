@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import HeroSection from '@/components/social-media-ai/HeroSection';
 import PricingComparison from '@/components/social-media-ai/PricingComparison';
 import ServiceExamples from '@/components/social-media-ai/ServiceExamples';
+import AudiovisualProduction from '@/components/social-media-ai/AudiovisualProduction';
 import FeaturesList from '@/components/social-media-ai/FeaturesList';
 import Benefits from '@/components/social-media-ai/Benefits';
 import ScheduleDemo from '@/components/social-media-ai/ScheduleDemo';
@@ -23,6 +24,7 @@ const SocialMediaAI = () => {
       <HeroSection isVisible={isVisible} />
       <PricingComparison />
       <ServiceExamples />
+      <AudiovisualProduction />
       <FeaturesList />
       <Benefits />
       <ScheduleDemo />

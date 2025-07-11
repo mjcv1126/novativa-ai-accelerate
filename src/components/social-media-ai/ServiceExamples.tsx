@@ -9,41 +9,41 @@ const ServiceExamples = () => {
   const services = [
     {
       icon: <Calendar className="text-blue-400 h-12 w-12" />,
-      title: "📊 Planificación de contenido mensual automatizada",
-      description: "Creamos un calendario editorial basado en tu rubro, objetivos y fechas clave, sin improvisaciones."
+      title: "📊 Gestión estratégica integral con IA",
+      description: "Planificación completa de contenido basada en análisis predictivo, objetivos comerciales y tendencias del mercado."
     },
     {
       icon: <Brain className="text-purple-400 h-12 w-12" />,
-      title: "🧠 Estrategia basada en datos",
-      description: "Analizamos tu audiencia, tendencias y métricas para diseñar una estrategia que conecta y convierte."
+      title: "🧠 Estrategia basada en inteligencia de datos",
+      description: "Análisis profundo de audiencia, competencia y métricas para diseñar estrategias que maximizan ROI y engagement."
     },
     {
       icon: <Clock className="text-blue-400 h-12 w-12" />,
-      title: "📆 Programación inteligente de publicaciones",
-      description: "La IA agenda todo tu contenido en los horarios de mayor impacto en cada red social."
+      title: "📆 Automatización y programación inteligente",
+      description: "La IA gestiona horarios óptimos, frecuencia de publicación y distribución multicanal para máximo alcance."
     },
     {
       icon: <PenTool className="text-purple-400 h-12 w-12" />,
-      title: "✍️ Generación automática de copys y creativos",
-      description: "Textos persuasivos, hashtags optimizados y diseños adaptados a cada plataforma, generados con IA."
+      title: "✍️ Creación de contenido multimedia",
+      description: "Generación automática de textos, hashtags, diseños, videos y audio adaptados a cada plataforma y audiencia."
     },
     {
       icon: <BarChart3 className="text-blue-400 h-12 w-12" />,
-      title: "📈 Monitoreo y ajustes constantes",
-      description: "Analizamos el rendimiento de cada post y ajustamos la estrategia mes a mes para escalar resultados."
+      title: "📈 Análisis predictivo y optimización continua",
+      description: "Monitoreo en tiempo real con ajustes automáticos basados en performance y tendencias emergentes."
     },
     {
       icon: <Target className="text-purple-400 h-12 w-12" />,
-      title: "🧩 Integración con campañas de ventas y lanzamientos",
-      description: "Coordinamos tus redes con promociones, eventos o productos nuevos para potenciar tus objetivos comerciales."
+      title: "🚀 Integración comercial y conversiones",
+      description: "Sincronización con embudos de venta, lanzamientos y campañas para maximizar conversiones y ventas."
     }
   ];
 
   return (
     <section className="py-20 bg-gradient-to-b from-black to-gray-900">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
-          Servicios de Gestión con IA
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          Gestión Estratégica con Inteligencia Artificial
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
