@@ -17,6 +17,16 @@ const AudiovisualProduction = () => {
       description: "Videos promocionales, testimoniales, reels y contenido audiovisual con cámaras 4K y storytelling impactante."
     },
     {
+      icon: <Sparkles className="text-cyan-400 h-12 w-12" />,
+      title: "🤖 Generación de videos con IA",
+      description: "Creación completa de spots comerciales, anuncios y contenido publicitario usando inteligencia artificial avanzada."
+    },
+    {
+      icon: <Headphones className="text-purple-400 h-12 w-12" />,
+      title: "🎙️ Locución y voces con IA",
+      description: "Voces sintéticas ultra-realistas en múltiples idiomas y tonos para spots comerciales y contenido audiovisual."
+    },
+    {
       icon: <Plane className="text-green-400 h-12 w-12" />,
       title: "🚁 Tomas aéreas con drones",
       description: "Perspectivas únicas y espectaculares con drones profesionales para destacar tu marca desde las alturas."
@@ -25,11 +35,6 @@ const AudiovisualProduction = () => {
       icon: <Palette className="text-pink-400 h-12 w-12" />,
       title: "🎨 Diseño gráfico y creativos",
       description: "Diseños únicos para posts, stories, banners y material publicitario que refleja la identidad de tu marca."
-    },
-    {
-      icon: <Headphones className="text-purple-400 h-12 w-12" />,
-      title: "🎵 Producción musical y audio",
-      description: "Jingles comerciales, locuciones profesionales, música original y audio branding personalizado."
     },
     {
       icon: <Film className="text-yellow-400 h-12 w-12" />,
@@ -52,8 +57,8 @@ const AudiovisualProduction = () => {
             Producción Audiovisual Profesional
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Creamos contenido audiovisual de alta calidad con técnicas cinematográficas tradicionales, 
-            equipos profesionales y un toque de innovación tecnológica para elevar tu marca.
+            Creamos contenido audiovisual de alta calidad combinando técnicas cinematográficas tradicionales 
+            con inteligencia artificial avanzada. Desde spots comerciales 100% generados con IA hasta producciones profesionales.
           </p>
         </div>
         
