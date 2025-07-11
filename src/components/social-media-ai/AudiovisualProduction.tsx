@@ -1,5 +1,5 @@
 import React from 'react';
-import { Video, Camera, Headphones, Palette, Sparkles, Film } from 'lucide-react';
+import { Video, Camera, Headphones, Palette, Sparkles, Film, Plane } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AudiovisualProduction = () => {
@@ -7,34 +7,34 @@ const AudiovisualProduction = () => {
   
   const services = [
     {
+      icon: <Camera className="text-blue-400 h-12 w-12" />,
+      title: "📸 Sesiones fotográficas profesionales",
+      description: "Fotografía de producto, lifestyle, corporativa y eventos con equipo profesional y técnicas avanzadas de iluminación."
+    },
+    {
       icon: <Video className="text-red-400 h-12 w-12" />,
-      title: "🎬 Generación automática de videos",
-      description: "Creamos videos promocionales, reels y contenido audiovisual adaptado a cada plataforma usando IA."
+      title: "🎬 Producción de video profesional",
+      description: "Videos promocionales, testimoniales, reels y contenido audiovisual con cámaras 4K y storytelling impactante."
+    },
+    {
+      icon: <Plane className="text-green-400 h-12 w-12" />,
+      title: "🚁 Tomas aéreas con drones",
+      description: "Perspectivas únicas y espectaculares con drones profesionales para destacar tu marca desde las alturas."
     },
     {
       icon: <Palette className="text-pink-400 h-12 w-12" />,
-      title: "🎨 Diseño de artes y creativos",
-      description: "Diseños únicos para posts, stories, banners y contenido visual que impacta y convierte."
+      title: "🎨 Diseño gráfico y creativos",
+      description: "Diseños únicos para posts, stories, banners y material publicitario que refleja la identidad de tu marca."
     },
     {
-      icon: <Headphones className="text-green-400 h-12 w-12" />,
-      title: "🎵 Jingles comerciales personalizados",
-      description: "Audio branding que identifica tu marca con melodías pegajosas y efectos sonoros profesionales."
+      icon: <Headphones className="text-purple-400 h-12 w-12" />,
+      title: "🎵 Producción musical y audio",
+      description: "Jingles comerciales, locuciones profesionales, música original y audio branding personalizado."
     },
     {
-      icon: <Camera className="text-blue-400 h-12 w-12" />,
-      title: "📸 Producción fotográfica AI",
-      description: "Imágenes de producto, lifestyle y corporativas generadas con inteligencia artificial de última generación."
-    },
-    {
-      icon: <Film className="text-purple-400 h-12 w-12" />,
+      icon: <Film className="text-yellow-400 h-12 w-12" />,
       title: "🎞️ Edición y postproducción",
-      description: "Montaje profesional, efectos visuales, color grading y optimización para cada red social."
-    },
-    {
-      icon: <Sparkles className="text-yellow-400 h-12 w-12" />,
-      title: "✨ Contenido inmersivo 360°",
-      description: "Experiencias interactivas, AR filters y contenido multimedia que genera engagement extraordinario."
+      description: "Montaje cinematográfico, efectos visuales, color grading y optimización para todas las plataformas digitales."
     }
   ];
 
@@ -49,11 +49,11 @@ const AudiovisualProduction = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-red-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-            Producción Audiovisual con IA
+            Producción Audiovisual Profesional
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Llevamos tu marca al siguiente nivel con contenido audiovisual de vanguardia, 
-            donde la creatividad humana se fusiona con el poder de la inteligencia artificial.
+            Creamos contenido audiovisual de alta calidad con técnicas cinematográficas tradicionales, 
+            equipos profesionales y un toque de innovación tecnológica para elevar tu marca.
           </p>
         </div>
         
