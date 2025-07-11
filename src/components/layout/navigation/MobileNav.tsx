@@ -97,7 +97,7 @@ const MobileNav = ({ onClose }: MobileNavProps) => {
               {t('services.contactCenter')}
             </Link>
             <Link 
-              to="/redes-sociales-ia" 
+              to="/servicios/redes-sociales-ia" 
               className="block text-gray-600 hover:text-[#bc3e06]"
               onClick={onClose}
             >
