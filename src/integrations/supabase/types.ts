@@ -867,6 +867,32 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      change_invoice_type: {
+        Args: { p_invoice_id: string; p_new_type: string }
+        Returns: {
+          company_settings: Json | null
+          contact_address: string | null
+          contact_email: string | null
+          contact_id: string | null
+          contact_name: string
+          contact_phone: string | null
+          contact_rtn: string | null
+          country: string
+          created_at: string
+          currency: string
+          due_date: string | null
+          id: string
+          invoice_date: string
+          invoice_number: string
+          invoice_type: string
+          isv_amount: number
+          notes: string | null
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+      }
       generate_invoice_number: {
         Args: { invoice_type?: string }
         Returns: string

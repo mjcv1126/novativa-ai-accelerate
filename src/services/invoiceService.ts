@@ -394,5 +394,20 @@ export const invoiceService = {
       console.error('Error duplicating invoice:', error);
       throw error;
     }
+  },
+
+  async changeInvoiceType(invoiceId: string, newType: 'invoice' | 'proforma') {
+    try {
+      const { data, error } = await supabase.rpc('change_invoice_type', {
+        p_invoice_id: invoiceId,
+        p_new_type: newType
+      });
+
+      if (error) throw error;
+      return data as Invoice;
+    } catch (error) {
+      console.error('Error changing invoice type:', error);
+      throw error;
+    }
   }
 };

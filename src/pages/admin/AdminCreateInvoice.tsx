@@ -202,6 +202,16 @@ const AdminCreateInvoice = () => {
       setLoading(true);
       
       if (isEditing) {
+        // Check if invoice type has changed
+        const currentInvoice = await invoiceService.getInvoice(id!);
+        const typeChanged = currentInvoice.invoice_type !== formData.invoice_type;
+        
+        if (typeChanged) {
+          // Use the new function to change type and renumber
+          await invoiceService.changeInvoiceType(id!, formData.invoice_type);
+        }
+        
+        // Update the rest of the invoice data
         await invoiceService.updateInvoice(id!, formData);
         toast({
           title: "Éxito",
