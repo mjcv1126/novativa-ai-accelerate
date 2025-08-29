@@ -67,7 +67,8 @@ export const invoiceService = {
         invoice_prefix: 'INV',
         proforma_prefix: 'PRF',
         next_invoice_number: 1,
-        next_proforma_number: 1
+        next_proforma_number: 1,
+        org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
       };
       
       const { data: newData, error: insertError } = await supabase
@@ -102,7 +103,10 @@ export const invoiceService = {
       if (error.message?.includes('No rows')) {
         const { data, error: insertError } = await supabase
           .from('invoice_settings')
-          .insert(settings)
+          .insert({
+            ...settings,
+            org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+          })
           .select()
           .single();
         
@@ -226,10 +230,11 @@ export const invoiceService = {
           currency: invoiceData.currency,
           country: invoiceData.country,
           notes: invoiceData.notes,
-          status: 'pending', // Estado por defecto: pendiente
+          status: 'pending',
           subtotal,
           isv_amount,
           total,
+          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc', // Org ID fijo temporal
           company_settings: {
             company_name: settings.company_name,
             company_rtn: settings.company_rtn,
@@ -246,7 +251,8 @@ export const invoiceService = {
       // Crear items
       const itemsWithInvoiceId = processedItems.map(item => ({
         ...item,
-        invoice_id: invoice.id
+        invoice_id: invoice.id,
+        org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
       }));
 
       const { error: itemsError } = await supabase
@@ -313,7 +319,8 @@ export const invoiceService = {
         // Insertar nuevos items
         const itemsWithInvoiceId = processedItems.map(item => ({
           ...item,
-          invoice_id: id
+          invoice_id: id,
+          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
         }));
 
         const { error: itemsError } = await supabase

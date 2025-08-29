@@ -298,7 +298,8 @@ export const useContactOperations = () => {
           contact_id: id,
           assigned_user_email: currentUserEmail,
           assigned_by_email: currentUserEmail,
-          notes: 'Reasignado al modificar el lead'
+          notes: 'Reasignado al modificar el lead',
+          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
         }]);
 
       toast({
@@ -334,7 +335,8 @@ export const useContactOperations = () => {
           contact_id: contactId,
           assigned_user_email: currentUserEmail,
           assigned_by_email: currentUserEmail,
-          notes: 'Reasignado al cambiar de etapa'
+          notes: 'Reasignado al cambiar de etapa',
+          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
         }]);
 
       // Create activity for stage change
@@ -345,6 +347,7 @@ export const useContactOperations = () => {
           activity_type: 'status_change',
           title: 'Cambio de etapa',
           description: `Contacto movido a nueva etapa`,
+          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
         }]);
     } catch (error) {
       console.error('Error moving contact:', error);

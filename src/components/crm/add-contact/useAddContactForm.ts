@@ -115,7 +115,8 @@ export const useAddContactForm = (onContactAdded: () => void) => {
           payment_type: formData.payment_type || null,
           service_of_interest: formData.service_of_interest || null,
           rtn: formData.rtn || null,
-          address: formData.address || null
+          address: formData.address || null,
+          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
         }]);
 
       if (error) throw error;
