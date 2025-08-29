@@ -30,7 +30,10 @@ export const useStageOperations = () => {
     try {
       const { data, error } = await supabase
         .from('crm_stages')
-        .insert([stageData])
+        .insert([{
+          ...stageData,
+          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+        }])
         .select()
         .single();
 
