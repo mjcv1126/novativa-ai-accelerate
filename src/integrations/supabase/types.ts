@@ -1988,6 +1988,10 @@ export type Database = {
         Args: { p_org_id: string }
         Returns: undefined
       }
+      set_session_email: {
+        Args: { email_value: string }
+        Returns: undefined
+      }
       sparsevec_out: {
         Args: { "": unknown }
         Returns: unknown

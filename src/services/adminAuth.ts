@@ -52,6 +52,14 @@ export const adminAuthService = {
           role: 'super_admin'
         };
         localStorage.setItem('admin_user', JSON.stringify(mockUser));
+        
+        // Set email in Supabase session for RLS policies
+        try {
+          await supabase.rpc('set_session_email', { email_value: ADMIN_EMAIL });
+        } catch (error) {
+          console.warn('Failed to set session email:', error);
+        }
+        
         console.log('adminAuthService.login - Super admin auth successful');
         return { data: mockUser, error: null };
       }
@@ -65,6 +73,14 @@ export const adminAuthService = {
           role: localUser.role
         };
         localStorage.setItem('admin_user', JSON.stringify(userSession));
+        
+        // Set email in Supabase session for RLS policies
+        try {
+          await supabase.rpc('set_session_email', { email_value: localUser.email });
+        } catch (error) {
+          console.warn('Failed to set session email:', error);
+        }
+        
         console.log('adminAuthService.login - Local user auth successful:', userSession);
         return { data: userSession, error: null };
       }
@@ -118,6 +134,16 @@ export const adminAuthService = {
         try {
           const user = JSON.parse(storedUser);
           console.log('adminAuthService.checkSession - Found stored user:', user);
+          
+          // Set email in Supabase session for RLS policies
+          if (user.email) {
+            try {
+              await supabase.rpc('set_session_email', { email_value: user.email });
+            } catch (error) {
+              console.warn('Failed to set session email during checkSession:', error);
+            }
+          }
+          
           return { data: { session: { user } }, error: null };
         } catch (parseError) {
           console.error('adminAuthService.checkSession - Parse error:', parseError);
@@ -137,6 +163,14 @@ export const adminAuthService = {
           role: 'admin'
         };
         localStorage.setItem('admin_user', JSON.stringify(userSession));
+        
+        // Set email in Supabase session for RLS policies
+        try {
+          await supabase.rpc('set_session_email', { email_value: result.data.session.user.email });
+        } catch (error) {
+          console.warn('Failed to set session email for Supabase user:', error);
+        }
+        
         return { data: { session: { user: userSession } }, error: null };
       }
       
