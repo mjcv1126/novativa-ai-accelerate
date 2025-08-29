@@ -26,13 +26,16 @@ const AdminInvoices = () => {
   const loadInvoices = async () => {
     try {
       setLoading(true);
+      console.log('🔄 Loading invoices with filters:', filters);
       const data = await invoiceService.getInvoices(filters);
+      console.log('✅ Invoices loaded:', data?.length, 'invoices');
+      console.log('📊 Invoice data:', data);
       setInvoices(data);
     } catch (error) {
-      console.error('Error loading invoices:', error);
+      console.error('❌ Error loading invoices:', error);
       toast({
         title: "Error",
-        description: "No se pudieron cargar las facturas",
+        description: `No se pudieron cargar las facturas: ${error instanceof Error ? error.message : 'Error desconocido'}`,
         variant: "destructive",
       });
     } finally {
