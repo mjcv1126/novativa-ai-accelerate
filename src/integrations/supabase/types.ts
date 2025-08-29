@@ -1931,6 +1931,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      is_admin_by_email: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
