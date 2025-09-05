@@ -55,8 +55,8 @@ const MobileServicesGrid = () => {
     },
     {
       icon: PhoneCall,
-      title: "Agentes Telefónicos",
-      description: "Próximamente",
+      title: "Agentes Telefónicos IA",
+      description: "Llamadas automatizadas que venden como expertos",
       route: "#",
       color: "from-gray-400 to-gray-500",
       disabled: true
