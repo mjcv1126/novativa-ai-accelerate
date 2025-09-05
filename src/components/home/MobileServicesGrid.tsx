@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Brain, Workflow, Cpu, Video, Stethoscope, Activity, Share2, PhoneCall, Users, BarChart3 } from 'lucide-react';
+import comingSoonIcon from '@/assets/coming-soon-icon.png';
 
 const MobileServicesGrid = () => {
   const services = [
@@ -93,13 +94,11 @@ const MobileServicesGrid = () => {
               return (
                 <div 
                   key={index}
-                  className="group bg-white rounded-xl p-4 shadow-md border border-gray-100 opacity-60 cursor-not-allowed relative overflow-hidden"
+                  className="group bg-white rounded-xl p-4 shadow-md border border-gray-100 opacity-60 cursor-not-allowed relative"
                 >
-                  {/* Próximamente ribbon */}
-                  <div className="absolute top-0 right-0 overflow-hidden w-16 h-16 z-20">
-                    <div className="absolute top-3 right-[-20px] bg-gradient-to-r from-red-500 to-red-600 text-white text-[9px] font-bold px-6 py-1 transform rotate-45 shadow-lg">
-                      Próximamente
-                    </div>
+                  {/* Coming soon icon */}
+                  <div className="absolute top-2 right-2 z-10">
+                    <img src={comingSoonIcon} alt="Coming Soon" className="w-6 h-6" />
                   </div>
                   
                   <div className={`bg-gradient-to-br ${service.color} p-3 rounded-lg w-fit mx-auto mb-3 transition-transform duration-300`}>
