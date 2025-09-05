@@ -94,11 +94,19 @@ const MobileServicesGrid = () => {
               return (
                 <div 
                   key={index}
-                  className="group bg-white rounded-xl p-4 shadow-md border border-gray-100 opacity-60 cursor-not-allowed relative"
+                  className="group bg-white rounded-xl p-4 shadow-md border border-gray-100 cursor-not-allowed relative overflow-hidden"
                 >
-                  {/* Coming soon icon */}
-                  <div className="absolute top-2 right-2 z-10">
-                    <img src={comingSoonIcon} alt="Coming Soon" className="w-6 h-6" />
+                  {/* Coming Soon Banner Overlay */}
+                  <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+                    <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold text-[10px] px-3 py-1 rounded-full mb-2 shadow-lg transform -rotate-12">
+                      COMING SOON
+                    </div>
+                    <div className="bg-black text-yellow-400 font-bold text-[8px] px-2 py-1 rounded">
+                      UNDER CONSTRUCTION
+                    </div>
+                    <div className="mt-2">
+                      <img src={comingSoonIcon} alt="Coming Soon" className="w-5 h-5 opacity-80" />
+                    </div>
                   </div>
                   
                   <div className={`bg-gradient-to-br ${service.color} p-3 rounded-lg w-fit mx-auto mb-3 transition-transform duration-300`}>
