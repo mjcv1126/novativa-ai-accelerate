@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Brain, Workflow, Cpu, Video, Stethoscope, Activity, Share2, PhoneCall } from 'lucide-react';
+import { Brain, Workflow, Cpu, Video, Stethoscope, Activity, Share2, PhoneCall, Users, BarChart3 } from 'lucide-react';
 
 const MobileServicesGrid = () => {
   const services = [
@@ -59,6 +59,22 @@ const MobileServicesGrid = () => {
       description: "Próximamente",
       route: "#",
       color: "from-gray-400 to-gray-500",
+      disabled: true
+    },
+    {
+      icon: Users,
+      title: "Influencers IA",
+      description: "Próximamente",
+      route: "#",
+      color: "from-indigo-400 to-indigo-500",
+      disabled: true
+    },
+    {
+      icon: BarChart3,
+      title: "NovaInsights",
+      description: "Próximamente",
+      route: "#",
+      color: "from-emerald-400 to-emerald-500",
       disabled: true
     }
   ];
