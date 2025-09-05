@@ -55,7 +55,7 @@ const HomeTabs = () => {
                     </li>
                   </ul>
                   <Button asChild>
-                    <Link to="/servicios/agentes-ia">
+                    <Link to="/servicios/ai-agents">
                       Conocer más
                     </Link>
                   </Button>
