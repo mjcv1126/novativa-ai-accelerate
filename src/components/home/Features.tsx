@@ -24,7 +24,8 @@ const Features = () => {
       icon: Bot,
       title: "Agentes IA Avanzados",
       description: "Chatbots y asistentes virtuales que responden consultas de forma natural y eficiente.",
-      className: "bg-novativa-teal/10"
+      className: "bg-novativa-teal/10",
+      url: "/novachannel"
     },
     {
       icon: Zap,
