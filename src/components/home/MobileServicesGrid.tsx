@@ -96,8 +96,10 @@ const MobileServicesGrid = () => {
                   className="group bg-white rounded-xl p-4 shadow-md border border-gray-100 opacity-60 cursor-not-allowed relative overflow-hidden"
                 >
                   {/* Próximamente ribbon */}
-                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-lg transform rotate-12 translate-x-2 -translate-y-1 z-10 border-2 border-white">
-                    Próximamente
+                  <div className="absolute top-0 right-0 overflow-hidden w-16 h-16 z-20">
+                    <div className="absolute top-3 right-[-20px] bg-gradient-to-r from-red-500 to-red-600 text-white text-[9px] font-bold px-6 py-1 transform rotate-45 shadow-lg">
+                      Próximamente
+                    </div>
                   </div>
                   
                   <div className={`bg-gradient-to-br ${service.color} p-3 rounded-lg w-fit mx-auto mb-3 transition-transform duration-300`}>
