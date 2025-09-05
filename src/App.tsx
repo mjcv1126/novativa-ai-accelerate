@@ -1,6 +1,7 @@
 
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
+import ScrollToTop from './components/layout/ScrollToTop';
 import Home from './pages/Home';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
@@ -48,6 +49,7 @@ function App() {
   
   return (
     <div className="App">
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout><Index /></Layout>} />
         <Route path="/servicios" element={<Layout><Services /></Layout>} />
