@@ -7,49 +7,49 @@ const MobileServicesGrid = () => {
     {
       icon: Brain,
       title: "Agentes IA",
-      description: "Chatbots inteligentes",
+      description: "Para WhatsApp y redes que responden como humanos",
       route: "/novachannel",
       color: "from-blue-500 to-blue-600"
     },
     {
       icon: Workflow,
       title: "Automatizaciones",
-      description: "Procesos optimizados",
+      description: "Optimiza procesos y elimina tareas repetitivas",
       route: "/iacoding",
       color: "from-purple-500 to-purple-600"
     },
     {
       icon: Cpu,
       title: "Desarrollo Apps",
-      description: "Apps con IA",
+      description: "Apps móviles y web con IA integrada",
       route: "/iacoding",
       color: "from-green-500 to-green-600"
     },
     {
       icon: Video,
       title: "Generación Contenido",
-      description: "Videos y textos IA",
+      description: "Videos, imágenes y textos con tu avatar",
       route: "/servicios/contenido",
       color: "from-orange-500 to-orange-600"
     },
     {
       icon: Stethoscope,
       title: "NovaMedic",
-      description: "IA para salud",
+      description: "Asistente IA para consultas médicas",
       route: "/consulta-eficiente",
       color: "from-red-500 to-red-600"
     },
     {
       icon: Activity,
       title: "NovaFitness",
-      description: "IA para fitness",
+      description: "Entrenador personal con IA",
       route: "/social-media-ai",
       color: "from-teal-500 to-teal-600"
     },
     {
       icon: Share2,
       title: "Redes Sociales",
-      description: "Gestión con IA",
+      description: "Gestión automática de todas tus redes",
       route: "/social-media-ai",
       color: "from-pink-500 to-pink-600"
     },
