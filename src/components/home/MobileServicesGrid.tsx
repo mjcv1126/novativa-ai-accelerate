@@ -96,28 +96,22 @@ const MobileServicesGrid = () => {
                   key={index}
                   className="group bg-white rounded-xl p-4 shadow-md border border-gray-100 cursor-not-allowed relative overflow-hidden"
                 >
-                  {/* Coming Soon Banner Overlay */}
-                  <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
-                    <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold text-[10px] px-3 py-1 rounded-full mb-2 shadow-lg transform -rotate-12">
+                  {/* Coming Soon Banner - Top overlay only */}
+                  <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-white/95 to-white/60 backdrop-blur-sm z-10 flex flex-col items-center pt-2 pb-1">
+                    <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold text-[9px] px-2 py-0.5 rounded-full shadow-lg transform -rotate-12">
                       COMING SOON
-                    </div>
-                    <div className="bg-black text-yellow-400 font-bold text-[8px] px-2 py-1 rounded">
-                      UNDER CONSTRUCTION
-                    </div>
-                    <div className="mt-2">
-                      <img src={comingSoonIcon} alt="Coming Soon" className="w-5 h-5 opacity-80" />
                     </div>
                   </div>
                   
-                  <div className={`bg-gradient-to-br ${service.color} p-3 rounded-lg w-fit mx-auto mb-3 transition-transform duration-300`}>
+                  <div className={`bg-gradient-to-br ${service.color} p-3 rounded-lg w-fit mx-auto mb-3 transition-transform duration-300 opacity-70`}>
                     <service.icon className="text-white" size={20} />
                   </div>
                   
-                  <h3 className="text-xs font-bold text-center mb-1 text-gray-500 transition-colors duration-300">
+                  <h3 className="text-xs font-bold text-center mb-1 text-gray-700 transition-colors duration-300">
                     {service.title}
                   </h3>
                   
-                  <p className="text-xs text-center text-gray-400 transition-colors duration-300">
+                  <p className="text-xs text-center text-gray-600 transition-colors duration-300">
                     {service.description}
                   </p>
                 </div>
