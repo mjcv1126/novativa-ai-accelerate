@@ -23,7 +23,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ isVisible }) => {
         <div className="max-w-4xl mx-auto text-center">
           <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-novativa-teal via-blue-500 to-novativa-orange bg-clip-text text-transparent">
-              Desarrollo con IA
+              Desarrolla con IA & Automatizaciones
             </h1>
             <div className="relative inline-block mb-8">
               <div className="absolute -inset-1 bg-gradient-to-r from-novativa-teal to-novativa-orange blur"></div>
