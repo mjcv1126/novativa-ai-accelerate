@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Hero from '@/components/home/Hero';
+import MobileServicesGrid from '@/components/home/MobileServicesGrid';
 import Features from '@/components/home/Features';
 import Services from '@/components/home/Services';
 import Testimonials from '@/components/home/Testimonials';
@@ -35,6 +36,7 @@ const Home: React.FC = () => {
       </Helmet>
       <LouisebotWidget />
       <Hero />
+      <MobileServicesGrid />
       <HomeTabs />
       <Features />
       <Services />
