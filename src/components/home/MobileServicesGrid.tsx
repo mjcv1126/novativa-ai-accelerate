@@ -50,7 +50,7 @@ const MobileServicesGrid = () => {
       icon: Share2,
       title: "Redes Sociales",
       description: "Gestión automática de todas tus redes",
-      route: "/social-media-ai",
+      route: "/services",
       color: "from-pink-500 to-pink-600"
     },
     {
