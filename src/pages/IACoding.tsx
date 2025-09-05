@@ -25,8 +25,8 @@ const IACoding = () => {
       <StickyHeaderCTA />
       <HeroSection isVisible={isVisible} />
       <ServicesOverview />
-      <AppDevelopmentSection />
       <AutomationSection />
+      <AppDevelopmentSection />
       <PricingComparison />
       <AppExamples />
       <FeaturesList />
