@@ -28,9 +28,7 @@ const MobileNav = ({
   };
   return <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg animate-fade-in">
       <div className="container mx-auto py-4 flex flex-col space-y-4">
-        <div className="flex justify-end px-4">
-          <LanguageToggle />
-        </div>
+        
         
         <Link to="/" className="text-gray-800 hover:text-novativa-teal px-4 py-2 rounded-md" onClick={onClose}>
           {t('nav.home')}
