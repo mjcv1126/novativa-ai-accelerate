@@ -1,6 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
 import HeroSection from '@/components/ia-coding/HeroSection';
+import ServicesOverview from '@/components/ia-coding/ServicesOverview';
+import AppDevelopmentSection from '@/components/ia-coding/AppDevelopmentSection';
 import AutomationSection from '@/components/ia-coding/AutomationSection';
 import PricingComparison from '@/components/ia-coding/PricingComparison';
 import AppExamples from '@/components/ia-coding/AppExamples';
@@ -22,6 +24,8 @@ const IACoding = () => {
     <div className="min-h-screen bg-black text-white overflow-hidden pb-16">
       <StickyHeaderCTA />
       <HeroSection isVisible={isVisible} />
+      <ServicesOverview />
+      <AppDevelopmentSection />
       <AutomationSection />
       <PricingComparison />
       <AppExamples />
