@@ -64,7 +64,7 @@ const MobileServicesGrid = () => {
     {
       icon: Users,
       title: "Influencers IA",
-      description: "Próximamente",
+      description: "Avatares digitales que crean contenido viral",
       route: "#",
       color: "from-indigo-400 to-indigo-500",
       disabled: true
@@ -72,7 +72,7 @@ const MobileServicesGrid = () => {
     {
       icon: BarChart3,
       title: "NovaInsights",
-      description: "Próximamente",
+      description: "Business Intelligence e investigación con IA",
       route: "#",
       color: "from-emerald-400 to-emerald-500",
       disabled: true
@@ -92,8 +92,13 @@ const MobileServicesGrid = () => {
               return (
                 <div 
                   key={index}
-                  className="group bg-white rounded-xl p-4 shadow-md border border-gray-100 opacity-60 cursor-not-allowed"
+                  className="group bg-white rounded-xl p-4 shadow-md border border-gray-100 opacity-60 cursor-not-allowed relative overflow-hidden"
                 >
+                  {/* Próximamente ribbon */}
+                  <div className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg transform rotate-12 translate-x-1 -translate-y-1">
+                    Próximamente
+                  </div>
+                  
                   <div className={`bg-gradient-to-br ${service.color} p-3 rounded-lg w-fit mx-auto mb-3 transition-transform duration-300`}>
                     <service.icon className="text-white" size={20} />
                   </div>
