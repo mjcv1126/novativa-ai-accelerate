@@ -49,9 +49,10 @@ const MobileServicesGrid = () => {
     {
       icon: Share2,
       title: "Redes Sociales",
-      description: "Gestión automática de todas tus redes",
-      route: "/services",
-      color: "from-pink-500 to-pink-600"
+      description: "Gestión de redes sociales con IA para maximizar rendimiento",
+      route: "https://novativa.org/servicios/redes-sociales-ia",
+      color: "from-pink-500 to-pink-600",
+      external: true
     },
     {
       icon: PhoneCall,
@@ -111,6 +112,30 @@ const MobileServicesGrid = () => {
                     {service.description}
                   </p>
                 </div>
+              );
+            }
+            
+            if (service.external) {
+              return (
+                <a
+                  key={index}
+                  href={service.route}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-gray-200"
+                >
+                  <div className={`bg-gradient-to-br ${service.color} p-3 rounded-lg w-fit mx-auto mb-3 group-hover:scale-110 transition-transform duration-300`}>
+                    <service.icon className="text-white" size={20} />
+                  </div>
+                  
+                  <h3 className="text-xs font-bold text-center mb-1 text-gray-900 group-hover:text-novativa-teal transition-colors duration-300">
+                    {service.title}
+                  </h3>
+                  
+                  <p className="text-xs text-center text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
+                    {service.description}
+                  </p>
+                </a>
               );
             }
             
