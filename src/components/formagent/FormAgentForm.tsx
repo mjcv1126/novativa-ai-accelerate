@@ -21,7 +21,7 @@ const FormAgentForm = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [countryCode, setCountryCode] = useState('+1');
+  const [countryCode, setCountryCode] = useState('+503');
   const [service, setService] = useState('');
   const [budget, setBudget] = useState('');
   const [description, setDescription] = useState('');
@@ -337,18 +337,41 @@ const FormAgentForm = () => {
             {currentStepData.type === 'phone' && (
               <div className="flex gap-2">
                 <Select value={countryCode} onValueChange={setCountryCode}>
-                  <SelectTrigger className="w-24">
+                  <SelectTrigger className="w-32">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="+1">+1</SelectItem>
-                    <SelectItem value="+52">+52</SelectItem>
-                    <SelectItem value="+34">+34</SelectItem>
-                    <SelectItem value="+57">+57</SelectItem>
-                    <SelectItem value="+54">+54</SelectItem>
-                    <SelectItem value="+56">+56</SelectItem>
-                    <SelectItem value="+51">+51</SelectItem>
-                    <SelectItem value="+593">+593</SelectItem>
+                    {/* Central America */}
+                    <SelectItem value="+503">🇸🇻 +503</SelectItem>
+                    <SelectItem value="+502">🇬🇹 +502</SelectItem>
+                    <SelectItem value="+504">🇭🇳 +504</SelectItem>
+                    <SelectItem value="+506">🇨🇷 +506</SelectItem>
+                    <SelectItem value="+507">🇵🇦 +507</SelectItem>
+                    <SelectItem value="+505">🇳🇮 +505</SelectItem>
+                    <SelectItem value="+501">🇧🇿 +501</SelectItem>
+                    
+                    {/* United States */}
+                    <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                    
+                    {/* Mexico */}
+                    <SelectItem value="+52">🇲🇽 +52</SelectItem>
+                    
+                    {/* Rest of Latin America */}
+                    <SelectItem value="+57">🇨🇴 +57</SelectItem>
+                    <SelectItem value="+54">🇦🇷 +54</SelectItem>
+                    <SelectItem value="+56">🇨🇱 +56</SelectItem>
+                    <SelectItem value="+51">🇵🇪 +51</SelectItem>
+                    <SelectItem value="+593">🇪🇨 +593</SelectItem>
+                    <SelectItem value="+591">🇧🇴 +591</SelectItem>
+                    <SelectItem value="+598">🇺🇾 +598</SelectItem>
+                    <SelectItem value="+595">🇵🇾 +595</SelectItem>
+                    <SelectItem value="+58">🇻🇪 +58</SelectItem>
+                    
+                    {/* Others */}
+                    <SelectItem value="+34">🇪🇸 +34</SelectItem>
+                    <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                    <SelectItem value="+33">🇫🇷 +33</SelectItem>
+                    <SelectItem value="+49">🇩🇪 +49</SelectItem>
                   </SelectContent>
                 </Select>
                 <Input
