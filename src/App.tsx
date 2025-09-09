@@ -26,6 +26,8 @@ import AgentsAIThankYou from './pages/AgentsAIThankYou';
 import ConversationalFormPage from './pages/ConversationalFormPage';
 import FormularioConfirmacion from './pages/FormularioConfirmacion';
 import FormularioSinInversionPage from './pages/FormularioSinInversionPage';
+import FormAgentPage from './pages/FormAgentPage';
+import FormAgentConfirmacion from './pages/FormAgentConfirmacion';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -100,6 +102,8 @@ function App() {
         <Route path="/formulario" element={<ConversationalFormPage />} />
         <Route path="/formulario-confirmacion" element={<FormularioConfirmacion />} />
         <Route path="/formulario-sin-inversion" element={<Layout><FormularioSinInversionPage /></Layout>} />
+        <Route path="/formagent" element={<FormAgentPage />} />
+        <Route path="/formagent-confirmacion" element={<FormAgentConfirmacion />} />
         
         {/* Admin routes */}
         <Route path="/admin/login" element={
