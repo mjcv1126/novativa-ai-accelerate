@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { UserPlus, Download, RefreshCw, Calendar, Users, CheckCircle, Clock, Eye, Mail, MessageCircle } from 'lucide-react';
+import { UserPlus, Download, RefreshCw, Calendar, Users, CheckCircle, Clock, Eye, Mail, MessageCircle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
@@ -217,6 +217,51 @@ const AdminLeads = () => {
     }
   };
 
+  const handleDeleteLead = async (leadId: string, leadName: string) => {
+    try {
+      const { error } = await supabase
+        .from('conversational_form_leads')
+        .delete()
+        .eq('id', leadId);
+
+      if (error) throw error;
+
+      // Update local state
+      setLeads(currentLeads => currentLeads.filter(lead => lead.id !== leadId));
+      
+      // Update stats
+      const leadToDelete = leads.find(lead => lead.id === leadId);
+      if (leadToDelete) {
+        setStats(currentStats => ({
+          ...currentStats,
+          total: currentStats.total - 1,
+          withBudget: leadToDelete.investment_budget?.includes('No cuento con la inversión') 
+            ? currentStats.withBudget 
+            : currentStats.withBudget - 1,
+          withoutBudget: leadToDelete.investment_budget?.includes('No cuento con la inversión') 
+            ? currentStats.withoutBudget - 1 
+            : currentStats.withoutBudget,
+          today: new Date(leadToDelete.created_at).toDateString() === new Date().toDateString()
+            ? currentStats.today - 1
+            : currentStats.today
+        }));
+      }
+
+      toast({
+        title: "Lead eliminado",
+        description: `${leadName} ha sido eliminado exitosamente`,
+      });
+      
+    } catch (error) {
+      console.error('Error deleting lead:', error);
+      toast({
+        title: "Error",
+        description: "Error al eliminar el lead",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -347,6 +392,8 @@ const AdminLeads = () => {
                       <TableHead className="min-w-[100px]">País</TableHead>
                       <TableHead className="min-w-[180px]">Servicios</TableHead>
                       <TableHead className="min-w-[160px]">Presupuesto</TableHead>
+                      <TableHead className="min-w-[140px]">Fecha Ingreso</TableHead>
+                      <TableHead className="w-[50px]">Borrar</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -369,7 +416,7 @@ const AdminLeads = () => {
                         return text.substring(0, maxLength) + '...';
                       };
 
-                      return (
+                        return (
                         <TableRow key={lead.id}>
                           <TableCell>
                             <Button
@@ -422,6 +469,27 @@ const AdminLeads = () => {
                             >
                               {truncateText(lead.investment_budget, 20)}
                             </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm text-gray-600">
+                              {new Date(lead.created_at).toLocaleDateString('es-ES', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteLead(lead.id, `${lead.first_name} ${lead.last_name}`)}
+                              className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       );
