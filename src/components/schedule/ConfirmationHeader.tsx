@@ -30,9 +30,10 @@ const ConfirmationHeader = () => {
         {t('schedule.seeYou')}
       </h1>
       <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
-        {t('schedule.explore')} 
-        <span className="font-bold text-blue-600"> {t('schedule.ai')}</span> {t('language') === 'es' ? 'y' : 'and'} 
-        <span className="font-bold text-purple-600"> {t('schedule.automation')}</span> {t('schedule.inYourCompany')}
+        Descubre cómo implementar 
+        <span className="font-bold text-blue-600"> inteligencia artificial</span> y 
+        <span className="font-bold text-purple-600"> automatización</span> para revolucionar el 
+        <span className="font-bold text-green-600"> marketing en tu empresa</span> y aumentar tus ventas
       </p>
       <div className="flex justify-center gap-3 mb-8">
         <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full flex items-center gap-2 animate-bounce-slow">
