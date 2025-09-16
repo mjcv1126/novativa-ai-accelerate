@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { UserPlus, Download, RefreshCw, Calendar, Users, CheckCircle, Clock } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { UserPlus, Download, RefreshCw, Calendar, Users, CheckCircle, Clock, Eye, Mail, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { LeadDetailsDialog } from '@/components/admin/leads/LeadDetailsDialog';
 
 interface Lead {
   id: string;
@@ -24,6 +26,8 @@ interface Lead {
 const AdminLeads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
     withBudget: 0,
@@ -119,6 +123,48 @@ const AdminLeads = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleViewLead = (lead: Lead) => {
+    setSelectedLead(lead);
+    setIsDialogOpen(true);
+  };
+
+  const handleCreateProspect = async (lead: Lead) => {
+    try {
+      // Crear un nuevo contacto en el CRM
+      const { data: contact, error } = await supabase
+        .from('contacts')
+        .insert({
+          first_name: lead.first_name,
+          last_name: lead.last_name,
+          email: lead.email,
+          phone: lead.phone,
+          country_code: lead.country_code,
+          country_name: lead.country_name,
+          service_of_interest: lead.services_of_interest,
+          notes: `Lead convertido desde formulario conversacional. Presupuesto: ${lead.investment_budget}`,
+          org_id: '00000000-0000-0000-0000-000000000000' // Default org ID
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: "Éxito",
+        description: `Prospecto creado exitosamente para ${lead.first_name} ${lead.last_name}`,
+      });
+      setIsDialogOpen(false);
+      
+    } catch (error) {
+      console.error('Error creating prospect:', error);
+      toast({
+        title: "Error",
+        description: "Error al crear el prospecto",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -240,75 +286,96 @@ const AdminLeads = () => {
                 <p className="text-sm">Los nuevos leads del formulario aparecerán aquí</p>
               </div>
             ) : (
-              <div className="rounded-md border overflow-x-auto">
+              <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Nombre</TableHead>
-                      <TableHead>Apellido</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>WhatsApp</TableHead>
-                      <TableHead>Hora</TableHead>
-                      <TableHead>País</TableHead>
-                      <TableHead>Asunto</TableHead>
-                      <TableHead>Inversión Necesaria</TableHead>
+                      <TableHead className="w-[50px]">Ver</TableHead>
+                      <TableHead className="min-w-[140px]">Nombre</TableHead>
+                      <TableHead className="min-w-[200px]">Email</TableHead>
+                      <TableHead className="min-w-[120px]">Teléfono</TableHead>
+                      <TableHead className="min-w-[100px]">País</TableHead>
+                      <TableHead className="min-w-[180px]">Servicios</TableHead>
+                      <TableHead className="min-w-[160px]">Presupuesto</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {leads.map((lead) => (
-                      <TableRow key={lead.id}>
-                        <TableCell className="font-medium">{lead.first_name}</TableCell>
-                        <TableCell>{lead.last_name}</TableCell>
-                        <TableCell>
-                          <a 
-                            href={`mailto:${lead.email}`}
-                            className="text-blue-600 hover:text-blue-800 hover:underline"
-                          >
-                            {lead.email}
-                          </a>
-                        </TableCell>
-                        <TableCell>
-                          <a 
-                            href={`https://wa.me/${lead.phone}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-green-600 hover:text-green-800 hover:underline"
-                          >
-                            {lead.phone}
-                          </a>
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          {new Date(lead.submission_datetime).toLocaleString('es-ES', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit'
-                          })}
-                        </TableCell>
-                        <TableCell>{lead.country_name}</TableCell>
-                        <TableCell className="max-w-xs">
-                          <div className="truncate" title={lead.services_of_interest}>
-                            {lead.services_of_interest}
-                          </div>
-                        </TableCell>
-                        <TableCell className="max-w-xs">
-                          <div className="space-y-1">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              lead.investment_budget.includes('No cuento con la inversión')
-                                ? 'bg-orange-100 text-orange-800' 
-                                : 'bg-green-100 text-green-800'
-                            }`}>
-                              {lead.investment_budget.includes('No cuento con la inversión') ? 'Sin presupuesto' : 'Con presupuesto'}
-                            </span>
-                            <div className="text-xs text-muted-foreground truncate" title={lead.investment_budget}>
-                              {lead.investment_budget}
+                    {leads.map((lead) => {
+                      const getBudgetBadgeVariant = (budget: string) => {
+                        if (budget.includes('$500') || budget.includes('pago inicial')) return 'default';
+                        if (budget.includes('$100')) return 'secondary'; 
+                        if (budget.includes('$49')) return 'outline';
+                        if (budget.includes('No cuento')) return 'destructive';
+                        return 'default';
+                      };
+
+                      const getWhatsAppLink = (phone: string) => {
+                        const cleanPhone = phone.replace(/\D/g, '');
+                        return `https://wa.me/${cleanPhone}`;
+                      };
+
+                      const truncateText = (text: string, maxLength: number = 30) => {
+                        if (text.length <= maxLength) return text;
+                        return text.substring(0, maxLength) + '...';
+                      };
+
+                      return (
+                        <TableRow key={lead.id}>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleViewLead(lead)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            <div className="max-w-[140px] truncate" title={`${lead.first_name} ${lead.last_name}`}>
+                              {lead.first_name} {lead.last_name}
                             </div>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                          <TableCell>
+                            <a href={`mailto:${lead.email}`} className="text-blue-600 hover:underline flex items-center">
+                              <Mail className="w-4 h-4 mr-1 flex-shrink-0" />
+                              <span className="truncate max-w-[160px]" title={lead.email}>{lead.email}</span>
+                            </a>
+                          </TableCell>
+                          <TableCell>
+                            <a 
+                              href={getWhatsAppLink(lead.phone)} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-green-600 hover:underline flex items-center"
+                            >
+                              <MessageCircle className="w-4 h-4 mr-1 flex-shrink-0" />
+                              <span className="truncate">{lead.phone}</span>
+                            </a>
+                          </TableCell>
+                          <TableCell>
+                            <div className="max-w-[100px] truncate">{lead.country_name}</div>
+                          </TableCell>
+                          <TableCell>
+                            <div 
+                              className="max-w-[180px] truncate cursor-help" 
+                              title={lead.services_of_interest}
+                            >
+                              {truncateText(lead.services_of_interest, 25)}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={getBudgetBadgeVariant(lead.investment_budget)}
+                              className="max-w-[160px] truncate cursor-help"
+                              title={lead.investment_budget}
+                            >
+                              {truncateText(lead.investment_budget, 20)}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
@@ -316,6 +383,13 @@ const AdminLeads = () => {
           </CardContent>
         </Card>
       </div>
+
+      <LeadDetailsDialog
+        lead={selectedLead}
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onCreateProspect={handleCreateProspect}
+      />
     </>
   );
 };
