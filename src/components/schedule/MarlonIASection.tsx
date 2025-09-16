@@ -1,7 +1,26 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const MarlonIASection = () => {
+  useEffect(() => {
+    // Load TikTok embed script
+    const script = document.createElement('script');
+    script.src = 'https://www.tiktok.com/embed.js';
+    script.async = true;
+    
+    // Check if script is already loaded
+    if (!document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) {
+      document.body.appendChild(script);
+    }
+    
+    // Cleanup function
+    return () => {
+      const existingScript = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, []);
   return (
     <div className="bg-card/80 backdrop-blur-lg rounded-xl shadow-lg p-8 mb-12 border border-border">
       <h2 className="text-2xl font-semibold mb-6 text-foreground text-center flex items-center justify-center gap-2">
@@ -72,8 +91,6 @@ const MarlonIASection = () => {
           Contacta a Marlon por WhatsApp
         </a>
       </div>
-      
-      <script async src="https://www.tiktok.com/embed.js"></script>
     </div>
   );
 };
