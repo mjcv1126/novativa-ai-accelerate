@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { UserPlus, Download, RefreshCw, Calendar, Users, CheckCircle, Clock, Eye, Mail, MessageCircle, Trash2 } from 'lucide-react';
+import { UserPlus, Download, RefreshCw, Calendar, Users, CheckCircle, Clock, Eye, Mail, MessageCircle, Trash2, Search, Filter, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -25,9 +27,15 @@ interface Lead {
 
 const AdminLeads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [filteredLeads, setFilteredLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [budgetFilter, setBudgetFilter] = useState('all');
+  const [countryFilter, setCountryFilter] = useState('all');
+  const [sortField, setSortField] = useState<keyof Lead>('created_at');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [stats, setStats] = useState({
     total: 0,
     withBudget: 0,
@@ -109,6 +117,7 @@ const AdminLeads = () => {
       
       const leadsArray = leadsData || [];
       setLeads(leadsArray);
+      setFilteredLeads(leadsArray);
       
       // Calculate stats
       const today = new Date().toDateString();
@@ -138,6 +147,74 @@ const AdminLeads = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Filter and sort leads
+  React.useEffect(() => {
+    let filtered = [...leads];
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(lead => 
+        lead.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lead.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lead.phone.includes(searchTerm) ||
+        lead.country_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lead.services_of_interest.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Apply budget filter
+    if (budgetFilter !== 'all') {
+      if (budgetFilter === 'with_budget') {
+        filtered = filtered.filter(lead => !lead.investment_budget.includes('No cuento con la inversión'));
+      } else if (budgetFilter === 'without_budget') {
+        filtered = filtered.filter(lead => lead.investment_budget.includes('No cuento con la inversión'));
+      }
+    }
+
+    // Apply country filter
+    if (countryFilter !== 'all') {
+      filtered = filtered.filter(lead => lead.country_name === countryFilter);
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let aValue: any = a[sortField];
+      let bValue: any = b[sortField];
+
+      // Handle date fields
+      if (sortField === 'created_at' || sortField === 'submission_datetime') {
+        aValue = new Date(aValue as string).getTime();
+        bValue = new Date(bValue as string).getTime();
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    setFilteredLeads(filtered);
+  }, [leads, searchTerm, budgetFilter, countryFilter, sortField, sortDirection]);
+
+  const handleSort = (field: keyof Lead) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field: keyof Lead) => {
+    if (sortField !== field) return <ArrowUpDown className="h-4 w-4" />;
+    return sortDirection === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
+  };
+
+  const getUniqueCountries = () => {
+    const countries = [...new Set(leads.map(lead => lead.country_name))];
+    return countries.sort();
   };
 
   const exportLeads = () => {
@@ -307,6 +384,68 @@ const AdminLeads = () => {
           </div>
         </div>
 
+        {/* Search and Filters */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Search className="h-5 w-5" />
+              Búsqueda y Filtros
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Buscar</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Nombre, email, teléfono..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Presupuesto</label>
+                <Select value={budgetFilter} onValueChange={setBudgetFilter}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos</SelectItem>
+                    <SelectItem value="with_budget">Con presupuesto</SelectItem>
+                    <SelectItem value="without_budget">Sin presupuesto</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">País</label>
+                <Select value={countryFilter} onValueChange={setCountryFilter}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los países</SelectItem>
+                    {getUniqueCountries().map(country => (
+                      <SelectItem key={country} value={country}>{country}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Resultados</label>
+                <div className="text-sm text-gray-600 flex items-center justify-center h-10 bg-gray-50 rounded border">
+                  {filteredLeads.length} de {leads.length} leads
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
@@ -363,7 +502,7 @@ const AdminLeads = () => {
         </div>
 
         {/* Leads Table */}
-        <Card>
+                <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <UserPlus className="h-5 w-5" />
@@ -374,7 +513,13 @@ const AdminLeads = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {leads.length === 0 ? (
+            {filteredLeads.length === 0 && leads.length > 0 ? (
+              <div className="text-center text-gray-500 py-12">
+                <Search className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                <h3 className="text-lg font-medium mb-2">No se encontraron resultados</h3>
+                <p className="text-sm">Intenta cambiar los filtros de búsqueda</p>
+              </div>
+            ) : leads.length === 0 ? (
               <div className="text-center text-gray-500 py-12">
                 <UserPlus className="h-16 w-16 mx-auto mb-4 text-gray-300" />
                 <h3 className="text-lg font-medium mb-2">No hay leads disponibles</h3>
@@ -386,18 +531,34 @@ const AdminLeads = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[50px]">Ver</TableHead>
-                      <TableHead className="min-w-[140px]">Nombre</TableHead>
-                      <TableHead className="min-w-[200px]">Email</TableHead>
+                      <TableHead className="min-w-[140px]">
+                        <Button variant="ghost" onClick={() => handleSort('first_name')} className="h-auto p-0 font-semibold">
+                          Nombre {getSortIcon('first_name')}
+                        </Button>
+                      </TableHead>
+                      <TableHead className="min-w-[200px]">
+                        <Button variant="ghost" onClick={() => handleSort('email')} className="h-auto p-0 font-semibold">
+                          Email {getSortIcon('email')}
+                        </Button>
+                      </TableHead>
                       <TableHead className="min-w-[120px]">Teléfono</TableHead>
-                      <TableHead className="min-w-[100px]">País</TableHead>
+                      <TableHead className="min-w-[100px]">
+                        <Button variant="ghost" onClick={() => handleSort('country_name')} className="h-auto p-0 font-semibold">
+                          País {getSortIcon('country_name')}
+                        </Button>
+                      </TableHead>
                       <TableHead className="min-w-[180px]">Servicios</TableHead>
                       <TableHead className="min-w-[160px]">Presupuesto</TableHead>
-                      <TableHead className="min-w-[140px]">Fecha Ingreso</TableHead>
+                      <TableHead className="min-w-[140px]">
+                        <Button variant="ghost" onClick={() => handleSort('created_at')} className="h-auto p-0 font-semibold">
+                          Fecha Ingreso {getSortIcon('created_at')}
+                        </Button>
+                      </TableHead>
                       <TableHead className="w-[50px]">Borrar</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {leads.map((lead) => {
+                    {filteredLeads.map((lead) => {
                       const getBudgetBadgeVariant = (budget: string) => {
                         if (budget.includes('$500') || budget.includes('pago inicial')) return 'default';
                         if (budget.includes('$100')) return 'secondary'; 
