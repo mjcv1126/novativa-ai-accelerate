@@ -601,6 +601,57 @@ export type Database = {
           },
         ]
       }
+      conversational_form_leads: {
+        Row: {
+          country_code: string
+          country_name: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          investment_budget: string
+          last_name: string
+          phone: string
+          services_of_interest: string
+          submission_date: string
+          submission_datetime: string
+          submission_time: string
+          updated_at: string
+        }
+        Insert: {
+          country_code: string
+          country_name: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          investment_budget: string
+          last_name: string
+          phone: string
+          services_of_interest: string
+          submission_date?: string
+          submission_datetime?: string
+          submission_time?: string
+          updated_at?: string
+        }
+        Update: {
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          investment_budget?: string
+          last_name?: string
+          phone?: string
+          services_of_interest?: string
+          submission_date?: string
+          submission_datetime?: string
+          submission_time?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       crm_stages: {
         Row: {
           color: string | null
