@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { countries } from '@/components/schedule/countryData';
 import { useContactSync } from '@/hooks/crm/useContactSync';
 import NovativaLogo from '@/components/shared/NovativaLogo';
+import { supabase } from '@/integrations/supabase/client';
 
 const ConversationalForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -290,6 +291,31 @@ const ConversationalForm = () => {
         form_version: '2.0'
       };
 
+      // Insert directly into database
+      try {
+        const { error: dbError } = await supabase
+          .from('conversational_form_leads')
+          .insert({
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+            email: email.trim(),
+            phone: `${countryCode}${phone.replace(/\D/g, '')}`,
+            country_code: countryCode,
+            country_name: selectedCountry?.name || 'Honduras',
+            services_of_interest: selectedService,
+            investment_budget: selectedBudget,
+            submission_datetime: new Date().toISOString()
+          });
+
+        if (dbError) {
+          console.error('Error saving to database:', dbError);
+        } else {
+          console.log('✅ Lead saved to database successfully');
+        }
+      } catch (error) {
+        console.error('Error inserting lead to database:', error);
+      }
+
       try {
         await fetch('https://hook.us2.make.com/8l8pyxyd40p52sqed6mdqhekarmzadaw', {
           method: 'POST',
@@ -461,6 +487,31 @@ const ConversationalForm = () => {
     console.log('inversion:', submissionData.inversion);
     console.log('investment:', submissionData.investment);
     console.log('budget_selected:', submissionData.budget_selected);
+
+    // Insert directly into database BEFORE sending to webhook
+    try {
+      const { error: dbError } = await supabase
+        .from('conversational_form_leads')
+        .insert({
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          email: email.trim(),
+          phone: formattedPhone,
+          country_code: countryCode,
+          country_name: selectedCountry?.name || 'Honduras',
+          services_of_interest: selectedService,
+          investment_budget: selectedBudget,
+          submission_datetime: isoDateTime
+        });
+
+      if (dbError) {
+        console.error('Error saving to database:', dbError);
+      } else {
+        console.log('✅ Lead saved to database successfully');
+      }
+    } catch (error) {
+      console.error('Error inserting lead to database:', error);
+    }
 
     try {
       console.log('Sending POST request to webhook...');
