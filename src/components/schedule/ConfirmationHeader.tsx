@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star, MessageCircle, Check } from 'lucide-react';
+import { Star, MessageCircle, Check, TrendingUp, Smartphone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const ConfirmationHeader = () => {
@@ -35,12 +35,18 @@ const ConfirmationHeader = () => {
         <span className="font-bold text-purple-600"> automatización</span> para revolucionar el 
         <span className="font-bold text-green-600"> marketing en tu empresa</span> y aumentar tus ventas
       </p>
-      <div className="flex justify-center gap-3 mb-8">
+      <div className="flex flex-wrap justify-center gap-3 mb-8">
         <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full flex items-center gap-2 animate-bounce-slow">
           <MessageCircle size={18} /> {t('schedule.chatbot')}
         </span>
         <span className="px-4 py-2 bg-purple-100 text-purple-800 rounded-full flex items-center gap-2 animate-subtle-shake">
           <Check size={18} /> {t('schedule.automation2')}
+        </span>
+        <span className="px-4 py-2 bg-green-100 text-green-800 rounded-full flex items-center gap-2 animate-pulse">
+          <TrendingUp size={18} /> Marketing
+        </span>
+        <span className="px-4 py-2 bg-orange-100 text-orange-800 rounded-full flex items-center gap-2 hover-scale">
+          <Smartphone size={18} /> Desarrollo de Apps
         </span>
       </div>
     </div>
