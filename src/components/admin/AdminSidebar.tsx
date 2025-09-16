@@ -19,7 +19,8 @@ import {
   MessageSquare,
   Heart,
   Receipt,
-  Package
+  Package,
+  UserPlus
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -57,6 +58,12 @@ const AdminSidebar = () => {
       title: 'CRM',
       icon: Users,
       path: '/admin/crm',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'Leads',
+      icon: UserPlus,
+      path: '/admin/dashboard?tab=leads',
       roles: ['admin', 'super_admin']
     },
     {

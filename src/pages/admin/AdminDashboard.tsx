@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PenTool, FileText, Users, TrendingUp, LogOut, Calendar, Activity, Phone, UserPlus } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -48,6 +48,7 @@ interface Lead {
 
 const AdminDashboard = () => {
   const { logout, user } = useAdminAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [stats, setStats] = useState<DashboardStats>({
     totalContacts: 0,
     totalBlogs: 0,
@@ -66,6 +67,9 @@ const AdminDashboard = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [leadsLoading, setLeadsLoading] = useState(false);
+
+  // Get default tab from URL parameters
+  const defaultTab = searchParams.get('tab') || 'dashboard';
 
   useEffect(() => {
     loadDashboardData();
@@ -281,7 +285,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="dashboard" className="w-full">
+        <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="leads" onClick={() => leads.length === 0 && loadLeads()}>Leads</TabsTrigger>
