@@ -17,7 +17,7 @@ const MarlonIASection = () => {
             cite="https://www.tiktok.com/@hackmillonario" 
             data-unique-id="hackmillonario" 
             data-embed-type="creator"
-            style={{ maxWidth: '400px', minWidth: '288px', width: '100%' }}
+            style={{ maxWidth: '780px', minWidth: '288px' }}
           >
             <section>
               <a target="_blank" href="https://www.tiktok.com/@hackmillonario?refer=creator_embed">
