@@ -43,7 +43,7 @@ const ConfirmationHeader = () => {
           <Check size={18} /> {t('schedule.automation2')}
         </span>
         <span className="px-4 py-2 bg-green-100 text-green-800 rounded-full flex items-center gap-2 animate-pulse">
-          <TrendingUp size={18} /> Marketing
+          <TrendingUp size={18} /> Marketing y Social Media
         </span>
         <span className="px-4 py-2 bg-orange-100 text-orange-800 rounded-full flex items-center gap-2 hover-scale">
           <Smartphone size={18} /> Desarrollo de Apps
