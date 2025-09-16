@@ -63,7 +63,7 @@ const AdminSidebar = () => {
     {
       title: 'Leads',
       icon: UserPlus,
-      path: '/admin/dashboard?tab=leads',
+      path: '/admin/leads',
       roles: ['admin', 'super_admin']
     },
     {

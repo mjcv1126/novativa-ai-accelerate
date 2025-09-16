@@ -7,6 +7,7 @@ import AdminDashboard from './AdminDashboard';
 import AdminBlog from './AdminBlog';
 import AdminBlogEdit from './AdminBlogEdit';
 import AdminCRM from './AdminCRM';
+import AdminLeads from './AdminLeads';
 import AdminBookings from './AdminBookings';
 import AdminActivities from './AdminActivities';
 import AdminInvoices from './AdminInvoices';
@@ -62,6 +63,7 @@ const AdminLayout = () => {
               <Route path="blog/new" element={<ProtectedRoute><AdminBlogEdit /></ProtectedRoute>} />
               <Route path="blog/edit/:id" element={<ProtectedRoute><AdminBlogEdit /></ProtectedRoute>} />
               <Route path="crm" element={<ProtectedRoute><AdminCRM /></ProtectedRoute>} />
+              <Route path="leads" element={<ProtectedRoute><AdminLeads /></ProtectedRoute>} />
               <Route path="bookings" element={<ProtectedRoute><AdminBookings /></ProtectedRoute>} />
               <Route path="activities" element={<ProtectedRoute><AdminActivities /></ProtectedRoute>} />
               <Route path="invoices" element={<ProtectedRoute><AdminInvoices /></ProtectedRoute>} />

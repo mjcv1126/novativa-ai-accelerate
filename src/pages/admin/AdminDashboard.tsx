@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PenTool, FileText, Users, TrendingUp, LogOut, Calendar, Activity, Phone, UserPlus } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { PenTool, FileText, Users, TrendingUp, LogOut, Calendar, Activity, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -33,22 +31,8 @@ interface RecentActivity {
   created_at: string;
 }
 
-interface Lead {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  country_code: string;
-  country_name: string;
-  will_attend: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
 const AdminDashboard = () => {
   const { logout, user } = useAdminAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [stats, setStats] = useState<DashboardStats>({
     totalContacts: 0,
     totalBlogs: 0,
@@ -64,12 +48,7 @@ const AdminDashboard = () => {
     cancelledBookings: 0
   });
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
-  const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
-  const [leadsLoading, setLeadsLoading] = useState(false);
-
-  // Get default tab from URL parameters
-  const defaultTab = searchParams.get('tab') || 'dashboard';
 
   useEffect(() => {
     loadDashboardData();
@@ -197,49 +176,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const loadLeads = async () => {
-    try {
-      setLeadsLoading(true);
-      console.log('🔄 Loading leads data...');
-      
-      // Use direct SQL query since icom_leads is not in the generated types
-      const { data: leadsData, error: leadsError } = await supabase
-        .from('contacts')
-        .select('*')
-        .limit(1)
-        .single(); // Just to test connection
-      
-      if (leadsError) {
-        console.log('Using fallback SQL query for leads...');
-      }
-      
-      // For now, we'll use a mock structure until types are updated
-      const mockLeads: Lead[] = [
-        {
-          id: '1',
-          first_name: 'Juan',
-          last_name: 'Pérez',
-          email: 'juan@example.com',
-          phone: '+504 1234-5678',
-          country_code: '+504',
-          country_name: 'Honduras',
-          will_attend: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }
-      ];
-      
-      setLeads(mockLeads);
-      console.log('📋 Mock leads data loaded');
-      
-    } catch (error) {
-      console.error('❌ Error loading leads data:', error);
-      setLeads([]);
-    } finally {
-      setLeadsLoading(false);
-    }
-  };
-
   const handleLogout = async () => {
     if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
       await logout();
@@ -284,14 +220,6 @@ const AdminDashboard = () => {
             </Button>
           </div>
         </div>
-
-        <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="leads" onClick={() => leads.length === 0 && loadLeads()}>Leads</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="dashboard" className="space-y-6 mt-6">
 
         {/* Main Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -465,74 +393,6 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
-          </TabsContent>
-
-          <TabsContent value="leads" className="space-y-6 mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <UserPlus className="h-5 w-5" />
-                  Leads del Formulario
-                </CardTitle>
-                <CardDescription>
-                  Contactos que completaron el formulario en novativa.org/formulario
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {leadsLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-novativa-teal"></div>
-                  </div>
-                ) : leads.length === 0 ? (
-                  <div className="text-center text-gray-500 py-8">
-                    <UserPlus className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>No hay leads disponibles</p>
-                    <p className="text-sm">Los nuevos leads aparecerán aquí</p>
-                  </div>
-                ) : (
-                  <div className="rounded-md border">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Nombre</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Teléfono</TableHead>
-                          <TableHead>País</TableHead>
-                          <TableHead>Asistirá</TableHead>
-                          <TableHead>Fecha</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {leads.map((lead) => (
-                          <TableRow key={lead.id}>
-                            <TableCell className="font-medium">
-                              {lead.first_name} {lead.last_name}
-                            </TableCell>
-                            <TableCell>{lead.email}</TableCell>
-                            <TableCell>{lead.phone}</TableCell>
-                            <TableCell>{lead.country_name}</TableCell>
-                            <TableCell>
-                              <span className={`px-2 py-1 rounded-full text-xs ${
-                                lead.will_attend 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : 'bg-red-100 text-red-800'
-                              }`}>
-                                {lead.will_attend ? 'Sí' : 'No'}
-                              </span>
-                            </TableCell>
-                            <TableCell className="text-sm text-gray-500">
-                              {formatDate(lead.created_at)}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
       </div>
     </>
   );
