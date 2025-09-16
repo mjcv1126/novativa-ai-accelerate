@@ -637,6 +637,45 @@ export type Database = {
         }
         Relationships: []
       }
+      icom_leads: {
+        Row: {
+          country_code: string
+          country_name: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string
+          updated_at: string
+          will_attend: boolean
+        }
+        Insert: {
+          country_code: string
+          country_name: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone: string
+          updated_at?: string
+          will_attend?: boolean
+        }
+        Update: {
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string
+          updated_at?: string
+          will_attend?: boolean
+        }
+        Relationships: []
+      }
       integrations: {
         Row: {
           config: Json
@@ -1875,6 +1914,21 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_icom_leads: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          country_code: string
+          country_name: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string
+          updated_at: string
+          will_attend: boolean
+        }[]
+      }
       get_latest_assignment: {
         Args: { contact_uuid: string }
         Returns: {
@@ -2014,7 +2068,7 @@ export type Database = {
               p_last_name: string
               p_phone: string
             }
-        Returns: undefined
+        Returns: string
       }
       vector_avg: {
         Args: { "": number[] }
