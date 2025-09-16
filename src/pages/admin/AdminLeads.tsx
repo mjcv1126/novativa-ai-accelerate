@@ -38,7 +38,57 @@ const AdminLeads = () => {
 
   useEffect(() => {
     loadLeads();
-  }, []);
+    
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('conversational-form-leads-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'conversational_form_leads'
+        },
+        (payload) => {
+          console.log('🔔 New lead received in real-time:', payload.new);
+          // Add the new lead to the existing leads
+          setLeads(currentLeads => [payload.new as Lead, ...currentLeads]);
+          // Update stats
+          setStats(currentStats => ({
+            ...currentStats,
+            total: currentStats.total + 1,
+            withBudget: payload.new.investment_budget?.includes('No cuento con la inversión') 
+              ? currentStats.withBudget 
+              : currentStats.withBudget + 1,
+            withoutBudget: payload.new.investment_budget?.includes('No cuento con la inversión') 
+              ? currentStats.withoutBudget + 1 
+              : currentStats.withoutBudget,
+            today: new Date(payload.new.created_at).toDateString() === new Date().toDateString()
+              ? currentStats.today + 1
+              : currentStats.today
+          }));
+          
+          // Show notification
+          toast({
+            title: "Nuevo Lead",
+            description: `${payload.new.first_name} ${payload.new.last_name} ha completado el formulario`,
+          });
+        }
+      )
+      .subscribe();
+
+    // Auto-refresh every 30 seconds as fallback
+    const refreshInterval = setInterval(() => {
+      console.log('🔄 Auto-refreshing leads...');
+      loadLeads();
+    }, 30000);
+
+    return () => {
+      console.log('🔌 Cleaning up real-time subscription and interval');
+      supabase.removeChannel(channel);
+      clearInterval(refreshInterval);
+    };
+  }, [toast]);
 
   const loadLeads = async () => {
     try {
