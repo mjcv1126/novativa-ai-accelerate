@@ -2089,6 +2089,10 @@ export type Database = {
         Args: { p_org_id: string }
         Returns: undefined
       }
+      set_admin_org_context: {
+        Args: { p_org_id: string }
+        Returns: undefined
+      }
       set_client_org: {
         Args: { p_org_id: string }
         Returns: undefined

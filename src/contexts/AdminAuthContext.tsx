@@ -58,7 +58,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           
           if (orgData?.org_id) {
             console.log('Setting org context:', orgData.org_id);
-            await supabase.rpc('sql', `SELECT set_config('app.org_id', '${orgData.org_id}', true)`);
+            await supabase.rpc('set_admin_org_context', { p_org_id: orgData.org_id });
           }
         } catch (orgError) {
           console.error('Error setting org context:', orgError);
