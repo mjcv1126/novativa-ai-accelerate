@@ -3,6 +3,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { adminAuthService } from '@/services/adminAuth';
+import { supabase } from '@/integrations/supabase/client';
 import type { AdminAuthContextType, AdminAuthState } from '@/types/adminAuth';
 
 const AdminAuthContext = createContext<AdminAuthContextType>({
@@ -44,6 +45,25 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       if (data?.session?.user) {
         console.log('AdminAuthProvider.checkSession - User found:', data.session.user);
+        
+        // Set org context for admin users
+        try {
+          await supabase.rpc('set_session_email', { email_value: data.session.user.email });
+          // Set default org_id for admin access using direct SQL
+          const { data: orgData } = await supabase
+            .from('contacts')
+            .select('org_id')
+            .limit(1)
+            .single();
+          
+          if (orgData?.org_id) {
+            console.log('Setting org context:', orgData.org_id);
+            await supabase.rpc('sql', `SELECT set_config('app.org_id', '${orgData.org_id}', true)`);
+          }
+        } catch (orgError) {
+          console.error('Error setting org context:', orgError);
+        }
+        
         setState({
           user: data.session.user,
           isAuthenticated: true,
