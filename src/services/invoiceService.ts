@@ -68,7 +68,7 @@ export const invoiceService = {
         proforma_prefix: 'PRF',
         next_invoice_number: 1,
         next_proforma_number: 1,
-        org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+        org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
       };
       
       const { data: newData, error: insertError } = await supabase
@@ -105,7 +105,7 @@ export const invoiceService = {
           .from('invoice_settings')
           .insert({
             ...settings,
-            org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+            org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
           })
           .select()
           .single();
@@ -234,7 +234,7 @@ export const invoiceService = {
           subtotal,
           isv_amount,
           total,
-          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc', // Org ID fijo temporal
+          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1', // Org ID donde están las etapas existentes
           company_settings: {
             company_name: settings.company_name,
             company_rtn: settings.company_rtn,
@@ -252,7 +252,7 @@ export const invoiceService = {
       const itemsWithInvoiceId = processedItems.map(item => ({
         ...item,
         invoice_id: invoice.id,
-        org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+        org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
       }));
 
       const { error: itemsError } = await supabase
@@ -320,7 +320,7 @@ export const invoiceService = {
         const itemsWithInvoiceId = processedItems.map(item => ({
           ...item,
           invoice_id: id,
-          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
         }));
 
         const { error: itemsError } = await supabase

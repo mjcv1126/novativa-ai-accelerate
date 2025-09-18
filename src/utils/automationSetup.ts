@@ -25,7 +25,7 @@ export const createDefaultAutomationRules = async () => {
       contact_action_data: 'Actualizar notas con información de TidyCal',
       cancel_previous_activity: false,
       is_active: true,
-      org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+      org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
     };
 
     // Rule 2: Nueva llamada programada (contacto no existe)
@@ -41,7 +41,7 @@ export const createDefaultAutomationRules = async () => {
       contact_action_data: 'Crear contacto con datos de TidyCal',
       cancel_previous_activity: false,
       is_active: true,
-      org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+      org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
     };
 
     // Rule 3: Llamada cancelada
@@ -57,7 +57,7 @@ export const createDefaultAutomationRules = async () => {
       contact_action_data: 'Marcar actividades relacionadas como canceladas',
       cancel_previous_activity: true,
       is_active: true,
-      org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+      org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
     };
 
     // Rule 4: Llamada reprogramada
@@ -73,7 +73,7 @@ export const createDefaultAutomationRules = async () => {
       contact_action_data: 'Actualizar actividad existente con nuevos datos',
       cancel_previous_activity: false,
       is_active: true,
-      org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+      org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
     };
 
     const rules = [rule1, rule2, rule3, rule4];

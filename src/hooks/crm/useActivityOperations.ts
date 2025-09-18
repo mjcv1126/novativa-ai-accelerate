@@ -82,7 +82,7 @@ export const useActivityOperations = () => {
         .insert([{
           ...activityData,
           status: activityData.status || 'pending',
-          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
         }])
         .select()
         .single();

@@ -52,7 +52,7 @@ export const useTidyCalAutoSync = () => {
             stage_id: LLAMADA_PROGRAMADA_STAGE_ID, // Set to "Llamada programada" stage
             notes: `Contacto creado automáticamente desde TidyCal booking #${booking.id}`,
             last_contact_date: new Date().toISOString(),
-            org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+            org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
           }])
           .select()
           .single();
@@ -96,7 +96,7 @@ export const useTidyCalAutoSync = () => {
         is_completed: isPast,
         status: isPast ? 'completed' : 'pending',
         due_date: booking.starts_at,
-        org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+        org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
       };
 
       const { error: activityError } = await supabase

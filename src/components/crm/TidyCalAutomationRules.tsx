@@ -167,7 +167,7 @@ export const TidyCalAutomationRules = () => {
         contact_action: rule.contact_action,
         contact_action_data: rule.contact_action_data,
         cancel_previous_activity: rule.cancel_previous_activity,
-        org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc', // Usar org_id fijo temporalmente
+        org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1', // Org ID donde están las etapas existentes
         is_active: false // Start duplicated rules as inactive
       };
 
@@ -247,7 +247,7 @@ export const TidyCalAutomationRules = () => {
             contact_action: formData.contact_action,
             contact_action_data: formData.contact_action_data,
             cancel_previous_activity: formData.cancel_previous_activity,
-            org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc', // Usar org_id fijo temporalmente
+            org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1', // Org ID donde están las etapas existentes
             is_active: formData.is_active
           }]);
 
