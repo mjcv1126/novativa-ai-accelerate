@@ -94,6 +94,17 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       if (data) {
         console.log('AdminAuthProvider.login - Success:', data);
+        
+        // Set session context immediately after successful login
+        try {
+          await supabase.rpc('set_session_email', { email_value: data.email });
+          const defaultOrgId = 'd010fb06-7e97-4cef-90b6-be84942ac1d1';
+          await supabase.rpc('set_admin_org_context', { p_org_id: defaultOrgId });
+          console.log('AdminAuthProvider.login - Set session context for:', data.email);
+        } catch (contextError) {
+          console.warn('Failed to set session context during login:', contextError);
+        }
+        
         setState({
           user: data,
           isAuthenticated: true,
