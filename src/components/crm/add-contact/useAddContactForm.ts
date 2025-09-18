@@ -65,24 +65,6 @@ export const useAddContactForm = (onContactAdded: () => void) => {
     setIsLoading(true);
 
     try {
-      // Verificar si ya existe un contacto con el mismo email o teléfono
-      const { data: existingContacts, error: checkError } = await supabase
-        .from('contacts')
-        .select(`
-          *,
-          stage:crm_stages(*)
-        `)
-        .or(`email.eq.${formData.email},phone.eq.${formData.phone}`);
-
-      if (checkError) throw checkError;
-
-      if (existingContacts && existingContacts.length > 0) {
-        setExistingContact(existingContacts[0] as ContactWithStage);
-        setShowExistingContactDialog(true);
-        setIsLoading(false);
-        return;
-      }
-
       // Preparar teléfonos adicionales
       const additionalPhones = [];
       if (formData.secondary_phone.trim()) {
@@ -95,6 +77,15 @@ export const useAddContactForm = (onContactAdded: () => void) => {
         additionalEmails.push(formData.secondary_email.trim());
       }
 
+      // Obtener un stage por defecto
+      const { data: defaultStage } = await supabase
+        .from('crm_stages')
+        .select('id')
+        .eq('is_active', true)
+        .order('position', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
       // Crear nuevo contacto
       const { error } = await supabase
         .from('contacts')
@@ -106,7 +97,7 @@ export const useAddContactForm = (onContactAdded: () => void) => {
           company: formData.company || null,
           country_code: formData.country_code,
           country_name: selectedCountry?.name || formData.country_name,
-          stage_id: formData.stage_id || null,
+          stage_id: defaultStage?.id || formData.stage_id || null,
           notes: formData.notes || null,
           additional_phones: additionalPhones.length > 0 ? additionalPhones : null,
           additional_emails: additionalEmails.length > 0 ? additionalEmails : null,
@@ -116,7 +107,7 @@ export const useAddContactForm = (onContactAdded: () => void) => {
           service_of_interest: formData.service_of_interest || null,
           rtn: formData.rtn || null,
           address: formData.address || null,
-          org_id: 'a7b8c9d0-e1f2-3456-7890-123456789abc' // Org ID fijo temporal
+          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID válido existente
         }]);
 
       if (error) throw error;
