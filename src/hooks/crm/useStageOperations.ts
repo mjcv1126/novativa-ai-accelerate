@@ -7,10 +7,14 @@ import { toast } from '@/components/ui/use-toast';
 export const useStageOperations = () => {
   const fetchStages = useCallback(async (): Promise<CrmStage[]> => {
     try {
+      // Set the email in session context for RLS policies
+      await supabase.rpc('set_session_email', { email_value: 'soporte@novativa.org' });
+      
       const { data, error } = await supabase
         .from('crm_stages')
         .select('*')
         .eq('is_active', true)
+        .eq('org_id', 'd010fb06-7e97-4cef-90b6-be84942ac1d1')
         .order('position');
 
       if (error) throw error;

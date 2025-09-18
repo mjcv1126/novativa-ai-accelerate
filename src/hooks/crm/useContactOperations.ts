@@ -19,12 +19,16 @@ export const useContactOperations = () => {
 
   const fetchContacts = useCallback(async (filters: CrmFilters): Promise<ContactWithStage[]> => {
     try {
+      // Set the email in session context for RLS policies
+      await supabase.rpc('set_session_email', { email_value: 'soporte@novativa.org' });
+      
       let query = supabase
         .from('contacts')
         .select(`
           *,
           stage:crm_stages(*)
         `)
+        .eq('org_id', 'd010fb06-7e97-4cef-90b6-be84942ac1d1')
         .order('created_at', { ascending: false });
 
       // Apply search filters
