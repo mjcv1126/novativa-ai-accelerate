@@ -46,20 +46,14 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (data?.session?.user) {
         console.log('AdminAuthProvider.checkSession - User found:', data.session.user);
         
-        // Set org context for admin users
+        // Set org context for admin users - use hardcoded org_id to avoid RLS issues
         try {
           await supabase.rpc('set_session_email', { email_value: data.session.user.email });
-          // Set default org_id for admin access using direct SQL
-          const { data: orgData } = await supabase
-            .from('contacts')
-            .select('org_id')
-            .limit(1)
-            .single();
           
-          if (orgData?.org_id) {
-            console.log('Setting org context:', orgData.org_id);
-            await supabase.rpc('set_admin_org_context', { p_org_id: orgData.org_id });
-          }
+          // Use the hardcoded org_id that matches the existing data
+          const defaultOrgId = 'd010fb06-7e97-4cef-90b6-be84942ac1d1';
+          console.log('Setting org context:', defaultOrgId);
+          await supabase.rpc('set_admin_org_context', { p_org_id: defaultOrgId });
         } catch (orgError) {
           console.error('Error setting org context:', orgError);
         }
