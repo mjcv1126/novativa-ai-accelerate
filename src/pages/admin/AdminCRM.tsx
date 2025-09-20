@@ -79,7 +79,7 @@ export default function AdminCRM() {
   return (
     <div className="flex flex-col h-full">
       {/* Header Section - Fixed width, left aligned */}
-      <div className="flex-shrink-0 w-full max-w-7xl">
+      <div className="flex-shrink-0 w-full max-w-full px-4">
         {/* Compact Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 mb-4">
           <div className="flex-1 min-w-0">
@@ -166,7 +166,7 @@ export default function AdminCRM() {
 
           <TabsContent value="contacts" className="flex-1 flex flex-col space-y-3 mt-3">
             {/* Filters Section - Fixed width */}
-            <div className="flex-shrink-0 w-full max-w-7xl">
+            <div className="flex-shrink-0 w-full max-w-full">
               <CRMFilters 
                 filters={filters} 
                 onFiltersChange={setFilters}
@@ -198,7 +198,7 @@ export default function AdminCRM() {
             </div>
 
             {/* Contact Views - Flexible container */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-hidden w-full max-w-full">
               {loading ? (
                 <div className="text-center py-8">Cargando contactos...</div>
               ) : viewMode === 'kanban' ? (
