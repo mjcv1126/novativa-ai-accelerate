@@ -77,9 +77,9 @@ export default function AdminCRM() {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header Section - Fixed width, left aligned */}
-      <div className="flex-shrink-0 w-full max-w-full px-4">
+    <div className="flex flex-col h-full max-w-6xl mx-auto px-4">
+      {/* Header Section */}
+      <div className="flex-shrink-0 w-full">
         {/* Compact Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 mb-4">
           <div className="flex-1 min-w-0">
@@ -165,8 +165,8 @@ export default function AdminCRM() {
           </div>
 
           <TabsContent value="contacts" className="flex-1 flex flex-col space-y-3 mt-3">
-            {/* Filters Section - Fixed width */}
-            <div className="flex-shrink-0 w-full max-w-full">
+            {/* Filters Section */}
+            <div className="flex-shrink-0 w-full">
               <CRMFilters 
                 filters={filters} 
                 onFiltersChange={setFilters}
