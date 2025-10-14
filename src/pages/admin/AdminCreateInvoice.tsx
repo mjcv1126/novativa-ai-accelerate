@@ -32,7 +32,7 @@ const AdminCreateInvoice = () => {
   const [formData, setFormData] = useState<InvoiceFormData>({
     contact_name: '',
     invoice_date: new Date().toISOString().split('T')[0],
-    invoice_type: 'invoice',
+    invoice_type: 'proforma',
     currency: 'HNL',
     country: 'Honduras',
     items: [
