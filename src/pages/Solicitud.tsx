@@ -158,11 +158,11 @@ const Solicitud = () => {
           <div className="mb-4">
             <TypingAnimation
               phrases={[
-                'Diseño',
-                'Video',
-                'Arte',
-                'Automatización',
-                'Banner',
+                { text: 'Diseño', emoji: '🎨' },
+                { text: 'Video', emoji: '🎬' },
+                { text: 'Arte', emoji: '🖼️' },
+                { text: 'Automatización', emoji: '🤖' },
+                { text: 'Banner', emoji: '📢' },
               ]}
               staticPrefix="Solicitud de"
               typingSpeed={100}

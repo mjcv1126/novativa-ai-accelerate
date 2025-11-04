@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface TypingAnimationProps {
-  phrases: string[];
+  phrases: string[] | { text: string; emoji: string }[];
   typingSpeed?: number;
   deletingSpeed?: number;
   delayBetweenPhrases?: number;
@@ -23,6 +23,16 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   
+  const getCurrentPhrase = () => {
+    const phrase = phrases[currentPhraseIndex];
+    return typeof phrase === 'string' ? phrase : phrase.text;
+  };
+
+  const getCurrentEmoji = () => {
+    const phrase = phrases[currentPhraseIndex];
+    return typeof phrase === 'string' ? '' : phrase.emoji;
+  };
+  
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (isWaiting) {
@@ -31,7 +41,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
         return;
       }
 
-      const currentPhrase = phrases[currentPhraseIndex];
+      const currentPhrase = getCurrentPhrase();
       
       if (isDeleting) {
         setCurrentText(currentText.substring(0, currentText.length - 1));
@@ -52,9 +62,12 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
     return () => clearTimeout(timeout);
   }, [currentText, isDeleting, isWaiting, currentPhraseIndex, phrases, typingSpeed, deletingSpeed, delayBetweenPhrases]);
   
+  const currentEmoji = getCurrentEmoji();
+  
   return (
     <div className={`typewriter-container ${className}`}>
       {staticPrefix && <span className="typewriter-static">{staticPrefix} </span>}
+      {currentEmoji && <span className="mr-2 text-4xl md:text-5xl">{currentEmoji}</span>}
       <span className="typewriter-text">{currentText}</span>
     </div>
   );
