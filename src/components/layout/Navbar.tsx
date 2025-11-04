@@ -36,14 +36,16 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Link to="/" className="mr-6">
+            <Link to="/" className="mr-4 lg:mr-6 shrink-0">
               <img 
                 alt="Novativa" 
-                className="h-10" 
+                className="h-8 md:h-10 w-auto object-contain" 
                 src="/lovable-uploads/876bbab1-6c0b-4434-ba8d-c6e774f6d16d.png" 
               />
             </Link>
-            <DesktopNav />
+            <div className="hidden lg:block">
+              <DesktopNav />
+            </div>
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
