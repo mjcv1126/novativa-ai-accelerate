@@ -151,7 +151,7 @@ const Solicitud = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
+    <div className="bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header con efecto typing */}
         <div className="text-center mb-12">

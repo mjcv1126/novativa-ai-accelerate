@@ -105,7 +105,7 @@ function App() {
         <Route path="/formulario-sin-inversion" element={<Layout><FormularioSinInversionPage /></Layout>} />
         <Route path="/formagent" element={<FormAgentPage />} />
         <Route path="/formagent-confirmacion" element={<FormAgentConfirmacion />} />
-        <Route path="/solicitud" element={<Solicitud />} />
+        <Route path="/solicitud" element={<Layout><Solicitud /></Layout>} />
         
         {/* Admin routes */}
         <Route path="/admin/login" element={
