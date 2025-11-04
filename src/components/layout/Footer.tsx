@@ -81,9 +81,7 @@ const Footer = () => {
               <li>
                 <Link to="/contacto" className="hover:text-white transition-colors">{t('nav.contact')}</Link>
               </li>
-              <li>
-                <Link to="/knowledge" className="hover:text-white transition-colors">Knowledge Base</Link>
-              </li>
+              
             </ul>
           </div>
           
