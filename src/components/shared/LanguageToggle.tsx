@@ -29,10 +29,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
 
   // Icon only variant
   if (variant === 'icon') {
-    return <Button variant="ghost" size="icon" onClick={toggleLanguage} className={`rounded-full ${className}`} title={t('language.switch')}>
-        <Globe className="h-5 w-5" />
-        <span className="sr-only">{t('language.switch')}</span>
-      </Button>;
+    return;
   }
 
   // Subtle text variant
