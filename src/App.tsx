@@ -43,6 +43,7 @@ import AdminScripts from './pages/admin/AdminScripts';
 import AdminCustomCSS from './pages/admin/AdminCustomCSS';
 import FileUpload from './pages/FileUpload';
 import TranscriptionPage from './pages/TranscriptionPage';
+import Solicitud from './pages/Solicitud';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { useLanguage } from './contexts/LanguageContext';
 
@@ -104,6 +105,7 @@ function App() {
         <Route path="/formulario-sin-inversion" element={<Layout><FormularioSinInversionPage /></Layout>} />
         <Route path="/formagent" element={<FormAgentPage />} />
         <Route path="/formagent-confirmacion" element={<FormAgentConfirmacion />} />
+        <Route path="/solicitud" element={<Solicitud />} />
         
         {/* Admin routes */}
         <Route path="/admin/login" element={
