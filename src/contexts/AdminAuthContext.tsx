@@ -45,18 +45,8 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       if (data?.session?.user) {
         console.log('AdminAuthProvider.checkSession - User found:', data.session.user);
-        
-        // Set org context for admin users - use hardcoded org_id to avoid RLS issues
-        try {
-          await supabase.rpc('set_session_email', { email_value: data.session.user.email });
-          
-          // Use the hardcoded org_id that matches the existing data
-          const defaultOrgId = 'd010fb06-7e97-4cef-90b6-be84942ac1d1';
-          console.log('Setting org context:', defaultOrgId);
-          await supabase.rpc('set_admin_org_context', { p_org_id: defaultOrgId });
-        } catch (orgError) {
-          console.error('Error setting org context:', orgError);
-        }
+        // SECURITY FIX: Removed hardcoded org_id
+        // Access control now handled by RLS policies checking org_members table
         
         setState({
           user: data.session.user,
@@ -94,16 +84,8 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       if (data) {
         console.log('AdminAuthProvider.login - Success:', data);
-        
-        // Set session context immediately after successful login
-        try {
-          await supabase.rpc('set_session_email', { email_value: data.email });
-          const defaultOrgId = 'd010fb06-7e97-4cef-90b6-be84942ac1d1';
-          await supabase.rpc('set_admin_org_context', { p_org_id: defaultOrgId });
-          console.log('AdminAuthProvider.login - Set session context for:', data.email);
-        } catch (contextError) {
-          console.warn('Failed to set session context during login:', contextError);
-        }
+        // SECURITY FIX: Removed hardcoded org_id
+        // Access control now handled by RLS policies checking org_members table
         
         setState({
           user: data,
@@ -112,12 +94,8 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         });
         toast.success('Inicio de sesión exitoso');
         
-        // Redirigir según el rol del usuario
-        if (data.role === 'super_admin') {
-          navigate('/admin/dashboard');
-        } else {
-          navigate('/admin/blog');
-        }
+        // Navigate to dashboard after successful login
+        navigate('/admin/dashboard');
       }
       
       return { error: null };

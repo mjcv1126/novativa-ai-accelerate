@@ -1,107 +1,30 @@
 
 import { supabase } from '@/integrations/supabase/client';
 
-// Credenciales de administrador por defecto
-const ADMIN_EMAIL = 'soporte@novativa.org';
-const ADMIN_PASSWORD = 'Novativa2025$';
-
-// Inicializar usuarios locales con dcuellar
-const initializeLocalUsers = () => {
-  const existingUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
-  const dcuellarUser = existingUsers.find((user: any) => user.email === 'dcuellar@novativa.org');
-  
-  if (!dcuellarUser) {
-    const newUser = {
-      id: 'dcuellar-user-1',
-      email: 'dcuellar@novativa.org',
-      password: 'Novativa2025$',
-      role: 'admin',
-      created_at: new Date().toISOString()
-    };
-    existingUsers.push(newUser);
-    localStorage.setItem('admin_users', JSON.stringify(existingUsers));
-    console.log('adminAuth - Created dcuellar user with correct password');
-  } else if (dcuellarUser.password !== 'Novativa2025$') {
-    // Actualizar contraseña si es diferente
-    dcuellarUser.password = 'Novativa2025$';
-    localStorage.setItem('admin_users', JSON.stringify(existingUsers));
-    console.log('adminAuth - Updated dcuellar password');
-  }
-};
-
-// Inicializar al cargar el módulo
-initializeLocalUsers();
-
-// Función para verificar usuarios locales
-const checkLocalUser = (email: string, password: string) => {
-  const localUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
-  const user = localUsers.find((user: any) => user.email === email && user.password === password);
-  console.log('adminAuth - Checking local user:', email, 'Found:', !!user);
-  return user;
-};
+// SECURITY FIX: Removed all hardcoded credentials
+// Use Supabase authentication with proper password hashing
 
 export const adminAuthService = {
   login: async (email: string, password: string) => {
     console.log('adminAuthService.login - Starting login for:', email);
     try {
-      // Verificar credenciales del admin principal
-      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        const mockUser = {
-          id: '1',
-          email: ADMIN_EMAIL,
-          role: 'super_admin'
-        };
-        localStorage.setItem('admin_user', JSON.stringify(mockUser));
-        
-        // Set email in Supabase session for RLS policies
-        try {
-          await supabase.rpc('set_session_email', { email_value: ADMIN_EMAIL });
-        } catch (error) {
-          console.warn('Failed to set session email:', error);
-        }
-        
-        console.log('adminAuthService.login - Super admin auth successful');
-        return { data: mockUser, error: null };
-      }
-
-      // Verificar usuarios locales creados
-      const localUser = checkLocalUser(email, password);
-      if (localUser) {
-        const userSession = {
-          id: localUser.id,
-          email: localUser.email,
-          role: localUser.role
-        };
-        localStorage.setItem('admin_user', JSON.stringify(userSession));
-        
-        // Set email in Supabase session for RLS policies
-        try {
-          await supabase.rpc('set_session_email', { email_value: localUser.email });
-        } catch (error) {
-          console.warn('Failed to set session email:', error);
-        }
-        
-        console.log('adminAuthService.login - Local user auth successful:', userSession);
-        return { data: userSession, error: null };
-      }
-
-      // Intentar con Supabase si está disponible
+      // Use Supabase authentication only - no hardcoded credentials
       console.log('adminAuthService.login - Trying Supabase auth');
       const result = await supabase.auth.signInWithPassword({ email, password });
-      console.log('adminAuthService.login - Supabase result:', result);
-      
-      if (result.data?.user) {
-        const userSession = {
-          id: result.data.user.id,
-          email: result.data.user.email,
-          role: 'admin'
-        };
-        localStorage.setItem('admin_user', JSON.stringify(userSession));
-        return { data: userSession, error: null };
-      }
       
       if (result.error) {
-        return result;
+        console.error('adminAuthService.login - Error:', result.error);
+        return { data: null, error: result.error };
+      }
+      
+      if (result.data?.user) {
+        // Don't store role in localStorage - it comes from user_roles table via RLS
+        const userSession = {
+          id: result.data.user.id,
+          email: result.data.user.email
+        };
+        localStorage.setItem('admin_session', JSON.stringify(userSession));
+        return { data: userSession, error: null };
       }
 
       console.log('adminAuthService.login - Invalid credentials');
@@ -116,7 +39,7 @@ export const adminAuthService = {
     console.log('adminAuthService.logout - Starting logout');
     try {
       await supabase.auth.signOut();
-      localStorage.removeItem('admin_user');
+      localStorage.removeItem('admin_session');
       console.log('adminAuthService.logout - Logout successful');
       return { error: null };
     } catch (error) {
@@ -128,57 +51,26 @@ export const adminAuthService = {
   checkSession: async () => {
     console.log('adminAuthService.checkSession - Starting session check');
     try {
-      // Verificar localStorage primero (para usuarios mock/locales)
-      const storedUser = localStorage.getItem('admin_user');
-      if (storedUser) {
-        try {
-          const user = JSON.parse(storedUser);
-          console.log('adminAuthService.checkSession - Found stored user:', user);
-          
-          // Set email in Supabase session for RLS policies
-          if (user.email) {
-            try {
-              await supabase.rpc('set_session_email', { email_value: user.email });
-            } catch (error) {
-              console.warn('Failed to set session email during checkSession:', error);
-            }
-          }
-          
-          return { data: { session: { user } }, error: null };
-        } catch (parseError) {
-          console.error('adminAuthService.checkSession - Parse error:', parseError);
-          localStorage.removeItem('admin_user');
-        }
-      }
-      
-      // Verificar sesión de Supabase
-      console.log('adminAuthService.checkSession - Checking Supabase session');
+      // Check Supabase session only
       const result = await supabase.auth.getSession();
       console.log('adminAuthService.checkSession - Supabase result:', result);
       
       if (result.data?.session?.user) {
         const userSession = {
           id: result.data.session.user.id,
-          email: result.data.session.user.email,
-          role: 'admin'
+          email: result.data.session.user.email
         };
-        localStorage.setItem('admin_user', JSON.stringify(userSession));
-        
-        // Set email in Supabase session for RLS policies
-        try {
-          await supabase.rpc('set_session_email', { email_value: result.data.session.user.email });
-        } catch (error) {
-          console.warn('Failed to set session email for Supabase user:', error);
-        }
+        localStorage.setItem('admin_session', JSON.stringify(userSession));
         
         return { data: { session: { user: userSession } }, error: null };
       }
       
       console.log('adminAuthService.checkSession - No session found');
+      localStorage.removeItem('admin_session');
       return { data: { session: null }, error: null };
     } catch (error) {
       console.error('adminAuthService.checkSession - Error:', error);
-      localStorage.removeItem('admin_user');
+      localStorage.removeItem('admin_session');
       return { data: { session: null }, error };
     }
   },
