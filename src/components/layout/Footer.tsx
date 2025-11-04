@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NovativaLogo from '@/components/shared/NovativaLogo';
@@ -6,16 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageToggle from '@/components/shared/LanguageToggle';
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const { t, language } = useLanguage();
-  
+  const {
+    t,
+    language
+  } = useLanguage();
+
   // Determine correct path based on language
   const transcriptionPath = language === 'es' ? '/transcripcion' : '/transcription';
-  
-  return (
-    <footer className="bg-gray-900 text-gray-300 pt-12 pb-8">
+  return <footer className="bg-gray-900 text-gray-300 pt-12 pb-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
@@ -97,9 +96,7 @@ const Footer = () => {
               <li>
                 <Link to="/politica-reembolso" className="hover:text-white transition-colors">{t('footer.refundPolicy')}</Link>
               </li>
-              <li>
-                <LanguageToggle variant="subtle" className="hover:text-white transition-colors mt-2" />
-              </li>
+              
             </ul>
             
             <div className="mt-8">
@@ -117,8 +114,6 @@ const Footer = () => {
           <p>&copy; {currentYear} Novativa. {t('footer.copyright')}</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
