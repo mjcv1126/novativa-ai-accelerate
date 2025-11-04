@@ -7,6 +7,7 @@ interface TypingAnimationProps {
   deletingSpeed?: number;
   delayBetweenPhrases?: number;
   className?: string;
+  staticPrefix?: string;
 }
 
 const TypingAnimation: React.FC<TypingAnimationProps> = ({
@@ -15,6 +16,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
   deletingSpeed = 50,
   delayBetweenPhrases = 2000,
   className = '',
+  staticPrefix = '',
 }) => {
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
@@ -52,6 +54,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
   
   return (
     <div className={`typewriter-container ${className}`}>
+      {staticPrefix && <span className="typewriter-static">{staticPrefix} </span>}
       <span className="typewriter-text">{currentText}</span>
     </div>
   );

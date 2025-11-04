@@ -158,12 +158,13 @@ const Solicitud = () => {
           <div className="mb-4">
             <TypingAnimation
               phrases={[
-                'Solicitud de Diseño',
-                'Solicitud de Video',
-                'Solicitud de Arte',
-                'Solicitud de Automatización',
-                'Solicitud de Banner',
+                'Diseño',
+                'Video',
+                'Arte',
+                'Automatización',
+                'Banner',
               ]}
+              staticPrefix="Solicitud de"
               typingSpeed={100}
               deletingSpeed={50}
               delayBetweenPhrases={2000}
