@@ -77,16 +77,19 @@ const Solicitud = () => {
           .from('user_profiles')
           .select('*')
           .eq('user_id', session.user.id)
-          .single();
+          .maybeSingle();
         
         if (profile) {
           setUserProfile(profile);
-          // Auto-populate form fields
+          // Auto-populate form fields from profile
           setValue('company_name', profile.company_name || '');
           setValue('applicant_role', profile.applicant_role || '');
           setValue('applicant_phone', profile.phone || '');
-          setValue('applicant_email', session.user.email || '');
         }
+        
+        // Always populate email and name from auth user
+        setValue('applicant_email', session.user.email || '');
+        setValue('applicant_name', session.user.user_metadata?.full_name || '');
       }
     };
 
@@ -96,6 +99,8 @@ const Solicitud = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
+        setValue('applicant_email', session.user.email || '');
+        setValue('applicant_name', session.user.user_metadata?.full_name || '');
       } else {
         setUser(null);
         setUserProfile(null);
@@ -103,7 +108,7 @@ const Solicitud = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setValue]);
 
   const requestType = watch('request_type');
   const deliveryDate = watch('delivery_date');
@@ -321,19 +326,28 @@ const Solicitud = () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
       setUser(session.user);
+      
+      // Load profile and populate fields
       const { data: profile } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('user_id', session.user.id)
-        .single();
+        .maybeSingle();
       
       if (profile) {
         setUserProfile(profile);
         setValue('company_name', profile.company_name || '');
         setValue('applicant_role', profile.applicant_role || '');
         setValue('applicant_phone', profile.phone || '');
-        setValue('applicant_email', session.user.email || '');
       }
+      
+      // Always populate email and name
+      setValue('applicant_email', session.user.email || '');
+      setValue('applicant_name', session.user.user_metadata?.full_name || '');
+      
+      toast.success('Datos cargados automáticamente', {
+        description: 'Tus datos han sido completados desde tu perfil',
+      });
     }
   };
 
