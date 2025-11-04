@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,12 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TypingAnimation from '@/components/shared/TypingAnimation';
+import { LoginModal } from '@/components/solicitud/LoginModal';
 import { toast } from 'sonner';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Upload } from 'lucide-react';
+import { CalendarIcon, Upload, LogIn, User } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 const formSchema = z.object({
   // Contacto
@@ -56,10 +58,52 @@ const Solicitud = () => {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [showOtherField, setShowOtherField] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+        // Load user profile
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        if (profile) {
+          setUserProfile(profile);
+          // Auto-populate form fields
+          setValue('company_name', profile.company_name || '');
+          setValue('applicant_role', profile.applicant_role || '');
+          setValue('applicant_phone', profile.phone || '');
+          setValue('applicant_email', session.user.email || '');
+        }
+      }
+    };
+
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+        setUserProfile(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const requestType = watch('request_type');
   const deliveryDate = watch('delivery_date');
@@ -98,8 +142,127 @@ const Solicitud = () => {
     setIsSubmitting(true);
 
     try {
-      // Preparar FormData para enviar archivos
+      let currentUser = user;
+
+      // If no user, create account automatically
+      if (!currentUser) {
+        const tempPassword = Math.random().toString(36).slice(-12) + 'Aa1!';
+        
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+          email: data.applicant_email,
+          password: tempPassword,
+          options: {
+            emailRedirectTo: `${window.location.origin}/solicitud`,
+            data: {
+              full_name: data.applicant_name,
+            }
+          }
+        });
+
+        if (signUpError) {
+          console.error('Error creating account:', signUpError);
+        } else if (authData.user) {
+          currentUser = authData.user;
+          
+          // Create user profile
+          await supabase.from('user_profiles').insert({
+            user_id: authData.user.id,
+            company_name: data.company_name,
+            applicant_role: data.applicant_role,
+            phone: data.applicant_phone,
+          });
+
+          toast.success('Cuenta creada automáticamente', {
+            description: 'Se ha enviado un email para verificar tu cuenta',
+          });
+        }
+      }
+
+      // Upload reference images to Supabase Storage
+      const referenceImagesData = [];
+      for (const file of uploadedImages) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${currentUser?.id}/${fileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('reference-images')
+          .upload(filePath, file);
+
+        if (!uploadError && uploadData) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('reference-images')
+            .getPublicUrl(filePath);
+
+          referenceImagesData.push({
+            name: file.name,
+            url: publicUrl,
+            path: filePath,
+          });
+        }
+      }
+
+      // Upload attached files to Supabase Storage
+      const attachedFilesData = [];
+      for (const file of uploadedFiles) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${currentUser?.id}/${fileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('ticket-attachments')
+          .upload(filePath, file);
+
+        if (!uploadError && uploadData) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('ticket-attachments')
+            .getPublicUrl(filePath);
+
+          attachedFilesData.push({
+            name: file.name,
+            url: publicUrl,
+            path: filePath,
+          });
+        }
+      }
+
+      // Save ticket to database
+      const { data: ticketData, error: ticketError } = await supabase
+        .from('tickets')
+        .insert([{
+          user_id: currentUser?.id,
+          company_name: data.company_name,
+          applicant_name: data.applicant_name,
+          applicant_role: data.applicant_role,
+          applicant_email: data.applicant_email,
+          applicant_phone: data.applicant_phone,
+          request_type: data.request_type as any,
+          request_type_other: data.request_type_other,
+          content_objective: data.content_objective,
+          dimensions: data.dimensions,
+          delivery_format: data.delivery_format,
+          final_use: data.final_use,
+          delivery_date: data.delivery_date?.toISOString().split('T')[0],
+          concept_description: data.concept_description,
+          reference_url: data.reference_url,
+          reference_feedback: data.reference_feedback,
+          reference_images: referenceImagesData as any,
+          attached_files: attachedFilesData as any,
+          priority_level: data.priority_level as any,
+          confirmed_final_info: data.confirm_final_info,
+          understands_changes: data.understand_changes,
+        }])
+        .select()
+        .single();
+
+      if (ticketError) throw ticketError;
+
+      // Preparar FormData para enviar al webhook (mantener funcionalidad existente)
       const formData = new FormData();
+      
+      // Add ticket number
+      formData.append('ticket_number', ticketData.ticket_number);
+      formData.append('ticket_id', ticketData.id);
       
       // Agregar todos los campos del formulario
       Object.entries(data).forEach(([key, value]) => {
@@ -130,13 +293,16 @@ const Solicitud = () => {
         body: formData,
       });
 
-      if (response.ok) {
+      if (response.ok || ticketData) {
         toast.success('Solicitud enviada exitosamente', {
-          description: 'Nuestro equipo la revisará y te confirmará el cronograma de trabajo.',
+          description: `Número de ticket: ${ticketData.ticket_number}. Nuestro equipo la revisará pronto.`,
+          duration: 5000,
         });
         
         // Limpiar formulario
-        window.location.reload();
+        reset();
+        setUploadedImages([]);
+        setUploadedFiles([]);
       } else {
         throw new Error('Error al enviar la solicitud');
       }
@@ -147,6 +313,26 @@ const Solicitud = () => {
       });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleLoginSuccess = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      setUser(session.user);
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .single();
+      
+      if (profile) {
+        setUserProfile(profile);
+        setValue('company_name', profile.company_name || '');
+        setValue('applicant_role', profile.applicant_role || '');
+        setValue('applicant_phone', profile.phone || '');
+        setValue('applicant_email', session.user.email || '');
+      }
     }
   };
 
@@ -180,7 +366,25 @@ const Solicitud = () => {
           {/* 1. Contacto */}
           <Card>
             <CardHeader>
-              <CardTitle>1. Información de Contacto</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>1. Información de Contacto</span>
+                {!user ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsLoginModalOpen(true)}
+                  >
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Iniciar Sesión
+                  </Button>
+                ) : (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <User className="h-4 w-4" />
+                    <span>{user.email}</span>
+                  </div>
+                )}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -595,6 +799,13 @@ const Solicitud = () => {
             </CardContent>
           </Card>
         </form>
+
+        {/* Login Modal */}
+        <LoginModal
+          open={isLoginModalOpen}
+          onOpenChange={setIsLoginModalOpen}
+          onLoginSuccess={handleLoginSuccess}
+        />
       </div>
     </div>
   );

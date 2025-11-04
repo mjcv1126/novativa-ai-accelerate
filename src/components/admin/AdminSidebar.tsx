@@ -20,7 +20,8 @@ import {
   Heart,
   Receipt,
   Package,
-  UserPlus
+  UserPlus,
+  Ticket
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -48,6 +49,12 @@ const AdminSidebar = () => {
   const userRole = currentUser?.role || 'admin';
 
   const allMenuItems = [
+    {
+      title: 'Tickets',
+      icon: Ticket,
+      path: '/admin/tickets',
+      roles: ['admin', 'super_admin']
+    },
     {
       title: 'Dashboard',
       icon: LayoutDashboard,

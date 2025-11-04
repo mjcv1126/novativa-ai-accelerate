@@ -67,8 +67,8 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
   return (
     <div className={`typewriter-container ${className}`}>
       {staticPrefix && <span className="typewriter-static">{staticPrefix} </span>}
-      {currentEmoji && <span className="mr-2 text-4xl md:text-5xl">{currentEmoji}</span>}
       <span className="typewriter-text">{currentText}</span>
+      {currentEmoji && <span className="ml-2 text-4xl md:text-5xl">{currentEmoji}</span>}
     </div>
   );
 };

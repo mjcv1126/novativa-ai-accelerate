@@ -1313,7 +1313,7 @@ export type Database = {
           created_at: string | null
           details: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           resource_id: string | null
           resource_type: string
           user_agent: string | null
@@ -1324,7 +1324,7 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           resource_id?: string | null
           resource_type: string
           user_agent?: string | null
@@ -1335,7 +1335,7 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           resource_id?: string | null
           resource_type?: string
           user_agent?: string | null
@@ -1428,6 +1428,152 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ticket_history: {
+        Row: {
+          action: string
+          comment: string | null
+          created_at: string | null
+          field_changed: string | null
+          id: string
+          new_value: string | null
+          old_value: string | null
+          ticket_id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          comment?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          ticket_id: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          comment?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          ticket_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_history_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          actual_completion_date: string | null
+          applicant_email: string
+          applicant_name: string
+          applicant_phone: string
+          applicant_role: string
+          assigned_to: string | null
+          attached_files: Json | null
+          company_name: string
+          concept_description: string
+          confirmed_final_info: boolean | null
+          content_objective: string
+          created_at: string | null
+          delivery_date: string | null
+          delivery_format: string | null
+          dimensions: string | null
+          estimated_completion_date: string | null
+          final_use: string | null
+          id: string
+          internal_notes: string | null
+          notes: string | null
+          priority_level: Database["public"]["Enums"]["priority_level_enum"]
+          reference_feedback: string
+          reference_images: Json | null
+          reference_url: string | null
+          request_type: Database["public"]["Enums"]["request_type_enum"]
+          request_type_other: string | null
+          status: Database["public"]["Enums"]["ticket_status_enum"] | null
+          ticket_number: string
+          understands_changes: boolean | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          actual_completion_date?: string | null
+          applicant_email: string
+          applicant_name: string
+          applicant_phone: string
+          applicant_role: string
+          assigned_to?: string | null
+          attached_files?: Json | null
+          company_name: string
+          concept_description: string
+          confirmed_final_info?: boolean | null
+          content_objective: string
+          created_at?: string | null
+          delivery_date?: string | null
+          delivery_format?: string | null
+          dimensions?: string | null
+          estimated_completion_date?: string | null
+          final_use?: string | null
+          id?: string
+          internal_notes?: string | null
+          notes?: string | null
+          priority_level: Database["public"]["Enums"]["priority_level_enum"]
+          reference_feedback: string
+          reference_images?: Json | null
+          reference_url?: string | null
+          request_type: Database["public"]["Enums"]["request_type_enum"]
+          request_type_other?: string | null
+          status?: Database["public"]["Enums"]["ticket_status_enum"] | null
+          ticket_number: string
+          understands_changes?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          actual_completion_date?: string | null
+          applicant_email?: string
+          applicant_name?: string
+          applicant_phone?: string
+          applicant_role?: string
+          assigned_to?: string | null
+          attached_files?: Json | null
+          company_name?: string
+          concept_description?: string
+          confirmed_final_info?: boolean | null
+          content_objective?: string
+          created_at?: string | null
+          delivery_date?: string | null
+          delivery_format?: string | null
+          dimensions?: string | null
+          estimated_completion_date?: string | null
+          final_use?: string | null
+          id?: string
+          internal_notes?: string | null
+          notes?: string | null
+          priority_level?: Database["public"]["Enums"]["priority_level_enum"]
+          reference_feedback?: string
+          reference_images?: Json | null
+          reference_url?: string | null
+          request_type?: Database["public"]["Enums"]["request_type_enum"]
+          request_type_other?: string | null
+          status?: Database["public"]["Enums"]["ticket_status_enum"] | null
+          ticket_number?: string
+          understands_changes?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       tidycal_automation_rules: {
         Row: {
@@ -1746,6 +1892,36 @@ export type Database = {
           },
         ]
       }
+      user_profiles: {
+        Row: {
+          applicant_role: string | null
+          company_name: string | null
+          created_at: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          applicant_role?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          applicant_role?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       workflow_executions: {
         Row: {
           completed_at: string | null
@@ -1918,10 +2094,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      binary_quantize: {
-        Args: { "": string } | { "": unknown }
-        Returns: unknown
-      }
       change_invoice_type: {
         Args: { p_invoice_id: string; p_new_type: string }
         Returns: {
@@ -1948,6 +2120,12 @@ export type Database = {
           total: number
           updated_at: string
         }
+        SetofOptions: {
+          from: "*"
+          to: "invoices"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       create_org_and_join: {
         Args: { p_name: string; p_slug: string }
@@ -1957,16 +2135,11 @@ export type Database = {
         Args: { invoice_type?: string }
         Returns: string
       }
-      get_current_user_email: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_current_user_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_ticket_number: { Args: never; Returns: string }
+      get_current_user_email: { Args: never; Returns: string }
+      get_current_user_role: { Args: never; Returns: string }
       get_icom_leads: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           country_code: string
           country_name: string
@@ -1987,12 +2160,9 @@ export type Database = {
           assigned_user_email: string
         }[]
       }
-      get_user_email: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_user_email: { Args: never; Returns: string }
       get_user_role_and_permissions: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           can_write: boolean
           is_admin: boolean
@@ -2000,76 +2170,12 @@ export type Database = {
           role: string
         }[]
       }
-      halfvec_avg: {
-        Args: { "": number[] }
-        Returns: unknown
-      }
-      halfvec_out: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      halfvec_send: {
-        Args: { "": unknown }
-        Returns: string
-      }
-      halfvec_typmod_in: {
-        Args: { "": unknown[] }
-        Returns: number
-      }
-      hnsw_bit_support: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      hnsw_halfvec_support: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      hnsw_sparsevec_support: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      hnswhandler: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_admin_by_email: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_admin_user: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_current_user_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      ivfflat_bit_support: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      ivfflat_halfvec_support: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      ivfflathandler: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      l2_norm: {
-        Args: { "": unknown } | { "": unknown }
-        Returns: number
-      }
-      l2_normalize: {
-        Args: { "": string } | { "": unknown } | { "": unknown }
-        Returns: unknown
-      }
+      is_admin: { Args: never; Returns: boolean }
+      is_admin_by_email: { Args: never; Returns: boolean }
+      is_admin_user: { Args: never; Returns: boolean }
+      is_current_user_admin: { Args: never; Returns: boolean }
       list_my_orgs: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           id: string
           name: string
@@ -2085,70 +2191,22 @@ export type Database = {
         }
         Returns: undefined
       }
-      seed_demo_data: {
-        Args: { p_org_id: string }
-        Returns: undefined
-      }
-      set_admin_org_context: {
-        Args: { p_org_id: string }
-        Returns: undefined
-      }
-      set_client_org: {
-        Args: { p_org_id: string }
-        Returns: undefined
-      }
-      set_session_email: {
-        Args: { email_value: string }
-        Returns: undefined
-      }
-      sparsevec_out: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      sparsevec_send: {
-        Args: { "": unknown }
-        Returns: string
-      }
-      sparsevec_typmod_in: {
-        Args: { "": unknown[] }
-        Returns: number
-      }
-      store_contact: {
-        Args:
-          | Record<PropertyKey, never>
-          | {
+      seed_demo_data: { Args: { p_org_id: string }; Returns: undefined }
+      set_admin_org_context: { Args: { p_org_id: string }; Returns: undefined }
+      set_client_org: { Args: { p_org_id: string }; Returns: undefined }
+      set_session_email: { Args: { email_value: string }; Returns: undefined }
+      store_contact:
+        | {
+            Args: {
               p_country_code: string
               p_country_name: string
               p_first_name: string
               p_last_name: string
               p_phone: string
             }
-        Returns: string
-      }
-      vector_avg: {
-        Args: { "": number[] }
-        Returns: string
-      }
-      vector_dims: {
-        Args: { "": string } | { "": unknown }
-        Returns: number
-      }
-      vector_norm: {
-        Args: { "": string }
-        Returns: number
-      }
-      vector_out: {
-        Args: { "": string }
-        Returns: unknown
-      }
-      vector_send: {
-        Args: { "": string }
-        Returns: string
-      }
-      vector_typmod_in: {
-        Args: { "": unknown[] }
-        Returns: number
-      }
+            Returns: string
+          }
+        | { Args: never; Returns: undefined }
     }
     Enums: {
       action_type:
@@ -2184,7 +2242,9 @@ export type Database = {
         | "spam"
       job_status: "ok" | "fail"
       platform: "google" | "yelp"
+      priority_level_enum: "alta" | "media" | "baja"
       provider: "reddit" | "youtube" | "google_reviews" | "yelp"
+      request_type_enum: "banner" | "post" | "video" | "otro"
       sentiment: "neg" | "neu" | "pos"
       source_type:
         | "gdelt"
@@ -2194,6 +2254,13 @@ export type Database = {
         | "yelp"
         | "manual"
       step_type: "trigger" | "action" | "condition" | "integration"
+      ticket_status_enum:
+        | "nuevo"
+        | "en_revision"
+        | "en_progreso"
+        | "esperando_informacion"
+        | "completado"
+        | "cancelado"
       trigger_type: "webhook" | "schedule" | "manual"
       workflow_status: "active" | "inactive" | "draft"
     }
@@ -2359,7 +2426,9 @@ export const Constants = {
       ],
       job_status: ["ok", "fail"],
       platform: ["google", "yelp"],
+      priority_level_enum: ["alta", "media", "baja"],
       provider: ["reddit", "youtube", "google_reviews", "yelp"],
+      request_type_enum: ["banner", "post", "video", "otro"],
       sentiment: ["neg", "neu", "pos"],
       source_type: [
         "gdelt",
@@ -2370,6 +2439,14 @@ export const Constants = {
         "manual",
       ],
       step_type: ["trigger", "action", "condition", "integration"],
+      ticket_status_enum: [
+        "nuevo",
+        "en_revision",
+        "en_progreso",
+        "esperando_informacion",
+        "completado",
+        "cancelado",
+      ],
       trigger_type: ["webhook", "schedule", "manual"],
       workflow_status: ["active", "inactive", "draft"],
     },
