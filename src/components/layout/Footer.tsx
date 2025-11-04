@@ -63,9 +63,7 @@ const Footer = () => {
               <li>
                 <Link to="/servicios/contact-center" className="hover:text-white transition-colors">{t('services.contactCenter')}</Link>
               </li>
-              <li>
-                <Link to={transcriptionPath} className="hover:text-white transition-colors">{t('services.videoTranscription')}</Link>
-              </li>
+              
             </ul>
           </div>
           
