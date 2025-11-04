@@ -266,11 +266,6 @@ export const UserManagement = () => {
                             Último acceso: {new Date(user.last_sign_in_at).toLocaleDateString('es-ES')}
                           </div>
                         )}
-                        {user.password && (
-                          <div className="text-sm text-blue-600 font-mono">
-                            Contraseña: {user.password}
-                          </div>
-                        )}
                       </div>
                     </div>
                     

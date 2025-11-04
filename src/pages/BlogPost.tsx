@@ -12,6 +12,7 @@ import BlogNavbar from '@/components/layout/BlogNavbar';
 import NovaMedicStickyFooterCTA from '@/components/blog/NovaMedicStickyFooterCTA';
 import NovaMedicExitPopup from '@/components/blog/NovaMedicExitPopup';
 import { useExitIntent } from '@/hooks/useExitIntent';
+import DOMPurify from 'dompurify';
 
 interface BlogPost {
   id: string;
@@ -194,7 +195,7 @@ const BlogPost = () => {
         <div className="w-full bg-white rounded-lg shadow-sm mb-8">
           <div 
             className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-novativa-teal hover:prose-a:text-novativa-lightTeal prose-strong:text-gray-900 m-4" 
-            dangerouslySetInnerHTML={{ __html: post.content }} 
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} 
           />
         </div>
 
