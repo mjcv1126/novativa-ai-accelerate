@@ -381,7 +381,14 @@ const Solicitud = () => {
 
         <form onSubmit={(e) => {
           console.log('Form submit event triggered');
-          handleSubmit(onSubmit)(e);
+          console.log('Form errors:', errors);
+          handleSubmit(
+            onSubmit,
+            (errors) => {
+              console.log('Validation errors:', errors);
+              toast.error('Por favor completa todos los campos requeridos');
+            }
+          )(e);
         }} className="space-y-8">
           {/* 1. Contacto */}
           <Card>
