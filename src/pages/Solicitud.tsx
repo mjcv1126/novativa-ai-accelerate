@@ -145,6 +145,7 @@ const Solicitud = () => {
   };
 
   const onSubmit = async (data: FormData) => {
+    console.log('onSubmit called with data:', data);
     setIsSubmitting(true);
 
     try {
@@ -378,7 +379,10 @@ const Solicitud = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={(e) => {
+          console.log('Form submit event triggered');
+          handleSubmit(onSubmit)(e);
+        }} className="space-y-8">
           {/* 1. Contacto */}
           <Card>
             <CardHeader>
