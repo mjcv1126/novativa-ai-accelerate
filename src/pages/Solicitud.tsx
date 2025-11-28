@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -63,8 +63,12 @@ const Solicitud = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, setValue, watch, reset, control } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      confirm_final_info: false,
+      understand_changes: false,
+    }
   });
 
   // Check if user is authenticated
@@ -145,7 +149,6 @@ const Solicitud = () => {
   };
 
   const onSubmit = async (data: FormData) => {
-    console.log('onSubmit called with data:', data);
     setIsSubmitting(true);
 
     try {
@@ -379,17 +382,7 @@ const Solicitud = () => {
           </p>
         </div>
 
-        <form onSubmit={(e) => {
-          console.log('Form submit event triggered');
-          console.log('Form errors:', errors);
-          handleSubmit(
-            onSubmit,
-            (errors) => {
-              console.log('Validation errors:', errors);
-              toast.error('Por favor completa todos los campos requeridos');
-            }
-          )(e);
-        }} className="space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* 1. Contacto */}
           <Card>
             <CardHeader>
@@ -489,19 +482,26 @@ const Solicitud = () => {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="request_type">Tipo de Solicitud *</Label>
-                <Select
-                  onValueChange={(value) => setValue('request_type', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el tipo de contenido" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="banner">Banner o arte publicitario</SelectItem>
-                    <SelectItem value="post">Post para redes sociales</SelectItem>
-                    <SelectItem value="video">Video o reel</SelectItem>
-                    <SelectItem value="otro">Otro (especificar)</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Controller
+                  name="request_type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select onValueChange={(value) => {
+                      field.onChange(value);
+                      setShowOtherField(value === 'otro');
+                    }} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona el tipo de contenido" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="banner">Banner o arte publicitario</SelectItem>
+                        <SelectItem value="post">Post para redes sociales</SelectItem>
+                        <SelectItem value="video">Video o reel</SelectItem>
+                        <SelectItem value="otro">Otro (especificar)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.request_type && (
                   <p className="text-sm text-destructive mt-1">{errors.request_type.message}</p>
                 )}
@@ -740,16 +740,22 @@ const Solicitud = () => {
               <CardTitle>6. Nivel de Urgencia / Prioridad</CardTitle>
             </CardHeader>
             <CardContent>
-              <Select onValueChange={(value) => setValue('priority_level', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecciona el nivel de urgencia" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="alta">Alta (24 a 48 horas)</SelectItem>
-                  <SelectItem value="media">Media (3-7 días)</SelectItem>
-                  <SelectItem value="baja">Baja (más de una semana)</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="priority_level"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona el nivel de urgencia" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="alta">Alta (24 a 48 horas)</SelectItem>
+                      <SelectItem value="media">Media (3-7 días)</SelectItem>
+                      <SelectItem value="baja">Baja (más de una semana)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               {errors.priority_level && (
                 <p className="text-sm text-destructive mt-1">{errors.priority_level.message}</p>
               )}
@@ -763,11 +769,16 @@ const Solicitud = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start space-x-2">
-                <Checkbox
-                  id="confirm_final_info"
-                  onCheckedChange={(checked) =>
-                    setValue('confirm_final_info', checked === true)
-                  }
+                <Controller
+                  name="confirm_final_info"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      id="confirm_final_info"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  )}
                 />
                 <label
                   htmlFor="confirm_final_info"
@@ -782,11 +793,16 @@ const Solicitud = () => {
               )}
 
               <div className="flex items-start space-x-2">
-                <Checkbox
-                  id="understand_changes"
-                  onCheckedChange={(checked) =>
-                    setValue('understand_changes', checked === true)
-                  }
+                <Controller
+                  name="understand_changes"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      id="understand_changes"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  )}
                 />
                 <label
                   htmlFor="understand_changes"
