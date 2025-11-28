@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -55,6 +56,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const Solicitud = () => {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -336,15 +338,15 @@ const Solicitud = () => {
       });
 
       if (response.ok || ticketData) {
-        toast.success('Solicitud enviada exitosamente', {
-          description: `Número de ticket: ${ticketData.ticket_number}. Nuestro equipo la revisará pronto.`,
-          duration: 5000,
+        // Redirect to confirmation page with ticket data
+        navigate('/solicitud-confirmacion', {
+          state: {
+            ticketNumber: ticketData.ticket_number,
+            applicantName: data.applicant_name,
+            requestType: data.request_type,
+            company: data.company_name
+          }
         });
-        
-        // Limpiar formulario
-        reset();
-        setUploadedImages([]);
-        setUploadedFiles([]);
       } else {
         throw new Error('Error al enviar la solicitud');
       }
@@ -356,6 +358,16 @@ const Solicitud = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const onError = (errors: FieldErrors<FormData>) => {
+    const errorMessages = Object.values(errors)
+      .map(e => e?.message)
+      .filter(Boolean);
+    
+    toast.error('Por favor completa los campos requeridos', {
+      description: errorMessages.slice(0, 3).join(', ')
+    });
   };
 
   const handleLoginSuccess = async () => {
@@ -413,7 +425,7 @@ const Solicitud = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-8">
           {/* 1. Contacto */}
           <Card>
             <CardHeader>
