@@ -268,6 +268,37 @@ const Solicitud = () => {
 
       if (ticketError) throw ticketError;
 
+      // Send email notification
+      try {
+        await supabase.functions.invoke('send-ticket-email', {
+          body: {
+            ticketNumber: ticketData.ticket_number,
+            ticketData: {
+              company_name: data.company_name,
+              applicant_name: data.applicant_name,
+              applicant_email: data.applicant_email,
+              applicant_phone: data.applicant_phone,
+              applicant_role: data.applicant_role,
+              request_type: data.request_type,
+              request_type_other: data.request_type_other,
+              content_objective: data.content_objective,
+              dimensions: data.dimensions,
+              delivery_format: data.delivery_format,
+              final_use: data.final_use,
+              delivery_date: data.delivery_date?.toISOString().split('T')[0],
+              concept_description: data.concept_description,
+              reference_url: data.reference_url,
+              reference_feedback: data.reference_feedback,
+              priority_level: data.priority_level,
+            }
+          }
+        });
+        console.log('Email notification sent successfully');
+      } catch (emailError) {
+        console.error('Error sending email notification:', emailError);
+        // Don't fail the whole submission if email fails
+      }
+
       // Preparar FormData para enviar al webhook (mantener funcionalidad existente)
       const formData = new FormData();
       

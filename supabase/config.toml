@@ -1,1 +1,4 @@
 project_id = "gktrnjjbhqxkbcvonzxv"
+
+[functions.send-ticket-email]
+verify_jwt = false
