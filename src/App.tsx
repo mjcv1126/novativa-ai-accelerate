@@ -44,6 +44,7 @@ import AdminCustomCSS from './pages/admin/AdminCustomCSS';
 import FileUpload from './pages/FileUpload';
 import TranscriptionPage from './pages/TranscriptionPage';
 import Solicitud from './pages/Solicitud';
+import SolicitudConfirmacion from './pages/SolicitudConfirmacion';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { useLanguage } from './contexts/LanguageContext';
 
@@ -106,6 +107,7 @@ function App() {
         <Route path="/formagent" element={<FormAgentPage />} />
         <Route path="/formagent-confirmacion" element={<FormAgentConfirmacion />} />
         <Route path="/solicitud" element={<Layout><Solicitud /></Layout>} />
+        <Route path="/solicitud-confirmacion" element={<SolicitudConfirmacion />} />
         
         {/* Admin routes */}
         <Route path="/admin/login" element={
