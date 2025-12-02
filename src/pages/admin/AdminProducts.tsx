@@ -286,7 +286,6 @@ const AdminProducts = () => {
                 <Button 
                   type="submit" 
                   className="bg-novativa-teal hover:bg-novativa-lightTeal"
-                  onClick={() => handleSubmit()}
                 >
                   {editingProduct ? 'Actualizar' : 'Crear'}
                 </Button>
