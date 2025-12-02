@@ -69,6 +69,7 @@ export const invoiceService = {
 
   // Configuraciones
   async getSettings() {
+    await setSessionEmail();
     const { data, error } = await supabase
       .from('invoice_settings')
       .select('*')
@@ -89,7 +90,7 @@ export const invoiceService = {
         proforma_prefix: 'PRF',
         next_invoice_number: 1,
         next_proforma_number: 1,
-        org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
+        org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1'
       };
       
       const { data: newData, error: insertError } = await supabase
@@ -106,6 +107,7 @@ export const invoiceService = {
   },
 
   async updateSettings(settings: Partial<InvoiceSettings>) {
+    await setSessionEmail();
     try {
       // Primero obtener el ID de configuración existente
       const existingSettings = await this.getSettings();
@@ -126,7 +128,7 @@ export const invoiceService = {
           .from('invoice_settings')
           .insert({
             ...settings,
-            org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
+            org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1'
           })
           .select()
           .single();
@@ -140,6 +142,7 @@ export const invoiceService = {
 
   // Facturas
   async getInvoices(filters?: InvoiceFilters) {
+    await setSessionEmail();
     let query = supabase
       .from('invoices')
       .select(`
@@ -179,6 +182,7 @@ export const invoiceService = {
   },
 
   async getInvoice(id: string) {
+    await setSessionEmail();
     const { data, error } = await supabase
       .from('invoices')
       .select(`
@@ -193,6 +197,7 @@ export const invoiceService = {
   },
 
   async generateInvoiceNumber(type: 'invoice' | 'proforma' = 'invoice') {
+    await setSessionEmail();
     const { data, error } = await supabase.rpc('generate_invoice_number', { 
       invoice_type: type 
     });
@@ -202,6 +207,7 @@ export const invoiceService = {
   },
 
   async createInvoice(invoiceData: InvoiceFormData) {
+    await setSessionEmail();
     try {
       // Generar número de factura
       const invoice_number = await this.generateInvoiceNumber(invoiceData.invoice_type);
@@ -255,7 +261,7 @@ export const invoiceService = {
           subtotal,
           isv_amount,
           total,
-          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1', // Org ID donde están las etapas existentes
+          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1',
           company_settings: {
             company_name: settings.company_name,
             company_rtn: settings.company_rtn,
@@ -273,7 +279,7 @@ export const invoiceService = {
       const itemsWithInvoiceId = processedItems.map(item => ({
         ...item,
         invoice_id: invoice.id,
-        org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
+        org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1'
       }));
 
       const { error: itemsError } = await supabase
@@ -290,6 +296,7 @@ export const invoiceService = {
   },
 
   async updateInvoice(id: string, invoiceData: Partial<InvoiceFormData>) {
+    await setSessionEmail();
     try {
       // Separar items del resto de datos
       const { items, ...restData } = invoiceData;
@@ -341,7 +348,7 @@ export const invoiceService = {
         const itemsWithInvoiceId = processedItems.map(item => ({
           ...item,
           invoice_id: id,
-          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID donde están las etapas existentes
+          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1'
         }));
 
         const { error: itemsError } = await supabase
@@ -368,6 +375,7 @@ export const invoiceService = {
   },
 
   async deleteInvoice(id: string) {
+    await setSessionEmail();
     const { error } = await supabase
       .from('invoices')
       .delete()
@@ -377,6 +385,7 @@ export const invoiceService = {
   },
 
   async updateInvoiceStatus(id: string, status: Invoice['status']) {
+    await setSessionEmail();
     const { data, error } = await supabase
       .from('invoices')
       .update({ status })
@@ -389,6 +398,7 @@ export const invoiceService = {
   },
 
   async duplicateInvoice(originalInvoiceId: string) {
+    await setSessionEmail();
     try {
       // Obtener la factura original con sus items
       const originalInvoice = await this.getInvoice(originalInvoiceId);
@@ -425,6 +435,7 @@ export const invoiceService = {
   },
 
   async changeInvoiceType(invoiceId: string, newType: 'invoice' | 'proforma') {
+    await setSessionEmail();
     try {
       const { data, error } = await supabase.rpc('change_invoice_type', {
         p_invoice_id: invoiceId,
