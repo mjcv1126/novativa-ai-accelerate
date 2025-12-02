@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Plus, Edit, Trash2, Package, Search } from 'lucide-react';
@@ -186,14 +186,14 @@ const AdminProducts = () => {
           <h1 className="text-3xl font-bold">Productos y Servicios</h1>
           <p className="text-gray-600">Gestiona tu catálogo de productos y servicios para facturación</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => handleOpenDialog()} className="bg-novativa-teal hover:bg-novativa-lightTeal">
-              <Plus className="h-4 w-4 mr-2" />
-              Nuevo Producto
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+        <Button onClick={() => handleOpenDialog()} className="bg-novativa-teal hover:bg-novativa-lightTeal">
+          <Plus className="h-4 w-4 mr-2" />
+          Nuevo Producto
+        </Button>
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>
                 {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
@@ -283,7 +283,6 @@ const AdminProducts = () => {
             </form>
           </DialogContent>
         </Dialog>
-      </div>
 
       {/* Filtros */}
       <Card>
