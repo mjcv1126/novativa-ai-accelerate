@@ -267,7 +267,10 @@ export const invoiceService = {
             company_rtn: settings.company_rtn,
             company_address: settings.company_address,
             company_phone: settings.company_phone,
-            company_email: settings.company_email
+            company_email: settings.company_email,
+            cai: (settings as any).sar_cai || '26D174-BF2409-E904E0-63BE03-0909C5-B3',
+            rango_autorizado: (settings as any).sar_rango_autorizado || '000-002-01-00002056 - 000-002-01-00002105',
+            fecha_limite_emision: (settings as any).sar_fecha_limite_emision || '02/12/2026'
           }
         })
         .select()

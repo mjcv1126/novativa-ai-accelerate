@@ -883,6 +883,9 @@ export type Database = {
           next_proforma_number: number
           org_id: string
           proforma_prefix: string
+          sar_cai: string | null
+          sar_fecha_limite_emision: string | null
+          sar_rango_autorizado: string | null
           updated_at: string
         }
         Insert: {
@@ -902,6 +905,9 @@ export type Database = {
           next_proforma_number?: number
           org_id: string
           proforma_prefix?: string
+          sar_cai?: string | null
+          sar_fecha_limite_emision?: string | null
+          sar_rango_autorizado?: string | null
           updated_at?: string
         }
         Update: {
@@ -921,6 +927,9 @@ export type Database = {
           next_proforma_number?: number
           org_id?: string
           proforma_prefix?: string
+          sar_cai?: string | null
+          sar_fecha_limite_emision?: string | null
+          sar_rango_autorizado?: string | null
           updated_at?: string
         }
         Relationships: []
