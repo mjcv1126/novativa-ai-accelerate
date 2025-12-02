@@ -242,7 +242,7 @@ const AdminInvoiceView = () => {
               <div className="font-medium">Marlon Jose Caballero Velasquez</div>
               <div>RTN: {invoice.company_settings?.company_rtn || '05121996012974'}</div>
               <div>{invoice.company_settings?.company_address || 'Bo. Guadalupe, 20 calle, 4 calle 10 y 11 ave. San Pedro Sula, Cortés'}</div>
-              <div>{invoice.company_settings?.company_phone || '+504 96472774'} | {invoice.company_settings?.company_email || 'soporte@novativa.org'}</div>
+              <div>{invoice.company_settings?.company_phone || '+504 9647-2774'}</div>
             </div>
           </div>
           <div className="bg-red-600 text-white px-4 py-2 rounded text-center">
