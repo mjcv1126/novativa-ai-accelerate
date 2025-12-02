@@ -87,8 +87,12 @@ const AdminProducts = () => {
     setTimeout(resetForm, 200);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    
+    console.log('handleSubmit called with formData:', formData);
     
     if (!formData.name.trim() || !formData.price) {
       toast({
@@ -109,6 +113,8 @@ const AdminProducts = () => {
         is_active: formData.is_active
       };
 
+      console.log('Creating/updating product with data:', productData);
+
       if (editingProduct) {
         await invoiceService.updateProduct(editingProduct.id, productData);
         toast({
@@ -116,7 +122,8 @@ const AdminProducts = () => {
           description: "Producto actualizado correctamente",
         });
       } else {
-        await invoiceService.createProduct(productData);
+        const result = await invoiceService.createProduct(productData);
+        console.log('Product created:', result);
         toast({
           title: "Éxito",
           description: "Producto creado correctamente",
@@ -125,11 +132,11 @@ const AdminProducts = () => {
 
       handleCloseDialog();
       loadProducts();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving product:', error);
       toast({
         title: "Error",
-        description: "No se pudo guardar el producto",
+        description: error?.message || "No se pudo guardar el producto",
         variant: "destructive",
       });
     }
@@ -276,7 +283,11 @@ const AdminProducts = () => {
                 <Button type="button" variant="outline" onClick={handleCloseDialog}>
                   Cancelar
                 </Button>
-                <Button type="submit" className="bg-novativa-teal hover:bg-novativa-lightTeal">
+                <Button 
+                  type="submit" 
+                  className="bg-novativa-teal hover:bg-novativa-lightTeal"
+                  onClick={() => handleSubmit()}
+                >
                   {editingProduct ? 'Actualizar' : 'Crear'}
                 </Button>
               </div>
