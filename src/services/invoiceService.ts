@@ -1,9 +1,27 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { Invoice, InvoiceProduct, InvoiceSettings, InvoiceFormData, InvoiceFilters } from '@/types/invoice';
 
+// Helper function to set session email for RLS policies
+const setSessionEmail = async () => {
+  const adminSession = localStorage.getItem('admin_session');
+  let email = 'soporte@novativa.org'; // fallback
+  
+  if (adminSession) {
+    try {
+      const session = JSON.parse(adminSession);
+      email = session.email || email;
+    } catch (error) {
+      console.error('Error parsing admin session:', error);
+    }
+  }
+  
+  await supabase.rpc('set_session_email', { email_value: email });
+};
+
 export const invoiceService = {
   // Productos/Servicios
   async getProducts() {
+    await setSessionEmail();
     const { data, error } = await supabase
       .from('invoice_products')
       .select('*')
@@ -15,6 +33,7 @@ export const invoiceService = {
   },
 
   async createProduct(product: Omit<InvoiceProduct, 'id' | 'created_at' | 'updated_at'>) {
+    await setSessionEmail();
     const { data, error } = await supabase
       .from('invoice_products')
       .insert(product)
@@ -26,6 +45,7 @@ export const invoiceService = {
   },
 
   async updateProduct(id: string, product: Partial<InvoiceProduct>) {
+    await setSessionEmail();
     const { data, error } = await supabase
       .from('invoice_products')
       .update(product)
@@ -38,6 +58,7 @@ export const invoiceService = {
   },
 
   async deleteProduct(id: string) {
+    await setSessionEmail();
     const { error } = await supabase
       .from('invoice_products')
       .delete()
