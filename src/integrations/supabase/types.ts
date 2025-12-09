@@ -2205,6 +2205,7 @@ export type Database = {
       set_client_org: { Args: { p_org_id: string }; Returns: undefined }
       set_session_email: { Args: { email_value: string }; Returns: undefined }
       store_contact:
+        | { Args: never; Returns: undefined }
         | {
             Args: {
               p_country_code: string
@@ -2215,7 +2216,6 @@ export type Database = {
             }
             Returns: string
           }
-        | { Args: never; Returns: undefined }
     }
     Enums: {
       action_type:
