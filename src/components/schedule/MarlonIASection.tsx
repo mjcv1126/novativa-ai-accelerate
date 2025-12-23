@@ -130,13 +130,18 @@ const MarlonIASection = () => {
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500"></div>
             
             <div className="flex flex-col md:flex-row items-center gap-6">
-              {/* Icon/Visual */}
-              <div className="flex-shrink-0">
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
-                  <svg className="w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
+              {/* Facebook Video */}
+              <div className="flex-shrink-0 rounded-lg overflow-hidden shadow-lg">
+                <iframe 
+                  src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F953033913657001%2F&show_text=false&width=267&t=0" 
+                  width="120" 
+                  height="200" 
+                  style={{ border: 'none', overflow: 'hidden' }}
+                  scrolling="no" 
+                  frameBorder="0" 
+                  allowFullScreen={true}
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                ></iframe>
               </div>
 
               {/* Content */}
