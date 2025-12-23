@@ -28,32 +28,26 @@ const MarlonIASection = () => {
         Te invito a que nos mantengamos conectados
       </h2>
       
-      {/* YouTube Channel Embed */}
-      <div className="flex flex-col items-center mb-8">
-        <h3 className="text-lg font-medium mb-4 text-foreground">Suscríbete a nuestro canal de YouTube</h3>
-        <div className="w-full max-w-[560px] aspect-video rounded-lg overflow-hidden border border-border/20">
-          <iframe 
-            width="100%" 
-            height="100%" 
-            src="https://www.youtube.com/embed?listType=user_uploads&list=novativa-ia" 
-            title="Novativa IA YouTube Channel"
-            frameBorder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowFullScreen
-          ></iframe>
-        </div>
-        <a 
-          href="https://youtube.com/@novativa-ia?si=yOSOoIuZSwFzhMv0"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+      {/* YouTube Channel Banner */}
+      <a 
+        href="https://youtube.com/@novativa-ia?si=yOSOoIuZSwFzhMv0"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mb-8 w-full flex items-center justify-between gap-4 px-6 py-4 bg-gradient-to-r from-red-600 to-red-700 rounded-xl hover:from-red-700 hover:to-red-800 transition-all shadow-lg group"
+      >
+        <div className="flex items-center gap-4">
+          <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
           </svg>
-          Suscríbete al Canal
-        </a>
-      </div>
+          <div className="text-white">
+            <p className="font-semibold text-lg">Novativa IA</p>
+            <p className="text-white/80 text-sm">Suscríbete a nuestro canal de YouTube</p>
+          </div>
+        </div>
+        <span className="px-5 py-2 bg-white text-red-600 rounded-full font-semibold text-sm group-hover:bg-gray-100 transition-colors whitespace-nowrap">
+          Suscribirse
+        </span>
+      </a>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* TikTok Column */}
