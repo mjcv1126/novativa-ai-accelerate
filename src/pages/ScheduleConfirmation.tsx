@@ -2,6 +2,7 @@
 import React from 'react';
 import ConfirmationHeader from '@/components/schedule/ConfirmationHeader';
 import MarlonIASection from '@/components/schedule/MarlonIASection';
+import ChinaImportSection from '@/components/schedule/ChinaImportSection';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/layout/Footer';
 
@@ -14,6 +15,7 @@ const ScheduleConfirmation = () => {
         <ConfirmationHeader />
         <MarlonIASection />
       </div>
+      <ChinaImportSection />
       <Footer />
     </div>
   );
