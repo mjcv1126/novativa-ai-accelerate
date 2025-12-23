@@ -120,7 +120,7 @@ const MarlonIASection = () => {
           <p className="text-muted-foreground text-sm">Esto también puede interesarte</p>
         </div>
         <a 
-          href="https://wa.me/5049355-0547"
+          href="https://webinar.buzoapp.com/"
           target="_blank"
           rel="noopener noreferrer"
           className="block w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 rounded-xl overflow-hidden hover:scale-[1.02] transition-transform shadow-xl group"
