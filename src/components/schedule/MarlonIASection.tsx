@@ -150,7 +150,7 @@ const MarlonIASection = () => {
                   🚢 Aprende a Importar de China
                 </h3>
                 <p className="text-gray-300 text-sm md:text-base mb-3">
-                  Desde China hasta tu puerta. Compra, envío marítimo, nacionalización y entrega.
+                  Te enseñamos GRATIS cómo buscar proveedores en China por Alibaba de forma segura y llevar tu mercancía hasta la puerta de tu negocio o casa. Asesoría gratuita + comunidad exclusiva.
                 </p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2">
                   <span className="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-medium">Compras Seguras</span>
