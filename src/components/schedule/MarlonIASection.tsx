@@ -113,6 +113,63 @@ const MarlonIASection = () => {
           Contacta a Marlon por WhatsApp
         </a>
       </div>
+
+      {/* China Import Promo Section */}
+      <div className="mt-8 pt-6 border-t border-border/50">
+        <div className="text-center mb-4">
+          <p className="text-muted-foreground text-sm">Esto también puede interesarte</p>
+        </div>
+        <a 
+          href="https://wa.me/5049355-0547"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 rounded-xl overflow-hidden hover:scale-[1.02] transition-transform shadow-xl group"
+        >
+          <div className="relative p-6 md:p-8">
+            {/* Decorative orange accent */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500"></div>
+            
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              {/* Icon/Visual */}
+              <div className="flex-shrink-0">
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+                  <svg className="w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                  🚢 Aprende a Importar de China
+                </h3>
+                <p className="text-gray-300 text-sm md:text-base mb-3">
+                  Desde China hasta tu puerta. Compra, envío marítimo, nacionalización y entrega.
+                </p>
+                <div className="flex flex-wrap justify-center md:justify-start gap-2">
+                  <span className="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-medium">Compras Seguras</span>
+                  <span className="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-medium">Envío Marítimo</span>
+                  <span className="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-medium">Nacionalización</span>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="flex-shrink-0">
+                <span className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold group-hover:from-orange-600 group-hover:to-orange-700 transition-all shadow-lg">
+                  Más Info
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            {/* Bottom decorative line */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500"></div>
+          </div>
+        </a>
+      </div>
     </div>
   );
 };
