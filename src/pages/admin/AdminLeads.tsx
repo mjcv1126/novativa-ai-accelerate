@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { UserPlus, Download, RefreshCw, Calendar, Users, CheckCircle, Clock, Eye, Mail, MessageCircle, Trash2, Search, Filter, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { UserPlus, Download, RefreshCw, Calendar, Users, CheckCircle, Clock, Eye, Mail, MessageCircle, Trash2, Search, Filter, ArrowUpDown, ArrowUp, ArrowDown, MoreHorizontal, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,6 +10,8 @@ import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { LeadDetailsDialog } from '@/components/admin/leads/LeadDetailsDialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useNavigate } from 'react-router-dom';
 
 interface Lead {
   id: string;
@@ -43,6 +45,7 @@ const AdminLeads = () => {
     today: 0
   });
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadLeads();
@@ -257,9 +260,27 @@ const AdminLeads = () => {
     setIsDialogOpen(true);
   };
 
-  const handleCreateProspect = async (lead: Lead) => {
+  const handleAddToCRM = async (lead: Lead, redirectToCRM: boolean = false) => {
+    const ORG_ID = 'd010fb06-7e97-4cef-90b6-be84942ac1d1';
+    
     try {
-      // Crear un nuevo contacto en el CRM
+      // Set session for RLS
+      await supabase.rpc('set_session_email', { email_value: 'soporte@novativa.org' });
+      
+      // Get the first stage (Nuevo Lead)
+      const { data: stages, error: stagesError } = await supabase
+        .from('crm_stages')
+        .select('id')
+        .eq('org_id', ORG_ID)
+        .eq('is_active', true)
+        .order('position', { ascending: true })
+        .limit(1);
+      
+      if (stagesError) throw stagesError;
+      
+      const firstStageId = stages?.[0]?.id;
+      
+      // Create contact in CRM
       const { data: contact, error } = await supabase
         .from('contacts')
         .insert({
@@ -270,28 +291,47 @@ const AdminLeads = () => {
           country_code: lead.country_code,
           country_name: lead.country_name,
           service_of_interest: lead.services_of_interest,
-          notes: `Lead convertido desde formulario conversacional. Presupuesto: ${lead.investment_budget}`,
-          org_id: '00000000-0000-0000-0000-000000000000' // Default org ID
+          notes: `Lead del formulario conversacional. Presupuesto: ${lead.investment_budget}`,
+          org_id: ORG_ID,
+          stage_id: firstStageId
         })
         .select()
         .single();
 
       if (error) throw error;
 
-      toast({
-        title: "Éxito",
-        description: `Prospecto creado exitosamente para ${lead.first_name} ${lead.last_name}`,
+      // Create lead assignment
+      await supabase.from('lead_assignments').insert({
+        contact_id: contact.id,
+        assigned_user_email: 'soporte@novativa.org',
+        assigned_by_email: 'soporte@novativa.org',
+        notes: 'Agregado desde panel de leads',
+        org_id: ORG_ID
       });
+
+      toast({
+        title: "Agregado al CRM",
+        description: `${lead.first_name} ${lead.last_name} fue agregado a "Nuevo Lead"`,
+      });
+      
       setIsDialogOpen(false);
       
+      if (redirectToCRM) {
+        navigate('/admin/crm');
+      }
+      
     } catch (error) {
-      console.error('Error creating prospect:', error);
+      console.error('Error adding to CRM:', error);
       toast({
         title: "Error",
-        description: "Error al crear el prospecto",
+        description: "Error al agregar al CRM",
         variant: "destructive",
       });
     }
+  };
+
+  const handleCreateProspect = async (lead: Lead) => {
+    await handleAddToCRM(lead, true);
   };
 
   const handleDeleteLead = async (leadId: string, leadName: string) => {
@@ -554,7 +594,7 @@ const AdminLeads = () => {
                           Fecha Ingreso {getSortIcon('created_at')}
                         </Button>
                       </TableHead>
-                      <TableHead className="w-[50px]">Borrar</TableHead>
+                      <TableHead className="w-[80px]">Acción</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -643,14 +683,31 @@ const AdminLeads = () => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteLead(lead.id, `${lead.first_name} ${lead.last_name}`)}
-                              className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleViewLead(lead)}>
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  Ver Detalles
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleAddToCRM(lead)}>
+                                  <UserPlus className="h-4 w-4 mr-2" />
+                                  Agregar a CRM
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem 
+                                  onClick={() => handleDeleteLead(lead.id, `${lead.first_name} ${lead.last_name}`)}
+                                  className="text-red-600 focus:text-red-600"
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Eliminar
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       );
