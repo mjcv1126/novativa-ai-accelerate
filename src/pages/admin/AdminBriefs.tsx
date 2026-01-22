@@ -28,8 +28,11 @@ import {
   DollarSign,
   Calendar,
   Loader2,
-  RefreshCw
+  RefreshCw,
+  Download
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -121,6 +124,186 @@ const AdminBriefs = () => {
       brief.correo?.toLowerCase().includes(search)
     );
   });
+
+  const handleDownloadPDF = (brief: Brief) => {
+    const doc = new jsPDF();
+    let yPos = 20;
+
+    // Helper function to add section
+    const addSection = (title: string, data: [string, any][]) => {
+      const filteredData = data.filter(([_, value]) => value && (Array.isArray(value) ? value.length > 0 : true));
+      if (filteredData.length === 0) return;
+
+      autoTable(doc, {
+        startY: yPos,
+        head: [[{ content: title, colSpan: 2, styles: { fillColor: [20, 184, 166], textColor: 255, fontStyle: 'bold' } }]],
+        body: filteredData.map(([label, value]) => [
+          label,
+          Array.isArray(value) ? value.join(', ') : String(value)
+        ]),
+        theme: 'striped',
+        headStyles: { fontSize: 11 },
+        bodyStyles: { fontSize: 9 },
+        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 60 }, 1: { cellWidth: 'auto' } },
+        margin: { left: 14, right: 14 },
+      });
+      yPos = (doc as any).lastAutoTable.finalY + 8;
+    };
+
+    // Title
+    doc.setFontSize(22);
+    doc.setTextColor(20, 184, 166);
+    doc.text('Brief Ejecutivo', 105, yPos, { align: 'center' });
+    yPos += 10;
+
+    // Company name
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text(brief.empresa || 'Sin nombre de empresa', 105, yPos, { align: 'center' });
+    yPos += 8;
+
+    // Date
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Generado: ${format(new Date(), "d 'de' MMMM, yyyy", { locale: es })}`, 105, yPos, { align: 'center' });
+    yPos += 12;
+
+    // Sections
+    addSection('Información General', [
+      ['Empresa', brief.empresa],
+      ['Contacto', brief.contacto],
+      ['Cargo', brief.cargo],
+      ['Teléfono', brief.telefono],
+      ['Correo', brief.correo],
+      ['Ubicación', brief.ubicacion],
+      ['Horario', brief.horario],
+      ['Sitio Web', brief.sitio_web],
+      ['Instagram', brief.instagram],
+      ['Facebook', brief.facebook],
+      ['TikTok', brief.tiktok],
+      ['YouTube', brief.youtube],
+      ['LinkedIn', brief.linkedin],
+    ]);
+
+    addSection('Descripción de la Empresa', [
+      ['¿Qué hace?', brief.que_hace],
+      ['Desde cuándo', brief.desde_cuando],
+      ['Problema que resuelve', brief.problema_resuelve],
+      ['Tipo de clientes', brief.tipo_clientes],
+    ]);
+
+    addSection('Propuesta de Valor', [
+      ['Propuesta de valor', brief.propuesta_valor],
+      ['Diferenciador 1', brief.diferenciador_1],
+      ['Diferenciador 2', brief.diferenciador_2],
+      ['Diferenciador 3', brief.diferenciador_3],
+      ['Resultado que promete', brief.resultado_promesa],
+    ]);
+
+    addSection('Confianza y Pruebas', [
+      ['¿Qué da confianza?', brief.mas_confianza],
+      ['Objeciones comunes', brief.objeciones],
+      ['Pruebas', brief.pruebas],
+      ['Detalle de pruebas', brief.pruebas_detalle],
+    ]);
+
+    // Products section with special handling
+    if (brief.productos && Array.isArray(brief.productos) && brief.productos.length > 0) {
+      autoTable(doc, {
+        startY: yPos,
+        head: [[{ content: 'Productos/Servicios', colSpan: 4, styles: { fillColor: [20, 184, 166], textColor: 255, fontStyle: 'bold' } }]],
+        body: [
+          [{ content: 'Nombre', styles: { fontStyle: 'bold' } }, { content: 'Precio', styles: { fontStyle: 'bold' } }, { content: 'Costo', styles: { fontStyle: 'bold' } }, { content: 'Ganancia', styles: { fontStyle: 'bold' } }],
+          ...brief.productos.map((prod: any) => [prod.nombre || '', prod.precio || '', prod.costo || '', prod.ganancia || ''])
+        ],
+        theme: 'striped',
+        headStyles: { fontSize: 11 },
+        bodyStyles: { fontSize: 9 },
+        margin: { left: 14, right: 14 },
+      });
+      yPos = (doc as any).lastAutoTable.finalY + 8;
+    }
+
+    addSection('Productos Adicionales', [
+      ['Combos/Paquetes', brief.combos],
+      ['Promociones', brief.promociones],
+    ]);
+
+    addSection('Producto Estrella', [
+      ['Producto estrella', brief.producto_estrella],
+      ['Por qué es el más vendido', brief.porque_mas_vendido],
+      ['Más conviene vender', brief.mas_conviene],
+      ['Objetivo del mes', brief.objetivo_mes],
+    ]);
+
+    addSection('Objetivos de Redes', [
+      ['Objetivos', brief.objetivos_redes],
+      ['Objetivo #1', brief.objetivo_uno],
+      ['Meta concreta', brief.meta_concreta],
+    ]);
+
+    addSection('Buyer Persona', [
+      ['Edad', brief.edad_cliente],
+      ['Género', brief.genero_cliente],
+      ['Ubicación', brief.ubicacion_cliente],
+      ['Nivel económico', brief.nivel_economico],
+      ['Trabajo/Estilo de vida', brief.trabajo_estilo_vida],
+      ['Problema del cliente', brief.problema_cliente],
+      ['¿Qué valora?', brief.cliente_valora],
+      ['Miedos/Dudas', brief.miedos_dudas],
+      ['¿Dónde pasa tiempo?', brief.cliente_pasa_tiempo],
+      ['Frase típica', brief.frase_tipica],
+    ]);
+
+    addSection('Competencia', [
+      ['Competidor 1', brief.competidor_1],
+      ['Competidor 2', brief.competidor_2],
+      ['Competidor 3', brief.competidor_3],
+      ['¿Qué gusta de ellos?', brief.que_gusta_competencia],
+      ['¿Qué hacen mal?', brief.que_mal_competencia],
+      ['Cuentas que inspiran', brief.cuentas_inspiran],
+    ]);
+
+    addSection('Identidad y Estilo', [
+      ['Tono de marca', brief.tono_marca],
+      ['Colores', brief.colores_marca],
+      ['Tipografías', brief.tipografias],
+      ['Logo PNG', brief.logo_png],
+      ['Tono prohibido', brief.tono_prohibido],
+    ]);
+
+    addSection('Recursos Disponibles', [
+      ['Fotos/Videos propios', brief.tiene_fotos_videos],
+      ['Alguien que grabe', brief.tiene_grabador],
+      ['Testimonios en video', brief.tiene_testimonios],
+      ['Catálogo/Menú', brief.tiene_catalogo],
+      ['Link Drive/Carpeta', brief.drive_link],
+    ]);
+
+    addSection('Presupuesto de Publicidad', [
+      ['¿Invertirá en pauta?', brief.invertir_pauta],
+      ['Presupuesto mensual', brief.presupuesto_mensual],
+      ['Producto a pautar', brief.producto_pautar],
+    ]);
+
+    // Footer with page numbers
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: 'center' });
+    }
+
+    // Save PDF
+    const fileName = `brief-${(brief.empresa || 'ejecutivo').toLowerCase().replace(/\s+/g, '-')}-${format(new Date(), 'yyyy-MM-dd')}.pdf`;
+    doc.save(fileName);
+
+    toast({
+      title: "PDF Descargado",
+      description: `Brief de ${brief.empresa || 'empresa'} descargado correctamente`,
+    });
+  };
 
   const Section = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
     <div className="mb-6">
@@ -287,6 +470,15 @@ const AdminBriefs = () => {
                     >
                       <Eye className="h-4 w-4 mr-1" />
                       Ver
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDownloadPDF(brief)}
+                      className="text-novativa-teal hover:text-novativa-teal hover:bg-novativa-teal/10"
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      PDF
                     </Button>
                     <Button
                       variant="ghost"
