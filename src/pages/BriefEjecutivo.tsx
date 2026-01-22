@@ -154,7 +154,7 @@ const BriefEjecutivo = () => {
         description: "Nos pondremos en contacto contigo pronto.",
       });
 
-      navigate('/');
+      navigate('/brief-ejecutivo/gracias');
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
