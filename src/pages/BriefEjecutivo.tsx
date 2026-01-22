@@ -405,15 +405,42 @@ const BriefEjecutivo = () => {
                     </div>
                     <div>
                       <Label>Precio de venta</Label>
-                      <Input {...register(`producto${index + 1}_precio`)} placeholder="L. 0.00" />
+                      <Input 
+                        {...register(`producto${index + 1}_precio`)} 
+                        placeholder="L. 0.00"
+                        onChange={(e) => {
+                          setValue(`producto${index + 1}_precio`, e.target.value);
+                          const costo = parseFloat(watch(`producto${index + 1}_costo`)?.replace(/[^0-9.-]/g, '') || '0');
+                          const precio = parseFloat(e.target.value.replace(/[^0-9.-]/g, '') || '0');
+                          if (precio > 0 && costo >= 0) {
+                            setValue(`producto${index + 1}_ganancia`, `L. ${(precio - costo).toFixed(2)}`);
+                          }
+                        }}
+                      />
                     </div>
                     <div>
                       <Label>Costo (lo que te cuesta a vos)</Label>
-                      <Input {...register(`producto${index + 1}_costo`)} placeholder="L. 0.00" />
+                      <Input 
+                        {...register(`producto${index + 1}_costo`)} 
+                        placeholder="L. 0.00"
+                        onChange={(e) => {
+                          setValue(`producto${index + 1}_costo`, e.target.value);
+                          const precio = parseFloat(watch(`producto${index + 1}_precio`)?.replace(/[^0-9.-]/g, '') || '0');
+                          const costo = parseFloat(e.target.value.replace(/[^0-9.-]/g, '') || '0');
+                          if (precio > 0 && costo >= 0) {
+                            setValue(`producto${index + 1}_ganancia`, `L. ${(precio - costo).toFixed(2)}`);
+                          }
+                        }}
+                      />
                     </div>
                     <div>
                       <Label>Ganancia aproximada</Label>
-                      <Input {...register(`producto${index + 1}_ganancia`)} placeholder="L. 0.00" />
+                      <Input 
+                        {...register(`producto${index + 1}_ganancia`)} 
+                        placeholder="L. 0.00" 
+                        readOnly
+                        className="bg-muted"
+                      />
                     </div>
                   </div>
                 </div>
