@@ -65,7 +65,7 @@ const BriefThankYou = () => {
               ¿Necesitas contactarnos urgentemente?
             </p>
             <Button 
-              onClick={() => navigate('/schedule')}
+              onClick={() => navigate('/contacto')}
               className="w-full bg-gradient-to-r from-novativa-teal to-novativa-lightBlue hover:from-novativa-teal/90 hover:to-novativa-lightBlue/90 text-white font-semibold py-6 text-lg"
             >
               <Calendar className="h-5 w-5 mr-2" />
