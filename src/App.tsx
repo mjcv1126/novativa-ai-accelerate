@@ -29,6 +29,7 @@ import FormularioSinInversionPage from './pages/FormularioSinInversionPage';
 import FormAgentPage from './pages/FormAgentPage';
 import FormAgentConfirmacion from './pages/FormAgentConfirmacion';
 import BriefEjecutivo from './pages/BriefEjecutivo';
+import BriefThankYou from './pages/BriefThankYou';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -108,6 +109,7 @@ function App() {
         <Route path="/formagent" element={<FormAgentPage />} />
         <Route path="/formagent-confirmacion" element={<FormAgentConfirmacion />} />
         <Route path="/brief-ejecutivo" element={<Layout><BriefEjecutivo /></Layout>} />
+        <Route path="/brief-ejecutivo/gracias" element={<BriefThankYou />} />
         <Route path="/solicitud" element={<Layout><Solicitud /></Layout>} />
         <Route path="/solicitud-confirmacion" element={<SolicitudConfirmacion />} />
         
