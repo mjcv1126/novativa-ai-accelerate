@@ -21,7 +21,8 @@ import {
   Receipt,
   Package,
   UserPlus,
-  Ticket
+  Ticket,
+  ClipboardList
 } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import {
@@ -71,6 +72,12 @@ const AdminSidebar = () => {
       title: 'Leads',
       icon: UserPlus,
       path: '/admin/leads',
+      roles: ['admin', 'super_admin']
+    },
+    {
+      title: 'Briefs',
+      icon: ClipboardList,
+      path: '/admin/briefs',
       roles: ['admin', 'super_admin']
     },
     {

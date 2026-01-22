@@ -402,6 +402,219 @@ export type Database = {
         }
         Relationships: []
       }
+      briefs: {
+        Row: {
+          cargo: string | null
+          cliente_pasa_tiempo: string[] | null
+          cliente_valora: string[] | null
+          colores_marca: string | null
+          combos: string | null
+          competidor_1: string | null
+          competidor_2: string | null
+          competidor_3: string | null
+          contacto: string
+          correo: string
+          created_at: string
+          cuentas_inspiran: string | null
+          desde_cuando: string | null
+          diferenciador_1: string | null
+          diferenciador_2: string | null
+          diferenciador_3: string | null
+          drive_link: string | null
+          edad_cliente: string | null
+          empresa: string | null
+          facebook: string | null
+          frase_tipica: string | null
+          genero_cliente: string | null
+          horario: string | null
+          id: string
+          instagram: string | null
+          invertir_pauta: string | null
+          linkedin: string | null
+          logo_png: string | null
+          mas_confianza: string | null
+          mas_conviene: string | null
+          meta_concreta: string | null
+          miedos_dudas: string | null
+          nivel_economico: string | null
+          objeciones: string | null
+          objetivo_mes: string | null
+          objetivo_uno: string | null
+          objetivos_redes: string[] | null
+          porque_mas_vendido: string | null
+          presupuesto_mensual: string | null
+          problema_cliente: string | null
+          problema_resuelve: string | null
+          producto_estrella: string | null
+          producto_pautar: string | null
+          productos: Json | null
+          promociones: string | null
+          propuesta_valor: string | null
+          pruebas: string[] | null
+          pruebas_detalle: string | null
+          que_gusta_competencia: string | null
+          que_hace: string | null
+          que_mal_competencia: string | null
+          resultado_promesa: string | null
+          sitio_web: string | null
+          telefono: string
+          tiene_catalogo: string | null
+          tiene_fotos_videos: string | null
+          tiene_grabador: string | null
+          tiene_testimonios: string | null
+          tiktok: string | null
+          tipo_clientes: string[] | null
+          tipografias: string | null
+          tono_marca: string[] | null
+          tono_prohibido: string | null
+          trabajo_estilo_vida: string | null
+          ubicacion: string | null
+          ubicacion_cliente: string | null
+          updated_at: string
+          youtube: string | null
+        }
+        Insert: {
+          cargo?: string | null
+          cliente_pasa_tiempo?: string[] | null
+          cliente_valora?: string[] | null
+          colores_marca?: string | null
+          combos?: string | null
+          competidor_1?: string | null
+          competidor_2?: string | null
+          competidor_3?: string | null
+          contacto: string
+          correo: string
+          created_at?: string
+          cuentas_inspiran?: string | null
+          desde_cuando?: string | null
+          diferenciador_1?: string | null
+          diferenciador_2?: string | null
+          diferenciador_3?: string | null
+          drive_link?: string | null
+          edad_cliente?: string | null
+          empresa?: string | null
+          facebook?: string | null
+          frase_tipica?: string | null
+          genero_cliente?: string | null
+          horario?: string | null
+          id?: string
+          instagram?: string | null
+          invertir_pauta?: string | null
+          linkedin?: string | null
+          logo_png?: string | null
+          mas_confianza?: string | null
+          mas_conviene?: string | null
+          meta_concreta?: string | null
+          miedos_dudas?: string | null
+          nivel_economico?: string | null
+          objeciones?: string | null
+          objetivo_mes?: string | null
+          objetivo_uno?: string | null
+          objetivos_redes?: string[] | null
+          porque_mas_vendido?: string | null
+          presupuesto_mensual?: string | null
+          problema_cliente?: string | null
+          problema_resuelve?: string | null
+          producto_estrella?: string | null
+          producto_pautar?: string | null
+          productos?: Json | null
+          promociones?: string | null
+          propuesta_valor?: string | null
+          pruebas?: string[] | null
+          pruebas_detalle?: string | null
+          que_gusta_competencia?: string | null
+          que_hace?: string | null
+          que_mal_competencia?: string | null
+          resultado_promesa?: string | null
+          sitio_web?: string | null
+          telefono: string
+          tiene_catalogo?: string | null
+          tiene_fotos_videos?: string | null
+          tiene_grabador?: string | null
+          tiene_testimonios?: string | null
+          tiktok?: string | null
+          tipo_clientes?: string[] | null
+          tipografias?: string | null
+          tono_marca?: string[] | null
+          tono_prohibido?: string | null
+          trabajo_estilo_vida?: string | null
+          ubicacion?: string | null
+          ubicacion_cliente?: string | null
+          updated_at?: string
+          youtube?: string | null
+        }
+        Update: {
+          cargo?: string | null
+          cliente_pasa_tiempo?: string[] | null
+          cliente_valora?: string[] | null
+          colores_marca?: string | null
+          combos?: string | null
+          competidor_1?: string | null
+          competidor_2?: string | null
+          competidor_3?: string | null
+          contacto?: string
+          correo?: string
+          created_at?: string
+          cuentas_inspiran?: string | null
+          desde_cuando?: string | null
+          diferenciador_1?: string | null
+          diferenciador_2?: string | null
+          diferenciador_3?: string | null
+          drive_link?: string | null
+          edad_cliente?: string | null
+          empresa?: string | null
+          facebook?: string | null
+          frase_tipica?: string | null
+          genero_cliente?: string | null
+          horario?: string | null
+          id?: string
+          instagram?: string | null
+          invertir_pauta?: string | null
+          linkedin?: string | null
+          logo_png?: string | null
+          mas_confianza?: string | null
+          mas_conviene?: string | null
+          meta_concreta?: string | null
+          miedos_dudas?: string | null
+          nivel_economico?: string | null
+          objeciones?: string | null
+          objetivo_mes?: string | null
+          objetivo_uno?: string | null
+          objetivos_redes?: string[] | null
+          porque_mas_vendido?: string | null
+          presupuesto_mensual?: string | null
+          problema_cliente?: string | null
+          problema_resuelve?: string | null
+          producto_estrella?: string | null
+          producto_pautar?: string | null
+          productos?: Json | null
+          promociones?: string | null
+          propuesta_valor?: string | null
+          pruebas?: string[] | null
+          pruebas_detalle?: string | null
+          que_gusta_competencia?: string | null
+          que_hace?: string | null
+          que_mal_competencia?: string | null
+          resultado_promesa?: string | null
+          sitio_web?: string | null
+          telefono?: string
+          tiene_catalogo?: string | null
+          tiene_fotos_videos?: string | null
+          tiene_grabador?: string | null
+          tiene_testimonios?: string | null
+          tiktok?: string | null
+          tipo_clientes?: string[] | null
+          tipografias?: string | null
+          tono_marca?: string[] | null
+          tono_prohibido?: string | null
+          trabajo_estilo_vida?: string | null
+          ubicacion?: string | null
+          ubicacion_cliente?: string | null
+          updated_at?: string
+          youtube?: string | null
+        }
+        Relationships: []
+      }
       contact_activities: {
         Row: {
           activity_type: string
