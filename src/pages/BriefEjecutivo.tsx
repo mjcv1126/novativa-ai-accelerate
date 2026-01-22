@@ -22,7 +22,6 @@ import {
   Trophy, 
   Palette, 
   FolderOpen, 
-  Truck, 
   DollarSign,
   Send,
   Loader2,
@@ -42,8 +41,6 @@ const BriefEjecutivo = () => {
   const [clienteValora, setClienteValora] = useState<string[]>([]);
   const [clientePasaTiempo, setClientePasaTiempo] = useState<string[]>([]);
   const [comoCompran, setComoCompran] = useState<string[]>([]);
-  const [metodosPago, setMetodosPago] = useState<string[]>([]);
-  const [cobertura, setCobertura] = useState<string[]>([]);
   const [tonoMarca, setTonoMarca] = useState<string[]>([]);
   const [pruebas, setPruebas] = useState<string[]>([]);
   const [productos, setProductos] = useState([1, 2, 3]);
@@ -69,25 +66,88 @@ const BriefEjecutivo = () => {
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const formData = {
-        ...data,
+      // Build products array from form data
+      const productosArray = productos.map((_, index) => ({
+        nombre: data[`producto${index + 1}_nombre`] || '',
+        precio: data[`producto${index + 1}_precio`] || '',
+        costo: data[`producto${index + 1}_costo`] || '',
+        ganancia: data[`producto${index + 1}_ganancia`] || ''
+      })).filter(p => p.nombre);
+
+      const briefData = {
+        empresa: data.empresa,
+        contacto: data.contacto,
+        cargo: data.cargo,
+        telefono: data.telefono,
+        correo: data.correo,
+        ubicacion: data.ubicacion,
+        horario: data.horario,
+        sitio_web: data.sitioWeb,
+        instagram: data.instagram,
+        facebook: data.facebook,
+        tiktok: data.tiktok,
+        youtube: data.youtube,
+        linkedin: data.linkedin,
+        que_hace: data.queHace,
+        desde_cuando: data.desdeWhen,
+        problema_resuelve: data.problemaResuelve,
         tipo_clientes: tipoClientes,
+        propuesta_valor: data.propuestaValor,
+        diferenciador_1: data.diferenciador1,
+        diferenciador_2: data.diferenciador2,
+        diferenciador_3: data.diferenciador3,
+        resultado_promesa: data.resultadoPromesa,
+        mas_confianza: data.masConfianza,
+        objeciones: data.objeciones,
+        pruebas: pruebas,
+        pruebas_detalle: data.pruebasDetalle,
+        productos: productosArray,
+        combos: data.combos,
+        promociones: data.promociones,
+        producto_estrella: data.productoEstrella,
+        porque_mas_vendido: data.porqueMasVendido,
+        mas_conviene: data.masConviene,
+        objetivo_mes: data.objetivoMes,
         objetivos_redes: objetivosRedes,
+        objetivo_uno: data.objetivoUno,
+        meta_concreta: data.metaConcreta,
+        edad_cliente: data.edadCliente,
+        genero_cliente: data.generoCliente,
+        ubicacion_cliente: data.ubicacionCliente,
+        nivel_economico: data.nivelEconomico,
+        trabajo_estilo_vida: data.trabajoEstiloVida,
+        problema_cliente: data.problemaCliente,
         cliente_valora: clienteValora,
+        miedos_dudas: data.miedosDudas,
         cliente_pasa_tiempo: clientePasaTiempo,
-        como_compran: comoCompran,
-        metodos_pago: metodosPago,
-        cobertura: cobertura,
+        frase_tipica: data.fraseTipica,
+        competidor_1: data.competidor1,
+        competidor_2: data.competidor2,
+        competidor_3: data.competidor3,
+        que_gusta_competencia: data.queGustaCompetencia,
+        que_mal_competencia: data.queMalCompetencia,
+        cuentas_inspiran: data.cuentasInspiran,
         tono_marca: tonoMarca,
-        pruebas: pruebas
+        colores_marca: data.coloresMarca,
+        tipografias: data.tipografias,
+        logo_png: data.logoPNG,
+        tono_prohibido: data.tonoProhibido,
+        tiene_fotos_videos: data.tieneFotosVideos,
+        tiene_grabador: data.tieneGrabador,
+        tiene_testimonios: data.tieneTestimonios,
+        tiene_catalogo: data.tieneCatalogo,
+        drive_link: data.driveLink,
+        invertir_pauta: data.invertirPauta,
+        presupuesto_mensual: data.presupuestoMensual,
+        producto_pautar: data.productoPautar
       };
 
-      // Send to webhook
-      const response = await fetch('https://hook.us2.make.com/your-webhook-url', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
+      // Save to Supabase
+      const { error: dbError } = await supabase
+        .from('briefs')
+        .insert(briefData);
+
+      if (dbError) throw dbError;
 
       toast({
         title: "Brief enviado exitosamente",
@@ -679,56 +739,7 @@ const BriefEjecutivo = () => {
             </CardContent>
           </Card>
 
-          {/* Sección 12: Logística de ventas */}
-          <Card className="border-novativa-teal/30 bg-white/95 backdrop-blur">
-            <CardHeader className="bg-gradient-to-r from-novativa-teal to-novativa-lightBlue text-white rounded-t-lg">
-              <CardTitle className="flex items-center gap-2">
-                <Truck className="h-5 w-5" />
-                12. Logística de Ventas
-              </CardTitle>
-              <CardDescription className="text-white/80">
-                Para no botar leads
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-4">
-              <div>
-                <Label className="mb-2 block">¿Cómo te compran hoy?</Label>
-                <CheckboxGroup 
-                  options={['WhatsApp', 'DM Instagram', 'Tienda física', 'Web', 'Llamadas']} 
-                  state={comoCompran} 
-                  setState={setComoCompran} 
-                />
-              </div>
-              <div>
-                <Label className="mb-2 block">Métodos de pago</Label>
-                <CheckboxGroup 
-                  options={['Transferencia', 'Tarjeta', 'Efectivo', 'Link de pago']} 
-                  state={metodosPago} 
-                  setState={setMetodosPago} 
-                />
-              </div>
-              <div>
-                <Label className="mb-2 block">Cobertura / Envíos</Label>
-                <CheckboxGroup 
-                  options={['Solo ciudad', 'Nacional', 'Internacional']} 
-                  state={cobertura} 
-                  setState={setCobertura} 
-                />
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="costoEnvio">Costo de envío</Label>
-                  <Input id="costoEnvio" {...register('costoEnvio')} placeholder="L. 0.00 o Gratis" />
-                </div>
-                <div>
-                  <Label htmlFor="tiempoEntrega">Tiempo de entrega promedio</Label>
-                  <Input id="tiempoEntrega" {...register('tiempoEntrega')} placeholder="Ej: 2-3 días" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Sección 13: Presupuesto de publicidad */}
+          {/* Sección 12: Presupuesto de publicidad */}
           <Card className="border-novativa-teal/30 bg-white/95 backdrop-blur">
             <CardHeader className="bg-gradient-to-r from-novativa-teal to-novativa-lightBlue text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-2">

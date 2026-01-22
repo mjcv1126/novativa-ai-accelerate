@@ -20,6 +20,7 @@ import AdminCustomCSS from './AdminCustomCSS';
 import AdminScripts from './AdminScripts';
 import AdminProducts from './AdminProducts';
 import AdminTickets from './AdminTickets';
+import AdminBriefs from './AdminBriefs';
 import FileUpload from '../FileUpload';
 import TranscriptionPage from '../TranscriptionPage';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
@@ -108,6 +109,7 @@ const AdminLayout = () => {
                 } 
               />
               <Route path="tickets" element={<ProtectedRoute><AdminTickets /></ProtectedRoute>} />
+              <Route path="briefs" element={<ProtectedRoute><AdminBriefs /></ProtectedRoute>} />
             </Routes>
           </main>
         </SidebarInset>
