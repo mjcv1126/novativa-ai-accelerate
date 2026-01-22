@@ -25,7 +25,9 @@ import {
   Truck, 
   DollarSign,
   Send,
-  Loader2
+  Loader2,
+  Plus,
+  Trash2
 } from 'lucide-react';
 
 const BriefEjecutivo = () => {
@@ -44,6 +46,17 @@ const BriefEjecutivo = () => {
   const [cobertura, setCobertura] = useState<string[]>([]);
   const [tonoMarca, setTonoMarca] = useState<string[]>([]);
   const [pruebas, setPruebas] = useState<string[]>([]);
+  const [productos, setProductos] = useState([1, 2, 3]);
+
+  const addProducto = () => {
+    setProductos([...productos, productos.length + 1]);
+  };
+
+  const removeProducto = (index: number) => {
+    if (productos.length > 1) {
+      setProductos(productos.filter((_, i) => i !== index));
+    }
+  };
 
   const toggleCheckbox = (value: string, state: string[], setState: React.Dispatch<React.SetStateAction<string[]>>) => {
     if (state.includes(value)) {
@@ -309,33 +322,51 @@ const BriefEjecutivo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
-              {[1, 2, 3].map((num) => (
-                <div key={num} className="p-4 border rounded-lg bg-gray-50">
-                  <Label className="text-base font-semibold mb-3 block">Servicio/Producto {num}</Label>
+              {productos.map((num, index) => (
+                <div key={index} className="p-4 border rounded-lg bg-gray-50 relative">
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-base font-semibold">Servicio/Producto {index + 1}</Label>
+                    {productos.length > 1 && (
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => removeProducto(index)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                   <div className="grid md:grid-cols-2 gap-3">
                     <div className="md:col-span-2">
                       <Label>Nombre del servicio/producto</Label>
-                      <Input {...register(`producto${num}_nombre`)} placeholder="Nombre..." />
+                      <Input {...register(`producto${index + 1}_nombre`)} placeholder="Nombre..." />
                     </div>
                     <div>
                       <Label>Precio de venta</Label>
-                      <Input {...register(`producto${num}_precio`)} placeholder="L. 0.00" />
+                      <Input {...register(`producto${index + 1}_precio`)} placeholder="L. 0.00" />
                     </div>
                     <div>
                       <Label>Costo (lo que te cuesta a vos)</Label>
-                      <Input {...register(`producto${num}_costo`)} placeholder="L. 0.00" />
+                      <Input {...register(`producto${index + 1}_costo`)} placeholder="L. 0.00" />
                     </div>
                     <div>
                       <Label>Ganancia aproximada</Label>
-                      <Input {...register(`producto${num}_ganancia`)} placeholder="L. 0.00" />
-                    </div>
-                    <div>
-                      <Label>Tiempo de entrega/ejecución</Label>
-                      <Input {...register(`producto${num}_tiempo`)} placeholder="Ej: 3 días, 1 semana" />
+                      <Input {...register(`producto${index + 1}_ganancia`)} placeholder="L. 0.00" />
                     </div>
                   </div>
                 </div>
               ))}
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={addProducto}
+                className="w-full border-dashed border-2 hover:border-novativa-teal hover:text-novativa-teal"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Agregar otro producto/servicio
+              </Button>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="combos">¿Hay combos o paquetes?</Label>
