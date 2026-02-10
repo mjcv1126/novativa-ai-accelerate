@@ -88,16 +88,9 @@ const AdminLeads = () => {
       )
       .subscribe();
 
-    // Auto-refresh every 30 seconds as fallback
-    const refreshInterval = setInterval(() => {
-      console.log('🔄 Auto-refreshing leads...');
-      loadLeads();
-    }, 30000);
-
     return () => {
-      console.log('🔌 Cleaning up real-time subscription and interval');
+      console.log('🔌 Cleaning up real-time subscription');
       supabase.removeChannel(channel);
-      clearInterval(refreshInterval);
     };
   }, [toast]);
 
