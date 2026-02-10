@@ -29,8 +29,8 @@ export const useTidyCalRealtime = () => {
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   const pingIntervalRef = useRef<NodeJS.Timeout>();
   const reconnectAttempts = useRef(0);
-  const maxReconnectAttempts = 999; // Practically infinite reconnections
-  const shouldStayConnected = useRef(true); // Always try to stay connected
+  const maxReconnectAttempts = 5; // Limit reconnections to save egress
+  const shouldStayConnected = useRef(false); // Manual connect only
 
   const { syncAllBookings } = useTidyCalAutoSync();
 
@@ -83,7 +83,7 @@ export const useTidyCalRealtime = () => {
           if (ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ type: 'ping' }));
           }
-        }, 15000); // Ping every 15 seconds to keep connection alive
+        }, 45000); // Ping every 45 seconds instead of 15 to reduce egress
 
         toast({
           title: "Sincronización permanente activada",
@@ -243,16 +243,13 @@ export const useTidyCalRealtime = () => {
     }
   }, [syncAllBookings, syncStatus.connected, connect]);
 
-  // Auto-connect on mount and maintain connection
+  // Do NOT auto-connect on mount to save egress — user must click "Connect"
   useEffect(() => {
-    shouldStayConnected.current = true;
-    connect();
-    
     return () => {
       shouldStayConnected.current = false;
       disconnect();
     };
-  }, [connect, disconnect]);
+  }, [disconnect]);
 
   return {
     syncStatus,
