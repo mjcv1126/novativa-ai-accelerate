@@ -81,7 +81,7 @@ export const useAddContactForm = (onContactAdded: () => void) => {
       if (formData.email?.trim()) {
         const { data: existingContacts } = await supabase
           .from('contacts')
-          .select('id, first_name, last_name, email, stage_id')
+          .select('*, stage:crm_stages(*)')
           .eq('org_id', 'd010fb06-7e97-4cef-90b6-be84942ac1d1')
           .eq('email', formData.email.trim())
           .limit(1);
