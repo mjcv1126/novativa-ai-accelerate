@@ -77,6 +77,24 @@ export const useAddContactForm = (onContactAdded: () => void) => {
         additionalEmails.push(formData.secondary_email.trim());
       }
 
+      // Verificar si ya existe un contacto con ese email en la org
+      if (formData.email?.trim()) {
+        const { data: existingContacts } = await supabase
+          .from('contacts')
+          .select('id, first_name, last_name, email, stage_id')
+          .eq('org_id', 'd010fb06-7e97-4cef-90b6-be84942ac1d1')
+          .eq('email', formData.email.trim())
+          .limit(1);
+
+        if (existingContacts && existingContacts.length > 0) {
+          const existing = existingContacts[0];
+          setExistingContact(existing as any);
+          setShowExistingContactDialog(true);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       // Obtener un stage por defecto
       const { data: defaultStage } = await supabase
         .from('crm_stages')
@@ -107,7 +125,7 @@ export const useAddContactForm = (onContactAdded: () => void) => {
           service_of_interest: formData.service_of_interest || null,
           rtn: formData.rtn || null,
           address: formData.address || null,
-          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1' // Org ID válido existente
+          org_id: 'd010fb06-7e97-4cef-90b6-be84942ac1d1'
         }]);
 
       if (error) throw error;
