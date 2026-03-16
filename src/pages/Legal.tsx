@@ -337,6 +337,9 @@ const Legal = () => {
           <p className="text-gray-500 text-center mt-10 text-sm italic">
             Más allá de un trámite, cada servicio representa una responsabilidad jurídica que requiere atención, experiencia y profesionalismo.
           </p>
+          <div className="flex justify-center mt-6">
+            <SocialIcons iconSize={22} className="gap-5" />
+          </div>
         </div>
       </section>
 
