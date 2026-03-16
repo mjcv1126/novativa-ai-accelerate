@@ -693,6 +693,21 @@ const Legal = () => {
           <span>Consulte directamente para su caso particular</span>
         </div>
       </div>
+
+      {/* TikTok Video Dialog */}
+      <Dialog open={tiktokOpen} onOpenChange={setTiktokOpen}>
+        <DialogContent className="sm:max-w-[400px] p-0 bg-black border-amber-900/30 overflow-hidden">
+          <div className="w-full" style={{ minHeight: 600 }}>
+            <iframe
+              src="https://www.tiktok.com/embed/v2/7617938736021736722"
+              className="w-full border-0"
+              style={{ height: 600 }}
+              allowFullScreen
+              allow="encrypted-media"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
