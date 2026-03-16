@@ -199,6 +199,10 @@ const Legal = () => {
       .legal-page { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%23d97706' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='M2 10h4l2-4 2 8h4'/%3E%3Cpath d='M14 10h4l2-4 2 8'/%3E%3Cpath d='m2 14 4 0'/%3E%3Cpath d='m18 14 4 0'/%3E%3Cpath d='M2 14a4 4 0 0 0 8 0'/%3E%3Cpath d='M14 14a4 4 0 0 0 8 0'/%3E%3Ccircle cx='12' cy='2' r='1'/%3E%3C/svg%3E") 14 14, auto; }
       .legal-page a, .legal-page button { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='%23d97706' stroke='%23fbbf24' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='M2 10h4l2-4 2 8h4'/%3E%3Cpath d='M14 10h4l2-4 2 8'/%3E%3Cpath d='m2 14 4 0'/%3E%3Cpath d='m18 14 4 0'/%3E%3Cpath d='M2 14a4 4 0 0 0 8 0'/%3E%3Cpath d='M14 14a4 4 0 0 0 8 0'/%3E%3Ccircle cx='12' cy='2' r='1'/%3E%3C/svg%3E") 14 14, pointer; }
       @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+      @keyframes borderGlow {
+        0%, 100% { opacity: 0.4; filter: brightness(0.8); }
+        50% { opacity: 1; filter: brightness(1.3); }
+      }
     `;
     document.head.appendChild(style);
     return () => { document.getElementById('legal-balance-cursor')?.remove(); };
