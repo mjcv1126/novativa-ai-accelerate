@@ -115,16 +115,16 @@ const Legal = () => {
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  // Custom gavel cursor CSS
+  // Custom balance/scales cursor CSS
   useEffect(() => {
     const style = document.createElement('style');
-    style.id = 'legal-gavel-cursor';
+    style.id = 'legal-balance-cursor';
     style.textContent = `
-      .legal-page { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%23d97706' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m14 12-8.5 8.5a2.12 2.12 0 0 1-3-3L11 9'/%3E%3Cpath d='M15 13 9 7l4-4 6 6Z'/%3E%3Cpath d='m9.5 8.5-1 2'/%3E%3Cpath d='m17 2 5 5-.5.5a3.53 3.53 0 0 1-5 0s0 0 0 0a3.53 3.53 0 0 1 0-5L17 2'/%3E%3C/svg%3E") 14 14, auto; }
-      .legal-page a, .legal-page button { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='%23d97706' stroke='%23fbbf24' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m14 12-8.5 8.5a2.12 2.12 0 0 1-3-3L11 9'/%3E%3Cpath d='M15 13 9 7l4-4 6 6Z'/%3E%3Cpath d='m9.5 8.5-1 2'/%3E%3Cpath d='m17 2 5 5-.5.5a3.53 3.53 0 0 1-5 0s0 0 0 0a3.53 3.53 0 0 1 0-5L17 2'/%3E%3C/svg%3E") 14 14, pointer; }
+      .legal-page { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%23d97706' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='M2 10h4l2-4 2 8h4'/%3E%3Cpath d='M14 10h4l2-4 2 8'/%3E%3Cpath d='m2 14 4 0'/%3E%3Cpath d='m18 14 4 0'/%3E%3Cpath d='M2 14a4 4 0 0 0 8 0'/%3E%3Cpath d='M14 14a4 4 0 0 0 8 0'/%3E%3Ccircle cx='12' cy='2' r='1'/%3E%3C/svg%3E") 14 14, auto; }
+      .legal-page a, .legal-page button { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='%23d97706' stroke='%23fbbf24' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='M2 10h4l2-4 2 8h4'/%3E%3Cpath d='M14 10h4l2-4 2 8'/%3E%3Cpath d='m2 14 4 0'/%3E%3Cpath d='m18 14 4 0'/%3E%3Cpath d='M2 14a4 4 0 0 0 8 0'/%3E%3Cpath d='M14 14a4 4 0 0 0 8 0'/%3E%3Ccircle cx='12' cy='2' r='1'/%3E%3C/svg%3E") 14 14, pointer; }
     `;
     document.head.appendChild(style);
-    return () => { document.getElementById('legal-gavel-cursor')?.remove(); };
+    return () => { document.getElementById('legal-balance-cursor')?.remove(); };
   }, []);
 
   const scrollTo = useCallback((id: string) => {
