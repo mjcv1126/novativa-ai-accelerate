@@ -336,19 +336,21 @@ const Legal = () => {
           {/* Profile photo */}
           <div className="shrink-0 relative group">
             <div className="absolute -inset-1 bg-gradient-to-br from-amber-500 via-amber-700 to-amber-900 rounded-full blur-sm opacity-60 group-hover:opacity-90 transition-opacity duration-500 animate-[spin_8s_linear_infinite]" />
-            <div className="relative w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-amber-700/50 shadow-2xl shadow-amber-900/20 cursor-pointer" onClick={() => setTiktokOpen(true)}>
+            <div className="relative w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-amber-700/50 shadow-2xl shadow-amber-900/20">
               <img src="/dennisse-profile.png" alt="Abogada Dennisse Cuéllar" className="w-full h-full object-cover object-top scale-110 group-hover:scale-125 transition-transform duration-700" />
-              {/* Play button overlay */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors duration-300">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-amber-600/90 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-amber-900/40 group-hover:scale-110 transition-transform duration-300">
-                  <Play className="text-white ml-0.5" size={22} fill="white" />
-                </div>
-              </div>
             </div>
-            {/* Badge */}
+            {/* Badge Abogada */}
             <div className="absolute -bottom-2 -right-2 bg-amber-700 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-bounce" style={{ animationDuration: '2s' }}>
               <Gavel size={14} className="inline mr-1" />Abogada
             </div>
+            {/* Video button below badge */}
+            <button
+              onClick={() => setTiktokOpen(true)}
+              className="absolute -bottom-9 left-1/2 -translate-x-1/2 flex items-center gap-1.5 text-amber-400/70 hover:text-amber-400 text-xs transition-colors duration-300 cursor-pointer"
+            >
+              <Play size={14} fill="currentColor" />
+              <span>Ver video</span>
+            </button>
           </div>
 
           {/* Text */}
