@@ -448,7 +448,7 @@ const Legal = () => {
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 right-0 w-72 h-72 bg-amber-900/5 rounded-full blur-3xl" style={{ transform: `translateY(${parallaxOffset * -0.15}px)` }} />
         </div>
-        <div className="max-w-6xl mx-auto px-4 relative z-10">
+        <div ref={servicesReveal.ref} className={`max-w-6xl mx-auto px-4 relative z-10 transition-all duration-1000 ${servicesReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             <span className="text-amber-500">Servicios</span> Legales
           </h2>
