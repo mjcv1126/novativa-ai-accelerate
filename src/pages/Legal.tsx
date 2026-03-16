@@ -712,11 +712,11 @@ const Legal = () => {
             </button>
             <div className="rounded-xl overflow-hidden bg-black shadow-2xl shadow-amber-900/20">
               <iframe
-                src="https://www.tiktok.com/player/v1/7617938736021736722?&music_info=0&description=0&rel=0&autoplay=1"
+                src="https://www.tiktok.com/player/v1/7617938736021736722?music_info=0&description=0&rel=0&autoplay=1&mute=0"
+                allow="autoplay; encrypted-media"
                 className="w-full border-0"
                 style={{ height: 680 }}
                 allowFullScreen
-                allow="encrypted-media; autoplay"
               />
             </div>
           </div>
