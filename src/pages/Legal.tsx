@@ -63,7 +63,7 @@ const FAQItem = ({ question, answer }: { question: string; answer: React.ReactNo
     >
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 text-left hover:bg-amber-950/20 transition-colors cursor-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23d97706%22 stroke-width=%222%22><path d=%22M14.7 3.3a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4l-14 14a1 1 0 0 1-.7.3H1.4a1 1 0 0 1-1-1v-4.6a1 1 0 0 1 .3-.7z%22/></svg>'),_pointer]"
+        className="w-full flex items-center justify-between p-5 text-left hover:bg-amber-950/20 transition-colors"
       >
         <span className="text-amber-100 font-medium pr-4">{question}</span>
         {open ? <ChevronUp className="text-amber-500 shrink-0" size={20} /> : <ChevronDown className="text-amber-500 shrink-0" size={20} />}
