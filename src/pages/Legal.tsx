@@ -116,6 +116,35 @@ const ServiceCard = ({ icon: Icon, title, description, items, delay }: { icon: R
     </div>
   );
 };
+/* ───── News Ticker ───── */
+const TICKER_SERVICES = [
+  '⚖️ Constitución de Empresas',
+  '📄 Poderes y Autorizaciones',
+  '🔏 Documentación Notarial',
+  '👨‍👩‍👧 Actos Patrimoniales y Familiares',
+  '🏠 Compraventa de Bienes',
+  '✈️ Envío Internacional de Documentos',
+  '📋 Testamentos y Herencias',
+  '💼 Sociedades S. de R.L.',
+  '🏢 Sociedades Anónimas',
+  '✅ Autenticación de Documentos',
+  '📝 Matrimonios y Divorcios',
+  '🔐 Protección de Patrimonio',
+];
+
+const NewsTicker = () => (
+  <div className="bg-gradient-to-r from-amber-900/40 via-amber-800/30 to-amber-900/40 border-b border-amber-900/20 overflow-hidden whitespace-nowrap">
+    <div className="inline-flex animate-[ticker_35s_linear_infinite]">
+      {[...TICKER_SERVICES, ...TICKER_SERVICES].map((s, i) => (
+        <span key={i} className="inline-flex items-center px-6 py-1.5 text-xs text-amber-300/80 font-medium">
+          {s}
+          <span className="mx-4 text-amber-700/50">•</span>
+        </span>
+      ))}
+    </div>
+  </div>
+);
+
 /* ───── Hero Video Background ───── */
 const HERO_VIDEOS = ['rFygb2YoQ0A', 'Asylmg8PPCg', 'U6PjNf0Vj6E'];
 
@@ -169,6 +198,7 @@ const Legal = () => {
     style.textContent = `
       .legal-page { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%23d97706' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='M2 10h4l2-4 2 8h4'/%3E%3Cpath d='M14 10h4l2-4 2 8'/%3E%3Cpath d='m2 14 4 0'/%3E%3Cpath d='m18 14 4 0'/%3E%3Cpath d='M2 14a4 4 0 0 0 8 0'/%3E%3Cpath d='M14 14a4 4 0 0 0 8 0'/%3E%3Ccircle cx='12' cy='2' r='1'/%3E%3C/svg%3E") 14 14, auto; }
       .legal-page a, .legal-page button { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='%23d97706' stroke='%23fbbf24' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='M2 10h4l2-4 2 8h4'/%3E%3Cpath d='M14 10h4l2-4 2 8'/%3E%3Cpath d='m2 14 4 0'/%3E%3Cpath d='m18 14 4 0'/%3E%3Cpath d='M2 14a4 4 0 0 0 8 0'/%3E%3Cpath d='M14 14a4 4 0 0 0 8 0'/%3E%3Ccircle cx='12' cy='2' r='1'/%3E%3C/svg%3E") 14 14, pointer; }
+      @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     `;
     document.head.appendChild(style);
     return () => { document.getElementById('legal-balance-cursor')?.remove(); };
@@ -199,10 +229,15 @@ const Legal = () => {
   const aboutReveal = useScrollReveal();
   const statsReveal = useScrollReveal();
   const whyReveal = useScrollReveal();
+  const servicesReveal = useScrollReveal();
+  const ctaReveal = useScrollReveal();
+  const faqReveal = useScrollReveal();
   const contactReveal = useScrollReveal();
 
   return (
     <div className="legal-page min-h-screen bg-[#0a0a0f] text-gray-200 font-sans">
+      {/* ───── News Ticker ───── */}
+      <NewsTicker />
       {/* ───── Header ───── */}
       <header className={`sticky top-0 z-[100] w-full transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-[#0a0a0f]/85 backdrop-blur-md'} border-b border-amber-900/20`}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -413,7 +448,7 @@ const Legal = () => {
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 right-0 w-72 h-72 bg-amber-900/5 rounded-full blur-3xl" style={{ transform: `translateY(${parallaxOffset * -0.15}px)` }} />
         </div>
-        <div className="max-w-6xl mx-auto px-4 relative z-10">
+        <div ref={servicesReveal.ref} className={`max-w-6xl mx-auto px-4 relative z-10 transition-all duration-1000 ${servicesReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             <span className="text-amber-500">Servicios</span> Legales
           </h2>
@@ -452,7 +487,7 @@ const Legal = () => {
           <Gavel className="absolute top-6 left-[10%] text-amber-700/10 rotate-12" size={60} style={{ transform: `translateY(${parallaxOffset * -0.1}px)` }} />
           <Scale className="absolute bottom-6 right-[10%] text-amber-700/10 -rotate-12" size={60} style={{ transform: `translateY(${parallaxOffset * -0.1}px)` }} />
         </div>
-        <div className="max-w-3xl mx-auto px-4 text-center relative z-10">
+        <div ref={ctaReveal.ref} className={`max-w-3xl mx-auto px-4 text-center relative z-10 transition-all duration-1000 ${ctaReveal.visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}`}>
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">¿Necesitas asesoría legal?</h2>
           <p className="text-gray-400 mb-8">Comunícate directamente para resolver tus asuntos jurídicos con seguridad y tranquilidad.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -470,7 +505,7 @@ const Legal = () => {
 
       {/* ───── FAQ ───── */}
       <section id="faq" className="py-20">
-        <div className="max-w-3xl mx-auto px-4">
+        <div ref={faqReveal.ref} className={`max-w-3xl mx-auto px-4 transition-all duration-1000 ${faqReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
             Preguntas <span className="text-amber-500">Frecuentes</span>
           </h2>
