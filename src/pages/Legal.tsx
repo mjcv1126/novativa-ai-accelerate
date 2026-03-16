@@ -147,7 +147,7 @@ const NewsTicker = () => (
 );
 
 /* ───── Hero Video Background ───── */
-const HERO_VIDEOS = ['rFygb2YoQ0A', 'Asylmg8PPCg'];
+const HERO_VIDEOS = ['rFygb2YoQ0A'];
 
 const HeroVideoBackground = () => {
   const [activeIndex, setActiveIndex] = useState(0);
