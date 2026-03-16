@@ -150,7 +150,7 @@ const Legal = () => {
   return (
     <div className="legal-page min-h-screen bg-[#0a0a0f] text-gray-200 font-sans overflow-x-hidden">
       {/* ───── Header ───── */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-transparent'} border-b border-amber-900/20`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-transparent'} border-b border-amber-900/20`}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={() => scrollTo('hero')} className="shrink-0">
             <img src="/novalegal-logo.png" alt="NovaLegal" className="h-10 md:h-12 w-auto" />
