@@ -116,6 +116,35 @@ const ServiceCard = ({ icon: Icon, title, description, items, delay }: { icon: R
     </div>
   );
 };
+/* ───── News Ticker ───── */
+const TICKER_SERVICES = [
+  '⚖️ Constitución de Empresas',
+  '📄 Poderes y Autorizaciones',
+  '🔏 Documentación Notarial',
+  '👨‍👩‍👧 Actos Patrimoniales y Familiares',
+  '🏠 Compraventa de Bienes',
+  '✈️ Envío Internacional de Documentos',
+  '📋 Testamentos y Herencias',
+  '💼 Sociedades S. de R.L.',
+  '🏢 Sociedades Anónimas',
+  '✅ Autenticación de Documentos',
+  '📝 Matrimonios y Divorcios',
+  '🔐 Protección de Patrimonio',
+];
+
+const NewsTicker = () => (
+  <div className="bg-gradient-to-r from-amber-900/40 via-amber-800/30 to-amber-900/40 border-b border-amber-900/20 overflow-hidden whitespace-nowrap">
+    <div className="inline-flex animate-[ticker_35s_linear_infinite]">
+      {[...TICKER_SERVICES, ...TICKER_SERVICES].map((s, i) => (
+        <span key={i} className="inline-flex items-center px-6 py-1.5 text-xs text-amber-300/80 font-medium">
+          {s}
+          <span className="mx-4 text-amber-700/50">•</span>
+        </span>
+      ))}
+    </div>
+  </div>
+);
+
 /* ───── Hero Video Background ───── */
 const HERO_VIDEOS = ['rFygb2YoQ0A', 'Asylmg8PPCg', 'U6PjNf0Vj6E'];
 
