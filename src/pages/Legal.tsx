@@ -371,7 +371,7 @@ const Legal = () => {
         <div ref={statsReveal.ref} className={`max-w-4xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center transition-all duration-700 ${statsReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {[
             { n: 500, suffix: '+', label: 'Clientes atendidos' },
-            { n: 10, suffix: '+', label: 'Años de experiencia' },
+            { n: 5, suffix: '+', label: 'Años de experiencia' },
             { n: 1000, suffix: '+', label: 'Documentos legales' },
             { n: 50, suffix: '+', label: 'Empresas constituidas' },
           ].map((s, i) => (
