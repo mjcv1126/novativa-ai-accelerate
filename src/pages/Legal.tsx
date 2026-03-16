@@ -511,8 +511,27 @@ const Legal = () => {
           <p className="text-gray-600 text-sm text-center">
             © {new Date().getFullYear()} Abogada Dennisse Cuéllar · Legalidad. Orden. Confianza.
           </p>
+          <a
+            href="https://www.novativa.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-gray-600 hover:text-amber-400/80 transition-colors text-xs"
+          >
+            Powered by <span className="font-semibold text-amber-500/70">Novativa</span>
+          </a>
         </div>
       </footer>
+
+      {/* ───── Legal Disclaimer Bar ───── */}
+      <div className="border-t border-amber-900/10 py-4 bg-[#08080c]">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-[11px] text-gray-700">
+          <span>© {new Date().getFullYear()} Todos los derechos reservados</span>
+          <span className="hidden sm:inline text-gray-800">·</span>
+          <span>La información de este sitio no constituye asesoría legal formal</span>
+          <span className="hidden sm:inline text-gray-800">·</span>
+          <span>Consulte directamente para su caso particular</span>
+        </div>
+      </div>
     </div>
   );
 };
