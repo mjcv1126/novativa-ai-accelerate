@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronDown, ChevronUp, Phone, Mail, MapPin, MessageCircle, Calendar, Scale, Shield, FileText, Users, Home, Truck, CheckCircle, Gavel, Menu, X, Facebook, Instagram } from 'lucide-react';
+import { ChevronDown, ChevronUp, Phone, Mail, MapPin, MessageCircle, Calendar, Scale, Shield, FileText, Users, Home, Truck, CheckCircle, Gavel, Menu, X, Facebook, Instagram, Play } from 'lucide-react';
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const WHATSAPP_URL = 'https://api.whatsapp.com/send?phone=50482524225';
 const CALENDAR_URL = 'https://tidycal.com/team/dennisse-cuellar/legal';
