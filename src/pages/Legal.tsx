@@ -402,8 +402,6 @@ const Legal = () => {
               </div>
             </button>
           );
-            </button>
-          );
         };
         return (
           <section className="py-10 bg-gray-950/30 border-b border-amber-900/10 overflow-hidden">
