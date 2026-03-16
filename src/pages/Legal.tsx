@@ -116,8 +116,41 @@ const ServiceCard = ({ icon: Icon, title, description, items, delay }: { icon: R
     </div>
   );
 };
+/* ───── Hero Video Background ───── */
+const HERO_VIDEOS = ['rFygb2YoQ0A', 'Asylmg8PPCg', 'U6PjNf0Vj6E'];
 
-/* ───── Main Page ───── */
+const HeroVideoBackground = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % HERO_VIDEOS.length);
+    }, 20000); // switch every 20s
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 z-0 overflow-hidden">
+      {HERO_VIDEOS.map((id, i) => (
+        <div
+          key={id}
+          className="absolute inset-0 transition-opacity duration-[2000ms]"
+          style={{ opacity: i === activeIndex ? 0.15 : 0 }}
+        >
+          <iframe
+            src={`https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&fs=0&iv_load_policy=3`}
+            title={`Background video ${i + 1}`}
+            allow="autoplay; encrypted-media"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] md:w-[120%] md:h-[120%] pointer-events-none border-0"
+            style={{ minWidth: '100%', minHeight: '100%' }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+
 const Legal = () => {
   const parallaxOffset = useParallax(0.25);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
