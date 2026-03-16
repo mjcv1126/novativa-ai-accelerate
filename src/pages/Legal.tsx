@@ -5,6 +5,19 @@ import { TiktokIcon } from '@/components/shared/TiktokIcon';
 
 const WHATSAPP_URL = 'https://api.whatsapp.com/send?phone=50482524225';
 const CALENDAR_URL = 'https://tidycal.com/team/dennisse-cuellar/legal';
+const SOCIAL_LINKS = {
+  tiktok: 'https://www.tiktok.com/@dennisse.cuellar',
+  facebook: 'https://www.facebook.com/novalegalhn',
+  instagram: 'https://www.instagram.com/novalegalhn',
+};
+
+const SocialIcons = ({ className = '', iconSize = 18 }: { className?: string; iconSize?: number }) => (
+  <div className={`flex items-center gap-3 ${className}`}>
+    <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-amber-400 transition-colors"><Facebook size={iconSize} /></a>
+    <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-amber-400 transition-colors"><Instagram size={iconSize} /></a>
+    <a href={SOCIAL_LINKS.tiktok} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-amber-400 transition-colors"><TiktokIcon className={`w-[${iconSize}px] h-[${iconSize}px]`} style={{ width: iconSize, height: iconSize }} /></a>
+  </div>
+);
 
 /* ───── Scroll-triggered animation hook ───── */
 function useScrollReveal(threshold = 0.15) {
