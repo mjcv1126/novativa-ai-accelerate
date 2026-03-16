@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ChevronDown, ChevronUp, Phone, Mail, MapPin, MessageCircle, Calendar, Scale, Shield, FileText, Users, Home, Truck, CheckCircle, Gavel, Menu, X } from 'lucide-react';
 
 const WHATSAPP_URL = 'https://api.whatsapp.com/send?phone=50482524225';
-const CALENDAR_URL = 'https://calendar.novativa.org/dennisse-cuellar/legal';
+const CALENDAR_URL = 'https://tidycal.com/team/dennisse-cuellar/legal';
 
 /* ───── Scroll-triggered animation hook ───── */
 function useScrollReveal(threshold = 0.15) {
