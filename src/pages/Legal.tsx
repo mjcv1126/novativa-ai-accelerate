@@ -190,8 +190,9 @@ const Legal = () => {
             ))}
           </nav>
 
-          {/* Desktop CTAs */}
+          {/* Desktop Social + CTAs */}
           <div className="hidden md:flex items-center gap-3">
+            <SocialIcons iconSize={16} />
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition-colors">
               <MessageCircle size={16} /> WhatsApp
