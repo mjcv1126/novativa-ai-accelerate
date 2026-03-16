@@ -318,6 +318,33 @@ const Legal = () => {
         </div>
       </section>
 
+      {/* ───── Why choose ───── */}
+      <section className="py-20 bg-[#0a0a0f]">
+        <div ref={whyReveal.ref} className={`max-w-4xl mx-auto px-4 text-center transition-all duration-1000 ${whyReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            ¿Por qué trabajar con la <span className="text-amber-500">Abogada Dennisse Cuéllar</span>?
+          </h2>
+          <p className="text-gray-400 mb-12 max-w-2xl mx-auto">
+            Elegir un servicio legal no es solo un trámite administrativo, es una decisión de confianza.
+          </p>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+            {[
+              'Atención personalizada',
+              'Explicación clara de cada trámite',
+              'Documentación correctamente elaborada',
+              'Cumplimiento de requisitos legales',
+              'Seguridad jurídica en cada proceso',
+              'Orden, respaldo y tranquilidad',
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3 bg-gray-900/50 border border-amber-900/15 rounded-xl p-4 hover:border-amber-700/30 hover:-translate-y-0.5 transition-all duration-300" style={{ transitionDelay: `${i * 80}ms` }}>
+                <CheckCircle className="text-amber-500 shrink-0" size={20} />
+                <span className="text-sm text-gray-300">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ───── Services ───── */}
       <section id="services" className="py-20 relative">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
