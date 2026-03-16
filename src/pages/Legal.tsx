@@ -229,10 +229,15 @@ const Legal = () => {
   const aboutReveal = useScrollReveal();
   const statsReveal = useScrollReveal();
   const whyReveal = useScrollReveal();
+  const servicesReveal = useScrollReveal();
+  const ctaReveal = useScrollReveal();
+  const faqReveal = useScrollReveal();
   const contactReveal = useScrollReveal();
 
   return (
     <div className="legal-page min-h-screen bg-[#0a0a0f] text-gray-200 font-sans">
+      {/* ───── News Ticker ───── */}
+      <NewsTicker />
       {/* ───── Header ───── */}
       <header className={`sticky top-0 z-[100] w-full transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-[#0a0a0f]/85 backdrop-blur-md'} border-b border-amber-900/20`}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
