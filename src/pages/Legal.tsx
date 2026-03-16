@@ -325,7 +325,7 @@ const Legal = () => {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce text-amber-700/50">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce text-amber-700/50 z-10">
           <span className="text-xs tracking-widest uppercase">Scroll</span>
           <ChevronDown size={20} />
         </div>
