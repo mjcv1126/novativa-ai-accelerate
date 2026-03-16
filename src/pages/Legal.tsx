@@ -168,11 +168,22 @@ const HeroVideoBackground = () => {
           style={{ opacity: i === activeIndex ? 0.15 : 0 }}
         >
           <iframe
-            src={`https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&fs=0&iv_load_policy=3`}
+            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&fs=0&iv_load_policy=3&enablejsapi=1&origin=${window.location.origin}`}
             title={`Background video ${i + 1}`}
-            allow="autoplay; encrypted-media"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] md:w-[120%] md:h-[120%] pointer-events-none border-0"
-            style={{ minWidth: '100%', minHeight: '100%' }}
+            allow="autoplay; encrypted-media; accelerometer; gyroscope"
+            referrerPolicy="no-referrer"
+            loading="eager"
+            className="pointer-events-none border-0"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '177.78vh',
+              height: '100vh',
+              minWidth: '100%',
+              minHeight: '100%',
+            }}
           />
         </div>
       ))}
