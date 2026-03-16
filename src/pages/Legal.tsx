@@ -184,6 +184,7 @@ const HeroVideoBackground = () => {
 const Legal = () => {
   const parallaxOffset = useParallax(0.25);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [tiktokOpen, setTiktokOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
