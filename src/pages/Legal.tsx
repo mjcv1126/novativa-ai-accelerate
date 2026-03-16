@@ -694,20 +694,28 @@ const Legal = () => {
         </div>
       </div>
 
-      {/* TikTok Video Dialog */}
-      <Dialog open={tiktokOpen} onOpenChange={setTiktokOpen}>
-        <DialogContent className="sm:max-w-[400px] p-0 bg-black border-amber-900/30 overflow-hidden">
-          <div className="w-full" style={{ minHeight: 600 }}>
-            <iframe
-              src="https://www.tiktok.com/embed/v2/7617938736021736722"
-              className="w-full border-0"
-              style={{ height: 600 }}
-              allowFullScreen
-              allow="encrypted-media"
-            />
+      {/* TikTok Video Popup */}
+      {tiktokOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setTiktokOpen(false)}>
+          <div className="relative w-[90vw] max-w-[400px]" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setTiktokOpen(false)}
+              className="absolute -top-10 right-0 text-white hover:text-amber-400 transition-colors z-10"
+            >
+              <X size={28} />
+            </button>
+            <div className="rounded-xl overflow-hidden bg-black shadow-2xl shadow-amber-900/20">
+              <iframe
+                src="https://www.tiktok.com/player/v1/7617938736021736722?&music_info=0&description=0&rel=0&autoplay=1"
+                className="w-full border-0"
+                style={{ height: 680 }}
+                allowFullScreen
+                allow="encrypted-media; autoplay"
+              />
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
     </div>
   );
 };
