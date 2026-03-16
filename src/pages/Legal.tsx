@@ -394,12 +394,12 @@ const Legal = () => {
             <button
               key={idx}
               onClick={() => scrollTo('services')}
-              className="p-[1px] rounded-xl bg-gradient-to-br from-amber-700/30 via-amber-500/10 to-amber-700/30 animate-[borderGlow_3s_ease-in-out_infinite] group relative text-left"
+              className="group relative text-left"
             >
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-500/20 via-transparent to-amber-500/20 blur-sm animate-[borderGlow_3s_ease-in-out_infinite] pointer-events-none" />
-              <div className="relative p-4 md:p-5 bg-gradient-to-br from-gray-900 to-gray-950 rounded-[11px] h-full overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-700/0 group-hover:from-amber-500/5 group-hover:to-amber-700/10 transition-all duration-500 rounded-[11px]" />
-                <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              {/* Subtle ambient glow behind card */}
+              <div className="absolute -inset-[2px] bg-gradient-to-br from-amber-500 via-amber-700 to-amber-900 rounded-xl blur-[6px] opacity-25 group-hover:opacity-50 transition-opacity duration-500" />
+              <div className="relative p-4 md:p-5 bg-gradient-to-br from-gray-900 to-gray-950 rounded-xl border border-amber-900/15 h-full overflow-hidden group-hover:border-amber-700/30 transition-colors duration-500">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-700/0 group-hover:from-amber-500/5 group-hover:to-amber-700/10 transition-all duration-500 rounded-xl" />
                 <div className="relative z-[1]">
                   <div className="w-10 h-10 rounded-lg bg-amber-900/20 border border-amber-800/20 flex items-center justify-center mb-3 group-hover:bg-amber-900/30 group-hover:scale-110 group-hover:border-amber-700/40 transition-all duration-300">
                     <IconComp className="text-amber-500 group-hover:text-amber-400 transition-colors" size={20} />
