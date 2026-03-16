@@ -526,6 +526,7 @@ const Legal = () => {
       <footer className="border-t border-amber-900/20 py-8">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <img src="/novalegal-logo.png" alt="NovaLegal" className="h-10 w-auto opacity-70" />
+          <SocialIcons iconSize={20} className="gap-4" />
           <p className="text-gray-600 text-sm text-center">
             © {new Date().getFullYear()} Abogada Dennisse Cuéllar · Legalidad. Orden. Confianza.
           </p>
