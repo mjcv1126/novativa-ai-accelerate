@@ -116,8 +116,41 @@ const ServiceCard = ({ icon: Icon, title, description, items, delay }: { icon: R
     </div>
   );
 };
+/* ───── Hero Video Background ───── */
+const HERO_VIDEOS = ['rFygb2YoQ0A', 'Asylmg8PPCg', 'U6PjNf0Vj6E'];
 
-/* ───── Main Page ───── */
+const HeroVideoBackground = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % HERO_VIDEOS.length);
+    }, 20000); // switch every 20s
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 z-0 overflow-hidden">
+      {HERO_VIDEOS.map((id, i) => (
+        <div
+          key={id}
+          className="absolute inset-0 transition-opacity duration-[2000ms]"
+          style={{ opacity: i === activeIndex ? 0.15 : 0 }}
+        >
+          <iframe
+            src={`https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&fs=0&iv_load_policy=3`}
+            title={`Background video ${i + 1}`}
+            allow="autoplay; encrypted-media"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] md:w-[120%] md:h-[120%] pointer-events-none border-0"
+            style={{ minWidth: '100%', minHeight: '100%' }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+
 const Legal = () => {
   const parallaxOffset = useParallax(0.25);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -234,11 +267,16 @@ const Legal = () => {
 
       {/* ───── Hero ───── */}
       <section id="hero" className="relative overflow-hidden min-h-[90vh] flex items-center scroll-mt-24">
+        {/* ── Background Video Slider ── */}
+        <HeroVideoBackground />
+
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-[#0a0a0f]/80 z-[1] pointer-events-none" />
+
         {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2]">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-900/5 rounded-full blur-3xl animate-pulse" style={{ transform: `translateY(${parallaxOffset * 0.5}px)` }} />
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-900/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s', transform: `translateY(${parallaxOffset * 0.3}px)` }} />
-          {/* Floating gavel icons */}
           <Gavel className="absolute top-20 right-[15%] text-amber-900/10 animate-bounce" size={48} style={{ animationDuration: '3s', transform: `translateY(${parallaxOffset * -0.4}px)` }} />
           <Scale className="absolute bottom-32 left-[10%] text-amber-900/10 animate-bounce" size={40} style={{ animationDuration: '4s', animationDelay: '1s', transform: `translateY(${parallaxOffset * -0.2}px)` }} />
           <Gavel className="absolute top-40 left-[20%] text-amber-900/8 animate-bounce" size={32} style={{ animationDuration: '5s', animationDelay: '2s', transform: `translateY(${parallaxOffset * -0.6}px) rotate(45deg)` }} />
@@ -287,7 +325,7 @@ const Legal = () => {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce text-amber-700/50">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce text-amber-700/50 z-10">
           <span className="text-xs tracking-widest uppercase">Scroll</span>
           <ChevronDown size={20} />
         </div>
