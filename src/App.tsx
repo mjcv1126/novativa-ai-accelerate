@@ -47,6 +47,7 @@ import FileUpload from './pages/FileUpload';
 import TranscriptionPage from './pages/TranscriptionPage';
 import Solicitud from './pages/Solicitud';
 import SolicitudConfirmacion from './pages/SolicitudConfirmacion';
+import Legal from './pages/Legal';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { useLanguage } from './contexts/LanguageContext';
 
