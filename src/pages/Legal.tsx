@@ -487,7 +487,7 @@ const Legal = () => {
           <Gavel className="absolute top-6 left-[10%] text-amber-700/10 rotate-12" size={60} style={{ transform: `translateY(${parallaxOffset * -0.1}px)` }} />
           <Scale className="absolute bottom-6 right-[10%] text-amber-700/10 -rotate-12" size={60} style={{ transform: `translateY(${parallaxOffset * -0.1}px)` }} />
         </div>
-        <div className="max-w-3xl mx-auto px-4 text-center relative z-10">
+        <div ref={ctaReveal.ref} className={`max-w-3xl mx-auto px-4 text-center relative z-10 transition-all duration-1000 ${ctaReveal.visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}`}>
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">¿Necesitas asesoría legal?</h2>
           <p className="text-gray-400 mb-8">Comunícate directamente para resolver tus asuntos jurídicos con seguridad y tranquilidad.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
