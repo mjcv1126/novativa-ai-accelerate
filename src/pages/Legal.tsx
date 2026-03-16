@@ -1,9 +1,23 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronDown, ChevronUp, Phone, Mail, MapPin, MessageCircle, Calendar, Scale, Shield, FileText, Users, Home, Truck, CheckCircle, Gavel, Menu, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Phone, Mail, MapPin, MessageCircle, Calendar, Scale, Shield, FileText, Users, Home, Truck, CheckCircle, Gavel, Menu, X, Facebook, Instagram } from 'lucide-react';
+import { TiktokIcon } from '@/components/shared/TiktokIcon';
 
 const WHATSAPP_URL = 'https://api.whatsapp.com/send?phone=50482524225';
 const CALENDAR_URL = 'https://tidycal.com/team/dennisse-cuellar/legal';
+const SOCIAL_LINKS = {
+  tiktok: 'https://www.tiktok.com/@dennisse.cuellar',
+  facebook: 'https://www.facebook.com/novalegalhn',
+  instagram: 'https://www.instagram.com/novalegalhn',
+};
+
+const SocialIcons = ({ className = '', iconSize = 18 }: { className?: string; iconSize?: number }) => (
+  <div className={`flex items-center gap-3 ${className}`}>
+    <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-amber-400 transition-colors"><Facebook size={iconSize} /></a>
+    <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-amber-400 transition-colors"><Instagram size={iconSize} /></a>
+    <a href={SOCIAL_LINKS.tiktok} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-amber-400 transition-colors"><TiktokIcon className={`w-[${iconSize}px] h-[${iconSize}px]`} style={{ width: iconSize, height: iconSize }} /></a>
+  </div>
+);
 
 /* ───── Scroll-triggered animation hook ───── */
 function useScrollReveal(threshold = 0.15) {
@@ -176,8 +190,9 @@ const Legal = () => {
             ))}
           </nav>
 
-          {/* Desktop CTAs */}
+          {/* Desktop Social + CTAs */}
           <div className="hidden md:flex items-center gap-3">
+            <SocialIcons iconSize={16} />
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition-colors">
               <MessageCircle size={16} /> WhatsApp
@@ -322,6 +337,9 @@ const Legal = () => {
           <p className="text-gray-500 text-center mt-10 text-sm italic">
             Más allá de un trámite, cada servicio representa una responsabilidad jurídica que requiere atención, experiencia y profesionalismo.
           </p>
+          <div className="flex justify-center mt-6">
+            <SocialIcons iconSize={22} className="gap-5" />
+          </div>
         </div>
       </section>
 
@@ -508,6 +526,7 @@ const Legal = () => {
       <footer className="border-t border-amber-900/20 py-8">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <img src="/novalegal-logo.png" alt="NovaLegal" className="h-10 w-auto opacity-70" />
+          <SocialIcons iconSize={20} className="gap-4" />
           <p className="text-gray-600 text-sm text-center">
             © {new Date().getFullYear()} Abogada Dennisse Cuéllar · Legalidad. Orden. Confianza.
           </p>
