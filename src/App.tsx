@@ -47,6 +47,7 @@ import FileUpload from './pages/FileUpload';
 import TranscriptionPage from './pages/TranscriptionPage';
 import Solicitud from './pages/Solicitud';
 import SolicitudConfirmacion from './pages/SolicitudConfirmacion';
+import Legal from './pages/Legal';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { useLanguage } from './contexts/LanguageContext';
 
@@ -112,6 +113,7 @@ function App() {
         <Route path="/brief-ejecutivo/gracias" element={<BriefThankYou />} />
         <Route path="/solicitud" element={<Layout><Solicitud /></Layout>} />
         <Route path="/solicitud-confirmacion" element={<SolicitudConfirmacion />} />
+        <Route path="/legal" element={<Legal />} />
         
         {/* Admin routes */}
         <Route path="/admin/login" element={
