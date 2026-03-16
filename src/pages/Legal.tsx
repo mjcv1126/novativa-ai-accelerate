@@ -366,6 +366,32 @@ const Legal = () => {
         </div>
       </section>
 
+      {/* ───── Services Carousel ───── */}
+      <section className="py-10 bg-gray-950/30 border-b border-amber-900/10 overflow-hidden">
+        <div className="relative">
+          <div className="flex animate-[ticker_40s_linear_infinite] hover:[animation-play-state:paused]">
+            {[...Array(2)].flatMap((_, dupeIdx) => [
+              { icon: '🏢', title: 'Constitución de Empresas', desc: 'Formalización de negocios y estructuras empresariales' },
+              { icon: '📄', title: 'Poderes y Autorizaciones', desc: 'Delegación de representación legal' },
+              { icon: '🔏', title: 'Documentación Notarial', desc: 'Autenticación de instrumentos jurídicos' },
+              { icon: '👨‍👩‍👧', title: 'Actos Patrimoniales', desc: 'Testamentos, herencias y donaciones' },
+              { icon: '🏠', title: 'Operaciones sobre Bienes', desc: 'Compraventa y traspasos de propiedad' },
+              { icon: '✈️', title: 'Envío Internacional', desc: 'Documentos legales a EE.UU. y Europa' },
+            ].map((svc, i) => (
+              <button
+                key={`${dupeIdx}-${i}`}
+                onClick={() => scrollTo('services')}
+                className="shrink-0 w-64 mx-3 p-5 bg-gray-900/60 border border-amber-900/15 rounded-xl hover:border-amber-600/40 hover:bg-gray-900/80 transition-all duration-300 group text-left"
+              >
+                <span className="text-2xl mb-2 block">{svc.icon}</span>
+                <h4 className="text-amber-200 font-semibold text-sm mb-1 group-hover:text-amber-400 transition-colors">{svc.title}</h4>
+                <p className="text-gray-500 text-xs leading-relaxed">{svc.desc}</p>
+              </button>
+            )))}
+          </div>
+        </div>
+      </section>
+
       {/* ───── Stats strip ───── */}
       <section className="relative py-12 bg-gradient-to-r from-amber-950/20 via-gray-950 to-amber-950/20 border-y border-amber-900/15">
         <div ref={statsReveal.ref} className={`max-w-4xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center transition-all duration-700 ${statsReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
