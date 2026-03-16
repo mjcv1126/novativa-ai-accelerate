@@ -717,7 +717,6 @@ const Legal = () => {
                 className="w-full border-0"
                 style={{ height: 680 }}
                 allowFullScreen
-                allow="encrypted-media; autoplay"
               />
             </div>
           </div>
