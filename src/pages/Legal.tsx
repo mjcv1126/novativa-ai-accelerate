@@ -337,7 +337,7 @@ const Legal = () => {
         <HeroVideoBackground />
 
         {/* Dark overlay for readability */}
-        <div className="absolute inset-0 bg-[#0a0a0f]/80 z-[1] pointer-events-none" />
+        <div className="absolute inset-0 bg-[#0a0a0f]/70 z-[1] pointer-events-none" />
 
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2]">
