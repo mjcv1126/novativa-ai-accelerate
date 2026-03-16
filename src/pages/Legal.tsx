@@ -234,11 +234,16 @@ const Legal = () => {
 
       {/* ───── Hero ───── */}
       <section id="hero" className="relative overflow-hidden min-h-[90vh] flex items-center scroll-mt-24">
+        {/* ── Background Video Slider ── */}
+        <HeroVideoBackground />
+
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-[#0a0a0f]/80 z-[1] pointer-events-none" />
+
         {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2]">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-900/5 rounded-full blur-3xl animate-pulse" style={{ transform: `translateY(${parallaxOffset * 0.5}px)` }} />
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-900/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s', transform: `translateY(${parallaxOffset * 0.3}px)` }} />
-          {/* Floating gavel icons */}
           <Gavel className="absolute top-20 right-[15%] text-amber-900/10 animate-bounce" size={48} style={{ animationDuration: '3s', transform: `translateY(${parallaxOffset * -0.4}px)` }} />
           <Scale className="absolute bottom-32 left-[10%] text-amber-900/10 animate-bounce" size={40} style={{ animationDuration: '4s', animationDelay: '1s', transform: `translateY(${parallaxOffset * -0.2}px)` }} />
           <Gavel className="absolute top-40 left-[20%] text-amber-900/8 animate-bounce" size={32} style={{ animationDuration: '5s', animationDelay: '2s', transform: `translateY(${parallaxOffset * -0.6}px) rotate(45deg)` }} />
