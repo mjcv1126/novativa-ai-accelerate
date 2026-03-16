@@ -700,9 +700,9 @@ const Legal = () => {
           <div className="relative w-[90vw] max-w-[400px]" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setTiktokOpen(false)}
-              className="absolute -top-10 right-0 text-white hover:text-amber-400 transition-colors z-10"
+              className="absolute -right-2 top-4 bg-amber-700 hover:bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/40 transition-colors z-10 flex items-center gap-1.5"
             >
-              <X size={28} />
+              Cerrar <X size={14} />
             </button>
             <div className="rounded-xl overflow-hidden bg-black shadow-2xl shadow-amber-900/20">
               <iframe
