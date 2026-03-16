@@ -193,6 +193,12 @@ const Legal = () => {
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
+  useEffect(() => {
+    if (!tiktokOpen) return;
+    const timer = setTimeout(() => setTiktokOpen(false), 60000);
+    return () => clearTimeout(timer);
+  }, [tiktokOpen]);
+
   // Custom balance/scales cursor CSS
   useEffect(() => {
     const style = document.createElement('style');
