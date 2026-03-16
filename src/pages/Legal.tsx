@@ -128,7 +128,14 @@ const Legal = () => {
   }, []);
 
   const scrollTo = useCallback((id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    const element = document.getElementById(id);
+    if (!element) return;
+
+    const headerOffset = 96;
+    const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+    const offsetPosition = Math.max(elementPosition - headerOffset, 0);
+
+    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     setMobileMenuOpen(false);
   }, []);
 
@@ -148,9 +155,9 @@ const Legal = () => {
   const contactReveal = useScrollReveal();
 
   return (
-    <div className="legal-page min-h-screen bg-[#0a0a0f] text-gray-200 font-sans overflow-x-hidden">
+    <div className="legal-page min-h-screen bg-[#0a0a0f] text-gray-200 font-sans">
       {/* ───── Header ───── */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-transparent'} border-b border-amber-900/20`}>
+      <header className={`sticky top-0 z-[100] w-full transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-[#0a0a0f]/85 backdrop-blur-md'} border-b border-amber-900/20`}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={() => scrollTo('hero')} className="shrink-0">
             <img src="/novalegal-logo.png" alt="NovaLegal" className="h-10 md:h-12 w-auto" />
