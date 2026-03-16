@@ -199,6 +199,10 @@ const Legal = () => {
       .legal-page { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%23d97706' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='M2 10h4l2-4 2 8h4'/%3E%3Cpath d='M14 10h4l2-4 2 8'/%3E%3Cpath d='m2 14 4 0'/%3E%3Cpath d='m18 14 4 0'/%3E%3Cpath d='M2 14a4 4 0 0 0 8 0'/%3E%3Cpath d='M14 14a4 4 0 0 0 8 0'/%3E%3Ccircle cx='12' cy='2' r='1'/%3E%3C/svg%3E") 14 14, auto; }
       .legal-page a, .legal-page button { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='%23d97706' stroke='%23fbbf24' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='M2 10h4l2-4 2 8h4'/%3E%3Cpath d='M14 10h4l2-4 2 8'/%3E%3Cpath d='m2 14 4 0'/%3E%3Cpath d='m18 14 4 0'/%3E%3Cpath d='M2 14a4 4 0 0 0 8 0'/%3E%3Cpath d='M14 14a4 4 0 0 0 8 0'/%3E%3Ccircle cx='12' cy='2' r='1'/%3E%3C/svg%3E") 14 14, pointer; }
       @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+      @keyframes borderGlow {
+        0%, 100% { opacity: 0.4; filter: brightness(0.8); }
+        50% { opacity: 1; filter: brightness(1.3); }
+      }
     `;
     document.head.appendChild(style);
     return () => { document.getElementById('legal-balance-cursor')?.remove(); };
@@ -382,18 +386,20 @@ const Legal = () => {
             <button
               key={idx}
               onClick={() => scrollTo('services')}
-              className="p-4 md:p-5 bg-gradient-to-br from-gray-900/80 to-gray-950/60 border border-amber-900/20 rounded-xl hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(217,119,6,0.12)] transition-all duration-500 group text-left relative overflow-hidden"
+              className="p-[1px] rounded-xl bg-gradient-to-br from-amber-700/30 via-amber-500/10 to-amber-700/30 animate-[borderGlow_3s_ease-in-out_infinite] group relative text-left"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-700/0 group-hover:from-amber-500/5 group-hover:to-amber-700/10 transition-all duration-500 rounded-xl" />
-              <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative z-[1]">
-                <div className="w-10 h-10 rounded-lg bg-amber-900/20 border border-amber-800/20 flex items-center justify-center mb-3 group-hover:bg-amber-900/30 group-hover:scale-110 group-hover:border-amber-700/40 transition-all duration-300">
-                  <IconComp className="text-amber-500 group-hover:text-amber-400 transition-colors" size={20} />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-500/20 via-transparent to-amber-500/20 blur-sm animate-[borderGlow_3s_ease-in-out_infinite] pointer-events-none" />
+              <div className="relative p-4 md:p-5 bg-gradient-to-br from-gray-900 to-gray-950 rounded-[11px] h-full overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-700/0 group-hover:from-amber-500/5 group-hover:to-amber-700/10 transition-all duration-500 rounded-[11px]" />
+                <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-[1]">
+                  <div className="w-10 h-10 rounded-lg bg-amber-900/20 border border-amber-800/20 flex items-center justify-center mb-3 group-hover:bg-amber-900/30 group-hover:scale-110 group-hover:border-amber-700/40 transition-all duration-300">
+                    <IconComp className="text-amber-500 group-hover:text-amber-400 transition-colors" size={20} />
+                  </div>
+                  <h4 className="text-amber-200 font-semibold text-sm mb-1 group-hover:text-amber-300 transition-colors">{svc.title}</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed group-hover:text-gray-400 transition-colors">{svc.desc}</p>
                 </div>
-                <h4 className="text-amber-200 font-semibold text-sm mb-1 group-hover:text-amber-300 transition-colors">{svc.title}</h4>
-                <p className="text-gray-500 text-xs leading-relaxed group-hover:text-gray-400 transition-colors">{svc.desc}</p>
               </div>
-              <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/0 to-transparent group-hover:via-amber-500/40 transition-all duration-500" />
             </button>
           );
         };
