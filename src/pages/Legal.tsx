@@ -367,46 +367,59 @@ const Legal = () => {
       </section>
 
       {/* ───── Services Carousel ───── */}
-      <section className="py-10 bg-gray-950/30 border-b border-amber-900/10 overflow-hidden">
-        <div className="relative">
-          {/* Fade edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
-          <div className="flex animate-[ticker_40s_linear_infinite] hover:[animation-play-state:paused]">
-            {[...Array(2)].flatMap((_, dupeIdx) => [
-              { icon: Shield, title: 'Constitución de Empresas', desc: 'Formalización de negocios y estructuras empresariales' },
-              { icon: FileText, title: 'Poderes y Autorizaciones', desc: 'Delegación de representación legal' },
-              { icon: Gavel, title: 'Documentación Notarial', desc: 'Autenticación de instrumentos jurídicos' },
-              { icon: Users, title: 'Actos Patrimoniales', desc: 'Testamentos, herencias y donaciones' },
-              { icon: Home, title: 'Operaciones sobre Bienes', desc: 'Compraventa y traspasos de propiedad' },
-              { icon: Truck, title: 'Envío Internacional', desc: 'Documentos legales a EE.UU. y Europa' },
-            ].map((svc, i) => {
-              const IconComp = svc.icon;
-              return (
-                <button
-                  key={`${dupeIdx}-${i}`}
-                  onClick={() => scrollTo('services')}
-                  className="shrink-0 w-[calc(50vw-24px)] sm:w-56 md:w-64 mx-2 md:mx-3 p-4 md:p-5 bg-gradient-to-br from-gray-900/80 to-gray-950/60 border border-amber-900/20 rounded-xl hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(217,119,6,0.12)] transition-all duration-500 group text-left relative overflow-hidden"
-                >
-                  {/* Glow effect on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-700/0 group-hover:from-amber-500/5 group-hover:to-amber-700/10 transition-all duration-500 rounded-xl" />
-                  {/* Corner accent */}
-                  <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-[1]">
-                    <div className="w-10 h-10 rounded-lg bg-amber-900/20 border border-amber-800/20 flex items-center justify-center mb-3 group-hover:bg-amber-900/30 group-hover:scale-110 group-hover:border-amber-700/40 transition-all duration-300">
-                      <IconComp className="text-amber-500 group-hover:text-amber-400 transition-colors" size={20} />
+      {(() => {
+        const svcList = [
+          { icon: Shield, title: 'Constitución de Empresas', desc: 'Formalización de negocios y estructuras empresariales' },
+          { icon: FileText, title: 'Poderes y Autorizaciones', desc: 'Delegación de representación legal' },
+          { icon: Gavel, title: 'Documentación Notarial', desc: 'Autenticación de instrumentos jurídicos' },
+          { icon: Users, title: 'Actos Patrimoniales', desc: 'Testamentos, herencias y donaciones' },
+          { icon: Home, title: 'Operaciones sobre Bienes', desc: 'Compraventa y traspasos de propiedad' },
+          { icon: Truck, title: 'Envío Internacional', desc: 'Documentos legales a EE.UU. y Europa' },
+        ];
+        const ServiceCard = ({ svc, idx }: { svc: typeof svcList[0]; idx: number }) => {
+          const IconComp = svc.icon;
+          return (
+            <button
+              key={idx}
+              onClick={() => scrollTo('services')}
+              className="p-4 md:p-5 bg-gradient-to-br from-gray-900/80 to-gray-950/60 border border-amber-900/20 rounded-xl hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(217,119,6,0.12)] transition-all duration-500 group text-left relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-700/0 group-hover:from-amber-500/5 group-hover:to-amber-700/10 transition-all duration-500 rounded-xl" />
+              <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative z-[1]">
+                <div className="w-10 h-10 rounded-lg bg-amber-900/20 border border-amber-800/20 flex items-center justify-center mb-3 group-hover:bg-amber-900/30 group-hover:scale-110 group-hover:border-amber-700/40 transition-all duration-300">
+                  <IconComp className="text-amber-500 group-hover:text-amber-400 transition-colors" size={20} />
+                </div>
+                <h4 className="text-amber-200 font-semibold text-sm mb-1 group-hover:text-amber-300 transition-colors">{svc.title}</h4>
+                <p className="text-gray-500 text-xs leading-relaxed group-hover:text-gray-400 transition-colors">{svc.desc}</p>
+              </div>
+              <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/0 to-transparent group-hover:via-amber-500/40 transition-all duration-500" />
+            </button>
+          );
+        };
+        return (
+          <section className="py-10 bg-gray-950/30 border-b border-amber-900/10 overflow-hidden">
+            {/* Mobile: 2-column grid */}
+            <div className="grid grid-cols-2 gap-3 px-4 md:hidden">
+              {svcList.map((svc, i) => <ServiceCard key={i} svc={svc} idx={i} />)}
+            </div>
+            {/* Desktop: infinite carousel */}
+            <div className="hidden md:block relative">
+              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0a0f] to-transparent z-10 pointer-events-none" />
+              <div className="flex animate-[ticker_40s_linear_infinite] hover:[animation-play-state:paused]">
+                {[...Array(2)].flatMap((_, dupeIdx) =>
+                  svcList.map((svc, i) => (
+                    <div key={`${dupeIdx}-${i}`} className="shrink-0 w-64 mx-3">
+                      <ServiceCard svc={svc} idx={i} />
                     </div>
-                    <h4 className="text-amber-200 font-semibold text-sm mb-1 group-hover:text-amber-300 transition-colors">{svc.title}</h4>
-                    <p className="text-gray-500 text-xs leading-relaxed group-hover:text-gray-400 transition-colors">{svc.desc}</p>
-                  </div>
-                  {/* Bottom border accent */}
-                  <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/0 to-transparent group-hover:via-amber-500/40 transition-all duration-500" />
-                </button>
-              );
-            }))}
-          </div>
-        </div>
-      </section>
+                  ))
+                )}
+              </div>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* ───── Stats strip ───── */}
       <section className="relative py-12 bg-gradient-to-r from-amber-950/20 via-gray-950 to-amber-950/20 border-y border-amber-900/15">
