@@ -48,6 +48,7 @@ import TranscriptionPage from './pages/TranscriptionPage';
 import Solicitud from './pages/Solicitud';
 import SolicitudConfirmacion from './pages/SolicitudConfirmacion';
 import Legal from './pages/Legal';
+import LegalGracias from './pages/LegalGracias';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { useLanguage } from './contexts/LanguageContext';
 
