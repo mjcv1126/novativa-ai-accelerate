@@ -147,54 +147,21 @@ const NewsTicker = () => (
 );
 
 /* ───── Hero Video Background ───── */
-const HERO_VIDEOS = ['rFygb2YoQ0A'];
+const HERO_VIDEO_URL = 'https://www.marlonhn.com/wp-content/uploads/2026/03/justice-and-law-concept-on-wooden-background-8P6DQK4.mp4';
 
 const HeroVideoBackground = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [iframesReady, setIframesReady] = useState(false);
-
-  useEffect(() => {
-    // Give iframes time to load before starting transitions
-    const readyTimer = setTimeout(() => setIframesReady(true), 3000);
-    return () => clearTimeout(readyTimer);
-  }, []);
-
-  useEffect(() => {
-    if (!iframesReady) return;
-    const interval = setInterval(() => {
-      setActiveIndex(prev => (prev + 1) % HERO_VIDEOS.length);
-    }, 20000);
-    return () => clearInterval(interval);
-  }, [iframesReady]);
-
   return (
     <div className="absolute inset-0 z-0 overflow-hidden">
-      {HERO_VIDEOS.map((id, i) => (
-        <div
-          key={id}
-          className="absolute inset-0 transition-opacity duration-[2000ms]"
-          style={{ opacity: i === activeIndex ? 0.2 : 0 }}
-        >
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&fs=0&iv_load_policy=3&start=0&background=1`}
-            title={`Background video ${i + 1}`}
-            allow="autoplay; encrypted-media; accelerometer; gyroscope"
-            referrerPolicy="no-referrer"
-            loading="eager"
-            className="pointer-events-none border-0"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%) scale(1.2)',
-              width: '177.78vh',
-              height: '100vh',
-              minWidth: '100%',
-              minHeight: '100%',
-            }}
-          />
-        </div>
-      ))}
+      <div className="absolute inset-0" style={{ opacity: 0.25 }}>
+        <video
+          src={HERO_VIDEO_URL}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="pointer-events-none border-0 object-cover w-full h-full absolute inset-0"
+        />
+      </div>
     </div>
   );
 };
