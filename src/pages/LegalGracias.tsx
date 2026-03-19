@@ -37,12 +37,21 @@ const LegalGracias = () => {
       {/* Main Content */}
       <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-16">
         <div className="max-w-lg w-full text-center space-y-8">
-          {/* Profile Photo + Name */}
+          {/* Profile Photo + Check + Name */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-br from-amber-500 via-amber-700 to-amber-900 rounded-full blur-sm opacity-60" />
               <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-amber-700/50 shadow-2xl shadow-amber-900/20">
                 <img src="/dennisse-profile.png" alt="Abogada Dennisse Cuéllar" className="w-full h-full object-cover object-top scale-110" />
+              </div>
+              {/* Check badge overlay */}
+              <div className="absolute -bottom-1 -right-1 animate-scale-in">
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-emerald-500/30 rounded-full blur-md animate-pulse" />
+                  <div className="relative w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center border-2 border-[#0a0a0f] shadow-lg">
+                    <CheckCircle className="text-white" size={22} />
+                  </div>
+                </div>
               </div>
             </div>
             <h2 className="text-xl md:text-2xl font-bold text-white">
@@ -52,15 +61,14 @@ const LegalGracias = () => {
 
           {/* Thank You Message */}
           <div className="space-y-4">
-            <div className="flex items-center justify-center gap-3">
-              <div className="relative shrink-0">
-                <div className="absolute -inset-2 bg-emerald-500/20 rounded-full blur-lg animate-pulse" />
-                <CheckCircle className="relative text-emerald-400" size={36} />
-              </div>
               <h1 className="text-3xl md:text-4xl font-bold text-white">
                 ¡Muchas gracias por agendar tu cita!
               </h1>
-            </div>
+            <p className="text-gray-400 text-lg leading-relaxed">
+              Tu reservación ha sido registrada exitosamente. <br className="hidden md:block" />
+              <span className="text-amber-400 font-medium">¡Te esperamos!</span>
+            </p>
+          </div>
             <p className="text-gray-400 text-lg leading-relaxed">
               Tu reservación ha sido registrada exitosamente. <br className="hidden md:block" />
               <span className="text-amber-400 font-medium">¡Te esperamos!</span>
