@@ -237,7 +237,7 @@ const Legal = () => {
       {/* ───── News Ticker ───── */}
       <NewsTicker />
       {/* ───── Header ───── */}
-      <header className={`sticky top-0 z-[100] w-full transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-[#0a0a0f]/85 backdrop-blur-md'} border-b border-amber-900/20`}>
+      <header className={`sticky top-0 z-[100] w-full transition-all duration-500 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20 border-b border-amber-900/20' : 'bg-transparent border-b border-transparent'}`}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={() => scrollTo('hero')} className="shrink-0">
             <img src="/novalegal-logo.png" alt="NovaLegal" className="h-10 md:h-12 w-auto" />
