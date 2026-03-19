@@ -4,7 +4,7 @@ import { ChevronDown, ChevronUp, Phone, Mail, MapPin, MessageCircle, Calendar, S
 import { TiktokIcon } from '@/components/shared/TiktokIcon';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
-const WHATSAPP_URL = 'https://api.whatsapp.com/send?phone=50482524225';
+const WHATSAPP_URL = 'https://api.whatsapp.com/send?phone=50433703214';
 const CALENDAR_URL = 'https://tidycal.com/team/dennisse-cuellar/legal';
 const SOCIAL_LINKS = {
   tiktok: 'https://www.tiktok.com/@dennisse.cuellar',
