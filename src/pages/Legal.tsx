@@ -643,7 +643,7 @@ const Legal = () => {
                 </div>
                 <div>
                   <p className="text-amber-100 font-semibold">WhatsApp</p>
-                  <p className="text-gray-400 text-sm">+504 8252-4225</p>
+                  <p className="text-gray-400 text-sm">+504 3370-3214</p>
                 </div>
               </a>
               <a href="tel:+50482524225" className="flex items-center gap-4 p-5 bg-gray-900/50 border border-amber-900/15 rounded-xl hover:border-amber-700/40 hover:-translate-y-0.5 transition-all duration-300 group">
