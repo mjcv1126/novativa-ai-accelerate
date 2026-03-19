@@ -50,21 +50,17 @@ const LegalGracias = () => {
             </h2>
           </div>
 
-          {/* Success Icon */}
-          <div className="flex justify-center">
-            <div className="relative">
-              <div className="absolute -inset-4 bg-emerald-500/20 rounded-full blur-xl animate-pulse" />
-              <div className="relative w-20 h-20 bg-emerald-900/30 border-2 border-emerald-500/40 rounded-full flex items-center justify-center">
-                <CheckCircle className="text-emerald-400" size={40} />
-              </div>
-            </div>
-          </div>
-
           {/* Thank You Message */}
           <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-white">
-              ¡Muchas gracias por agendar tu cita!
-            </h1>
+            <div className="flex items-center justify-center gap-3">
+              <div className="relative shrink-0">
+                <div className="absolute -inset-2 bg-emerald-500/20 rounded-full blur-lg animate-pulse" />
+                <CheckCircle className="relative text-emerald-400" size={36} />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-white">
+                ¡Muchas gracias por agendar tu cita!
+              </h1>
+            </div>
             <p className="text-gray-400 text-lg leading-relaxed">
               Tu reservación ha sido registrada exitosamente. <br className="hidden md:block" />
               <span className="text-amber-400 font-medium">¡Te esperamos!</span>
