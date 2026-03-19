@@ -115,6 +115,7 @@ function App() {
         <Route path="/solicitud" element={<Layout><Solicitud /></Layout>} />
         <Route path="/solicitud-confirmacion" element={<SolicitudConfirmacion />} />
         <Route path="/legal" element={<Legal />} />
+        <Route path="/legal/gracias" element={<LegalGracias />} />
         
         {/* Admin routes */}
         <Route path="/admin/login" element={
