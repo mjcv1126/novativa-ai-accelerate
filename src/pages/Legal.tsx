@@ -305,6 +305,8 @@ const Legal = () => {
 
         {/* Dark overlay for readability */}
         <div className="absolute inset-0 bg-[#0a0a0f]/70 z-[1] pointer-events-none" />
+        {/* Bottom gradient fade into next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent z-[2] pointer-events-none" />
 
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2]">
