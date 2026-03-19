@@ -69,11 +69,6 @@ const LegalGracias = () => {
               <span className="text-amber-400 font-medium">¡Te esperamos!</span>
             </p>
           </div>
-            <p className="text-gray-400 text-lg leading-relaxed">
-              Tu reservación ha sido registrada exitosamente. <br className="hidden md:block" />
-              <span className="text-amber-400 font-medium">¡Te esperamos!</span>
-            </p>
-          </div>
 
           {/* Calendar Info */}
           <div className="bg-gray-900/60 border border-amber-900/20 rounded-xl p-6 space-y-3 backdrop-blur-sm">
