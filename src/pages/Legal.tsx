@@ -237,7 +237,7 @@ const Legal = () => {
       {/* ───── News Ticker ───── */}
       <NewsTicker />
       {/* ───── Header ───── */}
-      <header className={`sticky top-0 z-[100] w-full transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-[#0a0a0f]/85 backdrop-blur-md'} border-b border-amber-900/20`}>
+      <header className={`sticky top-0 z-[100] w-full transition-all duration-500 ${scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-lg shadow-black/20 border-b border-amber-900/20' : 'bg-transparent border-b border-transparent'}`}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={() => scrollTo('hero')} className="shrink-0">
             <img src="/novalegal-logo.png" alt="NovaLegal" className="h-10 md:h-12 w-auto" />
@@ -304,7 +304,7 @@ const Legal = () => {
         <HeroVideoBackground />
 
         {/* Dark overlay for readability */}
-        <div className="absolute inset-0 bg-[#0a0a0f]/70 z-[1] pointer-events-none" />
+        <div className="absolute inset-0 bg-[#0a0a0f]/45 z-[1] pointer-events-none" />
         {/* Bottom gradient fade into next section */}
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent z-[2] pointer-events-none" />
 
