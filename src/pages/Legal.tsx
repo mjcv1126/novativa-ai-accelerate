@@ -646,7 +646,7 @@ const Legal = () => {
                   <p className="text-gray-400 text-sm">+504 3370-3214</p>
                 </div>
               </a>
-              <a href="tel:+50482524225" className="flex items-center gap-4 p-5 bg-gray-900/50 border border-amber-900/15 rounded-xl hover:border-amber-700/40 hover:-translate-y-0.5 transition-all duration-300 group">
+              <a href="tel:+50433703214" className="flex items-center gap-4 p-5 bg-gray-900/50 border border-amber-900/15 rounded-xl hover:border-amber-700/40 hover:-translate-y-0.5 transition-all duration-300 group">
                 <div className="w-12 h-12 bg-amber-900/20 rounded-lg flex items-center justify-center group-hover:bg-amber-900/30 group-hover:scale-110 transition-all">
                   <Phone className="text-amber-500" size={24} />
                 </div>
