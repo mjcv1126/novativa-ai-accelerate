@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { ShoppingCart, CreditCard, Package, Globe, Zap, Shield, TrendingUp, Smartphone, Check, Sparkles, Store, BarChart3 } from 'lucide-react';
+import { ShoppingCart, CreditCard, Package, Globe, Zap, Shield, TrendingUp, Smartphone, Check, Sparkles, Store, BarChart3, Heart, Code2, Rocket } from 'lucide-react';
+import marlonFounder from '@/assets/marlon-founder.png';
+
 
 const CTA_URL = 'https://tidycal.com/hackmillonario/desarrollo-ia';
 
@@ -356,7 +358,79 @@ const Ecommerce: React.FC = () => {
           </div>
         </section>
 
+        {/* Sobre mí */}
+        <section className="px-4 py-20 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+              {/* Foto */}
+              <div className="relative order-2 md:order-1">
+                <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-500/30 via-violet-500/20 to-cyan-400/30 blur-3xl rounded-full animate-pulse" />
+                <div className="absolute -top-6 -left-6 w-32 h-32 bg-fuchsia-500/20 rounded-full blur-2xl" />
+                <div className="absolute -bottom-8 -right-4 w-40 h-40 bg-cyan-400/20 rounded-full blur-2xl" />
+                <div className="relative">
+                  <img
+                    src={marlonFounder}
+                    alt="Marlon, fundador de Novativa"
+                    className="relative w-full max-w-md mx-auto drop-shadow-[0_25px_50px_rgba(217,70,239,0.35)]"
+                  />
+                </div>
+              </div>
+
+              {/* Texto */}
+              <div className="order-1 md:order-2">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-gray-300 mb-5">
+                  <Heart size={14} className="text-fuchsia-300" />
+                  Sobre mí
+                </div>
+                <h2 className="text-3xl md:text-5xl font-bold leading-tight mb-6">
+                  Hola, soy{' '}
+                  <span className="bg-gradient-to-r from-fuchsia-300 via-violet-300 to-cyan-300 bg-clip-text text-transparent">
+                    Marlon
+                  </span>
+                </h2>
+                <div className="space-y-4 text-gray-300 text-base md:text-lg leading-relaxed">
+                  <p>
+                    Fundador de <span className="text-white font-semibold">Novativa</span> y de diversos
+                    proyectos digitales. Tengo más de{' '}
+                    <span className="text-fuchsia-300 font-semibold">10 años</span> dedicándome al mundo
+                    del marketing digital, desarrollo web y creación de productos en línea.
+                  </p>
+                  <p>
+                    Para mí cada página web es una{' '}
+                    <span className="text-cyan-300 font-semibold">obra de arte</span>. No entrego un
+                    proyecto del que no me sienta orgulloso. Le pongo{' '}
+                    <span className="text-white font-semibold">el alma y el corazón</span> a cada línea
+                    de código, a cada pixel, a cada interacción.
+                  </p>
+                  <p>
+                    Cuando trabajamos juntos, no contratas a una agencia más: te llevas un socio que
+                    cree en tu visión tanto como tú.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3 mt-8">
+                  {[
+                    { icon: Rocket, label: '+10 años', sub: 'de experiencia' },
+                    { icon: Code2, label: '+100', sub: 'proyectos' },
+                    { icon: Heart, label: '100%', sub: 'pasión' },
+                  ].map((s, i) => (
+                    <div
+                      key={i}
+                      className="rounded-xl border border-white/10 bg-white/5 backdrop-blur p-4 text-center hover:border-fuchsia-400/40 transition-colors"
+                    >
+                      <s.icon size={18} className="text-fuchsia-300 mx-auto mb-2" />
+                      <div className="font-bold text-white">{s.label}</div>
+                      <div className="text-xs text-gray-400">{s.sub}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Projects showcase */}
+
         <section className="px-4 py-20">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-14">
