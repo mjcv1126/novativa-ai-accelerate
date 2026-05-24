@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { ShoppingCart, CreditCard, Package, Globe, Zap, Shield, TrendingUp, Smartphone, Check, Sparkles, Store, BarChart3 } from 'lucide-react';
+import { ShoppingCart, CreditCard, Package, Globe, Zap, Shield, TrendingUp, Smartphone, Check, Sparkles, Store, BarChart3, Heart, Code2, Rocket } from 'lucide-react';
+import marlonFounder from '@/assets/marlon-founder.png';
+
 
 const CTA_URL = 'https://tidycal.com/hackmillonario/desarrollo-ia';
 
