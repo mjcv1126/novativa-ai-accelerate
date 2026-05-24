@@ -526,7 +526,37 @@ const Ecommerce: React.FC = () => {
         </section>
       </main>
 
-      <footer className="relative z-10 border-t border-white/10 py-8 text-center text-sm text-gray-500">
+      {/* Sticky CTA bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+        <div className="bg-black/80 backdrop-blur-xl border-t border-white/10 px-4 py-3 flex items-center justify-between gap-3">
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-400">Desarrollo web pro</span>
+            <span className="text-sm font-bold text-white">$600 USD</span>
+          </div>
+          <a
+            href={CTA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-fuchsia-500 to-violet-600 text-white font-semibold text-sm shadow-lg shadow-fuchsia-500/30 active:scale-95 transition-all"
+          >
+            <Zap size={14} />
+            Agenda tu llamada
+          </a>
+        </div>
+      </div>
+
+      {/* Floating CTA — desktop */}
+      <a
+        href={CTA_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hidden md:inline-flex fixed bottom-6 right-6 z-50 items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-500 to-violet-600 text-white font-semibold shadow-xl shadow-fuchsia-500/30 hover:scale-105 transition-all"
+      >
+        <Zap size={16} />
+        Agenda tu llamada
+      </a>
+
+      <footer className="relative z-10 border-t border-white/10 py-8 text-center text-sm text-gray-500 pb-24 md:pb-8">
         © {new Date().getFullYear()} Novativa · Desarrollo web a medida
       </footer>
     </div>
