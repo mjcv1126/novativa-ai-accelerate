@@ -356,7 +356,71 @@ const Ecommerce: React.FC = () => {
           </div>
         </section>
 
+        {/* Projects showcase */}
+        <section className="px-4 py-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-14">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-gray-300 mb-4">
+                <Sparkles size={14} className="text-fuchsia-300" />
+                Proyectos desarrollados
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                Algunos sitios{' '}
+                <span className="bg-gradient-to-r from-fuchsia-300 via-violet-300 to-cyan-300 bg-clip-text text-transparent">
+                  que ya están en línea
+                </span>
+              </h2>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Clientes reales, tiendas y catálogos lanzados por nuestro equipo.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { name: 'TecExpress HN', url: 'https://tecexpresshn.com/' },
+                { name: 'Alliance Trading Corp', url: 'https://alliancetradingcorp.com/' },
+                { name: 'Fudgo', url: 'https://fudgo.com/' },
+                { name: 'Buzo App', url: 'https://buzoapp.com/' },
+                { name: 'Yojoa Chocolate', url: 'https://yojoachocolate.com/' },
+                { name: 'The Gold Macaw Coffee', url: 'https://thegoldmacawcoffee.com/' },
+                { name: 'VYM Honduras', url: 'https://www.vymhonduras.com/' },
+                { name: 'BeSafe Product', url: 'https://besafe-product.com/' },
+              ].map((p) => {
+                const host = p.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                const shot = `https://image.thum.io/get/width/800/crop/600/noanimate/${p.url}`;
+                return (
+                  <a
+                    key={p.url}
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 backdrop-blur hover:border-fuchsia-400/40 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-fuchsia-500/20"
+                  >
+                    <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-violet-900/40 to-fuchsia-900/30">
+                      <img
+                        src={shot}
+                        alt={`Vista previa de ${p.name}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-semibold text-white truncate">{p.name}</h3>
+                        <Globe size={14} className="text-fuchsia-300 shrink-0" />
+                      </div>
+                      <p className="text-xs text-gray-400 truncate mt-1">{host}</p>
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-fuchsia-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA */}
+
         <section className="px-4 py-24">
           <div className="max-w-4xl mx-auto relative">
             <div className="absolute -inset-2 bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-400 rounded-3xl blur-2xl opacity-30" />
