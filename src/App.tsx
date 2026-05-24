@@ -49,6 +49,7 @@ import Solicitud from './pages/Solicitud';
 import SolicitudConfirmacion from './pages/SolicitudConfirmacion';
 import Legal from './pages/Legal';
 import LegalGracias from './pages/LegalGracias';
+import Ecommerce from './pages/Ecommerce';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { useLanguage } from './contexts/LanguageContext';
 
@@ -116,6 +117,8 @@ function App() {
         <Route path="/solicitud-confirmacion" element={<SolicitudConfirmacion />} />
         <Route path="/legal" element={<Legal />} />
         <Route path="/legal/gracias" element={<LegalGracias />} />
+        <Route path="/ecommerce" element={<Ecommerce />} />
+        <Route path="/e-commerce" element={<Ecommerce />} />
         
         {/* Admin routes */}
         <Route path="/admin/login" element={
