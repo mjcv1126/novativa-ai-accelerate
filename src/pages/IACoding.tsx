@@ -6,6 +6,8 @@ import AppDevelopmentSection from '@/components/ia-coding/AppDevelopmentSection'
 import AutomationSection from '@/components/ia-coding/AutomationSection';
 import PricingComparison from '@/components/ia-coding/PricingComparison';
 import AppExamples from '@/components/ia-coding/AppExamples';
+import LatestProject from '@/components/ia-coding/LatestProject';
+
 import FeaturesList from '@/components/ia-coding/FeaturesList';
 import Benefits from '@/components/ia-coding/Benefits';
 import ScheduleDemo from '@/components/ia-coding/ScheduleDemo';
@@ -28,6 +30,8 @@ const IACoding = () => {
       <AutomationSection />
       <AppDevelopmentSection />
       <PricingComparison />
+      <LatestProject />
+
       <AppExamples />
       <FeaturesList />
       <Benefits />
