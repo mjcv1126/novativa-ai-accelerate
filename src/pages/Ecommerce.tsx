@@ -146,9 +146,12 @@ const Ecommerce: React.FC = () => {
       {/* Header */}
       <header className="relative z-20 border-b border-white/10 backdrop-blur-md bg-black/20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
-            <Sparkles className="text-fuchsia-400" size={22} />
-            <span className="font-bold text-lg tracking-tight">Novativa</span>
+          <a href="/" className="shrink-0">
+            <img
+              alt="Novativa"
+              className="h-8 md:h-10 w-auto object-contain"
+              src="/lovable-uploads/876bbab1-6c0b-4434-ba8d-c6e774f6d16d.png"
+            />
           </a>
           <a
             href={CTA_URL}
