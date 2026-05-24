@@ -30,6 +30,8 @@ const IACoding = () => {
       <AutomationSection />
       <AppDevelopmentSection />
       <PricingComparison />
+      <LatestProject />
+
       <AppExamples />
       <FeaturesList />
       <Benefits />
